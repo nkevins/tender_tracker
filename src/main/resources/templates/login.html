@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout">
+<head>
+    <title>Tender Tracker</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <h1>Login</h1>
+            <th:block th:if="${alert != null}">
+                <div th:replace="fragments/alert :: alert (type=${alert.getType()}, messages=${alert.messages})">Alert</div>
+            </th:block>
+            <form th:method="POST" th:action="@{/login}" th:object="${login}">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" class="form-control" th:field="*{email}" required="required" />
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" class="form-control" th:field="*{password}" required="required" />
+                </div>
+                <div class="white-space-10"></div>
+                <div class="form-group no-margin">
+                    <button class="btn btn-theme btn-lg btn-t-primary btn-block">Login</button>
+                </div>
+                <div class="white-space-10"></div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

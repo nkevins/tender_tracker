@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout">
+<head>
+    <title>Tender Tracker</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <h1>Register User</h1>
+            <th:block th:if="${alert != null}">
+                <div th:replace="fragments/alert :: alert (type=${alert.getType()}, messages=${alert.messages})">Alert</div>
+            </th:block>
+            <form th:method="POST" th:action="@{/register}" th:object="${registration}">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" class="form-control" th:field="*{name}" required="required" />
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" class="form-control" th:field="*{email}" required="required" />
+                </div>
+                <div class="form-group">
+                    <label>Contact No</label>
+                    <input type="text" class="form-control" th:field="*{contactNo}" required="required" />
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" class="form-control" th:field="*{password}" required="required" />
+                </div>
+                <div class="form-group">
+                    <label>Confirm Password</label>
+                    <input type="password" class="form-control" th:field="*{confirmPassword}" required="required" />
+                </div>
+                <div class="white-space-10"></div>
+                <div class="form-group no-margin">
+                    <button class="btn btn-theme btn-lg btn-t-primary btn-block">Register</button>
+                </div>
+                <div class="white-space-10"></div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+<div th:fragment="alert (type, messages)" class="alert alert-dismissable" th:classappend="'alert-' + ${type}">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    <span th:text="${messages[0]}" th:if="${messages.size() == 1}">Message</span>
+    <ul th:if="${messages.size() > 1}">
+        <li th:each="m : ${messages}" th:text="${m}">Message</li>
+    </ul>
+</div>
+</body>
+</html>
