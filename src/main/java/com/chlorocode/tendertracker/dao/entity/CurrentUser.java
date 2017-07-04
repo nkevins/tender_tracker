@@ -16,4 +16,8 @@ public class CurrentUser extends org.springframework.security.core.userdetails.U
     public String getName() {
         return user.getName();
     }
+
+    public User getUser() {
+        return user;
+    }
 }

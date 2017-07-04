@@ -10,6 +10,9 @@
     <div class="row">
         <div class="col-md-12">
             <h1>Tender Tracker</h1>
+            <th:block th:if="${alert != null}">
+                <div th:replace="fragments/alert :: alert (type=${alert.getType()}, messages=${alert.messages})">Alert</div>
+            </th:block>
         </div>
     </div>
 </div>

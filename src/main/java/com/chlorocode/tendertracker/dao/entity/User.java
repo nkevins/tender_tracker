@@ -1,6 +1,7 @@
 package com.chlorocode.tendertracker.dao.entity;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Date;
 
 @Entity
@@ -16,6 +17,10 @@ public class User {
     private String password;
     private int status;
     private String confirmationToken;
+
+    @OneToMany(mappedBy = "applicant")
+    private Collection<CompanyRegistration> companyRegistrations;
+
     private int createdBy;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -91,6 +96,14 @@ public class User {
 
     public void setConfirmationToken(String confirmationToken) {
         this.confirmationToken = confirmationToken;
+    }
+
+    public Collection<CompanyRegistration> getCompanyRegistrations() {
+        return companyRegistrations;
+    }
+
+    public void setCompanyRegistrations(Collection<CompanyRegistration> companyRegistrations) {
+        this.companyRegistrations = companyRegistrations;
     }
 
     public int getCreatedBy() {

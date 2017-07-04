@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout">
+<head>
+    <title>Tender Tracker</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <h1>Register Company</h1>
+            <th:block th:if="${alert != null}">
+                <div th:replace="fragments/alert :: alert (type=${alert.getType()}, messages=${alert.messages})">Alert</div>
+            </th:block>
+            <form th:method="POST" th:action="@{/registerCompany}" th:object="${registration}">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" class="form-control" th:field="*{name}" required="required" />
+                </div>
+                <div class="form-group">
+                    <label>UEN No</label>
+                    <input type="text" class="form-control" th:field="*{uen}" required="required" />
+                </div>
+                <div class="form-group">
+                    <label>GST Registration No</label>
+                    <input type="text" class="form-control" th:field="*{gstRegNo}" required="required" />
+                </div>
+                <div class="form-group">
+                    <label>Company Type</label>
+                    <select class="form-control" th:field="*{type}">
+                        <option th:each="c : ${companyType}" th:value="${c.code}" th:text="${c.description}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Area of Business</label>
+                    <select class="form-control" th:field="*{areaOfBusiness}">
+                        <option th:each="c : ${areaOfBusiness}" th:value="${c.code}" th:text="${c.description}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Address 1</label>
+                    <input type="text" class="form-control" th:field="*{address1}" required="required" />
+                </div>
+                <div class="form-group">
+                    <label>Address 2</label>
+                    <input type="text" class="form-control" th:field="*{address2}" />
+                </div>
+                <div class="form-group">
+                    <label>Postal Code</label>
+                    <input type="text" class="form-control" th:field="*{postalCode}" required="required" />
+                </div>
+                <div class="form-group">
+                    <label>City</label>
+                    <input type="text" class="form-control" th:field="*{city}" required="required" />
+                </div>
+                <div class="form-group">
+                    <label>State</label>
+                    <input type="text" class="form-control" th:field="*{state}" required="required" />
+                </div>
+                <div class="form-group">
+                    <label>Province</label>
+                    <input type="text" class="form-control" th:field="*{province}" required="required" />
+                </div>
+                <div class="form-group">
+                    <label>Country</label>
+                    <input type="text" class="form-control" th:field="*{country}" required="required" />
+                </div>
+                <div class="white-space-10"></div>
+                <div class="form-group no-margin">
+                    <button class="btn btn-theme btn-lg btn-t-primary btn-block">Submit</button>
+                </div>
+                <div class="white-space-10"></div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
