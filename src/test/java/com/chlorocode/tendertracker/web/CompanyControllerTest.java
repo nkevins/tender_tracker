@@ -1,5 +1,6 @@
 package com.chlorocode.tendertracker.web;
 
+import com.chlorocode.tendertracker.dao.entity.Company;
 import com.chlorocode.tendertracker.dao.entity.CompanyRegistration;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
 import com.chlorocode.tendertracker.dao.entity.User;
@@ -17,6 +18,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -25,7 +29,6 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -47,7 +50,8 @@ public class CompanyControllerTest {
                 .build();
 
         User u = new User("Name", "test@gmail.com", "123456", "password");
-        currentUser = new CurrentUser(u, AuthorityUtils.commaSeparatedStringToAuthorityList("USER"));
+        List<Company> managedCompany = new LinkedList<Company>();
+        currentUser = new CurrentUser(u, AuthorityUtils.commaSeparatedStringToAuthorityList("USER"), managedCompany);
     }
 
     @MockBean

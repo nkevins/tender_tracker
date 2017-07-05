@@ -3,6 +3,7 @@ package com.chlorocode.tendertracker.dao.entity;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class User {
@@ -20,6 +21,10 @@ public class User {
 
     @OneToMany(mappedBy = "applicant")
     private Collection<CompanyRegistration> companyRegistrations;
+
+    @OneToMany
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private List<UserRole> userRoles;
 
     private int createdBy;
 
@@ -112,6 +117,14 @@ public class User {
 
     public void setCreatedBy(int createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public List<UserRole> getUserRoles() {
+        return userRoles;
+    }
+
+    public void setUserRoles(List<UserRole> userRoles) {
+        this.userRoles = userRoles;
     }
 
     public Date getCreatedDate() {
