@@ -3,33 +3,39 @@ package com.chlorocode.tendertracker.web;
 import com.chlorocode.tendertracker.dao.dto.AlertDTO;
 import com.chlorocode.tendertracker.dao.dto.LoginDTO;
 import com.chlorocode.tendertracker.dao.dto.UserRegistrationDTO;
+import com.chlorocode.tendertracker.dao.entity.Company;
+import com.chlorocode.tendertracker.dao.entity.CurrentUser;
 import com.chlorocode.tendertracker.dao.entity.User;
 import com.chlorocode.tendertracker.exception.ApplicationException;
+import com.chlorocode.tendertracker.service.CompanyService;
 import com.chlorocode.tendertracker.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.ServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Map;
 
 @Controller
 public class AuthController {
 
     private UserService userService;
+    private CompanyService companyService;
 
     @Autowired
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService, CompanyService companyService) {
         this.userService = userService;
+        this.companyService = companyService;
     }
 
     @RequestMapping("/login")
@@ -85,5 +91,26 @@ public class AuthController {
                 "Registration Successful");
         redirectAttrs.addFlashAttribute("alert", alert);
         return "redirect:/login";
+    }
+
+    @GetMapping("/selectCompany")
+    public ModelAndView showSelectCompany() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        CurrentUser usr = (CurrentUser) auth.getPrincipal();
+        List<Company> administeredCompanies = usr.getCompanyAdministered();
+
+        return new ModelAndView("selectCompany", "company", administeredCompanies);
+    }
+
+    @PostMapping("/selectCompany")
+    public String selectCompanyToManage(@RequestParam("companyId") String companyId) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        CurrentUser usr = (CurrentUser) auth.getPrincipal();
+
+        usr.setSelectedCompany(companyService.findById(Integer.parseInt(companyId)));
+        Authentication newAuth = new UsernamePasswordAuthenticationToken(usr, null, usr.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(newAuth);
+
+        return "redirect:/admin";
     }
 }

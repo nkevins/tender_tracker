@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout">
+<head>
+    <title>Tender Tracker</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <h1>Select Company to Manage</h1>
+            <form th:method="POST" th:action="@{/selectCompany}">
+                <div class="form-group">
+                    <label>Company Name</label>
+                    <select class="form-control" name="companyId">
+                        <option th:each="c : ${company}" th:value="${c.id}" th:text="${c.name}"></option>
+                    </select>
+                </div>
+                <div class="white-space-10"></div>
+                <div class="form-group no-margin">
+                    <button class="btn btn-theme btn-lg btn-t-primary btn-block">Select</button>
+                </div>
+                <div class="white-space-10"></div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

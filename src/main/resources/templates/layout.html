@@ -51,7 +51,7 @@
                     <ul class="nav navbar-nav">
                         <li class=""><a href="#"><strong>Find a Tender</strong></a></li>
                         <li class="" sec:authorize="isAuthenticated()"><a th:href="@{/registerCompany}"><strong>Register a Company</strong></a></li>
-                        <li class="" sec:authorize="hasAnyAuthority('SYS_ADMIN','ADMIN')"><a href="#"><strong>Admin Panel</strong></a></li>
+                        <li class="" sec:authorize="hasAnyAuthority('SYS_ADMIN','ADMIN')"><a th:href="@{/admin}"><strong>Admin Panel</strong></a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li class="link-btn" sec:authorize="!isAuthenticated()"><a th:href="@{/login}"><span class="btn btn-theme btn-pill btn-xs btn-line">Login</span></a></li>
@@ -92,7 +92,7 @@
                     <ul class="nav navbar-nav">
                         <li><a href="#"><strong>Find a Tender</strong></a></li>
                         <li sec:authorize="isAuthenticated()"><a th:href="@{/registerCompany}"><strong>Register a Company</strong></a></li>
-                        <li sec:authorize="hasAnyAuthority('SYS_ADMIN','ADMIN')"><a href="#"><strong>Admin Panel</strong></a></li>
+                        <li sec:authorize="hasAnyAuthority('SYS_ADMIN','ADMIN')"><a th:href="@{/admin}"><strong>Admin Panel</strong></a></li>
                         <li><a th:href="@{/register}" sec:authorize="!isAuthenticated()"><strong>Register</strong></a></li>
                         <li><a th:href="@{/login}" sec:authorize="!isAuthenticated()"><strong>Login</strong></a></li>
                         <li sec:authorize="isAuthenticated()">
