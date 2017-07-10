@@ -28,8 +28,8 @@ public class AdminFilter extends GenericFilterBean {
             CurrentUser usr = (CurrentUser) auth.getPrincipal();
 
             Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
-            boolean isCompanyAdmin = authorities.contains(new SimpleGrantedAuthority("ADMIN"));
-            boolean isSystemAdmin = authorities.contains(new SimpleGrantedAuthority("SYS_ADMIN"));
+            boolean isCompanyAdmin = authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+            boolean isSystemAdmin = authorities.contains(new SimpleGrantedAuthority("ROLE_SYS_ADMIN"));
 
             // Reject access if not Company Admin and System Admin
             if (!isCompanyAdmin && !isSystemAdmin) {

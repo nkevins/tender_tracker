@@ -53,7 +53,7 @@ public class AuthServiceImplTest {
 
             // Test user must have USER role
             Collection<? extends GrantedAuthority> authorities = usr.getAuthorities();
-            assertTrue(authorities.contains(new SimpleGrantedAuthority("USER")));
+            assertTrue(authorities.contains(new SimpleGrantedAuthority("ROLE_USER")));
         } catch (Exception e) {
             fail("Exception thrown when login: " + e.getMessage());
         }
@@ -94,7 +94,7 @@ public class AuthServiceImplTest {
 
             // Test user must have USER and ADMIN role
             Collection<? extends GrantedAuthority> authorities = usr.getAuthorities();
-            Collection<? extends GrantedAuthority> expectedAuthorities = AuthorityUtils.commaSeparatedStringToAuthorityList("USER,ADMIN");
+            Collection<? extends GrantedAuthority> expectedAuthorities = AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER,ROLE_ADMIN");
             assertTrue(authorities.containsAll(expectedAuthorities));
 
             assertEquals(companies, currentUser.getCompanyAdministered());
@@ -131,7 +131,7 @@ public class AuthServiceImplTest {
 
             // Test user must have USER and ADMIN role
             Collection<? extends GrantedAuthority> authorities = usr.getAuthorities();
-            Collection<? extends GrantedAuthority> expectedAuthorities = AuthorityUtils.commaSeparatedStringToAuthorityList("USER,ADMIN");
+            Collection<? extends GrantedAuthority> expectedAuthorities = AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER,ROLE_ADMIN");
             assertTrue(authorities.containsAll(expectedAuthorities));
 
             assertEquals(companies, currentUser.getCompanyAdministered());

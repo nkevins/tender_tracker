@@ -29,11 +29,11 @@ public class AuthServiceImpl implements AuthService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userDAO.findOneByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not Found"));
 
-        String role = "USER";
+        String role = "ROLE_USER";
 
         List<String> userRoles = userRoleDAO.findUniqueUserRole(user.getId());
         for (String ur : userRoles) {
-            role += "," + ur;
+            role += ",ROLE_" + ur;
         }
 
         List<Company> companyAdministered = userRoleDAO.findUserAdministeredCompany(user.getId());

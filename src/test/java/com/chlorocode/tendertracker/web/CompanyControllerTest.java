@@ -51,7 +51,7 @@ public class CompanyControllerTest {
 
         User u = new User("Name", "test@gmail.com", "123456", "password");
         List<Company> managedCompany = new LinkedList<Company>();
-        currentUser = new CurrentUser(u, AuthorityUtils.commaSeparatedStringToAuthorityList("USER"), managedCompany);
+        currentUser = new CurrentUser(u, AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER"), managedCompany);
     }
 
     @MockBean

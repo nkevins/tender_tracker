@@ -1,5 +1,8 @@
 package com.chlorocode.tendertracker.dao.entity;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -8,8 +11,10 @@ public class Company {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonView(DataTablesOutput.View.class)
     private int id;
 
+    @JsonView(DataTablesOutput.View.class)
     private String name;
     private String uen;
     private String gstRegNo;
@@ -29,6 +34,7 @@ public class Company {
     private int status;
     private int createdBy;
 
+    @JsonView(DataTablesOutput.View.class)
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate;
 
