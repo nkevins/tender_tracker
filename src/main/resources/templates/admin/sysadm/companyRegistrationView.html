@@ -7,6 +7,9 @@
 </head>
 <body>
 <div layout:fragment="content">
+    <th:block th:if="${alert != null}">
+        <div th:replace="fragments/alert :: alert (type=${alert.getType()}, messages=${alert.messages})">Alert</div>
+    </th:block>
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1>

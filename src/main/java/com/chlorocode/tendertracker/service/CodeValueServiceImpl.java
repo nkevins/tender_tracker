@@ -21,4 +21,9 @@ public class CodeValueServiceImpl implements CodeValueService {
     public List<CodeValue> getByType(String type) {
         return codeValueDAO.findByTypeOrderByOrderAsc(type);
     }
+
+    @Override
+    public String getDescription(String type, int code) {
+        return codeValueDAO.getDescription(type, code);
+    }
 }

@@ -22,6 +22,7 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Override
     public User create(User user) throws ApplicationException {
         // validate duplicate email
         Optional<User> u = userDAO.findOneByEmail(user.getEmail());
@@ -40,5 +41,10 @@ public class UserServiceImpl implements UserService {
         savedUser.setCreatedBy(savedUser.getId());
         savedUser.setLastUpdatedBy(savedUser.getId());
         return userDAO.saveAndFlush(savedUser);
+    }
+
+    @Override
+    public User findById(int id) {
+        return userDAO.findOne(id);
     }
 }
