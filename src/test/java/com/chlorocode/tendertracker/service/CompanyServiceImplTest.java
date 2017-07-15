@@ -35,12 +35,12 @@ public class CompanyServiceImplTest {
 
     @Test
     public void testRegisterCompany() {
-        CompanyRegistration reg = new CompanyRegistration("Abc Pte. Ltd", "123456K", "123456", 1, "12 Middle Rd", "",
-                "123456", "Singapore", "Singapore", "Singapore", "Singapore", 1, new User(), 1, new Date(), 1, new Date());
+        Company reg = new Company("Abc123 Pte. Ltd", "123456K", "123456", 1, "12 Middle Rd", "",
+                "123456", "Singapore", "Singapore", "Singapore", "Singapore", 1, 1, new Date(), 1, new Date());
         when(companyServiceImpl.registerCompany(reg)).thenReturn(reg);
 
         companyServiceImpl.registerCompany(reg);
-        verify(companyRegistrationDAO, times(1)).save(any(CompanyRegistration.class));
+        verify(companyDAO, times(1)).save(any(Company.class));
     }
 
     @Test

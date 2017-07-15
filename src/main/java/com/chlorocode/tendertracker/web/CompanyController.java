@@ -2,6 +2,7 @@ package com.chlorocode.tendertracker.web;
 
 import com.chlorocode.tendertracker.dao.dto.AlertDTO;
 import com.chlorocode.tendertracker.dao.dto.CompanyRegistrationDTO;
+import com.chlorocode.tendertracker.dao.entity.Company;
 import com.chlorocode.tendertracker.dao.entity.CompanyRegistration;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
 import com.chlorocode.tendertracker.service.CodeValueService;
@@ -48,7 +49,7 @@ public class CompanyController {
             return "registerCompany";
         }
 
-        CompanyRegistration reg = new CompanyRegistration();
+        Company reg = new Company();
         reg.setName(form.getName());
         reg.setUen(form.getUen());
         reg.setGstRegNo(form.getGstRegNo());
@@ -63,11 +64,12 @@ public class CompanyController {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         CurrentUser usr = (CurrentUser) auth.getPrincipal();
-        reg.setApplicant(usr.getUser());
+        //reg.setApplicant(usr.getUser());
         reg.setCreatedBy(usr.getUser().getId());
         reg.setLastUpdatedBy(usr.getUser().getId());
 
         companyService.registerCompany(reg);
+
 
         AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
                 "Company Registered Successfuly");

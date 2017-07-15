@@ -6,7 +6,7 @@ import com.chlorocode.tendertracker.dao.entity.CompanyRegistration;
 
 public interface CompanyService {
 
-    CompanyRegistration registerCompany(CompanyRegistration companyRegistration);
+    Company registerCompany(Company companyRegistration);
     CompanyRegistrationDetailsDTO findCompanyRegistrationById(int id);
     void approveCompanyRegistration(int id, int approvedBy);
     void rejectCompanyRegistration(int id, int rejectedBy);

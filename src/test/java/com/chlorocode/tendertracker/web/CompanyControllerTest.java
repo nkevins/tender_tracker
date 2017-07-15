@@ -72,7 +72,7 @@ public class CompanyControllerTest {
                         .with(csrf())
                 )
                 .andExpect(view().name("registerCompany"));
-        verify(companyService, never()).registerCompany(any(CompanyRegistration.class));
+        verify(companyService, never()).registerCompany(any(Company.class));
     }
 
     @Test
@@ -94,6 +94,6 @@ public class CompanyControllerTest {
                         .with(csrf())
                 )
                 .andExpect(view().name("redirect:/"));
-        verify(companyService, times(1)).registerCompany(any(CompanyRegistration.class));
+        verify(companyService, times(1)).registerCompany(any(Company.class));
     }
 }

@@ -34,6 +34,30 @@ public class Company {
     private int status;
     private int createdBy;
 
+    public Company(){
+
+    }
+    public Company(String name, String uen, String gstRegNo, int type, String address1, String address2, String postalCode,
+                   String city, String state, String province, String country, int areaOfBusiness, int createdBy,
+                   Date createdDate, int lastUpdatedBy, Date lastUpdatedDate) {
+        this.name = name;
+        this.uen = uen;
+        this.gstRegNo = gstRegNo;
+        this.type = type;
+        this.address1 = address1;
+        this.address2 = address2;
+        this.postalCode = postalCode;
+        this.city = city;
+        this.state = state;
+        this.province = province;
+        this.country = country;
+        this.areaOfBusiness = areaOfBusiness;
+        this.createdBy = createdBy;
+        this.createdDate = createdDate;
+        this.lastUpdatedBy = lastUpdatedBy;
+        this.lastUpdatedDate = lastUpdatedDate;
+    }
+
     @JsonView(DataTablesOutput.View.class)
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate;
