@@ -23,4 +23,4 @@ dist/
 nbdist/
 .nb-gradle/
 
-!/src/main/resources/static/admin/bower_components/**
+!/src/main/resources/static/assets/admin/bower_components/**

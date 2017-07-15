@@ -9,28 +9,28 @@
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport" />
     <!-- Bootstrap 3.3.7 -->
-    <link rel="stylesheet" th:href="@{/admin/bower_components/bootstrap/dist/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/assets/admin/bower_components/bootstrap/dist/css/bootstrap.min.css}" />
     <!-- Font Awesome -->
-    <link rel="stylesheet" th:href="@{/admin/bower_components/font-awesome/css/font-awesome.min.css}" />
+    <link rel="stylesheet" th:href="@{/assets/admin/bower_components/font-awesome/css/font-awesome.min.css}" />
     <!-- Ionicons -->
-    <link rel="stylesheet" th:href="@{/admin/bower_components/Ionicons/css/ionicons.min.css}" />
+    <link rel="stylesheet" th:href="@{/assets/admin/bower_components/Ionicons/css/ionicons.min.css}" />
     <!-- DataTables -->
-    <link rel="stylesheet" th:href="@{/admin/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/assets/admin/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css}" />
     <!-- Theme style -->
-    <link rel="stylesheet" th:href="@{/admin/assets/css/AdminLTE.min.css}" />
+    <link rel="stylesheet" th:href="@{/assets/admin/theme/css/AdminLTE.min.css}" />
     <!-- AdminLTE Skins. Choose a skin from the css/skins
          folder instead of downloading all of them to reduce the load. -->
-    <link rel="stylesheet" th:href="@{/admin/assets/css/skins/_all-skins.min.css}" />
+    <link rel="stylesheet" th:href="@{/assets/admin/theme/css/skins/_all-skins.min.css}" />
     <!-- Morris chart -->
-    <link rel="stylesheet" th:href="@{/admin/bower_components/morris.js/morris.css}" />
+    <link rel="stylesheet" th:href="@{/assets/admin/bower_components/morris.js/morris.css}" />
     <!-- jvectormap -->
-    <link rel="stylesheet" th:href="@{/admin/bower_components/jvectormap/jquery-jvectormap.css}" />
+    <link rel="stylesheet" th:href="@{/assets/admin/bower_components/jvectormap/jquery-jvectormap.css}" />
     <!-- Date Picker -->
-    <link rel="stylesheet" th:href="@{/admin/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css}" />
+    <link rel="stylesheet" th:href="@{/assets/admin/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css}" />
     <!-- Daterange picker -->
-    <link rel="stylesheet" th:href="@{/admin/bower_components/bootstrap-daterangepicker/daterangepicker.css}" />
+    <link rel="stylesheet" th:href="@{/assets/admin/bower_components/bootstrap-daterangepicker/daterangepicker.css}" />
     <!-- bootstrap wysihtml5 - text editor -->
-    <link rel="stylesheet" th:href="@{/admin/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css}" />
+    <link rel="stylesheet" th:href="@{/assets/admin/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css}" />
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -65,17 +65,17 @@
                     <!-- User Account: style can be found in dropdown.less -->
                     <li class="dropdown user user-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <img th:src="@{/admin/assets/img/user2-160x160.jpg}" class="user-image" alt="User Image" />
+                            <img th:src="@{/assets/admin/theme/img/user2-160x160.jpg}" class="user-image" alt="User Image" />
                             <span class="hidden-xs" th:text ="${#authentication.getPrincipal().getName()}">Alexander Pierce</span>
                         </a>
                         <ul class="dropdown-menu">
                             <!-- User image -->
                             <li class="user-header">
-                                <img th:src="@{/admin/assets/img/user2-160x160.jpg}" class="img-circle" alt="User Image" />
+                                <img th:src="@{/assets/admin/theme/img/user2-160x160.jpg}" class="img-circle" alt="User Image" />
 
                                 <p>
                                     <span th:text ="${#authentication.getPrincipal().getName()}">Alexander Pierce</span>
-                                    <small th:text="${#authentication.getPrincipal().getSelectedCompany().getName()}">Company A Pte. Ltd.</small>
+                                    <small th:if="${#authentication.getPrincipal().getSelectedCompany() != null}" th:text="${#authentication.getPrincipal().getSelectedCompany().getName()}">Company A Pte. Ltd.</small>
                                 </p>
                             </li>
                             <!-- Menu Footer-->
@@ -100,11 +100,11 @@
             <!-- Sidebar user panel -->
             <div class="user-panel">
                 <div class="pull-left image">
-                    <img th:src="@{/admin/assets/img/user2-160x160.jpg}" class="img-circle" alt="User Image" />
+                    <img th:src="@{/assets/admin/theme/img/user2-160x160.jpg}" class="img-circle" alt="User Image" />
                 </div>
                 <div class="pull-left info">
                     <p th:text ="${#authentication.getPrincipal().getName()}">Alexander Pierce</p>
-                    <small th:text="${#authentication.getPrincipal().getSelectedCompany().getName()}">Company A Pte. Ltd.</small>
+                    <small th:if="${#authentication.getPrincipal().getSelectedCompany() != null}" th:text="${#authentication.getPrincipal().getSelectedCompany().getName()}">Company A Pte. Ltd.</small>
                 </div>
             </div>
             <!-- sidebar menu: : style can be found in sidebar.less -->
@@ -115,26 +115,28 @@
                         <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                     </a>
                 </li>
-                <li class="treeview">
-                    <a href="#">
-                        <i class="fa fa-file-text"></i>
-                        <span>Tender</span>
-                        <span class="pull-right-container">
-                            <i class="fa fa-angle-left pull-right"></i>
-                        </span>
-                    </a>
-                    <ul class="treeview-menu">
-                        <li><a href="#"><i class="fa fa-circle-o"></i> Tender</a></li>
-                        <li><a href="#"><i class="fa fa-circle-o"></i> Evaluation</a></li>
-                        <li><a href="#"><i class="fa fa-circle-o"></i> Award</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#"><i class="fa fa-building-o"></i> <span>Company Profile</span></a>
-                </li>
-                <li>
-                    <a href="#"><i class="fa fa-user"></i> <span>User</span></a>
-                </li>
+                <th:block sec:authorize="hasRole('ADMIN')">
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-file-text"></i>
+                            <span>Tender</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="#"><i class="fa fa-circle-o"></i> Tender</a></li>
+                            <li><a href="#"><i class="fa fa-circle-o"></i> Evaluation</a></li>
+                            <li><a href="#"><i class="fa fa-circle-o"></i> Award</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-building-o"></i> <span>Company Profile</span></a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-user"></i> <span>User</span></a>
+                    </li>
+                </th:block>
                 <li class="treeview" sec:authorize="hasRole('SYS_ADMIN')">
                     <a href="#">
                         <i class="fa fa-cogs"></i>
@@ -165,42 +167,42 @@
 <!-- ./wrapper -->
 
 <!-- jQuery 3 -->
-<script th:src="@{/admin/bower_components/jquery/dist/jquery.min.js}"></script>
+<script th:src="@{/assets/admin/bower_components/jquery/dist/jquery.min.js}"></script>
 <!-- jQuery UI 1.11.4 -->
-<script th:src="@{/admin/bower_components/jquery-ui/jquery-ui.min.js}"></script>
+<script th:src="@{/assets/admin/bower_components/jquery-ui/jquery-ui.min.js}"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 <script type="text/javascript">
     $.widget.bridge('uibutton', $.ui.button);
 </script>
 <!-- Bootstrap 3.3.7 -->
-<script th:src="@{/admin/bower_components/bootstrap/dist/js/bootstrap.min.js}"></script>
+<script th:src="@{/assets/admin/bower_components/bootstrap/dist/js/bootstrap.min.js}"></script>
 <!-- DataTables -->
-<script th:src="@{/admin/bower_components/datatables.net/js/jquery.dataTables.min.js}"></script>
-<script th:src="@{/admin/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js}"></script>
-<script th:src="@{/admin/assets/js/jquery.spring-friendly.min.js}"></script>
+<script th:src="@{/assets/admin/bower_components/datatables.net/js/jquery.dataTables.min.js}"></script>
+<script th:src="@{/assets/admin/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js}"></script>
+<script th:src="@{/assets/admin/theme/js/jquery.spring-friendly.min.js}"></script>
 <!-- Morris.js charts -->
-<script th:src="@{/admin/bower_components/raphael/raphael.min.js}"></script>
-<script th:src="@{/admin/bower_components/morris.js/morris.min.js}"></script>
+<script th:src="@{/assets/admin/bower_components/raphael/raphael.min.js}"></script>
+<script th:src="@{/assets/admin/bower_components/morris.js/morris.min.js}"></script>
 <!-- Sparkline -->
-<script th:src="@{/admin/bower_components/jquery-sparkline/dist/jquery.sparkline.min.js}"></script>
+<script th:src="@{/assets/admin/bower_components/jquery-sparkline/dist/jquery.sparkline.min.js}"></script>
 <!-- jvectormap -->
-<script th:src="@{/admin/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js}"></script>
-<script th:src="@{/admin/plugins/jvectormap/jquery-jvectormap-world-mill-en.js}"></script>
+<script th:src="@{/assets/admin/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js}"></script>
+<script th:src="@{/assets/admin/plugins/jvectormap/jquery-jvectormap-world-mill-en.js}"></script>
 <!-- jQuery Knob Chart -->
-<script th:src="@{/admin/bower_components/jquery-knob/dist/jquery.knob.min.js}"></script>
+<script th:src="@{/assets/admin/bower_components/jquery-knob/dist/jquery.knob.min.js}"></script>
 <!-- daterangepicker -->
-<script th:src="@{/admin/bower_components/moment/min/moment.min.js}"></script>
-<script th:src="@{/admin/bower_components/bootstrap-daterangepicker/daterangepicker.js}"></script>
+<script th:src="@{/assets/admin/bower_components/moment/min/moment.min.js}"></script>
+<script th:src="@{/assets/admin/bower_components/bootstrap-daterangepicker/daterangepicker.js}"></script>
 <!-- datepicker -->
-<script th:src="@{/admin/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js}"></script>
+<script th:src="@{/assets/admin/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js}"></script>
 <!-- Bootstrap WYSIHTML5 -->
-<script th:src="@{/admin/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js}"></script>
+<script th:src="@{/assets/admin/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js}"></script>
 <!-- Slimscroll -->
-<script th:src="@{/admin/bower_components/jquery-slimscroll/jquery.slimscroll.min.js}"></script>
+<script th:src="@{/assets/admin/bower_components/jquery-slimscroll/jquery.slimscroll.min.js}"></script>
 <!-- FastClick -->
-<script th:src="@{/admin/bower_components/fastclick/lib/fastclick.js}"></script>
+<script th:src="@{/assets/admin/bower_components/fastclick/lib/fastclick.js}"></script>
 <!-- AdminLTE App -->
-<script th:src="@{/admin/assets/js/adminlte.min.js}"></script>
+<script th:src="@{/assets/admin/theme/js/adminlte.min.js}"></script>
 <th:block layout:fragment="scripts"></th:block>
 </body>
 </html>
