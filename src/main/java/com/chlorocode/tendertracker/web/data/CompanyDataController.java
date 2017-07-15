@@ -24,7 +24,7 @@ public class CompanyDataController {
 
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/sysadm/data/companyregistrations", method = RequestMethod.GET)
-    public DataTablesOutput<Company> getUsers(@Valid DataTablesInput input) {
+    public DataTablesOutput<Company> getCompanyRegistrations(@Valid DataTablesInput input) {
         return companyDAO.findAll(input, null, (root, criteriaQuery, criteriaBuilder) -> {
             return criteriaBuilder.equal(root.get("status"), 0);
         });

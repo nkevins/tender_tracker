@@ -5,6 +5,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Company {
@@ -42,6 +43,9 @@ public class Company {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdatedDate;
+
+    @OneToMany(mappedBy = "company")
+    private List<Tender> tenders;
 
     public int getId() {
         return id;
@@ -185,5 +189,13 @@ public class Company {
 
     public void setLastUpdatedDate(Date lastUpdatedDate) {
         this.lastUpdatedDate = lastUpdatedDate;
+    }
+
+    public List<Tender> getTenders() {
+        return tenders;
+    }
+
+    public void setTenders(List<Tender> tenders) {
+        this.tenders = tenders;
     }
 }
