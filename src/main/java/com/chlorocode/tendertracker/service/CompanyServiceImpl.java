@@ -28,11 +28,11 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public CompanyRegistration registerCompany(CompanyRegistration companyRegistration) {
+    public Company registerCompany(Company companyRegistration) {
         companyRegistration.setCreatedDate(new Date());
         companyRegistration.setLastUpdatedDate(new Date());
 
-        return companyRegistrationDAO.save(companyRegistration);
+        return companyDAO.save(companyRegistration);
     }
 
     @Override
