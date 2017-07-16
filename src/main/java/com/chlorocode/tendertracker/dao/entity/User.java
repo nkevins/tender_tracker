@@ -1,5 +1,8 @@
 package com.chlorocode.tendertracker.dao.entity;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Date;
@@ -10,9 +13,12 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonView(DataTablesOutput.View.class)
     private int id;
 
+    @JsonView(DataTablesOutput.View.class)
     private String name;
+    @JsonView(DataTablesOutput.View.class)
     private String email;
     private String contactNo;
     private String password;

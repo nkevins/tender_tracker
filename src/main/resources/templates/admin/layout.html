@@ -134,7 +134,7 @@
                         <a href="#"><i class="fa fa-building-o"></i> <span>Company Profile</span></a>
                     </li>
                     <li>
-                        <a href="#"><i class="fa fa-user"></i> <span>User</span></a>
+                      <a th:href="@{/admin/userDetails}"><i class="fa fa-user"></i> User</a>
                     </li>
                 </th:block>
                 <li class="treeview" sec:authorize="hasRole('SYS_ADMIN')">

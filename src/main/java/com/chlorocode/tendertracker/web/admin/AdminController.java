@@ -10,4 +10,9 @@ public class AdminController {
     public String showDashboardPage() {
         return "admin/dashboard";
     }
+
+    @GetMapping("/admin/userDetails")
+    public String showUserDetails() {
+        return "admin/user/userView";
+    }
 }
