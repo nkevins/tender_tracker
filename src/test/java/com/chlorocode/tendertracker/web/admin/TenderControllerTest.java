@@ -1,10 +1,10 @@
-package com.chlorocode.tendertracker.web;
+package com.chlorocode.tendertracker.web.admin;
 
 import com.chlorocode.tendertracker.dao.entity.Company;
-import com.chlorocode.tendertracker.dao.entity.CompanyRegistration;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
+import com.chlorocode.tendertracker.dao.entity.Tender;
 import com.chlorocode.tendertracker.dao.entity.User;
-import com.chlorocode.tendertracker.service.CompanyService;
+import com.chlorocode.tendertracker.service.TenderService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class CompanyControllerTest {
+public class TenderControllerTest {
 
     @Autowired
     private WebApplicationContext wac;
@@ -43,10 +43,10 @@ public class CompanyControllerTest {
     private CurrentUser currentUser;
 
     @MockBean
-    private CompanyService companyService;
+    private TenderService tenderService;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         mvc = MockMvcBuilders
                 .webAppContextSetup(wac)
                 .apply(SecurityMockMvcConfigurers.springSecurity())
@@ -54,46 +54,54 @@ public class CompanyControllerTest {
 
         User u = new User("Name", "test@gmail.com", "123456", "password");
         List<Company> managedCompany = new LinkedList<Company>();
-        currentUser = new CurrentUser(u, AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER"), managedCompany);
+        Company c = new Company();
+        c.setName("Abc Pte. Ltd");
+        managedCompany.add(c);
+        currentUser = new CurrentUser(u, AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER,ROLE_ADMIN"), managedCompany);
     }
 
     @Test
-    public void testLoadCompanyRegistrationPage() throws Exception {
-        this.mvc.perform(get("/registerCompany").with(user(currentUser)))
+    public void testViewSearchTenderPage() throws Exception {
+        this.mvc.perform(get("/admin/tender").with(user(currentUser)))
                 .andExpect(status().isOk())
-                .andExpect(view().name("registerCompany"));
+                .andExpect(view().name("admin/tender/tenderView"));
     }
 
     @Test
-    public void testInvalidRegisterCompany() throws Exception {
-        this.mvc.perform(
-                post("/registerCompany")
-                        .with(user(currentUser))
-                        .with(csrf())
-                )
-                .andExpect(view().name("registerCompany"));
-        verify(companyService, never()).registerCompany(any(Company.class));
+    public void testViewCreateTenderPage() throws Exception {
+        this.mvc.perform(get("/admin/tender/create").with(user(currentUser)))
+                .andExpect(status().isOk())
+                .andExpect(view().name("admin/tender/tenderCreate"));
     }
 
     @Test
-    public void testRegisterCompany() throws Exception {
+    public void testCreateTender() throws Exception {
         this.mvc.perform(
-                post("/registerCompany")
-                        .param("name", "Company Pte. Ltd.")
-                        .param("uen", "123456K")
-                        .param("gstRegNo", "123456")
-                        .param("companyType", "1")
-                        .param("areaOfBusiness", "1")
-                        .param("address1", "Address 1")
-                        .param("postalCode", "Singapore")
-                        .param("city", "Singapore")
-                        .param("state", "Singapore")
-                        .param("province", "Singapore")
-                        .param("country", "Singapore")
+                post("/admin/tender/create")
+                .param("title", "title")
+                .param("openDate", "18/07/2017")
+                .param("closedDate", "01/09/2017")
+                .param("tenderCategory", "1")
+                .param("tenderType", "1")
+                .param("estimatePurchaseValue", "2000")
+                .param("contactPersonName", "Contact Person")
+                .param("contactPersonEmail", "test@gmail.com")
+                .param("contactPersonPhone", "82751123")
+                .with(user(currentUser))
+                .with(csrf())
+        ).andExpect(view().name("redirect:/admin/tender"));
+
+        verify(tenderService, times(1)).createTender(any(Tender.class));
+    }
+
+    @Test
+    public void testCreateTenderFail() throws Exception {
+        this.mvc.perform(
+                post("/admin/tender/create")
                         .with(user(currentUser))
                         .with(csrf())
-                )
-                .andExpect(view().name("redirect:/"));
-        verify(companyService, times(1)).registerCompany(any(Company.class));
+        ).andExpect(view().name("admin/tender/tenderCreate"));
+
+        verify(tenderService, never()).createTender(any(Tender.class));
     }
 }

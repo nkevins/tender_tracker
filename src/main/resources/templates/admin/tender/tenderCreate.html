@@ -1,0 +1,198 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="admin/layout">
+<head>
+    <title>Tender Tracker</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <th:block th:if="${alert != null}">
+        <div th:replace="fragments/alert :: alert (type=${alert.getType()}, messages=${alert.messages})">Alert</div>
+    </th:block>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            Create Tender
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+        <!-- Default box -->
+        <div class="box">
+            <div class="box-body">
+                <form class="form-horizontal" th:action="@{/admin/tender/create}" method="POST" th:object="${tender}" enctype="multipart/form-data">
+                    <h4>Tender Information</h4>
+                    <hr />
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="title" class="col-sm-2 control-label">Title</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="title" th:field="*{title}" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="tenderType" class="col-sm-2 control-label">Tender Type</label>
+                                <div class="col-sm-10">
+                                    <select class="form-control" id="tenderType" th:field="*{tenderType}">
+                                        <option th:each="t : ${tenderType}" th:text="${t.description}" th:value="${t.code}">Open</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="refNo" class="col-sm-2 control-label">Reference No</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="refNo" th:field="*{refNo}" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="category" class="col-sm-2 control-label">Category</label>
+                                <div class="col-sm-10">
+                                    <select class="form-control" id="category" th:field="*{tenderCategory}">
+                                        <option th:each="c : ${tenderCategories}" th:text="${c.name}" th:value="${c.id}">IT</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="openDate" class="col-sm-4 control-label">Opening Date</label>
+                                <div class="input-group date col-sm-4">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="text" class="form-control pull-right" id="openDate" th:field="*{openDate}" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="closedDate" class="col-sm-4 control-label">Closing Date</label>
+                                <div class="input-group date col-sm-4">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="text" class="form-control pull-right" id="closedDate" th:field="*{closedDate}" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="epv" class="col-sm-4 control-label">EPV</label>
+                                <div class="input-group col-sm-4">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-dollar"></i>
+                                    </div>
+                                    <input type="number" class="form-control" id="epv" th:field="*{estimatePurchaseValue}" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4>Tender Description</h4>
+                    <hr />
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <textarea id="description" th:field="*{description}" rows="10" cols="80">
+                            </textarea>
+                        </div>
+                    </div>
+
+                    <h4>Contact Details</h4>
+                    <hr />
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="contactName" class="col-sm-2 control-label">Name</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="contactName" th:field="*{contactPersonName}" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="contactEmail" class="col-sm-2 control-label">Email</label>
+                                <div class="col-sm-10">
+                                    <input type="email" class="form-control" id="contactEmail" th:field="*{contactPersonEmail}" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="contactPhone" class="col-sm-2 control-label">Phone</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="contactPhone" th:field="*{contactPersonPhone}" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4>Delivery Details</h4>
+                    <hr />
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="deliveryDate" class="col-sm-4 control-label">Delivery Date</label>
+                                <div class="input-group date col-sm-4">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="text" class="form-control pull-right" id="deliveryDate" th:field="*{deliveryDate}" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="deliveryLocation" class="col-sm-2 control-label">Delivery Location</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="deliveryLocation" th:field="*{deliveryLocation}" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="deliveryRemarks" class="col-sm-2 control-label">Delivery Remarks</label>
+                                <textarea id="deliveryRemarks" th:field="*{deliveryRemarks}" cols="80" rows="5"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="padding-top: 10px;">
+                        <div class="col-md-12">
+                            <input type="submit" id="mainSubmitBtn" value="Save" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+
+    </section>
+    <!-- /.content -->
+</div>
+</body>
+<th:block layout:fragment="scripts">
+    <script type="text/javascript">
+        $('#openDate').datepicker({
+            autoclose: true,
+            format: 'dd/mm/yyyy'
+        });
+        $('#closedDate').datepicker({
+            autoclose: true,
+            format: 'dd/mm/yyyy'
+        });
+        $('#deliveryDate').datepicker({
+            autoclose: true,
+            format: 'dd/mm/yyyy'
+        });
+
+        $(function () {
+            CKEDITOR.replace('description');
+        });
+    </script>
+</th:block>
+</html>
