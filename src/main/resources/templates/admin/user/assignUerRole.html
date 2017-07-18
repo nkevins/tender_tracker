@@ -21,7 +21,7 @@
                 <!-- Company Details Box -->
                 <div class="box box-primary">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Company Details</h3>
+                        <h3 class="box-title">User Details</h3>
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body">
@@ -30,7 +30,14 @@
                                 <th style="width:50%">Name:</th>
                                 <td th:text="${reg.name}"></td>
                             </tr>
-
+                            <tr>
+                                <th style="width:50%">Email:</th>
+                                <td th:text="${reg.email}"></td>
+                            </tr>
+                            <tr>
+                                <th style="width:50%">Contact Number:</th>
+                                <td th:text="${reg.contactNo}"></td>
+                            </tr>
                         </table>
                     </div>
                     <!-- /.box-body -->
@@ -48,9 +55,15 @@
                     </div>
                     <div class="box-body">
                         <form th:action="@{/sysadm/companyRegistration}" method="POST">
+                            <label>User Role Type</label>
+                            <select class="form-control" th:field="*{id}">
+                                <option th:each="c : ${userType}" th:value="${c.code}" th:text="${c.description}"></option>
+                            </select>
+
+
                             <input type="hidden" name="id" th:value="${reg.id}" />
-                            <button type="submit" name="action" value="approve" class="btn btn-success"><i class="fa fa-check"></i> Approve</button>
-                            <button type="submit" name="action" value="reject" class="btn btn-danger"><i class="fa fa-times"></i> Reject</button>
+                            <button type="submit" name="action" value="approve" class="btn btn-success"><i class="fa fa-check"></i> Assign</button>
+
                         </form>
                     </div>
                 </div>
