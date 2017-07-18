@@ -53,9 +53,6 @@ public class CompanySysAdmControllerTest {
 
         User u = new User("Name", "test@gmail.com", "123456", "password");
         List<Company> managedCompany = new LinkedList<Company>();
-        Company c = new Company();
-        c.setName("Abc Pte. Ltd");
-        managedCompany.add(c);
         currentUser = new CurrentUser(u, AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER,ROLE_SYS_ADMIN"), managedCompany);
     }
 

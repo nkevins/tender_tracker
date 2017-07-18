@@ -46,6 +46,9 @@ public class CompanyController {
         if (result.hasErrors()) {
             AlertDTO alert = new AlertDTO(result.getAllErrors());
             model.addAttribute("alert", alert);
+            model.addAttribute("registration", form);
+            model.addAttribute("areaOfBusiness", codeValueService.getByType("area_of_business"));
+            model.addAttribute("companyType", codeValueService.getByType("company_type"));
             return "registerCompany";
         }
 
