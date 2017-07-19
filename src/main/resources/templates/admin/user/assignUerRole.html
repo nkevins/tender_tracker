@@ -54,7 +54,7 @@
                         <h3 class="box-title">Action</h3>
                     </div>
                     <div class="box-body">
-                        <form th:action="@{/sysadm/companyRegistration}" method="POST">
+                        <form th:action="@{/admin/user/assignRole}" method="POST" th:object="${user}">
                             <label>User Role Type</label>
                             <select class="form-control" th:field="*{id}">
                                 <option th:each="c : ${userType}" th:value="${c.code}" th:text="${c.description}"></option>

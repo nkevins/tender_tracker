@@ -133,8 +133,19 @@
                     <li>
                         <a href="#"><i class="fa fa-building-o"></i> <span>Company Profile</span></a>
                     </li>
-                    <li>
-                      <a th:href="@{/admin/userDetails}"><i class="fa fa-user"></i> User</a>
+
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-cogs"></i>
+                            <span>User</span>
+                            <span class="pull-right-container">
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a th:href="@{/admin/userDetails}"><i class="fa fa-pencil-square-o"></i> Company User</a></li>
+                            <li><a th:href="@{/admin/userDetails}"><i class="fa fa-user"></i> Add User</a></li>
+                        </ul>
                     </li>
                 </th:block>
                 <li class="treeview" sec:authorize="hasRole('SYS_ADMIN')">

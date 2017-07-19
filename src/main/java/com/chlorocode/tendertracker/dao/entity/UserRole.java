@@ -1,6 +1,7 @@
 package com.chlorocode.tendertracker.dao.entity;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "user_role")
@@ -18,6 +19,16 @@ public class UserRole {
 
     @ManyToOne
     private Company company;
+
+
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public User getUser() {
         return user;
