@@ -5,6 +5,8 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 @Entity
 public class Tender {
@@ -53,6 +55,13 @@ public class Tender {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdatedDate;
+
+    @OneToMany(mappedBy = "tender", cascade = CascadeType.PERSIST)
+    private List<TenderItem> items;
+
+    public Tender() {
+        items = new LinkedList<>();
+    }
 
     public int getId() {
         return id;
@@ -228,5 +237,14 @@ public class Tender {
 
     public void setLastUpdatedDate(Date lastUpdatedDate) {
         this.lastUpdatedDate = lastUpdatedDate;
+    }
+
+    public List<TenderItem> getItems() {
+        return items;
+    }
+
+    public void addTenderItem(TenderItem item) {
+        items.add(item);
+        item.setTender(this);
     }
 }

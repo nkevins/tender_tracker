@@ -2,8 +2,10 @@ package com.chlorocode.tendertracker.web.admin;
 
 import com.chlorocode.tendertracker.dao.dto.AlertDTO;
 import com.chlorocode.tendertracker.dao.dto.TenderCreateDTO;
+import com.chlorocode.tendertracker.dao.dto.TenderItemCreateDTO;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
 import com.chlorocode.tendertracker.dao.entity.Tender;
+import com.chlorocode.tendertracker.dao.entity.TenderItem;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.service.CodeValueService;
 import com.chlorocode.tendertracker.service.TenderService;
@@ -48,6 +50,7 @@ public class TenderController {
         model.addAttribute("tender", new TenderCreateDTO());
         model.addAttribute("tenderType", codeValueService.getByType("tender_type"));
         model.addAttribute("tenderCategories", codeValueService.getAllTenderCategories());
+        model.addAttribute("uom", codeValueService.getByType("uom"));
         return "admin/tender/tenderCreate";
     }
 
@@ -88,6 +91,21 @@ public class TenderController {
         t.setCreatedDate(new Date());
         t.setLastUpdatedBy(usr.getId());
         t.setLastUpdatedDate(new Date());
+
+        if (form.getItems() != null) {
+            for (TenderItemCreateDTO i : form.getItems()) {
+                TenderItem item = new TenderItem();
+                item.setUom(i.getUom());
+                item.setQuantity(i.getQuantity());
+                item.setDescription(i.getDescription());
+                item.setCreatedBy(usr.getId());
+                item.setCreatedDate(new Date());
+                item.setLastUpdatedBy(usr.getId());
+                item.setLastUpdatedDate(new Date());
+
+                t.addTenderItem(item);
+            }
+        }
 
         try {
             tenderService.createTender(t);

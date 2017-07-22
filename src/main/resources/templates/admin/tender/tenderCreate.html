@@ -23,7 +23,7 @@
         <!-- Default box -->
         <div class="box">
             <div class="box-body">
-                <form class="form-horizontal" th:action="@{/admin/tender/create}" method="POST" th:object="${tender}" enctype="multipart/form-data">
+                <form class="form-horizontal" id="createTenderForm" th:action="@{/admin/tender/create}" method="POST" th:object="${tender}" enctype="multipart/form-data">
                     <h4>Tender Information</h4>
                     <hr />
 
@@ -32,13 +32,13 @@
                             <div class="form-group">
                                 <label for="title" class="col-sm-2 control-label">Title</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="title" th:field="*{title}" />
+                                    <input type="text" class="form-control" id="title" th:field="*{title}" required="required" />
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="tenderType" class="col-sm-2 control-label">Tender Type</label>
                                 <div class="col-sm-10">
-                                    <select class="form-control" id="tenderType" th:field="*{tenderType}">
+                                    <select class="form-control" id="tenderType" th:field="*{tenderType}" required="required">
                                         <option th:each="t : ${tenderType}" th:text="${t.description}" th:value="${t.code}">Open</option>
                                     </select>
                                 </div>
@@ -52,7 +52,7 @@
                             <div class="form-group">
                                 <label for="category" class="col-sm-2 control-label">Category</label>
                                 <div class="col-sm-10">
-                                    <select class="form-control" id="category" th:field="*{tenderCategory}">
+                                    <select class="form-control" id="category" th:field="*{tenderCategory}" required="required">
                                         <option th:each="c : ${tenderCategories}" th:text="${c.name}" th:value="${c.id}">IT</option>
                                     </select>
                                 </div>
@@ -65,7 +65,7 @@
                                     <div class="input-group-addon">
                                         <i class="fa fa-calendar"></i>
                                     </div>
-                                    <input type="text" class="form-control pull-right" id="openDate" th:field="*{openDate}" />
+                                    <input type="text" class="form-control pull-right" id="openDate" th:field="*{openDate}" required="required" />
                                 </div>
                             </div>
                             <div class="form-group">
@@ -74,7 +74,7 @@
                                     <div class="input-group-addon">
                                         <i class="fa fa-calendar"></i>
                                     </div>
-                                    <input type="text" class="form-control pull-right" id="closedDate" th:field="*{closedDate}" />
+                                    <input type="text" class="form-control pull-right" id="closedDate" th:field="*{closedDate}" required="required" />
                                 </div>
                             </div>
                             <div class="form-group">
@@ -83,7 +83,7 @@
                                     <div class="input-group-addon">
                                         <i class="fa fa-dollar"></i>
                                     </div>
-                                    <input type="number" class="form-control" id="epv" th:field="*{estimatePurchaseValue}" />
+                                    <input type="number" class="form-control" id="epv" th:field="*{estimatePurchaseValue}" required="required" />
                                 </div>
                             </div>
                         </div>
@@ -107,13 +107,13 @@
                             <div class="form-group">
                                 <label for="contactName" class="col-sm-2 control-label">Name</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="contactName" th:field="*{contactPersonName}" />
+                                    <input type="text" class="form-control" id="contactName" th:field="*{contactPersonName}" required="required" />
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="contactEmail" class="col-sm-2 control-label">Email</label>
                                 <div class="col-sm-10">
-                                    <input type="email" class="form-control" id="contactEmail" th:field="*{contactPersonEmail}" />
+                                    <input type="email" class="form-control" id="contactEmail" th:field="*{contactPersonEmail}" required="required" />
                                 </div>
                             </div>
                         </div>
@@ -121,7 +121,7 @@
                             <div class="form-group">
                                 <label for="contactPhone" class="col-sm-2 control-label">Phone</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="contactPhone" th:field="*{contactPersonPhone}" />
+                                    <input type="text" class="form-control" id="contactPhone" th:field="*{contactPersonPhone}" required="required" />
                                 </div>
                             </div>
                         </div>
@@ -160,8 +160,44 @@
                         </div>
                     </div>
 
+                    <h4>Tender Item</h4>
+                    <hr />
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table table-striped" id="itemTable">
+                                <thead>
+                                    <tr>
+                                        <th>UOM</th>
+                                        <th>Quantity</th>
+                                        <th>Description</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tr>
+                                    <td>
+                                        <select name="items[0].uom" required="required">
+                                            <option th:each="u : ${uom}" th:value="${u.code}" th:text="${u.description}"></option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="text" name="items[0].quantity" required="required" />
+                                    </td>
+                                    <td>
+                                        <input type="text" name="items[0].description" required="required" />
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                            </table>
+                            <button class="btn btn-primary" id="addItem">Add Item</button>
+                        </div>
+                    </div>
+
                     <div class="row" style="padding-top: 10px;">
                         <div class="col-md-12">
+                            <hr />
                             <input type="submit" id="mainSubmitBtn" value="Save" class="btn btn-primary" />
                         </div>
                     </div>
@@ -193,6 +229,27 @@
         $(function () {
             CKEDITOR.replace('description');
         });
+
+        // Manage tender item add
+        var counter = 0;
+        $('#addItem').click(function(event) {
+            event.preventDefault();
+            counter++;
+            var uomOptions = $('select[name="items[0].uom"] > option').clone();
+            var newRow = $('<tr><td><select name="items[' +
+                counter + '].uom" required="required">' + uomOptions + '</select></td><td><input type="text" name="items[' +
+                counter + '].quantity" required="required"/></td><td><input type="text" name="items[' +
+                counter + '].description" required="required"/></td><td><button class="btn btn-danger"><i class="fa fa-trash"></i>' +
+                '</button></td></tr>');
+            $('table#itemTable').append(newRow);
+            $('select[name="items[' + counter + '].uom"]').append(uomOptions);
+        });
+
+        // Delte tender item
+        $('#itemTable').on('click', '.btn', function(e){
+            e.preventDefault();
+            $(this).closest('tr').remove()
+        })
     </script>
 </th:block>
 </html>

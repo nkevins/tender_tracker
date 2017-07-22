@@ -1,10 +1,10 @@
 package com.chlorocode.tendertracker.dao.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 public class TenderCreateDTO {
@@ -41,6 +41,12 @@ public class TenderCreateDTO {
 
     @NotBlank(message = "Contact Person Phone is required")
     private String contactPersonPhone;
+
+    private List<TenderItemCreateDTO> items;
+
+    public TenderCreateDTO() {
+        items = new LinkedList<>();
+    }
 
     public String getRefNo() {
         return refNo;
@@ -152,5 +158,13 @@ public class TenderCreateDTO {
 
     public void setContactPersonPhone(String contactPersonPhone) {
         this.contactPersonPhone = contactPersonPhone;
+    }
+
+    public List<TenderItemCreateDTO> getItems() {
+        return items;
+    }
+
+    public void setItems(List<TenderItemCreateDTO> items) {
+        this.items = items;
     }
 }

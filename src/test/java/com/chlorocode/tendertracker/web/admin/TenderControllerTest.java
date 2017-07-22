@@ -87,6 +87,12 @@ public class TenderControllerTest {
                 .param("contactPersonName", "Contact Person")
                 .param("contactPersonEmail", "test@gmail.com")
                 .param("contactPersonPhone", "82751123")
+                .param("items[0].uom", "1")
+                .param("items[0].quantity", "1")
+                .param("items[0].description", "Item 1")
+                .param("items[1].uom", "1")
+                .param("items[1].quantity", "1")
+                .param("items[1].description", "Item 2")
                 .with(user(currentUser))
                 .with(csrf())
         ).andExpect(view().name("redirect:/admin/tender"));
