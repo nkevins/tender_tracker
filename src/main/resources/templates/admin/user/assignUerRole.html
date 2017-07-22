@@ -18,6 +18,9 @@
     <section class="content">
         <div class="row">
             <div class="col-md-6">
+                <th:block th:if="${alert != null}">
+                    <div th:replace="fragments/alert :: alert (type=${alert.getType()}, messages=${alert.messages})">Alert</div>
+                </th:block>
                 <!-- Company Details Box -->
                 <div class="box box-primary">
                     <div class="box-header with-border">
@@ -26,6 +29,10 @@
                     <!-- /.box-header -->
                     <div class="box-body">
                         <table class="table">
+                            <tr>
+                                <th style="width:50%">ID:</th>
+                                <td th:text="${reg.id}"></td>
+                            </tr>
                             <tr>
                                 <th style="width:50%">Name:</th>
                                 <td th:text="${reg.name}"></td>
@@ -61,7 +68,7 @@
                             </select>
 
 
-                            <input type="hidden" name="id" th:value="${reg.id}" />
+                            <input type="hidden" name="userid" th:value="${reg.id}" />
                             <button type="submit" name="action" value="approve" class="btn btn-success"><i class="fa fa-check"></i> Assign</button>
 
                         </form>

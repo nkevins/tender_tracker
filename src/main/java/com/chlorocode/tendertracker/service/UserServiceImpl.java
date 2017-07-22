@@ -57,4 +57,9 @@ public class UserServiceImpl implements UserService {
     public RoleUser addUserRole(RoleUser role) {
         return userRoleDAO.save(role);
     }
+
+    @Override
+    public Integer findUserRoleId(int userId, int companyId, int roleId) {
+        return userRoleDAO.findUserRoleId(userId, companyId,roleId);
+    }
 }

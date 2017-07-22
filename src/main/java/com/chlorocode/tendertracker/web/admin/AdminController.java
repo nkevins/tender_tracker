@@ -17,11 +17,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.Date;
 
 @Controller
-public class AdminController {
+public class AdminController extends HttpServlet {
 
     private UserService userService;
     private CodeValueService codeValueService;
@@ -44,7 +47,8 @@ public class AdminController {
     }
 
     @GetMapping("/admin/userDetails/{id}")
-    public String displayUserDetail(@PathVariable(value="id") Integer id, Model model) {
+    public String displayUserDetail(@PathVariable(value="id") Integer id, Model model,
+                                    HttpServletRequest request) {
         User user = userService.findById(id);
         if (user == null) {
             throw new ResourceNotFoundException();
@@ -52,21 +56,45 @@ public class AdminController {
             model.addAttribute("user", new UserRoleDTO());
             model.addAttribute("reg", user);
             model.addAttribute("userType", codeValueService.getByType("user_type"));
+            HttpSession sess = request.getSession();
+            sess.setAttribute("loginUser",user);
             return "admin/user/assignUerRole";
         }
 
     }
 
     @PostMapping("/admin/user/assignRole")
-    public String saveCompanyRegistration(@RequestParam("id") int id,
+    public String saveCompanyRegistration(@RequestParam("userid") int id,
                                           @Valid @ModelAttribute("user") UserRoleDTO form,
-                                          BindingResult result, RedirectAttributes redirectAttrs, ModelMap model) {
+                                          BindingResult result, RedirectAttributes redirectAttrs,
+                                          ModelMap model,HttpServletRequest request) {
 
         //UserRole userRole = new UserRole();
+
         RoleUser role = new RoleUser();
-        role.setRoleId(form.getId());
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         CurrentUser usr = (CurrentUser) auth.getPrincipal();
+        Integer roleId = userService.findUserRoleId(id,usr.getSelectedCompany().getId(),form.getId());
+
+        if(roleId != null && roleId > 0){
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
+                    "User already exist with this role. Please assign other role to this user");
+            model.addAttribute("alert", alert);
+            HttpSession sess = request.getSession();
+            if(sess.getAttribute("loginUser") != null){
+                User u = (User) sess.getAttribute("loginUser");
+                model.addAttribute("reg", u);
+                model.addAttribute("userType", codeValueService.getByType("user_type"));
+                return "admin/user/assignUerRole";
+            }else{
+                //ToDo: return to access denied page
+                return "redirect:/";
+            }
+
+        }
+
+        role.setRoleId(form.getId());
         role.setUserId(id);
         role.setCreatedBy(id);
         role.setCreatedDate(new Date());

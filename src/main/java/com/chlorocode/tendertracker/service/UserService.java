@@ -10,4 +10,6 @@ public interface UserService {
     User findById(int id);
 
     RoleUser addUserRole(RoleUser role);
+
+    Integer findUserRoleId(int userId,int companyId,int roleId);
 }
