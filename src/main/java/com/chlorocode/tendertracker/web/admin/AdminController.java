@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.Date;
+import java.util.List;
 
 @Controller
 public class AdminController extends HttpServlet {
@@ -55,9 +56,11 @@ public class AdminController extends HttpServlet {
         } else {
             model.addAttribute("user", new UserRoleDTO());
             model.addAttribute("reg", user);
-            model.addAttribute("userType", codeValueService.getByType("user_type"));
+            List<CodeValue> userTypeCombo = codeValueService.getByType("user_type");
+            model.addAttribute("userType", userTypeCombo);
             HttpSession sess = request.getSession();
             sess.setAttribute("loginUser",user);
+            sess.setAttribute("userCombo",userTypeCombo);
             return "admin/user/assignUerRole";
         }
 
@@ -85,7 +88,7 @@ public class AdminController extends HttpServlet {
             if(sess.getAttribute("loginUser") != null){
                 User u = (User) sess.getAttribute("loginUser");
                 model.addAttribute("reg", u);
-                model.addAttribute("userType", codeValueService.getByType("user_type"));
+                model.addAttribute("userType", sess.getAttribute("userCombo"));
                 return "admin/user/assignUerRole";
             }else{
                 //ToDo: return to access denied page
