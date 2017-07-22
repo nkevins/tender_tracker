@@ -1,6 +1,9 @@
 package com.chlorocode.tendertracker.service;
 
+import com.chlorocode.tendertracker.dao.RoleUserDAO;
 import com.chlorocode.tendertracker.dao.UserDAO;
+import com.chlorocode.tendertracker.dao.UserRoleDAO;
+import com.chlorocode.tendertracker.dao.entity.RoleUser;
 import com.chlorocode.tendertracker.dao.entity.User;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +18,13 @@ public class UserServiceImpl implements UserService {
 
     private PasswordEncoder passwordEncoder;
     private UserDAO userDAO;
+    private RoleUserDAO userRoleDAO;
 
     @Autowired
-    public UserServiceImpl(UserDAO userDAO, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserDAO userDAO, PasswordEncoder passwordEncoder,RoleUserDAO userRoleDAO) {
         this.userDAO = userDAO;
         this.passwordEncoder = passwordEncoder;
+        this.userRoleDAO = userRoleDAO;
     }
 
     @Override
@@ -46,5 +51,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(int id) {
         return userDAO.findOne(id);
+    }
+
+    @Override
+    public RoleUser addUserRole(RoleUser role) {
+        return userRoleDAO.save(role);
     }
 }
