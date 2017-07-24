@@ -1,0 +1,87 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="admin/layout">
+<head>
+    <title>Tender Tracker</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            User
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-6">
+                <th:block th:if="${alert != null}">
+                    <div th:replace="fragments/alert :: alert (type=${alert.getType()}, messages=${alert.messages})">Alert</div>
+                </th:block>
+                <!-- Company Details Box -->
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">User Details</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table class="table">
+                            <tr>
+                                <th style="width:50%">ID:</th>
+                                <td th:text="${reg.id}"></td>
+                            </tr>
+                            <tr>
+                                <th style="width:50%">Name:</th>
+                                <td th:text="${reg.name}"></td>
+                            </tr>
+                            <tr>
+                                <th style="width:50%">Email:</th>
+                                <td th:text="${reg.email}"></td>
+                            </tr>
+                            <tr>
+                                <th style="width:50%">Contact Number:</th>
+                                <td th:text="${reg.contactNo}"></td>
+                            </tr>
+                            <!--<tr>-->
+                                <!--<th style="width:50%">Role:</th>-->
+                                <!--<td th:text="${reg.roleName}"></td>-->
+                            <!--</tr>-->
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+
+
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Action</h3>
+                    </div>
+                    <div class="box-body">
+                        <form th:action="@{/admin/user/updateRole}" method="POST" th:object="${user}">
+                            <label>Update Role</label>
+                            <select class="form-control" th:field="*{id}">
+                                <option th:each="c : ${userType}" th:value="${c.code}" th:text="${c.description}"></option>
+                            </select>
+
+
+                            <input type="hidden" name="userid" th:value="${reg.id}" />
+                            <button type="submit" name="action" value="approve" class="btn btn-success"><i class="fa fa-check"></i> Assign</button>
+                            <button type="submit" name="action" value="delete" class="btn btn-danger"><i class="fa fa-check"></i> Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+</body>
+</html>
