@@ -22,8 +22,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.beans.PropertyEditorSupport;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -56,14 +59,26 @@ public class TenderController {
 
     @PostMapping("/admin/tender/create")
     public String saveCreateTender(@Valid @ModelAttribute("tender") TenderCreateDTO form, BindingResult result,
-                                   RedirectAttributes redirectAttrs, ModelMap model) {
+                                   RedirectAttributes redirectAttrs, ModelMap model, HttpServletRequest request,
+                                   HttpServletResponse resp) throws IOException {
+        String requestedWith = request.getHeader("X-Requested-With");
+        Boolean isAjax = requestedWith != null && "XMLHttpRequest".equals(requestedWith);
+
         if (result.hasErrors()) {
             AlertDTO alert = new AlertDTO(result.getAllErrors());
             model.addAttribute("alert", alert);
             model.addAttribute("tender", form);
             model.addAttribute("tenderType", codeValueService.getByType("tender_type"));
             model.addAttribute("tenderCategories", codeValueService.getAllTenderCategories());
-            return "admin/tender/tenderCreate";
+            model.addAttribute("uom", codeValueService.getByType("uom"));
+
+            if (isAjax) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getWriter().print(result.getAllErrors().get(0).getDefaultMessage());
+                return null;
+            } else {
+                return "admin/tender/tenderCreate";
+            }
         }
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -108,7 +123,7 @@ public class TenderController {
         }
 
         try {
-            tenderService.createTender(t);
+            tenderService.createTender(t, form.getAttachments());
 
             AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
                     "Tender Created");
@@ -120,11 +135,23 @@ public class TenderController {
             model.addAttribute("tender", form);
             model.addAttribute("tenderType", codeValueService.getByType("tender_type"));
             model.addAttribute("tenderCategories", codeValueService.getAllTenderCategories());
+            model.addAttribute("uom", codeValueService.getByType("uom"));
 
-            return "admin/tender/tenderCreate";
+            if (isAjax) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getWriter().print(ex.getMessage());
+                return null;
+            } else {
+                return "admin/tender/tenderCreate";
+            }
         }
 
-        return "redirect:/admin/tender";
+        if (isAjax) {
+            resp.setStatus(HttpServletResponse.SC_OK);
+            return null;
+        } else {
+            return "redirect:/admin/tender";
+        }
     }
 
     @InitBinder

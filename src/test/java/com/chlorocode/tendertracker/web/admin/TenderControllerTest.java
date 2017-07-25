@@ -97,7 +97,7 @@ public class TenderControllerTest {
                 .with(csrf())
         ).andExpect(view().name("redirect:/admin/tender"));
 
-        verify(tenderService, times(1)).createTender(any(Tender.class));
+        verify(tenderService, times(1)).createTender(any(Tender.class), any());
     }
 
     @Test
@@ -108,6 +108,6 @@ public class TenderControllerTest {
                         .with(csrf())
         ).andExpect(view().name("admin/tender/tenderCreate"));
 
-        verify(tenderService, never()).createTender(any(Tender.class));
+        verify(tenderService, never()).createTender(any(Tender.class), any());
     }
 }

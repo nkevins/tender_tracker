@@ -59,8 +59,12 @@ public class Tender {
     @OneToMany(mappedBy = "tender", cascade = CascadeType.PERSIST)
     private List<TenderItem> items;
 
+    @OneToMany(mappedBy = "tender", cascade = CascadeType.PERSIST)
+    private List<TenderDocument> documents;
+
     public Tender() {
         items = new LinkedList<>();
+        documents = new LinkedList<>();
     }
 
     public int getId() {
@@ -246,5 +250,14 @@ public class Tender {
     public void addTenderItem(TenderItem item) {
         items.add(item);
         item.setTender(this);
+    }
+
+    public List<TenderDocument> getDocuments() {
+        return documents;
+    }
+
+    public void addTenderDocument(TenderDocument document) {
+        documents.add(document);
+        document.setTender(this);
     }
 }

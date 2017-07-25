@@ -9,9 +9,12 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -29,6 +32,8 @@ public class TenderServiceImplTest {
 
     @Test
     public void testCreateTender() {
+        List<MultipartFile> files = new LinkedList<>();
+
         Tender t = new Tender();
         t.setOpenDate(new Date());
 
@@ -53,14 +58,16 @@ public class TenderServiceImplTest {
 
         assertEquals(t, i2.getTender());
 
-        when(tenderServiceImpl.createTender(t)).thenReturn(t);
+        when(tenderServiceImpl.createTender(t, files)).thenReturn(t);
 
-        tenderServiceImpl.createTender(t);
+        tenderServiceImpl.createTender(t, files);
         verify(tenderDAO, times(1)).save(any(Tender.class));
     }
 
     @Test
     public void testCreateTenderInvalidOpeningClosingDate() {
+        List<MultipartFile> files = new LinkedList<>();
+
         Tender t = new Tender();
 
         Calendar c = Calendar.getInstance();
@@ -71,9 +78,32 @@ public class TenderServiceImplTest {
         t.setClosedDate(new Date());
 
         try {
-            tenderServiceImpl.createTender(t);
+            tenderServiceImpl.createTender(t, files);
             fail("Tender Closing Date later than Opening Date allowed");
         } catch(ApplicationException ex) {
+
+        }
+
+        verify(tenderDAO, never()).save(any(Tender.class));
+    }
+
+    @Test
+    public void testCreateTenderWithoutItem() {
+        List<MultipartFile> files = new LinkedList<>();
+
+        Tender t = new Tender();
+        t.setOpenDate(new Date());
+
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+        c.add(Calendar.DATE, 1);
+        t.setClosedDate(c.getTime());
+
+        try {
+            when(tenderServiceImpl.createTender(t, files)).thenReturn(t);
+            tenderServiceImpl.createTender(t, files);
+            fail("Allowed to save tender without item");
+        } catch(Exception ex) {
 
         }
 

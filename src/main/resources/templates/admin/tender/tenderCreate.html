@@ -10,6 +10,7 @@
     <th:block th:if="${alert != null}">
         <div th:replace="fragments/alert :: alert (type=${alert.getType()}, messages=${alert.messages})">Alert</div>
     </th:block>
+    <div class="alert alert-danger" style="display:none;" id="createTenderError"></div>
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1>
@@ -195,6 +196,16 @@
                         </div>
                     </div>
 
+                    <h4>Attachment</h4>
+                    <hr />
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="dropzone" id="attachmentUploads">
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row" style="padding-top: 10px;">
                         <div class="col-md-12">
                             <hr />
@@ -250,6 +261,59 @@
             e.preventDefault();
             $(this).closest('tr').remove()
         })
+
+        // Attachment uploader
+        Dropzone.options.attachmentUploads = {
+            url: '/admin/tender/create',
+            autoProcessQueue: false,
+            uploadMultiple: true,
+            parallelUploads: 5,
+            maxFiles: 5,
+            maxFilesize: 1,
+            addRemoveLinks: true,
+            paramName: 'attachments',
+            init: function() {
+                dzClosure = this; // Makes sure that 'this' is understood inside the functions below.
+
+                // for Dropzone to process the queue (instead of default form behavior):
+                document.getElementById("mainSubmitBtn").addEventListener("click", function(e) {
+                    // Make sure that the form isn't actually being sent.
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    if (dzClosure.getQueuedFiles().length > 0) {
+                        dzClosure.processQueue();
+                    } else {
+                        $("#createTenderForm").submit();
+                    }
+                });
+
+                //send all the form data along with the files:
+                this.on("sendingmultiple", function(data, xhr, formData) {
+                    formData.append("description", CKEDITOR.instances['description'].getData());
+                    formData.append("deliveryRemarks", jQuery("#deliveryRemarks").val());
+
+                    $("form").find("input").each(function(){
+                        formData.append($(this).attr("name"), $(this).val());
+                    });
+                    $("form").find("select").each(function(){
+                        formData.append($(this).attr("name"), $(this).val());
+                    });
+                });
+            },
+            error: function(file, errorMessage) {
+                $.each(dzClosure.files, function(i, file) {
+                    file.status = Dropzone.QUEUED
+                });
+
+                $("#createTenderError").text(errorMessage);
+                $('#createTenderError').show();
+                $('html,body').animate({scrollTop: 0});
+            },
+            success: function(file, response) {
+                window.location.replace("/admin/tender");
+            }
+        }
     </script>
 </th:block>
 </html>
