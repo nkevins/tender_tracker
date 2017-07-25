@@ -2,7 +2,7 @@ package com.chlorocode.tendertracker.service;
 
 import com.chlorocode.tendertracker.dao.entity.RoleUser;
 import com.chlorocode.tendertracker.dao.entity.User;
-import com.chlorocode.tendertracker.dao.entity.UserRoleDetails;
+
 
 import java.util.List;
 

@@ -5,10 +5,8 @@ import com.chlorocode.tendertracker.dao.UserDAO;
 import com.chlorocode.tendertracker.dao.UserRoleDAO;
 import com.chlorocode.tendertracker.dao.entity.RoleUser;
 import com.chlorocode.tendertracker.dao.entity.User;
-import com.chlorocode.tendertracker.dao.entity.UserRoleDetails;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
