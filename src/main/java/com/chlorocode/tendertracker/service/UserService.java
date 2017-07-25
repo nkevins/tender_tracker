@@ -3,6 +3,9 @@ package com.chlorocode.tendertracker.service;
 import com.chlorocode.tendertracker.dao.entity.RoleUser;
 import com.chlorocode.tendertracker.dao.entity.User;
 
+
+import java.util.List;
+
 public interface UserService {
 
     User create(User user);
@@ -12,4 +15,6 @@ public interface UserService {
     RoleUser addUserRole(RoleUser role);
 
     Integer findUserRoleId(int userId,int companyId,int roleId);
+
+    User getUserRoleByUserIdRoleId(int userId, int roleId);
 }

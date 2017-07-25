@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,6 +20,7 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
     private UserDAO userDAO;
     private RoleUserDAO userRoleDAO;
+    private UserRoleDAO usrRoleDao;
 
     @Autowired
     public UserServiceImpl(UserDAO userDAO, PasswordEncoder passwordEncoder,RoleUserDAO userRoleDAO) {
@@ -61,5 +63,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public Integer findUserRoleId(int userId, int companyId, int roleId) {
         return userRoleDAO.findUserRoleId(userId, companyId,roleId);
+    }
+
+    @Override
+    public User getUserRoleByUserIdRoleId(int userId, int roleId){
+        return userDAO.getUserRoleByUserIdRoleId(userId, roleId);
     }
 }

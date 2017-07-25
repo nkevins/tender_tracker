@@ -10,6 +10,7 @@ import com.chlorocode.tendertracker.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -45,6 +46,25 @@ public class AdminController extends HttpServlet {
     @GetMapping("/admin/userDetails")
     public String showUserDetails() {
         return "admin/user/userView";
+    }
+
+    @GetMapping("/admin/userList")
+    public String showUserListDetails() {
+        return "admin/user/userList";
+    }
+
+    @GetMapping("/admin/userList/{id}/{roleid}")
+    public String displayUserRoleDetails(@PathVariable(value="id") Integer id,
+                                         @PathVariable(value="roleid") Integer roleId,
+                                         Model model,
+                                         HttpServletRequest request){
+        User usr = userService.getUserRoleByUserIdRoleId(id,roleId);
+        model.addAttribute("reg", usr);
+        model.addAttribute("user", new UserRoleDTO());
+        List<CodeValue> userTypeCombo = codeValueService.getByType("user_type");
+        model.addAttribute("userType", userTypeCombo);
+        HttpSession sess = request.getSession();
+        return "admin/user/updateUserRole";
     }
 
     @GetMapping("/admin/userDetails/{id}")
@@ -85,7 +105,7 @@ public class AdminController extends HttpServlet {
                     "User already exist with this role. Please assign other role to this user");
             model.addAttribute("alert", alert);
             HttpSession sess = request.getSession();
-            if(sess.getAttribute("loginUser") != null){
+            if(sess.getAttribute("loginUser") != null && sess.getAttribute("userCombo") != null){
                 User u = (User) sess.getAttribute("loginUser");
                 model.addAttribute("reg", u);
                 model.addAttribute("userType", sess.getAttribute("userCombo"));
@@ -96,7 +116,6 @@ public class AdminController extends HttpServlet {
             }
 
         }
-
         role.setRoleId(form.getId());
         role.setUserId(id);
         role.setCreatedBy(id);
