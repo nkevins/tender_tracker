@@ -108,7 +108,8 @@ public class AdminController extends HttpServlet {
         if(action.equals("update")){
             boolean result = userService.updateUserRole(roleId,form.getId(),usr.getId());
             if(result){
-
+                AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
+                        "update user role successful");
             }else{
                 TTLogger.error(className,"failed to update user role");
                 AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
@@ -118,7 +119,8 @@ public class AdminController extends HttpServlet {
         }else{
             boolean result = userService.deleteUserRole(roleId);
             if(result){
-
+                AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
+                        "user role deleted successful");
             }else{
                 TTLogger.error(className,"failed to delete user role");
                 AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
