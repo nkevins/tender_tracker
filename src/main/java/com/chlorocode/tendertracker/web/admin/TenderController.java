@@ -101,7 +101,6 @@ public class TenderController {
         t.setContactPersonName(form.getContactPersonName());
         t.setContactPersonEmail(form.getContactPersonEmail());
         t.setContactPersonPhone(form.getContactPersonPhone());
-        t.setStatus(1);
         t.setCreatedBy(usr.getId());
         t.setCreatedDate(new Date());
         t.setLastUpdatedBy(usr.getId());

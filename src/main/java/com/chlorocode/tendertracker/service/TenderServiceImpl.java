@@ -40,6 +40,9 @@ public class TenderServiceImpl implements TenderService {
             throw new ApplicationException("At least one Tender Item must be provided");
         }
 
+        // Set tender status to OPEN
+        t.setStatus(1);
+
         Tender result = tenderDAO.save(t);
 
         for (MultipartFile f : attachments) {

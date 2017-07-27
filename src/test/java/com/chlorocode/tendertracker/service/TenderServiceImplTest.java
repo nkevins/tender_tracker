@@ -58,10 +58,11 @@ public class TenderServiceImplTest {
 
         assertEquals(t, i2.getTender());
 
-        when(tenderServiceImpl.createTender(t, files)).thenReturn(t);
+        when(tenderDAO.save(any(Tender.class))).thenReturn(t);
 
-        tenderServiceImpl.createTender(t, files);
+        Tender result = tenderServiceImpl.createTender(t, files);
         verify(tenderDAO, times(1)).save(any(Tender.class));
+        assertEquals(1, result.getStatus());
     }
 
     @Test
