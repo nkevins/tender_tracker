@@ -10,4 +10,6 @@ public interface TenderService {
     Tender createTender(Tender t, List<MultipartFile> attachments);
 
     Tender findById(int id);
+
+    List<Tender> findTender();
 }

@@ -49,7 +49,7 @@
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
                     <ul class="nav navbar-nav">
-                        <li class=""><a href="#"><strong>Find a Tender</strong></a></li>
+                        <li class=""><a th:href="@{/}"><strong>Find a Tender</strong></a></li>
                         <li class="" sec:authorize="isAuthenticated()"><a th:href="@{/registerCompany}"><strong>Register a Company</strong></a></li>
                         <li class="" sec:authorize="hasAnyRole('SYS_ADMIN','ADMIN')"><a th:href="@{/admin}"><strong>Admin Panel</strong></a></li>
                     </ul>
@@ -90,7 +90,7 @@
                     </a>
 
                     <ul class="nav navbar-nav">
-                        <li><a href="#"><strong>Find a Tender</strong></a></li>
+                        <li><a th:href="@{/}"><strong>Find a Tender</strong></a></li>
                         <li sec:authorize="isAuthenticated()"><a th:href="@{/registerCompany}"><strong>Register a Company</strong></a></li>
                         <li sec:authorize="hasAnyRole('SYS_ADMIN','ADMIN')"><a th:href="@{/admin}"><strong>Admin Panel</strong></a></li>
                         <li><a th:href="@{/register}" sec:authorize="!isAuthenticated()"><strong>Register</strong></a></li>
@@ -103,10 +103,12 @@
             </nav>
         </div><!-- mobile navbar -->
 
-        <div class="container">
-            <div class="text-center logo no-margin-bottom"> <a th:href="@{/}"><img th:src="@{/assets/theme/images/logo.png}" alt="logo" /></a></div>
-            <div class="white-space-50"></div>
-        </div>
+        <th:block layout:fragment="headerContainer">
+            <div class="container">
+                <div class="text-center logo no-margin-bottom"> <a th:href="@{/}"><img th:src="@{/assets/theme/images/logo.png}" alt="logo" /></a></div>
+                <div class="white-space-50"></div>
+            </div>
+        </th:block>
 
     </header><!-- end main-header -->
 

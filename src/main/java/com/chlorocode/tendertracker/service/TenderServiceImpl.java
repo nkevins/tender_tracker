@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -76,5 +77,14 @@ public class TenderServiceImpl implements TenderService {
     @Override
     public Tender findById(int id) {
         return tenderDAO.findOne(id);
+    }
+
+    @Override
+    public List<Tender> findTender() {
+        List<Tender> tenders = new LinkedList<>();
+        Iterable<Tender> iterable = tenderDAO.findAll();
+        iterable.forEach(tenders::add);
+
+        return tenders;
     }
 }
