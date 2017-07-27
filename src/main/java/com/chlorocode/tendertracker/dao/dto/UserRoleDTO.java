@@ -9,6 +9,15 @@ public class UserRoleDTO {
     private int userId;
     private int roleId;
     private int createdBy;
+    public String roleName;
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
 
     public int getId() {
         return id;

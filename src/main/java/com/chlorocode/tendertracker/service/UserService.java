@@ -17,4 +17,8 @@ public interface UserService {
     Integer findUserRoleId(int userId,int companyId,int roleId);
 
     User getUserRoleByUserIdRoleId(int userId, int roleId);
+
+    boolean updateUserRole(int id, int roleId, int modifiedBy);
+
+    boolean deleteUserRole(int id);
 }

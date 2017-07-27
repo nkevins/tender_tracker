@@ -45,10 +45,11 @@
                                 <th style="width:50%">Contact Number:</th>
                                 <td th:text="${reg.contactNo}"></td>
                             </tr>
-                            <!--<tr>-->
-                                <!--<th style="width:50%">Role:</th>-->
-                                <!--<td th:text="${reg.roleName}"></td>-->
-                            <!--</tr>-->
+                            <tr>
+                                <th style="width:50%">Current Role:</th>
+                                <td th:text="${userRoleDto.roleName}"></td>
+                            </tr>
+
                         </table>
                     </div>
                     <!-- /.box-body -->
@@ -73,7 +74,8 @@
 
 
                             <input type="hidden" name="userid" th:value="${reg.id}" />
-                            <button type="submit" name="action" value="approve" class="btn btn-success"><i class="fa fa-check"></i> Assign</button>
+                            <input type="hidden" name="roleId" th:value="${userRoleDto.roleId}" />
+                            <button type="submit" name="action" value="update" class="btn btn-success"><i class="fa fa-check"></i> Update</button>
                             <button type="submit" name="action" value="delete" class="btn btn-danger"><i class="fa fa-check"></i> Delete</button>
                         </form>
                     </div>

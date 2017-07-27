@@ -16,4 +16,7 @@ public interface RoleUserDAO extends JpaRepository<RoleUser, Integer> {
 
     @Query("select distinct r.roleId from RoleUser r where r.userId =?1 and r.companyId =?2 and r.roleId =?3")
     Integer findUserRoleId(int userId, int companyId, int roleId);
+
+    @Query("select r from RoleUser r where r.id=?1")
+    RoleUser findUserRoleById(int id);
 }

@@ -6,6 +6,7 @@ import com.chlorocode.tendertracker.dao.UserRoleDAO;
 import com.chlorocode.tendertracker.dao.entity.RoleUser;
 import com.chlorocode.tendertracker.dao.entity.User;
 import com.chlorocode.tendertracker.exception.ApplicationException;
+import com.chlorocode.tendertracker.logging.TTLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,12 +22,13 @@ public class UserServiceImpl implements UserService {
     private UserDAO userDAO;
     private RoleUserDAO userRoleDAO;
     private UserRoleDAO usrRoleDao;
-
+    private String className;
     @Autowired
     public UserServiceImpl(UserDAO userDAO, PasswordEncoder passwordEncoder,RoleUserDAO userRoleDAO) {
         this.userDAO = userDAO;
         this.passwordEncoder = passwordEncoder;
         this.userRoleDAO = userRoleDAO;
+        this.className = this.getClass().getName();
     }
 
     @Override
@@ -68,5 +70,35 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserRoleByUserIdRoleId(int userId, int roleId){
         return userDAO.getUserRoleByUserIdRoleId(userId, roleId);
+    }
+
+    public boolean updateUserRole(int id, int newRoleId, int modifiedBy){
+         RoleUser user = userRoleDAO.findUserRoleById(id);
+
+         if(user == null){
+             TTLogger.warn(className,"User role not found.");
+             throw new ApplicationException("User role not found");
+         }
+
+         try{
+             user.setRoleId(newRoleId);
+             user.setLastUpdatedBy(modifiedBy);
+             user.setLastUpdatedDate(new Date());
+             userRoleDAO.save(user);
+             return true;
+         }catch(Exception ex){
+             TTLogger.warn(className,"User role not found. User Id " + user.getUserId() + " ,User Role Id " + user.getRoleId(), ex);
+         }
+         return false;
+    }
+
+    public boolean deleteUserRole(int id){
+        try{
+            userRoleDAO.delete(id);
+            return true;
+        }catch(Exception ex){
+            TTLogger.warn(className,"failed to delete user. user id " + id, ex);
+        }
+        return false;
     }
 }
