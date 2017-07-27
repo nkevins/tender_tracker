@@ -1,5 +1,6 @@
 package com.chlorocode.tendertracker.service;
 
+import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.*;
 import org.apache.commons.io.IOUtils;
@@ -17,6 +18,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -88,5 +90,19 @@ public class S3Wrapper {
         List<S3ObjectSummary> s3ObjectSummaries = objectListing.getObjectSummaries();
 
         return s3ObjectSummaries;
+    }
+
+    public URL getPreSignedURL(String key) {
+        java.util.Date expiration = new java.util.Date();
+        long msec = expiration.getTime();
+        msec += 1000 * 60 * 60; // 1 hour.
+        expiration.setTime(msec);
+
+        GeneratePresignedUrlRequest generatePresignedUrlRequest =
+                new GeneratePresignedUrlRequest(bucket, key);
+        generatePresignedUrlRequest.setMethod(HttpMethod.GET); // Default.
+        generatePresignedUrlRequest.setExpiration(expiration);
+
+        return amazonS3Client.generatePresignedUrl(generatePresignedUrlRequest);
     }
 }

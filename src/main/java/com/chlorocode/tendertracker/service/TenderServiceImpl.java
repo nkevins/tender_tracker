@@ -69,4 +69,9 @@ public class TenderServiceImpl implements TenderService {
 
         return result;
     }
+
+    @Override
+    public Tender findById(int id) {
+        return tenderDAO.findOne(id);
+    }
 }

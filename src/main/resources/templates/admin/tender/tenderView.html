@@ -56,7 +56,10 @@
                     'data' : 'id',
                     'visible' : false
                 }, {
-                    'data' : 'title'
+                    'data' : 'title',
+                    'fnCreatedCell' : function (nTd, sData, oData, iRow, iCol) {
+                        $(nTd).html('<a href="/admin/tender/'+oData.id+'">'+oData.title+'</a>');
+                    }
                 }, {
                     'data' : 'openDate'
                 }, {

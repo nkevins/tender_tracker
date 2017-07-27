@@ -1,9 +1,6 @@
 package com.chlorocode.tendertracker.web.admin;
 
-import com.chlorocode.tendertracker.dao.entity.Company;
-import com.chlorocode.tendertracker.dao.entity.CurrentUser;
-import com.chlorocode.tendertracker.dao.entity.Tender;
-import com.chlorocode.tendertracker.dao.entity.User;
+import com.chlorocode.tendertracker.dao.entity.*;
 import com.chlorocode.tendertracker.service.TenderService;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,13 +15,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -109,5 +105,28 @@ public class TenderControllerTest {
         ).andExpect(view().name("admin/tender/tenderCreate"));
 
         verify(tenderService, never()).createTender(any(Tender.class), any());
+    }
+
+    @Test
+    public void testViewTenderDetails() throws Exception {
+        Tender t = new Tender();
+        TenderCategory cat = new TenderCategory();
+        t.setTenderCategory(cat);
+        t.setOpenDate(new Date());
+        t.setClosedDate(new Date());
+        when(tenderService.findById(anyInt())).thenReturn(t);
+
+        this.mvc.perform(
+                get("/admin/tender/1").with(user(currentUser))
+        ).andExpect(view().name("admin/tender/tenderDetails"));
+    }
+
+    @Test
+    public void testViewTenderDetailsNotExist() throws Exception {
+        when(tenderService.findById(anyInt())).thenReturn(null);
+
+        this.mvc.perform(
+                get("/admin/tender/111").with(user(currentUser))
+        ).andExpect(view().name("redirect:/admin/tender"));
     }
 }

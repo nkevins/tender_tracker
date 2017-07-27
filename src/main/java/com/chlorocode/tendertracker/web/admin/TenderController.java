@@ -8,6 +8,7 @@ import com.chlorocode.tendertracker.dao.entity.Tender;
 import com.chlorocode.tendertracker.dao.entity.TenderItem;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.service.CodeValueService;
+import com.chlorocode.tendertracker.service.S3Wrapper;
 import com.chlorocode.tendertracker.service.TenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -16,10 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,11 +34,13 @@ public class TenderController {
 
     private CodeValueService codeValueService;
     private TenderService tenderService;
+    private S3Wrapper s3Service;
 
     @Autowired
-    public TenderController(CodeValueService codeValueService, TenderService tenderService) {
+    public TenderController(CodeValueService codeValueService, TenderService tenderService, S3Wrapper s3Service) {
         this.codeValueService = codeValueService;
         this.tenderService = tenderService;
+        this.s3Service = s3Service;
     }
 
     @GetMapping("/admin/tender")
@@ -173,5 +173,20 @@ public class TenderController {
                 }
             }
         });
+    }
+
+    @GetMapping("/admin/tender/{id}")
+    public String showTenderDetails(@PathVariable(value="id") Integer id, ModelMap model) {
+        Tender tender = tenderService.findById(id);
+        if (tender == null) {
+            return "redirect:/admin/tender";
+        }
+
+        model.addAttribute("tender", tender);
+        model.addAttribute("tenderType", codeValueService.getDescription("tender_type", tender.getTenderType()));
+        model.addAttribute("tenderCategory", tender.getTenderCategory());
+        model.addAttribute("codeValueService", codeValueService);
+        model.addAttribute("s3Service", s3Service);
+        return "admin/tender/tenderDetails";
     }
 }
