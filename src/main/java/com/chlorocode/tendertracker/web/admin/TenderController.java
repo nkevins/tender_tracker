@@ -18,6 +18,9 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,6 +49,11 @@ public class TenderController {
     @GetMapping("/admin/tender")
     public String showTenderPage() {
         return "admin/tender/tenderView";
+    }
+
+    @GetMapping("/admin/tender/evaluation")
+    public String showTenderEvaluationPage() {
+        return "admin/tender/tenderEvaluationView";
     }
 
     @GetMapping("/admin/tender/create")

@@ -16,6 +16,7 @@ public class Tender {
     @JsonView(DataTablesOutput.View.class)
     private int id;
 
+    @JsonView(DataTablesOutput.View.class)
     private String refNo;
 
     @JsonView(DataTablesOutput.View.class)
