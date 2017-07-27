@@ -1,10 +1,7 @@
 package com.chlorocode.tendertracker.service;
 
 import com.chlorocode.tendertracker.dao.CompanyDAO;
-import com.chlorocode.tendertracker.dao.CompanyRegistrationDAO;
 import com.chlorocode.tendertracker.dao.entity.Company;
-import com.chlorocode.tendertracker.dao.entity.CompanyRegistration;
-import com.chlorocode.tendertracker.dao.entity.User;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,9 +24,6 @@ public class CompanyServiceImplTest {
     @Mock
     private CompanyDAO companyDAO;
 
-    @Mock
-    private CompanyRegistrationDAO companyRegistrationDAO;
-
     @InjectMocks
     private CompanyServiceImpl companyServiceImpl;
 
@@ -37,7 +31,7 @@ public class CompanyServiceImplTest {
     public void testRegisterCompany() {
         Company reg = new Company("Abc123 Pte. Ltd", "123456K", "123456", 1, "12 Middle Rd", "",
                 "123456", "Singapore", "Singapore", "Singapore", "Singapore", 1, 1, new Date(), 1, new Date());
-        when(companyServiceImpl.registerCompany(reg)).thenReturn(reg);
+        when(companyDAO.save(any(Company.class))).thenReturn(reg);
 
         companyServiceImpl.registerCompany(reg);
         verify(companyDAO, times(1)).save(any(Company.class));
