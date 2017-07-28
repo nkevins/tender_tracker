@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout">
+<head>
+    <title>Tender Tracker</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="row">
+        <div class="col-md-12">
+
+            <!-- box item details -->
+            <div class="block-section box-item-details">
+                <h2 class="title" th:text="${tender.title}">
+                    Lorem ipsum dolor sit amet
+                </h2>
+                <h3 th:text="${tender.company.name}">Ngee Ann Polytechnic</h3>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Details:</h4>
+                        <p>Opening Date: <span th:text="${#dates.format(tender.openDate, 'dd MMM yyyy')}"></span></p>
+                        <p>Closing Date: <span th:text="${#dates.format(tender.closedDate, 'dd MMM yyyy')}"></span></p>
+                        <p>Status: <span class="label label-success" th:if="${tender.status == 1}">OPEN</span><span class="label label-danger" th:if="${tender.status == 2}">CLOSED</span><span class="label label-primary" th:if="${tender.status == 3}">AWARDED</span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <h4>Contact Person:</h4>
+                        <p th:text="${tender.contactPersonName}">John Doe</p>
+                        <p th:text="${tender.contactPersonEmail}">john@gmail.com</p>
+                        <p th:text="${tender.contactPersonPhone}">62441600</p>
+                    </div>
+                </div>
+
+                <h4>Description:</h4>
+                <p th:utext="${tender.description}">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis laoreet, dui sit amet ullamcorper feugiat, libero nulla molestie sem, ut pellentesque mi libero ac nibh. Suspendisse sodales tellus vitae posuere volutpat. Maecenas ut pharetra tellus. Fusce tempus gravida nisi, eget.</p>
+
+                <h4>Document:</h4>
+                <ul>
+                    <li th:each="doc : ${tender.documents}"><a th:text="${doc.document.name}" th:href="${s3Service.getPreSignedURL(doc.document.location)}" /></li>
+                </ul>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Delivery Details:</h4>
+                        <p>Delivery Date: <span th:if="${tender.deliveryDate != null}" th:text="${#dates.format(tender.deliveryDate, 'dd-MM-yyyy')}"></span></p>
+                        <p>Delivery Remarks: <span th:text="${tender.deliveryRemarks}"></span></p>
+                        <p>Delivery Location: <span th:text="${tender.deliveryLocation}"></span></p>
+                    </div>
+                </div>
+
+                <h4>Tender Items:</h4>
+                <table class="table">
+                    <tr>
+                        <th>S/N</th>
+                        <th>Item</th>
+                        <th>Quantity</th>
+                        <th>UOM</th>
+                    </tr>
+                    <tr th:each="i, iterator : ${tender.items}">
+                        <td th:text="${iterator.index + 1}">1</td>
+                        <td th:text="${i.description}">Item 1</td>
+                        <td th:text="${i.quantity}">5</td>
+                        <td th:text="${codeValueService.getDescription('uom', i.uom)}">Pcs</td>
+                    </tr>
+                </table>
+            </div>
+            <!-- end box item details -->
+        </div>
+    </div>
+</div>
+</body>
+</html>
