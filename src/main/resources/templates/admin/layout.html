@@ -5,6 +5,7 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta th:name="_csrf" th:content="${_csrf.token}"/>
     <title>Tender Tracker</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport" />
@@ -135,19 +136,8 @@
                     <li>
                         <a href="#"><i class="fa fa-building-o"></i> <span>Company Profile</span></a>
                     </li>
-
-                    <li class="treeview">
-                        <a href="#">
-                            <i class="fa fa-users"></i>
-                            <span>User</span>
-                            <span class="pull-right-container">
-                            <i class="fa fa-angle-left pull-right"></i>
-                        </span>
-                        </a>
-                        <ul class="treeview-menu">
-                            <li><a th:href="@{/admin/userDetails}"><i class="fa fa-user"></i> Company User</a></li>
-                            <li><a th:href="@{/admin/userDetails}"><i class="fa fa-user-plus"></i> Add User</a></li>
-                        </ul>
+                    <li>
+                        <a th:href="@{/admin/companyUser}"><i class="fa fa-users"></i> <span>Company User</span></a>
                     </li>
                 </th:block>
                 <li class="treeview" sec:authorize="hasRole('SYS_ADMIN')">

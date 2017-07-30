@@ -13,7 +13,7 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1>
-            Assign User Role
+            Company User
         </h1>
     </section>
 
@@ -22,6 +22,9 @@
 
         <!-- Default box -->
         <div class="box">
+            <div class="box-header">
+                <a class="btn btn-primary" th:href="@{/admin/companyUser/add}"><i class="fa fa-plus-circle"></i> Add User</a>
+            </div>
             <div class="box-body">
                 <table id="companyRegistrations" class="table table-bordered table-striped">
                     <thead>
@@ -45,10 +48,12 @@
 <th:block layout:fragment="scripts">
     <script type="text/javascript">
         $(document).ready(function() {
+            var csrf = $("meta[name='_csrf']").attr("content");
+
             var table = $('table#companyRegistrations').DataTable({
-                'ajax' : '/adm/data/userlist',
+                'ajax' : '/admin/data/companyUser',
                 'serverSide' : true,
-                'order' : [[ 2, "asc" ]],
+                'order' : [[ 1, "asc" ]],
                 'columns' : [{
                     'data' : 'id',
                     'visible' : false
@@ -61,15 +66,11 @@
                     'targets' : 2
                 },{
                     'targets' : 3,
-                    'data' : null,
-                    'defaultContent' : '<button type="button" class="btn btn-primary">View</button>'
+                    'data' : 'id',
+                    'render' : function(data,type,full,meta) {
+                        return '<a type="button" class="btn btn-primary" href="/admin/companyUser/' + data + '">Edit</a> <form method="POST" style="display: inline;" action="/admin/companyUser/remove"><button type="submit" class="btn btn-danger">Remove</button><input type="hidden" name="id" value="' + data + '" /><input type="hidden" name="_csrf" value="' + csrf + '" /></form>';
+                    }
                 }]
-            });
-
-            // Handle click on "View" button
-            $('#companyRegistrations tbody').on('click', '.btn', function() {
-                var id = table.row($(this).parents('tr')).data()["id"];
-                window.location.href = "/admin/userDetails/" + id;
             });
         });
     </script>
