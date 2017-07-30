@@ -1,7 +1,6 @@
 package com.chlorocode.tendertracker.web;
 
 import com.chlorocode.tendertracker.dao.entity.Company;
-import com.chlorocode.tendertracker.dao.entity.CompanyRegistration;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
 import com.chlorocode.tendertracker.dao.entity.User;
 import com.chlorocode.tendertracker.service.CompanyService;

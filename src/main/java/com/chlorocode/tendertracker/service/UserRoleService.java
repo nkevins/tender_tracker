@@ -16,7 +16,7 @@ public interface UserRoleService {
     UserRole findUserRoleById(int id);
     List<Role> findCompanyUserRole(int userId, int companyId);
 
-    void addUserRole(String userEmail, List<Role> roles, Company company, int createdBy);
+    void addUserRole(User user, List<Role> roles, Company company, int createdBy);
     void updateUserRole(User user, List<Role> roles, Company company, int updatedBy);
     void removeUserFromCompany(User user, Company company);
 }

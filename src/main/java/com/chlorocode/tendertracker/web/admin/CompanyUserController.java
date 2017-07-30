@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.Valid;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class CompanyUserController {
@@ -46,6 +47,15 @@ public class CompanyUserController {
     @PostMapping("/admin/companyUser/add")
     public String addCompanyUser(@Valid @ModelAttribute("form") CompanyUserAddDTO form, ModelMap model,
                                  RedirectAttributes redirectAttrs) {
+        Optional<User> user = userService.findByEmail(form.getEmail());
+        if (!user.isPresent()) {
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
+                    "User not exist");
+            model.addAttribute("alert", alert);
+            model.addAttribute("form", form);
+            return "admin/user/userAdd";
+        }
+
         if (form.getRoles() == null || form.getRoles().size() == 0) {
             AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
                     "Please select at least one role");
@@ -62,7 +72,7 @@ public class CompanyUserController {
         CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         try {
-            userRoleService.addUserRole(form.getEmail(), roles, usr.getSelectedCompany(), usr.getId());
+            userRoleService.addUserRole(user.get(), roles, usr.getSelectedCompany(), usr.getId());
         } catch(ApplicationException ex) {
             AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
                     ex.getMessage());
