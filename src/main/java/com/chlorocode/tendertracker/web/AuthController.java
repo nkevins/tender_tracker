@@ -1,6 +1,7 @@
 package com.chlorocode.tendertracker.web;
 
 import com.chlorocode.tendertracker.dao.dto.AlertDTO;
+import com.chlorocode.tendertracker.dao.dto.ForgotPasswordDTO;
 import com.chlorocode.tendertracker.dao.dto.LoginDTO;
 import com.chlorocode.tendertracker.dao.dto.UserRegistrationDTO;
 import com.chlorocode.tendertracker.dao.entity.Company;
@@ -9,6 +10,7 @@ import com.chlorocode.tendertracker.dao.entity.User;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.service.CompanyService;
 import com.chlorocode.tendertracker.service.UserService;
+import com.chlorocode.tendertracker.service.notification.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,6 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.ServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -31,11 +34,13 @@ public class AuthController {
 
     private UserService userService;
     private CompanyService companyService;
+    private NotificationService notificationService;
 
     @Autowired
-    public AuthController(UserService userService, CompanyService companyService) {
+    public AuthController(UserService userService, CompanyService companyService, NotificationService notificationService) {
         this.userService = userService;
         this.companyService = companyService;
+        this.notificationService = notificationService;
     }
 
     @RequestMapping("/login")
@@ -112,5 +117,44 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(newAuth);
 
         return "redirect:/admin";
+    }
+
+    @RequestMapping("/forgotPassword")
+    public String forgotPassword(ServletRequest request, Model model) {
+        Map<String, String[]> paramMap = request.getParameterMap();
+
+        if (paramMap.containsKey("error"))
+        {
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
+                    "Invalid username or password");
+            model.addAttribute("alert", alert);
+        }
+        model.addAttribute("forgotPassword", new ForgotPasswordDTO());
+
+        return "forgotPassword";
+    }
+
+    @RequestMapping("/sendPIN")
+    public String sendPIN(@Valid @ModelAttribute("forgotPassword") ForgotPasswordDTO form,
+                          BindingResult result, RedirectAttributes redirectAttrs, ModelMap model) {
+        String errMsg = null;
+        if (result.hasErrors()) {
+            AlertDTO alert = new AlertDTO(result.getAllErrors());
+            model.addAttribute("alert", alert);
+            model.addAttribute("forgotPassword", form);
+            return "forgotPassword";
+        } else if ((errMsg = userService.sendPasswordResetPIN(form.getEmail())) != null) {
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER, errMsg);
+            model.addAttribute("alert", alert);
+            model.addAttribute("forgotPassword", form);
+            return "forgotPassword";
+        }
+
+        AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
+                "Password reset PIN email has successfully sent to '"
+                        + form.getEmail() + "'. Please follow the instruction in the email.");
+        model.addAttribute("alert", alert);
+
+        return "forgotPassword";
     }
 }

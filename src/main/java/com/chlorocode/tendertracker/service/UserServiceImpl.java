@@ -7,10 +7,13 @@ import com.chlorocode.tendertracker.dao.entity.RoleUser;
 import com.chlorocode.tendertracker.dao.entity.User;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.logging.TTLogger;
+import com.chlorocode.tendertracker.service.notification.NotificationService;
+import com.chlorocode.tendertracker.service.notification.NotificationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +26,9 @@ public class UserServiceImpl implements UserService {
     private RoleUserDAO userRoleDAO;
     private UserRoleDAO usrRoleDao;
     private String className;
+    @Autowired
+    private NotificationService notificationService;
+
     @Autowired
     public UserServiceImpl(UserDAO userDAO, PasswordEncoder passwordEncoder,RoleUserDAO userRoleDAO) {
         this.userDAO = userDAO;
@@ -100,5 +106,21 @@ public class UserServiceImpl implements UserService {
             TTLogger.warn(className,"failed to delete user. user id " + id, ex);
         }
         return false;
+    }
+
+    @Override
+    public String sendPasswordResetPIN(String email) {
+        Optional<User> u = userDAO.findOneByEmail(email);
+        if (u.isPresent()) {
+            User user = u.get();
+            String otp = "TESTING"; // TODO generate OTP.
+            user.setConfirmationToken(otp);
+            if (notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.reset_otp, user)) {
+                userDAO.save(user);
+                return null;
+            }
+            return "Email cannot send to your email address. Please contact to administrator.";
+        }
+        return "No account found for that email address.";
     }
 }

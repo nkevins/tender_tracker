@@ -21,4 +21,6 @@ public interface UserService {
     boolean updateUserRole(int id, int roleId, int modifiedBy);
 
     boolean deleteUserRole(int id);
+
+    String sendPasswordResetPIN(String email);
 }
