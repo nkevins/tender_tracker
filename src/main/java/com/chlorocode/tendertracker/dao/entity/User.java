@@ -25,9 +25,6 @@ public class User {
     private int status;
     private String confirmationToken;
 
-    @OneToMany(mappedBy = "applicant")
-    private Collection<CompanyRegistration> companyRegistrations;
-
     @OneToMany
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private List<UserRole> userRoles;
@@ -107,14 +104,6 @@ public class User {
 
     public void setConfirmationToken(String confirmationToken) {
         this.confirmationToken = confirmationToken;
-    }
-
-    public Collection<CompanyRegistration> getCompanyRegistrations() {
-        return companyRegistrations;
-    }
-
-    public void setCompanyRegistrations(Collection<CompanyRegistration> companyRegistrations) {
-        this.companyRegistrations = companyRegistrations;
     }
 
     public int getCreatedBy() {

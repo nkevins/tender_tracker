@@ -20,6 +20,20 @@ public class UserRole {
     @ManyToOne
     private Company company;
 
+    @Column(name = "created_by")
+    private int createdBy;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_date")
+    private Date createdDate;
+
+    @Column(name = "last_updated_by")
+    private int lastUpdatedBy;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "last_updated_date")
+    private Date lastUpdatedDate;
+
 
 
     public int getId() {
@@ -47,5 +61,37 @@ public class UserRole {
     }
     public void setCompany(Company company) {
         this.company = company;
+    }
+
+    public int getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(int createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public int getLastUpdatedBy() {
+        return lastUpdatedBy;
+    }
+
+    public void setLastUpdatedBy(int lastUpdatedBy) {
+        this.lastUpdatedBy = lastUpdatedBy;
+    }
+
+    public Date getLastUpdatedDate() {
+        return lastUpdatedDate;
+    }
+
+    public void setLastUpdatedDate(Date lastUpdatedDate) {
+        this.lastUpdatedDate = lastUpdatedDate;
     }
 }

@@ -2,7 +2,6 @@ package com.chlorocode.tendertracker.service;
 
 import com.chlorocode.tendertracker.dao.dto.CompanyRegistrationDetailsDTO;
 import com.chlorocode.tendertracker.dao.entity.Company;
-import com.chlorocode.tendertracker.dao.entity.CompanyRegistration;
 
 public interface CompanyService {
 

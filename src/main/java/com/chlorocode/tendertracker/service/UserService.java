@@ -3,8 +3,7 @@ package com.chlorocode.tendertracker.service;
 import com.chlorocode.tendertracker.dao.entity.RoleUser;
 import com.chlorocode.tendertracker.dao.entity.User;
 
-
-import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
 
@@ -12,15 +11,8 @@ public interface UserService {
 
     User findById(int id);
 
-    RoleUser addUserRole(RoleUser role);
-
-    Integer findUserRoleId(int userId,int companyId,int roleId);
-
-    User getUserRoleByUserIdRoleId(int userId, int roleId);
-
-    boolean updateUserRole(int id, int roleId, int modifiedBy);
-
-    boolean deleteUserRole(int id);
-
     String sendPasswordResetPIN(String email);
+
+    Optional<User> findByEmail(String email);
+
 }

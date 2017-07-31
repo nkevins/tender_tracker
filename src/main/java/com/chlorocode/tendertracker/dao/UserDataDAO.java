@@ -1,11 +1,9 @@
 package com.chlorocode.tendertracker.dao;
 
-import com.chlorocode.tendertracker.dao.entity.Company;
 import com.chlorocode.tendertracker.dao.entity.User;
 import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
+import org.springframework.stereotype.Repository;
 
-/**
- * Created by andy on 16/7/2017.
- */
+@Repository
 public interface UserDataDAO extends DataTablesRepository<User, Integer> {
 }
