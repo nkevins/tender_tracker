@@ -1,6 +1,7 @@
 package com.chlorocode.tendertracker.web.admin;
 
 import com.chlorocode.tendertracker.dao.dto.AlertDTO;
+import com.chlorocode.tendertracker.dao.dto.EvaluateCriteriaDTO;
 import com.chlorocode.tendertracker.dao.dto.TenderCreateDTO;
 import com.chlorocode.tendertracker.dao.dto.TenderItemCreateDTO;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
@@ -44,6 +45,15 @@ public class TenderController {
         this.codeValueService = codeValueService;
         this.tenderService = tenderService;
         this.s3Service = s3Service;
+    }
+
+    @GetMapping("/admin/tender/setcriteria/{tenderid}")
+    public String showTenderEvaluationCriteriaPage(@PathVariable(value="tenderid") int id, ModelMap model)
+    {
+        EvaluateCriteriaDTO criteriaDto = new EvaluateCriteriaDTO();
+        model.addAttribute("criteria",criteriaDto);
+        model.addAttribute("evaluationType", codeValueService.getByType("Evaluation_Point"));
+        return "admin/tender/tenderEvaluationCriteria";
     }
 
     @GetMapping("/admin/tender")
