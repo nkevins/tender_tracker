@@ -22,14 +22,19 @@ public class EvaluationCriteria {
 
     private String description;
     private int type;
+
+    @Column(name = "created_by")
     private int createdBy;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_date")
     private Date createdDate;
 
+    @Column(name = "last_updated_by")
     private int lastUpdatedBy;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "last_updated_date")
     private Date lastUpdatedDate;
 
     public int getId() {

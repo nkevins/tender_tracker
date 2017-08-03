@@ -47,15 +47,6 @@ public class TenderController {
         this.s3Service = s3Service;
     }
 
-    @GetMapping("/admin/tender/setcriteria/{tenderid}")
-    public String showTenderEvaluationCriteriaPage(@PathVariable(value="tenderid") int id, ModelMap model)
-    {
-        EvaluateCriteriaDTO criteriaDto = new EvaluateCriteriaDTO();
-        model.addAttribute("criteria",criteriaDto);
-        model.addAttribute("evaluationType", codeValueService.getByType("Evaluation_Point"));
-        return "admin/tender/tenderEvaluationCriteria";
-    }
-
     @GetMapping("/admin/tender")
     public String showTenderPage() {
         return "admin/tender/tenderView";
