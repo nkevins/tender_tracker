@@ -9,4 +9,5 @@ import java.util.List;
  */
 public interface EvaluationService {
     List<EvaluationCriteria> findEvaluationCriteriaByIdById(int tenderId);
+    EvaluationCriteria create(EvaluationCriteria svc);
 }

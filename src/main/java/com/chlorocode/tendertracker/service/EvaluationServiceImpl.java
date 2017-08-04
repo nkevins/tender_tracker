@@ -24,4 +24,8 @@ public class EvaluationServiceImpl implements EvaluationService {
     public List<EvaluationCriteria> findEvaluationCriteriaByIdById(int tenderId) {
         return evaDao.findEvaluationCriteriaByIdById(tenderId);
     }
+
+    public EvaluationCriteria create(EvaluationCriteria svc){
+       return evaDao.saveAndFlush(svc);
+    }
 }

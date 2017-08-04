@@ -1,18 +1,26 @@
 package com.chlorocode.tendertracker.dao.dto;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 /**
  * Created by andy on 2/8/2017.
  */
 public class EvaluateCriteriaDTO {
+    @NotBlank(message = "Please set the criteria")
     private String criteria1;
     private int type1;
     private int type2;
     private int type3;
     private int type4;
     private int type5;
+
+
     private String criteria2;
+
     private String criteria3;
+
     private String criteria4;
+
     private String criteria5;
 
     public int getType2() {
