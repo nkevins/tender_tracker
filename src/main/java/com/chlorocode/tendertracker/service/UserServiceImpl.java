@@ -14,9 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -69,12 +73,45 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean isPinValid(String email, String pin) {
+        Optional<User> u = userDAO.findOneByEmail(email);
+        if (u.isPresent()) {
+            User user = u.get();
+            if (user.getConfirmationToken() != null && user.getConfirmationToken().equals(pin)
+                    //&& user.getTokenExpireDate().after(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant())) // TODO need to add after added field in db.
+                    ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public User updatePassword(String email, String newPassword) {
+        Optional<User> u = userDAO.findOneByEmail(email);
+        if (u.isPresent()) {
+            User user = u.get();
+            user.setPassword(passwordEncoder.encode(newPassword));
+            user.setConfirmationToken(null);
+//            user.setTokenExpireDate(null);
+            user.setLastUpdatedDate(new Date());
+            user.setLastUpdatedBy(user.getId());
+
+            return userDAO.saveAndFlush(user);
+        }
+        return null;
+    }
+
+    @Override
     public String sendPasswordResetPIN(String email) {
         Optional<User> u = userDAO.findOneByEmail(email);
         if (u.isPresent()) {
             User user = u.get();
-            String otp = "TESTING"; // TODO generate OTP.
+            String otp = generatePIN(6);
             user.setConfirmationToken(otp);
+            LocalDateTime tokenExpirationDate = LocalDateTime.now();
+            tokenExpirationDate.plusDays(1);
+            //user.setTokenExpireDate(Date.from(tokenExpirationDate.atZone(ZoneId.systemDefault()).toInstant())); // TODO need to add after added field in db.
             if (notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.reset_otp, user)) {
                 userDAO.save(user);
                 return null;
@@ -82,5 +119,17 @@ public class UserServiceImpl implements UserService {
             return "Email cannot send to your email address. Please contact to administrator.";
         }
         return "No account found for that email address.";
+    }
+
+    private static String generatePIN(int length) {
+        // do not use I, O as looks like 1 and 0
+        String chars = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+        String pin = "";
+        Random rand = new Random();
+        for (int i = 0; i < length; ++i) {
+            int r = rand.nextInt(chars.length());
+            pin += chars.substring(r, r + 1);
+        }
+        return pin;
     }
 }

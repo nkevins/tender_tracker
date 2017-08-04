@@ -1,9 +1,6 @@
 package com.chlorocode.tendertracker.web;
 
-import com.chlorocode.tendertracker.dao.dto.AlertDTO;
-import com.chlorocode.tendertracker.dao.dto.ForgotPasswordDTO;
-import com.chlorocode.tendertracker.dao.dto.LoginDTO;
-import com.chlorocode.tendertracker.dao.dto.UserRegistrationDTO;
+import com.chlorocode.tendertracker.dao.dto.*;
 import com.chlorocode.tendertracker.dao.entity.Company;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
 import com.chlorocode.tendertracker.dao.entity.User;
@@ -25,7 +22,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.ServletRequest;
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -156,5 +152,49 @@ public class AuthController {
         model.addAttribute("alert", alert);
 
         return "forgotPassword";
+    }
+
+    @GetMapping("/resetPassword/{email}/{pin}")
+    public String resetPassword(@PathVariable(value="email") String email, @PathVariable(value="pin") String pin, ServletRequest request, Model model) {
+        ChangePasswordDTO dto = new ChangePasswordDTO();
+        if ((email = email.trim()).isEmpty() || (pin = pin.trim()).isEmpty() || !userService.isPinValid(email, pin)) {
+            // Error message. Don't show error message detail because of security.
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
+                    "Password reset PIN is invalid.");
+            model.addAttribute("alert", alert);
+        } else {
+            // Put email into DTO for maintain as hidden field.
+            dto.setEmail(email);
+        }
+        model.addAttribute("changePassword", dto);
+
+        return "changePassword";
+    }
+
+    @RequestMapping("/changePassword")
+    public String changePassword(@Valid @ModelAttribute("changePassword") ChangePasswordDTO form
+            , BindingResult result, RedirectAttributes redirectAttrs, ModelMap model) {
+        if (result.hasErrors()) {
+            AlertDTO alert = new AlertDTO(result.getAllErrors());
+            model.addAttribute("alert", alert);
+        } else if (!form.getPassword().equals(form.getConfirmPassword())) {
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
+                    "Password Confirmation is not same as the password");
+            model.addAttribute("alert", alert);
+        } else {
+            // TODO can check password complexity here.
+            if (userService.updatePassword(form.getEmail(), form.getPassword()) == null) {
+                AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER, "Failed to reset password.");
+                model.addAttribute("alert", alert);
+            } else {
+                AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
+                        "Password reset successfully.");
+                model.addAttribute("alert", alert);
+                form.setEmail(null);
+            }
+        }
+
+        model.addAttribute("changePassword", form);
+        return "changePassword";
     }
 }

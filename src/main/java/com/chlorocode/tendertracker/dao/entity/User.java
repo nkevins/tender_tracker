@@ -24,6 +24,7 @@ public class User {
     private String password;
     private int status;
     private String confirmationToken;
+//    private Date tokenExpireDate; //TODO need to add after field added in db.
 
     @OneToMany
     @JoinColumn(name = "user_id", referencedColumnName = "id")
@@ -145,4 +146,12 @@ public class User {
     public void setLastUpdatedDate(Date lastUpdatedDate) {
         this.lastUpdatedDate = lastUpdatedDate;
     }
+
+//    public Date getTokenExpireDate() {
+//        return tokenExpireDate;
+//    }
+//
+//    public void setTokenExpireDate(Date tokenExpireDate) {
+//        this.tokenExpireDate = tokenExpireDate;
+//    }
 }
