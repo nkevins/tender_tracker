@@ -23,6 +23,8 @@
     <!-- lightbox -->
     <link th:href="@{/assets/plugins/magnific-popup/magnific-popup.css}" rel="stylesheet" />
 
+    <!-- Dropzone -->
+    <link rel="stylesheet" th:href="@{/assets/plugins/dropzone/dropzone.css}" />
 
     <!-- Themes styles-->
     <link th:href="@{/assets/theme/css/theme.css}" rel="stylesheet" />
@@ -145,14 +147,16 @@
 
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script th:src="@{assets/plugins/jquery.js}"></script>
-<script th:src="@{assets/plugins/jquery.easing-1.3.pack.js}"></script>
+<script th:src="@{/assets/plugins/jquery.js}"></script>
+<script th:src="@{/assets/plugins/jquery.easing-1.3.pack.js}"></script>
 <!-- jQuery Bootstrap -->
-<script th:src="@{assets/plugins/bootstrap-3.3.2/js/bootstrap.min.js}"></script>
+<script th:src="@{/assets/plugins/bootstrap-3.3.2/js/bootstrap.min.js}"></script>
 <!-- Lightbox -->
-<script th:src="@{assets/plugins/magnific-popup/jquery.magnific-popup.min.js}"></script>
+<script th:src="@{/assets/plugins/magnific-popup/jquery.magnific-popup.min.js}"></script>
 <!-- Theme JS -->
-<script th:src="@{assets/theme/js/theme.js}"></script>
+<script th:src="@{/assets/theme/js/theme.js}"></script>
+<!-- Dropzone -->
+<script th:src="@{/assets/plugins/dropzone/dropzone.js}"></script>
 
 <th:block layout:fragment="scripts"></th:block>
 

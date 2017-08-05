@@ -71,6 +71,9 @@ public class Company {
     @OneToMany(mappedBy = "company")
     private List<Tender> tenders;
 
+    @OneToMany(mappedBy = "company")
+    private List<Bid> bids;
+
     public int getId() {
         return id;
     }
@@ -221,5 +224,9 @@ public class Company {
 
     public void setTenders(List<Tender> tenders) {
         this.tenders = tenders;
+    }
+
+    public List<Bid> getBids() {
+        return bids;
     }
 }

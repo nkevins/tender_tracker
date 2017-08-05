@@ -1,6 +1,8 @@
 package com.chlorocode.tendertracker.service;
 
+import com.chlorocode.tendertracker.dao.DocumentDAO;
 import com.chlorocode.tendertracker.dao.TenderDAO;
+import com.chlorocode.tendertracker.dao.entity.Document;
 import com.chlorocode.tendertracker.dao.entity.Tender;
 import com.chlorocode.tendertracker.dao.entity.TenderItem;
 import com.chlorocode.tendertracker.exception.ApplicationException;
@@ -9,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Calendar;
@@ -27,12 +30,20 @@ public class TenderServiceImplTest {
     @Mock
     private TenderDAO tenderDAO;
 
+    @Mock
+    private DocumentDAO documentDAO;
+
+    @Mock
+    private S3Wrapper s3Wrapper;
+
     @InjectMocks
     private TenderServiceImpl tenderServiceImpl;
 
     @Test
     public void testCreateTender() {
         List<MultipartFile> files = new LinkedList<>();
+        MockMultipartFile firstFile = new MockMultipartFile("data", "filename.txt", "text/plain", "some content".getBytes());
+        files.add(firstFile);
 
         Tender t = new Tender();
         t.setOpenDate(new Date());
@@ -58,11 +69,18 @@ public class TenderServiceImplTest {
 
         assertEquals(t, i2.getTender());
 
-        when(tenderDAO.save(any(Tender.class))).thenReturn(t);
+        t.setId(2);
+        when(tenderDAO.save(t)).thenReturn(t);
 
         Tender result = tenderServiceImpl.createTender(t, files);
         verify(tenderDAO, times(1)).save(any(Tender.class));
         assertEquals(1, result.getStatus());
+        verify(s3Wrapper, times(1)).upload(any(), eq("tender_documents/2/filename.txt"));
+        verify(documentDAO, times(1)).save(any(Document.class));
+        assertEquals(1, t.getDocuments().size());
+
+        // Verify document type is tender document
+        assertEquals(1, result.getDocuments().get(0).getDocument().getType());
     }
 
     @Test

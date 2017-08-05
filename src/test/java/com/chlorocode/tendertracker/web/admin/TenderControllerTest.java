@@ -118,7 +118,8 @@ public class TenderControllerTest {
 
         this.mvc.perform(
                 get("/admin/tender/1").with(user(currentUser))
-        ).andExpect(view().name("admin/tender/tenderDetails"));
+        ).andExpect(status().isOk())
+                .andExpect(view().name("admin/tender/tenderDetails"));
     }
 
     @Test

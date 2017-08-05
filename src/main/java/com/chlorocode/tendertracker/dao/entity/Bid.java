@@ -2,19 +2,17 @@ package com.chlorocode.tendertracker.dao.entity;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 @Entity
-@Table(name = "tender_item")
-public class TenderItem {
+public class Bid {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    private int uom;
-    private float quantity;
-    private String description;
+    private double totalAmount;
     private int createdBy;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -28,8 +26,20 @@ public class TenderItem {
     @ManyToOne
     private Tender tender;
 
-    @OneToMany(mappedBy = "tenderItem")
+    @ManyToOne
+    private Company company;
+
+    @OneToMany(mappedBy = "bid", cascade = CascadeType.PERSIST)
     private List<BidItem> bidItems;
+
+    @OneToMany(mappedBy = "bid", cascade = CascadeType.PERSIST)
+    private List<BidDocument> documents;
+
+    public Bid() {
+        this.bidItems = new LinkedList<>();
+        this.documents = new LinkedList<>();
+        this.totalAmount = 0;
+    }
 
     public int getId() {
         return id;
@@ -39,28 +49,8 @@ public class TenderItem {
         this.id = id;
     }
 
-    public int getUom() {
-        return uom;
-    }
-
-    public void setUom(int uom) {
-        this.uom = uom;
-    }
-
-    public float getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(float quantity) {
-        this.quantity = quantity;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public double getTotalAmount() {
+        return totalAmount;
     }
 
     public int getCreatedBy() {
@@ -103,7 +93,30 @@ public class TenderItem {
         this.tender = tender;
     }
 
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
+    }
+
     public List<BidItem> getBidItems() {
         return bidItems;
+    }
+
+    public void addBidItem(BidItem bidItem) {
+        bidItem.setBid(this);
+        this.bidItems.add(bidItem);
+        this.totalAmount += bidItem.getAmount();
+    }
+
+    public List<BidDocument> getDocuments() {
+        return documents;
+    }
+
+    public void addBidDocument(BidDocument bidDocument) {
+        bidDocument.setBid(this);
+        this.documents.add(bidDocument);
     }
 }

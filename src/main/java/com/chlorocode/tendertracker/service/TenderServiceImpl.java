@@ -5,6 +5,7 @@ import com.chlorocode.tendertracker.dao.TenderDAO;
 import com.chlorocode.tendertracker.dao.entity.Document;
 import com.chlorocode.tendertracker.dao.entity.Tender;
 import com.chlorocode.tendertracker.dao.entity.TenderDocument;
+import com.chlorocode.tendertracker.dao.entity.TenderItem;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -77,6 +78,11 @@ public class TenderServiceImpl implements TenderService {
     @Override
     public Tender findById(int id) {
         return tenderDAO.findOne(id);
+    }
+
+    @Override
+    public TenderItem findTenderItemById(int id) {
+        return tenderDAO.findTenderItemById(id);
     }
 
     @Override

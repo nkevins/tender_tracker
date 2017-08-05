@@ -2,19 +2,16 @@ package com.chlorocode.tendertracker.dao.entity;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 @Entity
-@Table(name = "tender_item")
-public class TenderItem {
+@Table(name = "bid_item")
+public class BidItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    private int uom;
-    private float quantity;
-    private String description;
+    private double amount;
     private int createdBy;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -26,10 +23,10 @@ public class TenderItem {
     private Date lastUpdatedDate;
 
     @ManyToOne
-    private Tender tender;
+    private Bid bid;
 
-    @OneToMany(mappedBy = "tenderItem")
-    private List<BidItem> bidItems;
+    @ManyToOne
+    private TenderItem tenderItem;
 
     public int getId() {
         return id;
@@ -39,28 +36,12 @@ public class TenderItem {
         this.id = id;
     }
 
-    public int getUom() {
-        return uom;
+    public double getAmount() {
+        return amount;
     }
 
-    public void setUom(int uom) {
-        this.uom = uom;
-    }
-
-    public float getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(float quantity) {
-        this.quantity = quantity;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public void setAmount(double amount) {
+        this.amount = amount;
     }
 
     public int getCreatedBy() {
@@ -95,15 +76,19 @@ public class TenderItem {
         this.lastUpdatedDate = lastUpdatedDate;
     }
 
-    public Tender getTender() {
-        return tender;
+    public Bid getBid() {
+        return bid;
     }
 
-    public void setTender(Tender tender) {
-        this.tender = tender;
+    public void setBid(Bid bid) {
+        this.bid = bid;
     }
 
-    public List<BidItem> getBidItems() {
-        return bidItems;
+    public TenderItem getTenderItem() {
+        return tenderItem;
+    }
+
+    public void setTenderItem(TenderItem tenderItem) {
+        this.tenderItem = tenderItem;
     }
 }

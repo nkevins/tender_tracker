@@ -1,6 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorator="layout">
 <head>
     <title>Tender Tracker</title>
@@ -64,6 +65,7 @@
                         <td th:text="${codeValueService.getDescription('uom', i.uom)}">Pcs</td>
                     </tr>
                 </table>
+                <a th:href="@{/tender/__${tender.id}__/respond}" class="btn btn-block btn-theme btn-success" sec:authorize="hasAnyRole('ADMIN','SUBMITTER')">Submit Respond</a>
             </div>
             <!-- end box item details -->
         </div>

@@ -1,0 +1,115 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout">
+<head>
+    <title>Tender Tracker</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="row">
+        <div class="col-md-12">
+
+            <!-- box item details -->
+            <div class="block-section box-item-details">
+                <div class="alert alert-danger" style="display:none;" id="submitTenderError"></div>
+                <h2 class="title">Submit Tender Response</h2>
+                <h4>Tender Information</h4>
+                <p>Tender Name: <span th:text="${tender.title}"></span></p>
+                <p>Company Name: <span th:text="${tender.company.name}"></span></p>
+
+                <hr />
+
+                <h4>Tenderer Information</h4>
+                <p>Tenderer Name: <span th:text="${company.name}"></span></p>
+
+                <hr />
+
+                <form th:action="@{/tender/respond}" method="POST" id="submitTenderForm" enctype="multipart/form-data" th:object="${data}">
+                    <h4>Quotation:</h4>
+                    <table class="table">
+                        <tr>
+                            <th>S/N</th>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                            <th>UOM</th>
+                            <th>Quoted Price</th>
+                        </tr>
+                        <tr th:each="i, iterator : ${data.items}">
+                            <td th:text="${iterator.index + 1}">1</td>
+                            <td th:text="${i.item.description}">Item 1</td>
+                            <td th:text="${i.item.quantity}">5</td>
+                            <td th:text="${codeValueService.getDescription('uom', i.item.uom)}">Pcs</td>
+                            <td>
+                                <input type="number" th:field="*{items[__${iterator.index}__].quotedPrice}" required="required" />
+                                <input type="hidden" th:field="*{items[__${iterator.index}__].itemId}" th:value="${i.item.id}" />
+                            </td>
+                        </tr>
+                    </table>
+
+                    <h4>Proposal:</h4>
+                    <div class="dropzone" id="attachmentUploads"></div>
+
+                    <br />
+
+                    <input type="hidden" name="tenderId" th:value="${tender.id}" />
+                    <button class="btn btn-block btn-theme btn-success" id="mainSubmitBtn">Submit</button>
+                </form>
+
+            </div>
+            <!-- end box item details -->
+        </div>
+    </div>
+</div>
+</body>
+<th:block layout:fragment="scripts">
+    <script type="text/javascript">
+        // Attachment uploader
+        Dropzone.options.attachmentUploads = {
+            url: '/tender/respond',
+            autoProcessQueue: false,
+            uploadMultiple: true,
+            parallelUploads: 5,
+            maxFiles: 5,
+            maxFilesize: 1,
+            addRemoveLinks: true,
+            paramName: 'attachments',
+            init: function() {
+                dzClosure = this; // Makes sure that 'this' is understood inside the functions below.
+
+                // for Dropzone to process the queue (instead of default form behavior):
+                document.getElementById("mainSubmitBtn").addEventListener("click", function(e) {
+                    // Make sure that the form isn't actually being sent.
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    if (dzClosure.getQueuedFiles().length > 0) {
+                        dzClosure.processQueue();
+                    } else {
+                        $("#submitTenderForm").submit();
+                    }
+                });
+
+                //send all the form data along with the files:
+                this.on("sendingmultiple", function(data, xhr, formData) {
+                    $("form").find("input").each(function(){
+                        formData.append($(this).attr("name"), $(this).val());
+                    });
+                });
+            },
+            error: function(file, errorMessage) {
+                $.each(dzClosure.files, function(i, file) {
+                    file.status = Dropzone.QUEUED
+                });
+
+                $("#submitTenderError").text(errorMessage);
+                $('#submitTenderError').show();
+                $('html,body').animate({scrollTop: 0});
+            },
+            success: function(file, response) {
+                window.location.replace("/");
+            }
+        }
+    </script>
+</th:block>
+</html>
