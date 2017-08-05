@@ -32,7 +32,7 @@ public class MailSenderServiceImpl implements MailSenderService {
     public static final String OTP_TEMPLATE = "<html><body>"
             + "<p>Dear %s,</p>"
             + "<p>Please click on following link to reset password for your account."
-            + "<br><a href=\"http://localhost:8080/resetPassword?email='%s'&pin='%s'\">\"http://localhost:8080/resetPassword?email='%s'&pin='%s'\"</a></p>"
+            + "<br><a href=\"http://localhost:8080/resetPassword/%s/%s\">\"http://localhost:8080/resetPassword/%s/%s\"</a></p>"
             + "<p>Regards,<br>Tender Tracker</p>"
             + "</body></html>";
 

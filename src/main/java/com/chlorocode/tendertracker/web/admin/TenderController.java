@@ -1,6 +1,7 @@
 package com.chlorocode.tendertracker.web.admin;
 
 import com.chlorocode.tendertracker.dao.dto.AlertDTO;
+import com.chlorocode.tendertracker.dao.dto.EvaluateCriteriaDTO;
 import com.chlorocode.tendertracker.dao.dto.TenderCreateDTO;
 import com.chlorocode.tendertracker.dao.dto.TenderItemCreateDTO;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;

@@ -15,4 +15,8 @@ public interface UserService {
 
     Optional<User> findByEmail(String email);
 
+    boolean isPinValid(String email, String pin);
+
+    User updatePassword(String email, String newPassword);
+
 }
