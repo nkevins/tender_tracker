@@ -10,4 +10,6 @@ import java.util.List;
 public interface EvaluationService {
     List<EvaluationCriteria> findEvaluationCriteriaByIdById(int tenderId);
     EvaluationCriteria create(EvaluationCriteria svc);
+    EvaluationCriteria findCriteriaById(int id);
+    EvaluationCriteria update(EvaluationCriteria svc);
 }

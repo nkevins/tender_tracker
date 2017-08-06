@@ -6,14 +6,17 @@ import org.hibernate.validator.constraints.NotBlank;
  * Created by andy on 2/8/2017.
  */
 public class EvaluateCriteriaDTO {
-    @NotBlank(message = "Please set the criteria")
+
     private String criteria1;
     private int type1;
     private int type2;
     private int type3;
     private int type4;
     private int type5;
-
+    private int id1;
+    private int id2;
+    private int id3;
+    private int id4;
 
     private String criteria2;
 
@@ -22,6 +25,38 @@ public class EvaluateCriteriaDTO {
     private String criteria4;
 
     private String criteria5;
+
+    public int getId1() {
+        return id1;
+    }
+
+    public void setId1(int id1) {
+        this.id1 = id1;
+    }
+
+    public int getId2() {
+        return id2;
+    }
+
+    public void setId2(int id2) {
+        this.id2 = id2;
+    }
+
+    public int getId3() {
+        return id3;
+    }
+
+    public void setId3(int id3) {
+        this.id3 = id3;
+    }
+
+    public int getId4() {
+        return id4;
+    }
+
+    public void setId4(int id4) {
+        this.id4 = id4;
+    }
 
     public int getType2() {
         return type2;

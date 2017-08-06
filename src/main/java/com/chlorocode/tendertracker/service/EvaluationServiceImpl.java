@@ -28,4 +28,14 @@ public class EvaluationServiceImpl implements EvaluationService {
     public EvaluationCriteria create(EvaluationCriteria svc){
        return evaDao.saveAndFlush(svc);
     }
+
+    public EvaluationCriteria update(EvaluationCriteria svc){
+        return evaDao.save(svc);
+    }
+
+    public EvaluationCriteria findCriteriaById(int id){
+        return evaDao.findOne(id);
+    }
+
+
 }
