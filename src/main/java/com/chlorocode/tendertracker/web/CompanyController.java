@@ -6,6 +6,7 @@ import com.chlorocode.tendertracker.dao.entity.Company;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
 import com.chlorocode.tendertracker.service.CodeValueService;
 import com.chlorocode.tendertracker.service.CompanyService;
+import com.chlorocode.tendertracker.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +15,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -24,11 +26,13 @@ public class CompanyController {
 
     private CodeValueService codeValueService;
     private CompanyService companyService;
+    private UserService userService;
 
     @Autowired
-    public CompanyController(CodeValueService codeValueService, CompanyService companyService) {
+    public CompanyController(CodeValueService codeValueService, CompanyService companyService, UserService userService) {
         this.codeValueService = codeValueService;
         this.companyService = companyService;
+        this.userService = userService;
     }
 
     @GetMapping("registerCompany")
@@ -76,5 +80,19 @@ public class CompanyController {
                 "Company Registered Successfuly");
         redirectAttrs.addFlashAttribute("alert", alert);
         return "redirect:/";
+    }
+
+    @GetMapping("/company/{id}")
+    public String showCompanyDetail(@PathVariable(value = "id") Integer id, ModelMap model) {
+        Company company = companyService.findById(id);
+        if (company == null || company.getStatus() != 1) {
+            return "redirect:/";
+        }
+
+        model.addAttribute("company", company);
+        model.addAttribute("areaOfBusiness", codeValueService.getDescription("area_of_business", company.getAreaOfBusiness()));
+        model.addAttribute("contact", userService.findById(company.getCreatedBy()));
+
+        return "companyDetails";
     }
 }

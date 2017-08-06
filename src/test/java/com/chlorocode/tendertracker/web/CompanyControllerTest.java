@@ -4,6 +4,7 @@ import com.chlorocode.tendertracker.dao.entity.Company;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
 import com.chlorocode.tendertracker.dao.entity.User;
 import com.chlorocode.tendertracker.service.CompanyService;
+import com.chlorocode.tendertracker.service.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,9 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -43,6 +42,9 @@ public class CompanyControllerTest {
 
     @MockBean
     private CompanyService companyService;
+
+    @MockBean
+    private UserService userService;
 
     @Before
     public void setUp(){
@@ -94,5 +96,48 @@ public class CompanyControllerTest {
                 )
                 .andExpect(view().name("redirect:/"));
         verify(companyService, times(1)).registerCompany(any(Company.class));
+    }
+
+    @Test
+    public void testViewCompanyDetails() throws Exception {
+        Company company = new Company();
+        company.setCreatedBy(1);
+        company.setStatus(1);
+        User user = new User();
+
+        when(companyService.findById(1)).thenReturn(company);
+        when(userService.findById(1)).thenReturn(user);
+
+        this.mvc.perform(get("/company/1"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("companyDetails"));
+
+        verify(companyService, times(1)).findById(1);
+    }
+
+    @Test
+    public void testViewCompanyNotExist() throws Exception {
+        when(companyService.findById(1)).thenReturn(null);
+
+        this.mvc.perform(get("/company/1"))
+                .andExpect(view().name("redirect:/"));
+
+        verify(companyService, times(1)).findById(1);
+    }
+
+    @Test
+    public void testViewCompanyStatusNotAllowed() throws Exception {
+        Company company = new Company();
+        company.setCreatedBy(1);
+        company.setStatus(0);
+        User user = new User();
+
+        when(companyService.findById(1)).thenReturn(company);
+        when(userService.findById(1)).thenReturn(user);
+
+        this.mvc.perform(get("/company/1"))
+                .andExpect(view().name("redirect:/"));
+
+        verify(companyService, times(1)).findById(1);
     }
 }

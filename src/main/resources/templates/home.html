@@ -120,7 +120,7 @@
                                     <a th:href="@{/tender/} + ${t.id}" class="" th:text="${t.title}" target="_blank">Lorem ipsum dolor sit amet</a>
                                 </h3>
                                 <h5>
-                                    <span class="color-black" th:text="${t.company.name}">Ngee Ann Polytechnic</span>
+                                    <a class="color-black" th:text="${t.company.name}" th:href="@{/company/} + ${t.company.id}">Ngee Ann Polytechnic</a>
                                 </h5>
                                 <div>
                                     <span class="color-black">Open: <span th:text="${#dates.format(t.openDate, 'dd MMM yyyy')}"></span></span>

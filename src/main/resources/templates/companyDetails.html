@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout">
+<head>
+    <title>Tender Tracker</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <h1 th:text="${company.name}">Company Name</h1>
+            <hr />
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <h4>Company Information</h4>
+                    <p><strong>UEN: </strong><span th:text="${company.uen}"></span></p>
+                    <p><strong>GST Reg No: </strong><span th:text="${company.gstRegNo}"></span></p>
+                    <p><strong>Area of Business: </strong><span th:text="${areaOfBusiness}"></span></p>
+                </div>
+                <div class="col-sm-6">
+                    <h4>Address</h4>
+                    <p th:text="${company.address1}"></p>
+                    <p th:text="${company.address2}"></p>
+                    <p th:text="${company.city} + ' ' + ${company.postalCode}"></p>
+                </div>
+            </div>
+
+            <hr />
+
+            <h4>Contact Person</h4>
+            <p><strong>Name: </strong><span th:text="${contact.name}"></span></p>
+            <p><strong>Email: </strong><span th:text="${contact.email}"></span></p>
+            <p><strong>Contact No: </strong><span th:text="${contact.contactNo}"></span></p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
