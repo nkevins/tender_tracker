@@ -10,13 +10,12 @@ import com.chlorocode.tendertracker.service.CodeValueService;
 import com.chlorocode.tendertracker.service.S3Wrapper;
 import com.chlorocode.tendertracker.service.TenderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,6 +44,19 @@ public class TenderPublicController {
         Tender tender = tenderService.findById(id);
         if (tender == null) {
             return "redirect:/";
+        }
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && !(auth instanceof AnonymousAuthenticationToken)) {
+            CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            TenderBookmark tenderBookmark = tenderService.findTenderBookmark(tender.getId(), usr.getId());
+            boolean isBookmarked;
+            if (tenderBookmark == null) {
+                isBookmarked = false;
+            } else {
+                isBookmarked = true;
+            }
+            model.addAttribute("isBookmarked", isBookmarked);
         }
 
         model.addAttribute("tender", tender);
@@ -147,5 +159,24 @@ public class TenderPublicController {
         } else {
             return "redirect:/";
         }
+    }
+
+    @PostMapping("/tender/bookmark")
+    public String bookmarkTender(@RequestParam("tenderId") int tenderId) {
+        CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Tender tender = tenderService.findById(tenderId);
+
+        tenderService.bookmarkTender(tender, usr.getUser());
+
+        return "redirect:/tender/" + tenderId;
+    }
+
+    @PostMapping("/tender/removeBookmark")
+    public String removeTenderBookmark(@RequestParam("tenderId") int tenderId) {
+        CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        tenderService.removeTenderBookmark(tenderId, usr.getUser().getId());
+
+        return "redirect:/tender/" + tenderId;
     }
 }

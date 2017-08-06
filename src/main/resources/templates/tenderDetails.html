@@ -11,12 +11,25 @@
     <div class="row">
         <div class="col-md-12">
 
+            <th:block th:if="${alert != null}">
+                <div th:replace="fragments/alert :: alert (type=${alert.getType()}, messages=${alert.messages})">Alert</div>
+            </th:block>
+
             <!-- box item details -->
             <div class="block-section box-item-details">
                 <h2 class="title" th:text="${tender.title}">
                     Lorem ipsum dolor sit amet
                 </h2>
                 <h3 th:text="${tender.company.name}">Ngee Ann Polytechnic</h3>
+
+                <form th:action="@{/tender/bookmark}" method="POST" sec:authorize="hasAnyRole('USER')" th:unless="${isBookmarked}">
+                    <input type="hidden" name="tenderId" th:value="${tender.id}" />
+                    <button type="submit" class="btn btn-primary"><span class="fa fa-bookmark"></span> Bookmark</button>
+                </form>
+                <form th:action="@{/tender/removeBookmark}" method="POST" sec:authorize="hasAnyRole('USER')" th:if="${isBookmarked}">
+                    <input type="hidden" name="tenderId" th:value="${tender.id}" />
+                    <button type="submit" class="btn btn-danger"><span class="fa fa-bookmark"></span> Remove Bookmark</button>
+                </form>
 
                 <div class="row">
                     <div class="col-md-6">

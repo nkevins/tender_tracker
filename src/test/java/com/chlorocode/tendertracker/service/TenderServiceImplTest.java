@@ -1,13 +1,13 @@
 package com.chlorocode.tendertracker.service;
 
 import com.chlorocode.tendertracker.dao.DocumentDAO;
+import com.chlorocode.tendertracker.dao.TenderBookmarkDAO;
 import com.chlorocode.tendertracker.dao.TenderDAO;
-import com.chlorocode.tendertracker.dao.entity.Document;
-import com.chlorocode.tendertracker.dao.entity.Tender;
-import com.chlorocode.tendertracker.dao.entity.TenderItem;
+import com.chlorocode.tendertracker.dao.entity.*;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -35,6 +35,9 @@ public class TenderServiceImplTest {
 
     @Mock
     private S3Wrapper s3Wrapper;
+
+    @Mock
+    private TenderBookmarkDAO tenderBookmarkDAO;
 
     @InjectMocks
     private TenderServiceImpl tenderServiceImpl;
@@ -127,5 +130,30 @@ public class TenderServiceImplTest {
         }
 
         verify(tenderDAO, never()).save(any(Tender.class));
+    }
+
+    @Test
+    public void testCreateTenderBookmark() {
+        Tender tender = new Tender();
+        User user = new User();
+
+        tenderServiceImpl.bookmarkTender(tender, user);
+
+        ArgumentCaptor<TenderBookmark> argument = ArgumentCaptor.forClass(TenderBookmark.class);
+        verify(tenderBookmarkDAO, times(1)).save(any(TenderBookmark.class));
+        verify(tenderBookmarkDAO).save(argument.capture());
+        assertEquals(tender, argument.getValue().getTender());
+        assertEquals(user, argument.getValue().getUser());
+    }
+
+    @Test
+    public void testRemoveTenderBookmark() {
+        TenderBookmark tenderBookmark = new TenderBookmark();
+
+        when(tenderBookmarkDAO.findTenderBookmarkByUserAndTender(1, 1)).thenReturn(tenderBookmark);
+
+        tenderServiceImpl.removeTenderBookmark(1, 1);
+
+        verify(tenderBookmarkDAO, times(1)).delete(tenderBookmark);
     }
 }

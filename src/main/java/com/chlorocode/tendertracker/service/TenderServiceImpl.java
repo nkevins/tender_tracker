@@ -1,11 +1,9 @@
 package com.chlorocode.tendertracker.service;
 
 import com.chlorocode.tendertracker.dao.DocumentDAO;
+import com.chlorocode.tendertracker.dao.TenderBookmarkDAO;
 import com.chlorocode.tendertracker.dao.TenderDAO;
-import com.chlorocode.tendertracker.dao.entity.Document;
-import com.chlorocode.tendertracker.dao.entity.Tender;
-import com.chlorocode.tendertracker.dao.entity.TenderDocument;
-import com.chlorocode.tendertracker.dao.entity.TenderItem;
+import com.chlorocode.tendertracker.dao.entity.*;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,12 +21,14 @@ public class TenderServiceImpl implements TenderService {
     private TenderDAO tenderDAO;
     private DocumentDAO documentDAO;
     private S3Wrapper s3Wrapper;
+    private TenderBookmarkDAO tenderBookmarkDAO;
 
     @Autowired
-    public TenderServiceImpl(TenderDAO tenderDAO, DocumentDAO documentDAO, S3Wrapper s3Wrapper) {
+    public TenderServiceImpl(TenderDAO tenderDAO, DocumentDAO documentDAO, S3Wrapper s3Wrapper, TenderBookmarkDAO tenderBookmarkDAO) {
         this.tenderDAO = tenderDAO;
         this.documentDAO = documentDAO;
         this.s3Wrapper = s3Wrapper;
+        this.tenderBookmarkDAO = tenderBookmarkDAO;
     }
 
     @Override
@@ -92,5 +92,29 @@ public class TenderServiceImpl implements TenderService {
         iterable.forEach(tenders::add);
 
         return tenders;
+    }
+
+    @Override
+    public TenderBookmark findTenderBookmark(int tenderId, int userId) {
+        return tenderBookmarkDAO.findTenderBookmarkByUserAndTender(tenderId, userId);
+    }
+
+    @Override
+    public TenderBookmark bookmarkTender(Tender tender, User user) {
+        TenderBookmark tenderBookmark = new TenderBookmark();
+        tenderBookmark.setUser(user);
+        tenderBookmark.setTender(tender);
+        tenderBookmark.setCreatedBy(user.getId());
+        tenderBookmark.setCreatedDate(new Date());
+        tenderBookmark.setLastUpdatedBy(user.getId());
+        tenderBookmark.setLastUpdatedDate(new Date());
+
+        return tenderBookmarkDAO.save(tenderBookmark);
+    }
+
+    @Override
+    public void removeTenderBookmark(int tenderId, int userId) {
+        TenderBookmark tenderBookmark = findTenderBookmark(tenderId, userId);
+        tenderBookmarkDAO.delete(tenderBookmark);
     }
 }

@@ -148,4 +148,32 @@ public class TenderPublicControllerTest {
 
         verify(bidService, times(1)).saveBid(any(Bid.class), any());
     }
+
+    @Test
+    public void testBookmarkTender() throws Exception {
+        Tender tender = new Tender();
+
+        when(tenderService.findById(15)).thenReturn(tender);
+
+        this.mvc.perform(
+                post("/tender/bookmark")
+                        .param("tenderId", "15")
+                        .with(user(currentUser))
+                        .with(csrf())
+        ).andExpect(view().name("redirect:/tender/15"));
+
+        verify(tenderService, times(1)).bookmarkTender(tender, currentUser.getUser());
+    }
+
+    @Test
+    public void testRemoveTenderBookmark() throws Exception {
+        this.mvc.perform(
+                post("/tender/removeBookmark")
+                        .param("tenderId", "15")
+                        .with(user(currentUser))
+                        .with(csrf())
+        ).andExpect(view().name("redirect:/tender/15"));
+
+        verify(tenderService, times(1)).removeTenderBookmark(15, currentUser.getId());
+    }
 }

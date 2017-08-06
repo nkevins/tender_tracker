@@ -6,6 +6,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 @Entity
@@ -30,6 +31,9 @@ public class User {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private List<UserRole> userRoles;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
+    private List<TenderBookmark> tenderBookmarks;
+
     private int createdBy;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -41,13 +45,16 @@ public class User {
     private Date lastUpdatedDate;
 
 
-    public User() { }
+    public User() {
+        this.tenderBookmarks = new LinkedList<>();
+    }
 
     public User(String name, String email, String contactNo, String password) {
         this.name = name;
         this.email = email;
         this.contactNo = contactNo;
         this.password = password;
+        this.tenderBookmarks = new LinkedList<>();
     }
 
 
@@ -145,6 +152,10 @@ public class User {
 
     public void setLastUpdatedDate(Date lastUpdatedDate) {
         this.lastUpdatedDate = lastUpdatedDate;
+    }
+
+    public List<TenderBookmark> getTenderBookmarks() {
+        return tenderBookmarks;
     }
 
 //    public Date getTokenExpireDate() {
