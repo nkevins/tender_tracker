@@ -67,6 +67,7 @@
                 },{
                     'targets' : 3,
                     'data' : 'id',
+                    'orderable' : false,
                     'render' : function(data,type,full,meta) {
                         return '<a type="button" class="btn btn-primary" href="/admin/companyUser/' + data + '">Edit</a> <form method="POST" style="display: inline;" action="/admin/companyUser/remove"><button type="submit" class="btn btn-danger">Remove</button><input type="hidden" name="id" value="' + data + '" /><input type="hidden" name="_csrf" value="' + csrf + '" /></form>';
                     }

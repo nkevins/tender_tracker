@@ -8,7 +8,7 @@ import java.util.List;
  * Created by andy on 3/8/2017.
  */
 public interface EvaluationService {
-    List<EvaluationCriteria> findEvaluationCriteriaByIdById(int tenderId);
+    List<EvaluationCriteria> findEvaluationCriteriaByTender(int tenderId);
     EvaluationCriteria create(EvaluationCriteria svc);
     EvaluationCriteria findCriteriaById(int id);
     EvaluationCriteria update(EvaluationCriteria svc);

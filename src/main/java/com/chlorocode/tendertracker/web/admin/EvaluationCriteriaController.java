@@ -1,7 +1,6 @@
 package com.chlorocode.tendertracker.web.admin;
 
 import com.chlorocode.tendertracker.dao.dto.AlertDTO;
-import com.chlorocode.tendertracker.dao.dto.CompanyRegistrationDTO;
 import com.chlorocode.tendertracker.dao.dto.EvaluateCriteriaDTO;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
 import com.chlorocode.tendertracker.dao.entity.EvaluationCriteria;
@@ -9,18 +8,20 @@ import com.chlorocode.tendertracker.dao.entity.Tender;
 import com.chlorocode.tendertracker.logging.TTLogger;
 import com.chlorocode.tendertracker.service.CodeValueService;
 import com.chlorocode.tendertracker.service.EvaluationService;
-import org.hibernate.Criteria;
+import com.chlorocode.tendertracker.service.TenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
-import javax.servlet.http.HttpSession;
 
 /**
  * Created by andy on 3/8/2017.
@@ -29,350 +30,102 @@ import javax.servlet.http.HttpSession;
 public class EvaluationCriteriaController {
 
     private CodeValueService codeValueService;
+    private TenderService tenderService;
     private EvaluationService evaSvc;
     private String className;
 
     @Autowired
-    public EvaluationCriteriaController(CodeValueService codeValueService,EvaluationService evaSvc)
+    public EvaluationCriteriaController(CodeValueService codeValueService, EvaluationService evaSvc, TenderService tenderService)
     {
         this.codeValueService = codeValueService;
         this.evaSvc = evaSvc;
+        this.tenderService = tenderService;
         this.className = this.getClass().getName();
     }
 
-    @PostMapping("/admin/tender/criteria4/save")
-    public String saveTenderCriteria4( ModelMap model,@Valid @ModelAttribute("criteria") EvaluateCriteriaDTO form,HttpServletRequest request)
+    @GetMapping("/admin/tender/{tenderid}/setcriteria")
+    public String showTenderEvaluationCriteriaPage(@PathVariable(value="tenderid") int tenderId, ModelMap model)
     {
-        HttpSession sess = request.getSession();
-        if(sess.getAttribute("tenderId") == null){
-            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
-                    "Error occur, please contact administrator");
-            model.addAttribute("alert", alert);
-            TTLogger.error(className,"tender id is null");
-            return "admin/tender/tenderEvaluationCriteria";
+        Tender tender = tenderService.findById(tenderId);
+        if (tender == null) {
+            TTLogger.error(className, "Unable to find tender, tenderID: " + tenderId);
+            return "redirect:/admin/tender";
         }
 
-        if(sess.getAttribute("evaluationCriteriaDto") == null){
-            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
-                    "Error occur, please contact administrator");
-            model.addAttribute("alert", alert);
-            TTLogger.error(className,"evaluationCriteria object is null");
-            return "admin/tender/tenderEvaluationCriteria";
-        }
-        EvaluateCriteriaDTO sessionDto = (EvaluateCriteriaDTO) sess.getAttribute("evaluationCriteriaDto");
-        int tenderId = (int) sess.getAttribute("tenderId");
         model.addAttribute("evaluationType", codeValueService.getByType("Evaluation_Point"));
+        List<EvaluationCriteria> lstCriteria = evaSvc.findEvaluationCriteriaByTender(tenderId);
 
-        try{
-            CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            EvaluationCriteria eva = new EvaluationCriteria();
-            Tender tender = new Tender();
-
-            if(sessionDto.getId4() > 0){
-                EvaluationCriteria dbEva = evaSvc.findCriteriaById(sessionDto.getId4());
-                dbEva.setType(form.getType4());
-                dbEva.setDescription(form.getCriteria4());
-                dbEva.setLastUpdatedBy(usr.getId());
-                dbEva.setLastUpdatedDate(new Date());
-                evaSvc.update(dbEva);
-            }else{
-                //save 4th criteria
-                eva = new EvaluationCriteria();
-                eva.setCreatedBy(usr.getId());
-                eva.setLastUpdatedBy(usr.getId());
-                eva.setCreatedDate(new Date());
-                tender = new Tender();
-                tender.setId(tenderId);
-                eva.setTender(tender);
-                eva.setLastUpdatedDate(new Date());
-                eva.setDescription(form.getCriteria4());
-                eva.setType(form.getType4());
-                evaSvc.create(eva);
+        List<EvaluateCriteriaDTO> dto = new LinkedList<>();
+        if (lstCriteria != null) {
+            for (EvaluationCriteria c : lstCriteria) {
+                EvaluateCriteriaDTO criteria = new EvaluateCriteriaDTO();
+                criteria.setId(c.getId());
+                criteria.setTenderId(c.getTender().getId());
+                criteria.setType(c.getType());
+                criteria.setDescription(c.getDescription());
+                dto.add(criteria);
             }
-            List<EvaluationCriteria>  lstCriteria = evaSvc.findEvaluationCriteriaByIdById(tenderId);
-            EvaluateCriteriaDTO evaDto = setEvaluationCriteria(tenderId,lstCriteria);
-            model.addAttribute("criteria", evaDto);
-            sess.setAttribute("evaluationCriteriaDto",evaDto);
-        }catch(Exception ex){
-            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
-                    "Error occur, please contact administrator");
-            model.addAttribute("alert", alert);
-            TTLogger.error(className,"error occur when save tender criteria.Please contact administrator",ex);
-            return "admin/tender/tenderEvaluationCriteria";
         }
-        AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
-                "Tender criteria save successfully");
-        model.addAttribute("alert", alert);
 
+        model.addAttribute("criteriaList", dto);
+        model.addAttribute("newCriteria", new EvaluateCriteriaDTO());
+        model.addAttribute("tenderId", tenderId);
         return "admin/tender/tenderEvaluationCriteria";
     }
 
-    @PostMapping("/admin/tender/criteria3/save")
-    public String saveTenderCriteria3( ModelMap model,@Valid @ModelAttribute("criteria") EvaluateCriteriaDTO form,HttpServletRequest request)
-    {
-        HttpSession sess = request.getSession();
-        if(sess.getAttribute("tenderId") == null){
-            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
-                    "Error occur, please contact administrator");
-            model.addAttribute("alert", alert);
-            TTLogger.error(className,"tender id is null");
-            return "admin/tender/tenderEvaluationCriteria";
+    @PostMapping("/admin/tender/criteria/save")
+    public String addTenderCriteria(@Valid EvaluateCriteriaDTO form, RedirectAttributes redirectAttrs) {
+        TTLogger.info(className, "Adding new Tender Evaluation Criteria tenderId:" + form.getTenderId() + ", type: " + form.getType() + ", desc: " + form.getDescription());
+
+        Tender tender = tenderService.findById(form.getTenderId());
+        if (tender == null) {
+            TTLogger.error(className, "Unable to find tender, tenderID: " + form.getTenderId());
+            return "redirect:/admin/tender";
         }
 
-        if(sess.getAttribute("evaluationCriteriaDto") == null){
-            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
-                    "Error occur, please contact administrator");
-            model.addAttribute("alert", alert);
-            TTLogger.error(className,"evaluationCriteria object is null");
-            return "admin/tender/tenderEvaluationCriteria";
-        }
-        EvaluateCriteriaDTO sessionDto = (EvaluateCriteriaDTO) sess.getAttribute("evaluationCriteriaDto");
-        int tenderId = (int) sess.getAttribute("tenderId");
-        model.addAttribute("evaluationType", codeValueService.getByType("Evaluation_Point"));
+        CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        try{
-            CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            EvaluationCriteria eva = new EvaluationCriteria();
-            Tender tender = new Tender();
+        EvaluationCriteria eva = new EvaluationCriteria();
+        eva.setTender(tender);
+        eva.setType(form.getType());
+        eva.setDescription(form.getDescription());
+        eva.setCreatedBy(usr.getId());
+        eva.setCreatedDate(new Date());
+        eva.setLastUpdatedBy(usr.getId());
+        eva.setLastUpdatedDate(new Date());
 
-            if(sessionDto.getId3() > 0){
-                EvaluationCriteria dbEva = evaSvc.findCriteriaById(sessionDto.getId3());
-                dbEva.setType(form.getType3());
-                dbEva.setDescription(form.getCriteria3());
-                dbEva.setLastUpdatedBy(usr.getId());
-                dbEva.setLastUpdatedDate(new Date());
-                evaSvc.update(dbEva);
-            }else{
-                //save 3rd criteria
-                eva = new EvaluationCriteria();
-                eva.setCreatedBy(usr.getId());
-                eva.setLastUpdatedBy(usr.getId());
-                eva.setCreatedDate(new Date());
-                tender = new Tender();
-                tender.setId(tenderId);
-                eva.setTender(tender);
-                eva.setLastUpdatedDate(new Date());
-                eva.setDescription(form.getCriteria3());
-                eva.setType(form.getType3());
-                evaSvc.create(eva);
-            }
-            List<EvaluationCriteria>  lstCriteria = evaSvc.findEvaluationCriteriaByIdById(tenderId);
-            EvaluateCriteriaDTO evaDto = setEvaluationCriteria(tenderId,lstCriteria);
-            model.addAttribute("criteria", evaDto);
-            sess.setAttribute("evaluationCriteriaDto",evaDto);
-        }catch(Exception ex){
-            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
-                    "Error occur, please contact administrator");
-            model.addAttribute("alert", alert);
-            TTLogger.error(className,"error occur when save tender criteria.Please contact administrator",ex);
-        }
-        AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
-                "Tender criteria save successfully");
-        model.addAttribute("alert", alert);
+        evaSvc.create(eva);
 
-        return "admin/tender/tenderEvaluationCriteria";
+        TTLogger.info(className, "Tender Evaluation Criteria Added");
+
+        AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS, "Evaluation Criteria Created");
+        redirectAttrs.addFlashAttribute("alert", alert);
+        return "redirect:/admin/tender/" + form.getTenderId() + "/setcriteria";
     }
 
-    @PostMapping("/admin/tender/criteria2/save")
-    public String saveTenderCriteria2( ModelMap model,@Valid @ModelAttribute("criteria") EvaluateCriteriaDTO form,HttpServletRequest request)
-    {
-        HttpSession sess = request.getSession();
-        if(sess.getAttribute("tenderId") == null){
-            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
-                    "Error occur, please contact administrator");
-            model.addAttribute("alert", alert);
-            TTLogger.error(className,"tender id is null");
-            return "admin/tender/tenderEvaluationCriteria";
+    @PostMapping("/admin/tender/criteria/update")
+    public String updateTenderCriteria(@Valid EvaluateCriteriaDTO form, RedirectAttributes redirectAttrs) {
+        TTLogger.info(className, "Update Tender Evaluation Criteria evalId:" + form.getId() + ", type: " + form.getType() + ", desc: " + form.getDescription());
+
+        EvaluationCriteria eva = evaSvc.findCriteriaById(form.getId());
+        if (eva == null) {
+            TTLogger.error(className, "Unable to find Evaluation Criteria, evalId: " + form.getId());
+            return "redirect:/admin/tender";
         }
 
-        if(sess.getAttribute("evaluationCriteriaDto") == null){
-            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
-                    "Error occur, please contact administrator");
-            model.addAttribute("alert", alert);
-            TTLogger.error(className,"evaluationCriteria object is null");
-            return "admin/tender/tenderEvaluationCriteria";
-        }
+        CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        EvaluateCriteriaDTO sessionDto = (EvaluateCriteriaDTO) sess.getAttribute("evaluationCriteriaDto");
-        int tenderId = (int) sess.getAttribute("tenderId");
-        model.addAttribute("evaluationType", codeValueService.getByType("Evaluation_Point"));
+        eva.setType(form.getType());
+        eva.setDescription(form.getDescription());
+        eva.setLastUpdatedBy(usr.getId());
+        eva.setLastUpdatedDate(new Date());
 
-        try{
-            CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            EvaluationCriteria eva = new EvaluationCriteria();
-            Tender tender = new Tender();
+        evaSvc.update(eva);
 
-            if(sessionDto.getId2() > 0){
-                EvaluationCriteria dbEva = evaSvc.findCriteriaById(sessionDto.getId2());
-                dbEva.setType(form.getType2());
-                dbEva.setDescription(form.getCriteria2());
-                dbEva.setLastUpdatedBy(usr.getId());
-                dbEva.setLastUpdatedDate(new Date());
-                evaSvc.update(dbEva);
-            }else {
-                //save 2nd criteria
-                eva = new EvaluationCriteria();
-                eva.setCreatedBy(usr.getId());
-                eva.setLastUpdatedBy(usr.getId());
-                eva.setCreatedDate(new Date());
-                tender = new Tender();
-                tender.setId(tenderId);
-                eva.setTender(tender);
-                eva.setLastUpdatedDate(new Date());
-                eva.setDescription(form.getCriteria2());
-                eva.setType(form.getType2());
-                evaSvc.create(eva);
-            }
-            List<EvaluationCriteria>  lstCriteria = evaSvc.findEvaluationCriteriaByIdById(tenderId);
-            EvaluateCriteriaDTO evaDto = setEvaluationCriteria(tenderId,lstCriteria);
-            model.addAttribute("criteria", evaDto);
-            sess.setAttribute("evaluationCriteriaDto",evaDto);
-        }catch(Exception ex){
-            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
-                    "Error occur, please contact administrator");
-            model.addAttribute("alert", alert);
-            TTLogger.error(className,"error occur when save tender criteria.Please contact administrator",ex);
-        }
-        AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
-                "Tender criteria save successfully");
-        model.addAttribute("alert", alert);
+        TTLogger.info(className, "Tender Evaluation Criteria Updated");
 
-        return "admin/tender/tenderEvaluationCriteria";
-    }
-    @PostMapping("/admin/tender/criteria1/save")
-    public String saveTenderCriteria1( ModelMap model,@Valid @ModelAttribute("criteria") EvaluateCriteriaDTO form,HttpServletRequest request)
-    {
-        HttpSession sess = request.getSession();
-        if(sess.getAttribute("tenderId") == null){
-            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
-                    "Error occur, please contact administrator");
-            model.addAttribute("alert", alert);
-            TTLogger.error(className,"tender id is null");
-            return "admin/tender/tenderEvaluationCriteria";
-        }
-
-        if(sess.getAttribute("evaluationCriteriaDto") == null){
-            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
-                    "Error occur, please contact administrator");
-            model.addAttribute("alert", alert);
-            TTLogger.error(className,"evaluationCriteria object is null");
-            return "admin/tender/tenderEvaluationCriteria";
-        }
-
-        EvaluateCriteriaDTO sessionDto = (EvaluateCriteriaDTO) sess.getAttribute("evaluationCriteriaDto");
-        int tenderId = (int) sess.getAttribute("tenderId");
-        model.addAttribute("evaluationType", codeValueService.getByType("Evaluation_Point"));
-
-        try{
-            CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            EvaluationCriteria eva = new EvaluationCriteria();
-            Tender tender = new Tender();
-            //save 1st criteria
-            if(sessionDto.getId1() > 0 ){
-                EvaluationCriteria dbEva = evaSvc.findCriteriaById(sessionDto.getId1());
-                dbEva.setType(form.getType1());
-                dbEva.setDescription(form.getCriteria1());
-                dbEva.setLastUpdatedBy(usr.getId());
-                dbEva.setLastUpdatedDate(new Date());
-                evaSvc.update(dbEva);
-            }else if(form.getCriteria1().length() > 0){
-                eva.setCreatedBy(usr.getId());
-                eva.setLastUpdatedBy(usr.getId());
-                eva.setCreatedDate(new Date());
-                tender.setId(tenderId);
-                eva.setTender(tender);
-                eva.setLastUpdatedDate(new Date());
-                eva.setDescription(form.getCriteria1());
-                eva.setType(form.getType1());
-                evaSvc.create(eva);
-            }
-            List<EvaluationCriteria>  lstCriteria = evaSvc.findEvaluationCriteriaByIdById(tenderId);
-            EvaluateCriteriaDTO evaDto = setEvaluationCriteria(tenderId,lstCriteria);
-            model.addAttribute("criteria", evaDto);
-            sess.setAttribute("evaluationCriteriaDto",evaDto);
-
-        }catch(Exception ex){
-            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
-                    "Error occur, please contact administrator");
-            model.addAttribute("alert", alert);
-            TTLogger.error(className,"error occur when save tender criteria.Please contact administrator",ex);
-            return "admin/tender/tenderEvaluationCriteria";
-        }
-
-        AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
-                "Tender criteria save successfully");
-        model.addAttribute("alert", alert);
-        return "admin/tender/tenderEvaluationCriteria";
-    }
-
-    private EvaluateCriteriaDTO setEvaluationCriteria(int tenderId,List<EvaluationCriteria>  lstCriteria){
-        EvaluateCriteriaDTO  criteriaDto = new EvaluateCriteriaDTO();
-        try{
-            //List<EvaluationCriteria>  lstCriteria = evaSvc.findEvaluationCriteriaByIdById(tenderId);
-
-            for(int i = 0; i < lstCriteria.size(); i++ ){
-                EvaluationCriteria e1 = new EvaluationCriteria();
-                e1 =  lstCriteria.get(i);
-
-                if(i==0){
-                    criteriaDto.setType1(e1.getType());
-                    criteriaDto.setCriteria1(e1.getDescription());
-                    criteriaDto.setId1(e1.getId());
-                }else if(i == 1){
-                    criteriaDto.setType2(e1.getType());
-                    criteriaDto.setCriteria2(e1.getDescription());
-                    criteriaDto.setId2(e1.getId());
-                }else if(i==2){
-                    criteriaDto.setType3(e1.getType());
-                    criteriaDto.setCriteria3(e1.getDescription());
-                    criteriaDto.setId3(e1.getId());
-                }else if(i==3){
-                    criteriaDto.setType4(e1.getType());
-                    criteriaDto.setCriteria4(e1.getDescription());
-                    criteriaDto.setId4(e1.getId());
-                }
-            }
-        }catch(Exception ex){
-            TTLogger.error(className,"error in set tender criteria", ex);
-            return null;
-        }
-        return criteriaDto;
-    }
-    @GetMapping("/admin/tender/setcriteria/{tenderid}")
-    public String showTenderEvaluationCriteriaPage(@PathVariable(value="tenderid") int tenderId, ModelMap model,HttpServletRequest request)
-    {
-        HttpSession sess = request.getSession();
-        sess.setAttribute("tenderId", tenderId);
-        model.addAttribute("evaluationType", codeValueService.getByType("Evaluation_Point"));
-        EvaluateCriteriaDTO criteriaDto = null;
-
-        try{
-            List<EvaluationCriteria>  lstCriteria = evaSvc.findEvaluationCriteriaByIdById(tenderId);
-            criteriaDto = new EvaluateCriteriaDTO();
-            if(lstCriteria == null || lstCriteria.size() == 0)
-            {
-                model.addAttribute("criteria",criteriaDto);
-                model.addAttribute("evaluationType", codeValueService.getByType("Evaluation_Point"));
-            }else{
-                criteriaDto = setEvaluationCriteria(tenderId,lstCriteria);
-                if(criteriaDto == null){
-                    AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
-                            "Error occur, please contact administrator");
-                    model.addAttribute("alert", alert);
-                    TTLogger.error(className,"Failed to get evaluation from database");
-                    return "admin/tender/tenderEvaluationCriteria";
-                }
-                model.addAttribute("criteria",criteriaDto);
-                model.addAttribute("evaluationType", codeValueService.getByType("Evaluation_Point"));
-            }
-        }catch(Exception ex){
-            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
-                    "Error occur, please contact administrator");
-            model.addAttribute("alert", alert);
-            TTLogger.error(className,"error in set tender criteria", ex);
-        }
-
-        sess.setAttribute("evaluationCriteriaDto",criteriaDto);
-        return "admin/tender/tenderEvaluationCriteria";
+        AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS, "Evaluation Criteria Updated");
+        redirectAttrs.addFlashAttribute("alert", alert);
+        return "redirect:/admin/tender/" + form.getTenderId() + "/setcriteria";
     }
 }

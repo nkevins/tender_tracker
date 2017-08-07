@@ -33,6 +33,7 @@
                             <th>Name</th>
                             <th>Open Date</th>
                             <th>Closed Date</th>
+                            <th></th>
                         </tr>
                     </thead>
                 </table>
@@ -74,6 +75,20 @@
                     'targets' : 3,
                     'render' : function (data, type, full, meta) {
                         return moment(data, 'YYYY-MM-DD').format('DD MMM YY');
+                    }
+                },{
+                    'targets' : 4,
+                    'data' : 'id',
+                    'orderable' : false,
+                    'render' : function(data,type,full,meta) {
+                        return '<div class="btn-group">\n' +
+                            '<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">\n' +
+                            'Action <span class="caret"></span>\n' +
+                            '</button>\n' +
+                            '<ul class="dropdown-menu">\n' +
+                            '    <li><a href="/admin/tender/' + data + '/setcriteria/">Evaluation Criteria</a></li>\n' +
+                            '</ul>\n' +
+                            '</div>';
                     }
                 }]
             });

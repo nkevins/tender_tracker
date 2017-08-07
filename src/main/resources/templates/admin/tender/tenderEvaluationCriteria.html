@@ -24,116 +24,60 @@
             <!-- Horizontal Form -->
             <div class="box box-info">
                 <div class="box-body">
-                    <div class="row">
+                    <div class="row" th:each="c, iter : ${criteriaList}">
                         <div class="col-md-1">
-                            <p>1</p>
+                            <p th:text="${iter.index + 1}">1</p>
                         </div>
                         <div class="col-md-11">
-                            <form th:method="POST" th:action="@{/admin/tender/criteria1/save}" th:object="${criteria}">
-
+                            <form th:method="POST" th:action="@{/admin/tender/criteria/update}">
                                 <div class="form-group">
                                     <label>Type:</label>
-                                    <select class="form-control" th:field="*{type1}">
-                                        <option th:each="c : ${evaluationType}" th:value="${c.code}" th:text="${c.description}"></option>
+                                    <select class="form-control" name="type">
+                                        <option th:each="t : ${evaluationType}" th:value="${t.code}" th:text="${t.description}" th:selected="${t.code == c.type}"></option>
                                     </select>
                                 </div>
                                 <div class="form-group">
                                     <label>Criteria:</label>
-                                    <input type="text" class="form-control" th:field="*{criteria1}" required="required" />
+                                    <input type="text" class="form-control" required="required" th:value="${c.description}" name="description" />
                                 </div>
                                 <div class="form-group">
-                                    <button type="submit" class="btn btn-primary" value="">Save</button>
-
+                                    <input type="hidden" th:value="${c.id}" name="id" />
+                                    <input type="hidden" name="tenderId" th:value="${tenderId}" />
+                                    <button type="submit" class="btn btn-primary" value="">Update</button>
                                 </div>
                             </form>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-1">
-                            <p>2</p>
+                            <p th:text="${criteriaList.size() + 1}">1</p>
                         </div>
                         <div class="col-md-11">
-                            <form th:method="POST" th:action="@{/admin/tender/criteria2/save}" th:object="${criteria}">
-
+                            <form th:method="POST" th:action="@{/admin/tender/criteria/save}" th:object="${newCriteria}">
                                 <div class="form-group">
                                     <label>Type:</label>
-                                    <select class="form-control" th:field="*{type2}">
-                                        <option th:each="c : ${evaluationType}" th:value="${c.code}" th:text="${c.description}"></option>
+                                    <select class="form-control" th:field="*{type}">
+                                        <option th:each="t : ${evaluationType}" th:value="${t.code}" th:text="${t.description}"></option>
                                     </select>
                                 </div>
                                 <div class="form-group">
                                     <label>Criteria:</label>
-                                    <input type="text" class="form-control" th:field="*{criteria2}" />
+                                    <input type="text" class="form-control" required="required" th:field="*{description}" />
                                 </div>
                                 <div class="form-group">
-                                    <button type="submit" class="btn btn-primary">Save</button>
+                                    <input type="hidden" name="tenderId" th:value="${tenderId}" />
+                                    <button type="submit" class="btn btn-primary" value="">Add</button>
                                 </div>
                             </form>
                         </div>
                     </div>
-
-                    <div class="row">
-                        <div class="col-md-1">
-                            <p>3</p>
-                        </div>
-                        <div class="col-md-11">
-                            <form th:method="POST" th:action="@{/admin/tender/criteria3/save}" th:object="${criteria}">
-
-                                <div class="form-group">
-                                    <label>Type:</label>
-                                    <select class="form-control" th:field="*{type3}">
-                                        <option th:each="c : ${evaluationType}" th:value="${c.code}" th:text="${c.description}"></option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Criteria:</label>
-                                    <input type="text" class="form-control" th:field="*{criteria3}" />
-                                </div>
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-primary">Save</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-1">
-                            <p>4</p>
-                        </div>
-                        <div class="col-md-11">
-                            <form th:method="POST" th:action="@{/admin/tender/criteria4/save}" th:object="${criteria}">
-
-                                <div class="form-group">
-                                    <label>Type:</label>
-                                    <select class="form-control" th:field="*{type4}">
-                                        <option th:each="c : ${evaluationType}" th:value="${c.code}" th:text="${c.description}"></option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Criteria:</label>
-                                    <input type="text" class="form-control" th:field="*{criteria4}"  />
-                                </div>
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-primary">Save</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-
-
                 </div>
             </div>
         </div>
-
-
     </section>
     <!-- /.content -->
 </div>
 </body>
 <th:block layout:fragment="scripts">
-    <script type="text/javascript">
-
-    </script>
 </th:block>
 </html>

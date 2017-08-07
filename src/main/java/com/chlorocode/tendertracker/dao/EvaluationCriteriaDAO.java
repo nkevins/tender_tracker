@@ -14,5 +14,5 @@ import java.util.List;
 public interface EvaluationCriteriaDAO extends JpaRepository<EvaluationCriteria, Integer> {
 
     @Query("select r from EvaluationCriteria r where r.tender.id = ?1")
-    List<EvaluationCriteria> findEvaluationCriteriaByIdById(int tenderId);
+    List<EvaluationCriteria> findEvaluationCriteriaByTender(int tenderId);
 }

@@ -21,8 +21,8 @@ public class EvaluationServiceImpl implements EvaluationService {
     }
 
     @Override
-    public List<EvaluationCriteria> findEvaluationCriteriaByIdById(int tenderId) {
-        return evaDao.findEvaluationCriteriaByIdById(tenderId);
+    public List<EvaluationCriteria> findEvaluationCriteriaByTender(int tenderId) {
+        return evaDao.findEvaluationCriteriaByTender(tenderId);
     }
 
     public EvaluationCriteria create(EvaluationCriteria svc){
