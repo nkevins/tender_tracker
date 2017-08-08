@@ -10,4 +10,5 @@ import java.util.List;
 public interface ClarificationService {
     List<Clarification> findClarificationByTenderId(int tenderId);
     List<Clarification> findAllClarification();
+    Clarification updateReponse(int id, String response);
 }
