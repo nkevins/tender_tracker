@@ -1,0 +1,118 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="admin/layout">
+<head>
+    <title>Tender Tracker</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <!-- Content Header (Page header) -->
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            Response to Tender Clarification
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+        <div class="box">
+            <div class="box-body">
+                <form class="form-horizontal" th:action="@{/admin/tender/clarification/update}" method="POST">
+                    <h4>Tender Information</h4>
+                    <hr />
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Title</label>
+                                <div class="col-sm-10">
+                                    <p th:text="${clarificationDto.title}"></p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Tender Type</label>
+                                <div class="col-sm-10">
+                                    <p th:text="${clarificationDto.tenderType}"></p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Reference No</label>
+                                <div class="col-sm-10">
+                                    <p th:text="${clarificationDto.refNo}"></p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Category</label>
+                                <div class="col-sm-10">
+                                    <p th:text="${clarificationDto.category}"></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Opening Date</label>
+                                <div class="col-sm-10">
+                                    <p th:text="${#dates.format(clarificationDto.openDate, 'dd-MMM-yyyy')}"></p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Closing Date</label>
+                                <div class="col-sm-10">
+                                    <p th:text="${#dates.format(clarificationDto.closedDate, 'dd-MMM-yyyy')}"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4>Tender Clarification</h4>
+                    <hr />
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Clarification</label>
+                                <div class="col-sm-10">
+                                    <p th:text="${clarificationDto.clarification}"></p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Submitted Date</label>
+                                <div class="col-sm-10">
+                                    <p th:text="${#dates.format(clarificationDto.submittedDate, 'dd-MMM-yyyy')}"></p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Submitted By</label>
+                                <div class="col-sm-10">
+                                    <p th:text="${clarificationDto.submittedByCompany}"></p>
+                                    <p th:text="${clarificationDto.submittedByName}"></p>
+                                    <p th:text="${clarificationDto.submittedByEmail}"></p>
+                                    <p th:text="${clarificationDto.submittedByContactNo}"></p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Response</label>
+                                <div class="col-sm-10">
+                                    <textarea cols="100" rows="5" required="required" class="form-control" th:field="${clarificationDto.response}"></textarea>
+                                </div>
+                            </div>
+                            <div class="box-body">
+                                <input type="hidden" name="id" th:value="${clarificationDto.id}" />
+                                <button type="submit" class="btn btn-primary" value="">Update</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- /.content -->
+</div>
+</body>
+</html>
