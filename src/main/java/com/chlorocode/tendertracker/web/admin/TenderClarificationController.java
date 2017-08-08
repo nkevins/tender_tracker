@@ -96,7 +96,7 @@ public class TenderClarificationController {
     public String saveTenderClarification(ModelMap model,@Valid TenderClarificationDTO form,
                                           @RequestParam("tenderId") int tenderId,@RequestParam("companyId") int companyId){
         Tender td = new Tender();
-        Clarification clar = clariSvc.create(form.getClarification(),tenderId,companyId);
+        Clarification clar = clariSvc.create(form.getResponse(),tenderId,companyId);
 
         if(clar == null){
             AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
@@ -107,7 +107,8 @@ public class TenderClarificationController {
                     "Save tender clarification response successfully");
             model.addAttribute("alert", alert);
         }
-        return "/admin/tender/" + tenderId;
+        return "redirect:/tender/" + tenderId;
+       // return "tenderDetails";
     }
 
     @PostMapping("/admin/tender/clarification/update")

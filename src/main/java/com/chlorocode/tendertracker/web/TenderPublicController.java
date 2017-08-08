@@ -1,14 +1,12 @@
 package com.chlorocode.tendertracker.web;
 
 import com.chlorocode.tendertracker.dao.dto.AlertDTO;
+import com.chlorocode.tendertracker.dao.dto.TenderClarificationDTO;
 import com.chlorocode.tendertracker.dao.dto.TenderItemResponseSubmitDTO;
 import com.chlorocode.tendertracker.dao.dto.TenderResponseSubmitDTO;
 import com.chlorocode.tendertracker.dao.entity.*;
 import com.chlorocode.tendertracker.exception.ApplicationException;
-import com.chlorocode.tendertracker.service.BidService;
-import com.chlorocode.tendertracker.service.CodeValueService;
-import com.chlorocode.tendertracker.service.S3Wrapper;
-import com.chlorocode.tendertracker.service.TenderService;
+import com.chlorocode.tendertracker.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,14 +30,16 @@ public class TenderPublicController {
     private BidService bidService;
     private CodeValueService codeValueService;
     private S3Wrapper s3Wrapper;
+    private ClarificationService clariSvc;
 
     @Autowired
     public TenderPublicController(TenderService tenderService, BidService bidService, CodeValueService codeValueService,
-                                  S3Wrapper s3Wrapper) {
+                                  S3Wrapper s3Wrapper,ClarificationService clariSvc) {
         this.tenderService = tenderService;
         this.bidService = bidService;
         this.codeValueService = codeValueService;
         this.s3Wrapper = s3Wrapper;
+        this.clariSvc = clariSvc;
     }
 
     @GetMapping("/tender/{id}")
@@ -48,7 +48,8 @@ public class TenderPublicController {
         if (tender == null) {
             return "redirect:/";
         }
-
+        List<Clarification> lstClarification = clariSvc.findClarificationByTenderId(id);
+        TenderClarificationDTO td = new TenderClarificationDTO();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && !(auth instanceof AnonymousAuthenticationToken)) {
             CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -65,6 +66,8 @@ public class TenderPublicController {
         model.addAttribute("tender", tender);
         model.addAttribute("codeValueService", codeValueService);
         model.addAttribute("s3Service", s3Wrapper);
+        model.addAttribute("clarification",lstClarification);
+        model.addAttribute("clarificationDto",td);
         return "tenderDetails";
     }
 

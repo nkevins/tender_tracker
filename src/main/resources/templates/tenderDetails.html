@@ -15,7 +15,15 @@
                 <div th:replace="fragments/alert :: alert (type=${alert.getType()}, messages=${alert.messages})">Alert</div>
             </th:block>
 
-            <!-- box item details -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#tenderDetails" aria-controls="home" role="tab" data-toggle="tab">Tender Details</a></li>
+                <li role="presentation"><a href="#clarification" aria-controls="profile" role="tab" data-toggle="tab">Clarification</a></li>
+            </ul>
+
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="tenderDetails">
+
+                <!-- box item details -->
             <div class="block-section box-item-details">
                 <h2 class="title" th:text="${tender.title}">
                     Lorem ipsum dolor sit amet
@@ -79,6 +87,38 @@
                     </tr>
                 </table>
                 <a th:href="@{/tender/__${tender.id}__/respond}" class="btn btn-block btn-theme btn-success" sec:authorize="hasAnyRole('ADMIN','SUBMITTER')">Submit Respond</a>
+            </div>
+                </div>
+            </div>
+
+            <div role="tabpanel" class="tab-pane" id="clarification">
+                <form th:action="@{/tender/clarification/save}" method="POST" sec:authorize="hasAnyRole('USER')">
+                    <h4>Submit Clarification</h4>
+                    <div class="form-group">
+                        <label>Clarification</label>
+                        <textarea class="form-control" rows="4" required="required" th:field="${clarificationDto.response}"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" name="tenderId" th:value="${tender.id}" />
+                        <input type="hidden" name="companyId" th:value="${tender.company.id}" />
+                        <button type="submit" class="btn btn-theme btn-lg btn-t-primary btn-pill">Submit</button>
+                    </div>
+                </form>
+
+                <hr />
+
+                <div class="box-list">
+                    <div class="item">
+                        <div class="row" th:each="c, iter : ${clarification}">
+                            <h3 th:text="${c.description}"></h3>
+                            <p><strong>Submitted Date: </strong><label th:text="${#dates.format(c.createdDate, 'dd-MMM-yyyy')}"> </label></p>
+                            <p><strong>Submitter: </strong> <label th:text="${c.company.name}"> </label></p>
+                            <p><strong>Response: </strong><label th:text="${c.response}"> </label></p>
+                        </div>
+                    </div>
+
+
+                </div>
             </div>
             <!-- end box item details -->
         </div>
