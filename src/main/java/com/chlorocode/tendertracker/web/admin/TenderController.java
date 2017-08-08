@@ -1,8 +1,6 @@
 package com.chlorocode.tendertracker.web.admin;
 
-import com.chlorocode.tendertracker.dao.dto.AlertDTO;
-import com.chlorocode.tendertracker.dao.dto.TenderCreateDTO;
-import com.chlorocode.tendertracker.dao.dto.TenderItemCreateDTO;
+import com.chlorocode.tendertracker.dao.dto.*;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
 import com.chlorocode.tendertracker.dao.entity.Tender;
 import com.chlorocode.tendertracker.dao.entity.TenderItem;
@@ -18,6 +16,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -192,5 +191,186 @@ public class TenderController {
         model.addAttribute("codeValueService", codeValueService);
         model.addAttribute("s3Service", s3Service);
         return "admin/tender/tenderDetails";
+    }
+
+    @GetMapping("/admin/tender/{id}/update")
+    public String showTenderUpdatePage(@PathVariable(value="id") Integer id, ModelMap model) {
+        Tender tender = tenderService.findById(id);
+        if (tender == null) {
+            return "redirect:/admin/tender";
+        }
+
+        TenderUpdateDTO tenderUpdateDTO = new TenderUpdateDTO();
+        tenderUpdateDTO.setTenderId(tender.getId());
+        tenderUpdateDTO.setRefNo(tender.getRefNo());
+        tenderUpdateDTO.setTitle(tender.getTitle());
+        tenderUpdateDTO.setOpenDate(tender.getOpenDate());
+        tenderUpdateDTO.setClosedDate(tender.getClosedDate());
+        tenderUpdateDTO.setTenderCategory(tender.getTenderCategory().getId());
+        tenderUpdateDTO.setDescription(tender.getDescription());
+        tenderUpdateDTO.setTenderType(tender.getTenderType());
+        tenderUpdateDTO.setEstimatePurchaseValue(tender.getEstimatePurchaseValue());
+        tenderUpdateDTO.setContactPersonName(tender.getContactPersonName());
+        tenderUpdateDTO.setContactPersonEmail(tender.getContactPersonEmail());
+        tenderUpdateDTO.setContactPersonPhone(tender.getContactPersonPhone());
+        tenderUpdateDTO.setDocuments(tender.getDocuments());
+
+        for (TenderItem i : tender.getItems()) {
+            TenderItemUpdateDTO item = new TenderItemUpdateDTO();
+            item.setId(i.getId());
+            item.setUom(i.getUom());
+            item.setDescription(i.getDescription());
+            item.setQuantity(i.getQuantity());
+
+            tenderUpdateDTO.addTenderItem(item);
+        }
+
+        model.addAttribute("tender", tenderUpdateDTO);
+        model.addAttribute("tenderType", codeValueService.getByType("tender_type"));
+        model.addAttribute("tenderCategories", codeValueService.getAllTenderCategories());
+        model.addAttribute("uom", codeValueService.getByType("uom"));
+        model.addAttribute("s3Service", s3Service);
+        return "admin/tender/tenderUpdate";
+    }
+
+    @PostMapping("/admin/tender/update")
+    public String updateTender(@Valid @ModelAttribute("tender") TenderUpdateDTO form, RedirectAttributes redirectAttrs,
+                               BindingResult result, ModelMap model) {
+        if (result.hasErrors()) {
+            AlertDTO alert = new AlertDTO(result.getAllErrors());
+            model.addAttribute("alert", alert);
+            model.addAttribute("tender", form);
+            model.addAttribute("tenderType", codeValueService.getByType("tender_type"));
+            model.addAttribute("tenderCategories", codeValueService.getAllTenderCategories());
+            model.addAttribute("uom", codeValueService.getByType("uom"));
+            model.addAttribute("s3Service", s3Service);
+
+            return "redirect:/admin/tender/" + form.getTenderId() + "/update";
+        }
+
+        Tender tender = tenderService.findById(form.getTenderId());
+        if (tender == null) {
+            return "redirect:/admin/tender";
+        }
+
+        CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        tender.setRefNo(form.getRefNo());
+        tender.setTitle(form.getTitle());
+        tender.setOpenDate(form.getOpenDate());
+        tender.setClosedDate(form.getClosedDate());
+        tender.setTenderCategory(codeValueService.getTenderCategoryById(form.getTenderCategory()));
+        tender.setDescription(form.getDescription());
+        tender.setTenderType(form.getTenderType());
+        tender.setEstimatePurchaseValue(form.getEstimatePurchaseValue());
+        tender.setDeliveryDate(form.getDeliveryDate());
+        tender.setDeliveryLocation(form.getDeliveryLocation());
+        tender.setDeliveryRemarks(form.getDeliveryRemarks());
+        tender.setContactPersonName(form.getContactPersonName());
+        tender.setContactPersonEmail(form.getContactPersonEmail());
+        tender.setContactPersonPhone(form.getContactPersonPhone());
+        tender.setLastUpdatedBy(usr.getId());
+        tender.setLastUpdatedDate(new Date());
+
+        tenderService.updateTender(tender);
+
+        AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS, "Tender Updated");
+        redirectAttrs.addFlashAttribute("alert", alert);
+        return "redirect:/admin/tender/" + form.getTenderId() + "/update";
+    }
+
+    @PostMapping("/admin/tender/addTenderItem")
+    public String addTenderItem(@Valid TenderItemUpdateDTO form, @RequestParam(name = "tenderId") int tenderId,
+                                BindingResult result, ModelMap model, RedirectAttributes redirectAttrs) {
+        if (result.hasErrors()) {
+            AlertDTO alert = new AlertDTO(result.getAllErrors());
+            redirectAttrs.addFlashAttribute("alert", alert);
+            return "redirect:/admin/tender/" + tenderId + "/update";
+        }
+
+        Tender tender = tenderService.findById(tenderId);
+        CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        TenderItem tenderItem = new TenderItem();
+        tenderItem.setUom(form.getUom());
+        tenderItem.setDescription(form.getDescription());
+        tenderItem.setQuantity(form.getQuantity());
+        tenderItem.setCreatedBy(usr.getId());
+        tenderItem.setCreatedDate(new Date());
+        tenderItem.setLastUpdatedBy(usr.getId());
+        tenderItem.setLastUpdatedDate(new Date());
+        tenderItem.setTender(tender);
+
+        tenderService.addTenderItem(tenderItem);
+
+        AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS, "Tender Item Added");
+        redirectAttrs.addFlashAttribute("alert", alert);
+        return "redirect:/admin/tender/" + tenderId + "/update";
+    }
+
+    @PostMapping("/admin/tender/updateTenderItem")
+    public String updateTenderItem(@RequestParam(name = "tenderId") int tenderId, @RequestParam("tenderItemId") int tenderItemId,
+                                   @Valid TenderItemUpdateDTO form, BindingResult result, ModelMap model, RedirectAttributes redirectAttrs) {
+        if (result.hasErrors()) {
+            AlertDTO alert = new AlertDTO(result.getAllErrors());
+            redirectAttrs.addFlashAttribute("alert", alert);
+            return "redirect:/admin/tender/" + tenderId + "/update";
+        }
+
+        CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        TenderItem tenderItem = tenderService.findTenderItemById(tenderItemId);
+        tenderItem.setUom(form.getUom());
+        tenderItem.setQuantity(form.getQuantity());
+        tenderItem.setDescription(form.getDescription());
+        tenderItem.setLastUpdatedBy(usr.getId());
+        tenderItem.setLastUpdatedDate(new Date());
+
+        tenderService.updateTenderItem(tenderItem);
+
+        AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS, "Tender Item Updated");
+        redirectAttrs.addFlashAttribute("alert", alert);
+        return "redirect:/admin/tender/" + tenderId + "/update";
+    }
+
+    @PostMapping("/admin/tender/removeTenderItem")
+    public String removeTenderItem(@RequestParam(name = "tenderItemId") int tenderItemId, @RequestParam(name = "tenderId") int tenderId,
+                                   RedirectAttributes redirectAttrs) {
+        tenderService.removeTenderItem(tenderItemId);
+
+        AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS, "Tender Item Removed");
+        redirectAttrs.addFlashAttribute("alert", alert);
+        return "redirect:/admin/tender/" + tenderId + "/update";
+    }
+
+    @PostMapping("/admin/tender/addTenderDocument")
+    public String addTenderDocument(@RequestParam(name = "file") MultipartFile files, @RequestParam(name = "tenderId") int tenderId,
+                                    HttpServletResponse resp) throws IOException {
+        try {
+            Tender tender = tenderService.findById(tenderId);
+            if (tender == null) {
+                return "redirect:/admin/tender/" + tenderId + "/update";
+            }
+
+            CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            tenderService.addTenderDocument(files, tender, usr.getId());
+
+            resp.setStatus(HttpServletResponse.SC_OK);
+            return null;
+        } catch (Exception ex) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().print(ex.getMessage());
+            return null;
+        }
+    }
+
+    @PostMapping("/admin/tender/removeTenderDocument")
+    public String removeTenderDocument(@RequestParam(name = "id") int documentId, @RequestParam(name = "tenderId") int tenderId,
+                                       RedirectAttributes redirectAttrs) {
+        tenderService.removeTenderDocument(documentId);
+
+        AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS, "Attachment Removed");
+        redirectAttrs.addFlashAttribute("alert", alert);
+        return "redirect:/admin/tender/" + tenderId + "/update";
     }
 }

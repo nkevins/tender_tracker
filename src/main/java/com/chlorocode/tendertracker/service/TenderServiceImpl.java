@@ -1,8 +1,6 @@
 package com.chlorocode.tendertracker.service;
 
-import com.chlorocode.tendertracker.dao.DocumentDAO;
-import com.chlorocode.tendertracker.dao.TenderBookmarkDAO;
-import com.chlorocode.tendertracker.dao.TenderDAO;
+import com.chlorocode.tendertracker.dao.*;
 import com.chlorocode.tendertracker.dao.entity.*;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,16 +17,35 @@ import java.util.List;
 public class TenderServiceImpl implements TenderService {
 
     private TenderDAO tenderDAO;
+    private TenderItemDAO tenderItemDAO;
+    private TenderDocumentDAO tenderDocumentDAO;
     private DocumentDAO documentDAO;
     private S3Wrapper s3Wrapper;
     private TenderBookmarkDAO tenderBookmarkDAO;
 
     @Autowired
-    public TenderServiceImpl(TenderDAO tenderDAO, DocumentDAO documentDAO, S3Wrapper s3Wrapper, TenderBookmarkDAO tenderBookmarkDAO) {
+    public TenderServiceImpl(TenderDAO tenderDAO, DocumentDAO documentDAO, S3Wrapper s3Wrapper, TenderBookmarkDAO tenderBookmarkDAO,
+                             TenderItemDAO tenderItemDAO, TenderDocumentDAO tenderDocumentDAO) {
         this.tenderDAO = tenderDAO;
+        this.tenderItemDAO = tenderItemDAO;
+        this.tenderDocumentDAO = tenderDocumentDAO;
         this.documentDAO = documentDAO;
         this.s3Wrapper = s3Wrapper;
         this.tenderBookmarkDAO = tenderBookmarkDAO;
+    }
+
+    @Override
+    public Tender findById(int id) {
+        return tenderDAO.findOne(id);
+    }
+
+    @Override
+    public List<Tender> findTender() {
+        List<Tender> tenders = new LinkedList<>();
+        Iterable<Tender> iterable = tenderDAO.findAll();
+        iterable.forEach(tenders::add);
+
+        return tenders;
     }
 
     @Override
@@ -76,22 +93,73 @@ public class TenderServiceImpl implements TenderService {
     }
 
     @Override
-    public Tender findById(int id) {
-        return tenderDAO.findOne(id);
+    public Tender updateTender(Tender tender) {
+        return tenderDAO.save(tender);
     }
 
     @Override
     public TenderItem findTenderItemById(int id) {
-        return tenderDAO.findTenderItemById(id);
+        return tenderItemDAO.findOne(id);
     }
 
     @Override
-    public List<Tender> findTender() {
-        List<Tender> tenders = new LinkedList<>();
-        Iterable<Tender> iterable = tenderDAO.findAll();
-        iterable.forEach(tenders::add);
+    public TenderItem addTenderItem(TenderItem tenderItem) {
+        return tenderItemDAO.save(tenderItem);
+    }
 
-        return tenders;
+    @Override
+    public TenderItem updateTenderItem(TenderItem tenderItem) {
+        return tenderItemDAO.save(tenderItem);
+    }
+
+    @Override
+    public void removeTenderItem(int tenderItemId) {
+        tenderItemDAO.delete(tenderItemId);
+    }
+
+    @Override
+    @Transactional
+    public TenderDocument addTenderDocument(MultipartFile attachment, Tender tender, int createdBy) {
+        // Upload to AWS S3
+        String bucketPath = "tender_documents/" + tender.getId() + "/" + attachment.getOriginalFilename();
+        try {
+            s3Wrapper.upload(attachment.getInputStream(), bucketPath);
+        } catch (IOException ex) {
+            throw new ApplicationException("Upload failed " + ex.getMessage());
+        }
+
+        // Save to DB
+        Document doc = new Document();
+        doc.setName(attachment.getOriginalFilename());
+        doc.setLocation(bucketPath);
+        doc.setType(1);
+        doc.setCreatedBy(createdBy);
+        doc.setCreatedDate(new Date());
+        doc.setLastUpdatedBy(createdBy);
+        doc.setLastUpdatedDate(new Date());
+        documentDAO.save(doc);
+
+        TenderDocument tenderDocument = new TenderDocument();
+        tenderDocument.setDocument(doc);
+        tenderDocument.setTender(tender);
+
+        return tenderDocumentDAO.save(tenderDocument);
+    }
+
+    @Override
+    @Transactional
+    public void removeTenderDocument(int id) {
+        TenderDocument tenderDocument = tenderDocumentDAO.findOne(id);
+        Document document = tenderDocument.getDocument();
+
+        // Remove from S3
+        String bucketPath = "tender_documents/" + tenderDocument.getTender().getId() + "/" + document.getName();
+        s3Wrapper.deleteObject(bucketPath);
+
+        tenderDocument.setTender(null);
+        tenderDocument.setDocument(null);
+        tenderDocumentDAO.delete(tenderDocument);
+        documentDAO.delete(document);
     }
 
     @Override

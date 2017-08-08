@@ -105,4 +105,8 @@ public class S3Wrapper {
 
         return amazonS3Client.generatePresignedUrl(generatePresignedUrlRequest);
     }
+
+    public void deleteObject(String key) {
+        amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, key));
+    }
 }

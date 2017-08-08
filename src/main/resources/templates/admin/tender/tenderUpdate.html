@@ -10,11 +10,11 @@
     <th:block th:if="${alert != null}">
         <div th:replace="fragments/alert :: alert (type=${alert.getType()}, messages=${alert.messages})">Alert</div>
     </th:block>
-    <div class="alert alert-danger" style="display:none;" id="createTenderError"></div>
+    <div class="alert alert-danger" style="display:none;" id="updateTenderError"></div>
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1>
-            Create Tender
+            Update Tender
         </h1>
     </section>
 
@@ -24,7 +24,7 @@
         <!-- Default box -->
         <div class="box">
             <div class="box-body">
-                <form class="form-horizontal" id="createTenderForm" th:action="@{/admin/tender/create}" method="POST" th:object="${tender}" enctype="multipart/form-data">
+                <form class="form-horizontal" id="createTenderForm" th:action="@{/admin/tender/update}" method="POST" th:object="${tender}">
                     <h4>Tender Information</h4>
                     <hr />
 
@@ -168,31 +168,58 @@
                         <div class="col-md-12">
                             <table class="table table-striped" id="itemTable">
                                 <thead>
-                                    <tr>
-                                        <th>UOM</th>
-                                        <th>Quantity</th>
-                                        <th>Description</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
                                 <tr>
+                                    <th>UOM</th>
+                                    <th>Quantity</th>
+                                    <th>Description</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tr th:each="i, iterator : ${tender.items}">
                                     <td>
-                                        <select name="items[0].uom" required="required">
-                                            <option th:each="u : ${uom}" th:value="${u.code}" th:text="${u.description}"></option>
+                                        <select required="required" name="uom" th:form="tenderItemUpdate + ${iterator.index}">
+                                            <option th:each="u : ${uom}" th:value="${u.code}" th:text="${u.description}" th:selected="${u.code == i.uom}"></option>
                                         </select>
                                     </td>
                                     <td>
-                                        <input type="number" name="items[0].quantity" required="required" />
+                                        <input type="text" name="quantity" th:value="${i.quantity}" required="required" th:form="tenderItemUpdate + ${iterator.index}" />
                                     </td>
                                     <td>
-                                        <input type="text" name="items[0].description" required="required" />
+                                        <input type="text" name="description" th:value="${i.description}" required="required" th:form="tenderItemUpdate + ${iterator.index}" />
                                     </td>
                                     <td>
-                                        <button class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                                        <form th:action="@{/admin/tender/updateTenderItem}" method="POST" th:id="tenderItemUpdate + ${iterator.index}" style="display: inline">
+                                            <input type="hidden" name="tenderId" th:value="${tender.tenderId}" />
+                                            <input type="hidden" name="tenderItemId" th:value="${i.id}" />
+                                            <button type="submit" class="btn btn-primary"><i class="fa fa-pencil"></i></button>
+                                        </form>
+                                        <form th:action="@{/admin/tender/removeTenderItem}" method="POST" style="display: inline">
+                                            <input type="hidden" name="tenderId" th:value="${tender.tenderId}" />
+                                            <input type="hidden" name="tenderItemId" th:value="${i.id}" />
+                                            <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                                        </form>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <form th:action="@{/admin/tender/addTenderItem}" method="POST">
+                                        <td>
+                                            <select required="required" name="uom">
+                                                <option th:each="u : ${uom}" th:value="${u.code}" th:text="${u.description}"></option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="number" name="quantity" required="required" />
+                                        </td>
+                                        <td>
+                                            <input type="text" name="description" required="required" />
+                                        </td>
+                                        <td>
+                                            <input type="hidden" name="tenderId" th:value="${tender.tenderId}" />
+                                            <button type="submit" class="btn btn-primary"><i class="fa fa-plus"></i></button>
+                                        </td>
+                                    </form>
+                                </tr>
                             </table>
-                            <button class="btn btn-primary" id="addItem">Add Item</button>
                         </div>
                     </div>
 
@@ -200,16 +227,42 @@
                     <hr />
 
                     <div class="row">
+                        <div class="col-md-6">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tr th:each="d : ${tender.documents}">
+                                    <td>
+                                        <a th:href="${s3Service.getPreSignedURL(d.document.location)}" th:text="${d.document.name}"></a>
+                                    </td>
+                                    <td>
+                                        <form th:action="@{/admin/tender/removeTenderDocument}" method="POST">
+                                            <input type="hidden" name="tenderId" th:value="${tender.tenderId}" />
+                                            <input type="hidden" name="id" th:value="${d.id}" />
+                                            <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row">
                         <div class="col-md-12">
-                            <div class="dropzone" id="attachmentUploads">
-                            </div>
+                            <form th:action="@{/admin/tender/addTenderDocument}" method="post" class="dropzone" enctype="multipart/form-data" id="attachmentUploads">
+                                <input type="hidden" name="tenderId" th:value="${tender.tenderId}" />
+                            </form>
                         </div>
                     </div>
 
                     <div class="row" style="padding-top: 10px;">
                         <div class="col-md-12">
                             <hr />
-                            <input type="submit" id="mainSubmitBtn" value="Save" class="btn btn-primary" />
+                            <input type="submit" id="mainSubmitBtn" value="Update" class="btn btn-primary" />
                         </div>
                     </div>
                 </form>
@@ -241,79 +294,16 @@
             CKEDITOR.replace('description');
         });
 
-        // Manage tender item add
-        var counter = 0;
-        $('#addItem').click(function(event) {
-            event.preventDefault();
-            counter++;
-            var uomOptions = $('select[name="items[0].uom"] > option').clone();
-            var newRow = $('<tr><td><select name="items[' +
-                counter + '].uom" required="required">' + uomOptions + '</select></td><td><input type="number" name="items[' +
-                counter + '].quantity" required="required"/></td><td><input type="text" name="items[' +
-                counter + '].description" required="required"/></td><td><button class="btn btn-danger"><i class="fa fa-trash"></i>' +
-                '</button></td></tr>');
-            $('table#itemTable').append(newRow);
-            $('select[name="items[' + counter + '].uom"]').append(uomOptions);
-        });
-
-        // Delte tender item
-        $('#itemTable').on('click', '.btn', function(e){
-            e.preventDefault();
-            $(this).closest('tr').remove()
-        })
-
-        // Attachment uploader
         Dropzone.options.attachmentUploads = {
-            url: '/admin/tender/create',
-            autoProcessQueue: false,
-            uploadMultiple: true,
-            parallelUploads: 5,
-            maxFiles: 5,
-            maxFilesize: 1,
-            addRemoveLinks: true,
-            paramName: 'attachments',
-            init: function() {
-                dzClosure = this; // Makes sure that 'this' is understood inside the functions below.
-
-                // for Dropzone to process the queue (instead of default form behavior):
-                document.getElementById("mainSubmitBtn").addEventListener("click", function(e) {
-                    // Make sure that the form isn't actually being sent.
-                    e.preventDefault();
-                    e.stopPropagation();
-
-                    if (dzClosure.getQueuedFiles().length > 0) {
-                        dzClosure.processQueue();
-                    } else {
-                        $("#createTenderForm").submit();
-                    }
-                });
-
-                //send all the form data along with the files:
-                this.on("sendingmultiple", function(data, xhr, formData) {
-                    formData.append("description", CKEDITOR.instances['description'].getData());
-                    formData.append("deliveryRemarks", jQuery("#deliveryRemarks").val());
-
-                    $("form").find("input").each(function(){
-                        formData.append($(this).attr("name"), $(this).val());
-                    });
-                    $("form").find("select").each(function(){
-                        formData.append($(this).attr("name"), $(this).val());
-                    });
-                });
-            },
             error: function(file, errorMessage) {
-                $.each(dzClosure.files, function(i, file) {
-                    file.status = Dropzone.QUEUED
-                });
-
-                $("#createTenderError").text(errorMessage);
-                $('#createTenderError').show();
+                $("#updateTenderError").text(errorMessage);
+                $('#updateTenderError').show();
                 $('html,body').animate({scrollTop: 0});
             },
             success: function(file, response) {
-                window.location.replace("/admin/tender");
+                window.location.reload();
             }
-        }
+        };
     </script>
 </th:block>
 </html>
