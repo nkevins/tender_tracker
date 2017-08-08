@@ -52,11 +52,16 @@ public class ClarificationServiceImpl implements ClarificationService{
            dbOjb.setResponse(response);
            dbOjb.setLastUpdatedDate(new Date());
            dbOjb.setLastUpdatedBy(usr.getUser().getId());
-           clariDao.save(dbOjb);
+           return clariDao.save(dbOjb);
 
         }catch(Exception ex){
             TTLogger.error(className, "error: " , ex);
         }
         return null;
+    }
+
+    @Override
+    public Clarification findById(int id) {
+        return clariDao.findOne(id);
     }
 }
