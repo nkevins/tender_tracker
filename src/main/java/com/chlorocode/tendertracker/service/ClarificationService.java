@@ -1,6 +1,7 @@
 package com.chlorocode.tendertracker.service;
 
 import com.chlorocode.tendertracker.dao.entity.Clarification;
+import com.chlorocode.tendertracker.dao.entity.Tender;
 
 import java.util.List;
 
@@ -12,4 +13,6 @@ public interface ClarificationService {
     List<Clarification> findAllClarification();
     Clarification updateReponse(int id, String response);
     Clarification findById(int id);
+    Clarification create(String classification, int tenderId, int companyId);
+
 }

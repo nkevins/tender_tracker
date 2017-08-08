@@ -5,6 +5,7 @@ import com.chlorocode.tendertracker.dao.dto.EvaluateCriteriaDTO;
 import com.chlorocode.tendertracker.dao.dto.TenderClarificationDTO;
 import com.chlorocode.tendertracker.dao.entity.Clarification;
 import com.chlorocode.tendertracker.dao.entity.CodeValue;
+import com.chlorocode.tendertracker.dao.entity.Tender;
 import com.chlorocode.tendertracker.dao.entity.User;
 import com.chlorocode.tendertracker.logging.TTLogger;
 import com.chlorocode.tendertracker.service.ClarificationService;
@@ -89,6 +90,24 @@ public class TenderClarificationController {
 
 
         return "admin/clarification/tenderClarificationView";
+    }
+
+    @PostMapping("/tender/clarification/save")
+    public String saveTenderClarification(ModelMap model,@Valid TenderClarificationDTO form,
+                                          @RequestParam("tenderId") int tenderId,@RequestParam("companyId") int companyId){
+        Tender td = new Tender();
+        Clarification clar = clariSvc.create(form.getClarification(),tenderId,companyId);
+
+        if(clar == null){
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
+                    "Failed to save tender clarification response.Please contact administrator");
+            model.addAttribute("alert", alert);
+        }else{
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
+                    "Save tender clarification response successfully");
+            model.addAttribute("alert", alert);
+        }
+        return "/admin/tender/" + tenderId;
     }
 
     @PostMapping("/admin/tender/clarification/update")

@@ -2,7 +2,9 @@ package com.chlorocode.tendertracker.service;
 
 import com.chlorocode.tendertracker.dao.ClarificationDAO;
 import com.chlorocode.tendertracker.dao.entity.Clarification;
+import com.chlorocode.tendertracker.dao.entity.Company;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
+import com.chlorocode.tendertracker.dao.entity.Tender;
 import com.chlorocode.tendertracker.logging.TTLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,6 +37,32 @@ public class ClarificationServiceImpl implements ClarificationService{
     @Override
     public List<Clarification> findAllClarification() {
         return clariDao.findAll();
+    }
+
+    @Override
+    public Clarification create(String classification, int tenderId, int companyId ){
+        try{
+            Clarification dbOjb = new Clarification();
+            Company cp = new Company();
+            dbOjb.setDescription(classification);
+            cp.setId(companyId);
+            dbOjb.setCompany(cp);
+
+            CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            dbOjb.setLastUpdatedBy(usr.getId());
+            dbOjb.setCreatedBy(usr.getId());
+            dbOjb.setCreatedDate(new Date());
+            dbOjb.setLastUpdatedDate(new Date());
+            Tender td = new Tender();
+            td.setId(tenderId);
+            dbOjb.setTender(td);
+
+            return clariDao.saveAndFlush(dbOjb);
+        }catch(Exception ex){
+            TTLogger.error(className, "error: " , ex);
+        }
+
+        return null;
     }
 
     @Override
