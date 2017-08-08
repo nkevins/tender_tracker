@@ -17,19 +17,26 @@ public class Clarification {
     @JsonView(DataTablesOutput.View.class)
     private int id;
 
+    @JsonView(DataTablesOutput.View.class)
     @ManyToOne
     private Company company;
 
+    @JsonView(DataTablesOutput.View.class)
     @ManyToOne
     private Tender tender;
 
+    @JsonView(DataTablesOutput.View.class)
     private String description;
 
     private int status;
 
+    @JsonView(DataTablesOutput.View.class)
+    private String response;
+
     @Column(name = "created_by")
     private int createdBy;
 
+    @JsonView(DataTablesOutput.View.class)
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_date")
     private Date createdDate;
@@ -37,6 +44,7 @@ public class Clarification {
     @Column(name = "last_updated_by")
     private int lastUpdatedBy;
 
+    @JsonView(DataTablesOutput.View.class)
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "last_updated_date")
     private Date lastUpdatedDate;
@@ -47,6 +55,14 @@ public class Clarification {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getResponse() {
+        return response;
+    }
+
+    public void setResponse(String response) {
+        this.response = response;
     }
 
     public Company getCompany() {
