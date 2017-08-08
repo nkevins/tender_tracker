@@ -16,6 +16,9 @@ public class TenderCategory {
     @OneToMany(mappedBy = "tenderCategory")
     private List<Tender> tenders;
 
+    @OneToMany(mappedBy = "tenderCategory")
+    private List<TenderCategorySubscription> subscriptions;
+
     public int getId() {
         return id;
     }

@@ -33,6 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                     .antMatchers("/registerCompany").authenticated()
+                    .antMatchers("/tenderNotification").authenticated()
                     .antMatchers("/admin").access("hasAnyRole('ADMIN','SYS_ADMIN')")
                     .antMatchers("/admin/**").access("hasRole('ADMIN')")
                     .antMatchers("/sysadm/**").access("hasRole('SYS_ADMIN')")

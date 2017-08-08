@@ -19,16 +19,18 @@ public class TenderServiceImpl implements TenderService {
     private TenderDAO tenderDAO;
     private TenderItemDAO tenderItemDAO;
     private TenderDocumentDAO tenderDocumentDAO;
+    private TenderCategorySubscriptionDAO tenderCategorySubscriptionDAO;
     private DocumentDAO documentDAO;
     private S3Wrapper s3Wrapper;
     private TenderBookmarkDAO tenderBookmarkDAO;
 
     @Autowired
     public TenderServiceImpl(TenderDAO tenderDAO, DocumentDAO documentDAO, S3Wrapper s3Wrapper, TenderBookmarkDAO tenderBookmarkDAO,
-                             TenderItemDAO tenderItemDAO, TenderDocumentDAO tenderDocumentDAO) {
+                             TenderItemDAO tenderItemDAO, TenderDocumentDAO tenderDocumentDAO, TenderCategorySubscriptionDAO tenderCategorySubscriptionDAO) {
         this.tenderDAO = tenderDAO;
         this.tenderItemDAO = tenderItemDAO;
         this.tenderDocumentDAO = tenderDocumentDAO;
+        this.tenderCategorySubscriptionDAO = tenderCategorySubscriptionDAO;
         this.documentDAO = documentDAO;
         this.s3Wrapper = s3Wrapper;
         this.tenderBookmarkDAO = tenderBookmarkDAO;
@@ -184,5 +186,32 @@ public class TenderServiceImpl implements TenderService {
     public void removeTenderBookmark(int tenderId, int userId) {
         TenderBookmark tenderBookmark = findTenderBookmark(tenderId, userId);
         tenderBookmarkDAO.delete(tenderBookmark);
+    }
+
+    @Override
+    public List<TenderCategorySubscription> findUserSubscription(int userId) {
+        return tenderCategorySubscriptionDAO.findUserSubscription(userId);
+    }
+
+    @Override
+    @Transactional
+    public void subscribeToTenderCategory(User user, List<TenderCategory> categories) {
+        tenderCategorySubscriptionDAO.removeExistingSubscription(user.getId());
+
+        List<TenderCategorySubscription> subsList = new LinkedList<>();
+
+        for (TenderCategory i : categories) {
+            TenderCategorySubscription subs = new TenderCategorySubscription();
+            subs.setUser(user);
+            subs.setTenderCategory(i);
+            subs.setCreatedBy(user.getId());
+            subs.setCreatedDate(new Date());
+            subs.setLastUpdatedBy(user.getId());
+            subs.setLastUpdatedDate(new Date());
+
+            subsList.add(subs);
+        }
+
+        tenderCategorySubscriptionDAO.save(subsList);
     }
 }

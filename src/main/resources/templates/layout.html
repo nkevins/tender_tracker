@@ -31,6 +31,7 @@
     <!-- Your custom css -->
     <link th:href="@{/assets/theme/css/theme-custom.css}" rel="stylesheet" />
 
+    <th:block layout:fragment="style"></th:block>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -52,6 +53,7 @@
 
                     <ul class="nav navbar-nav">
                         <li class=""><a th:href="@{/}"><strong>Find a Tender</strong></a></li>
+                        <li class="" sec:authorize="isAuthenticated()"><a th:href="@{/tenderNotification}"><strong>Notification</strong></a></li>
                         <li class="" sec:authorize="isAuthenticated()"><a th:href="@{/registerCompany}"><strong>Register a Company</strong></a></li>
                         <li class="" sec:authorize="hasAnyRole('SYS_ADMIN','ADMIN')"><a th:href="@{/admin}"><strong>Admin Panel</strong></a></li>
                     </ul>
@@ -93,6 +95,7 @@
 
                     <ul class="nav navbar-nav">
                         <li><a th:href="@{/}"><strong>Find a Tender</strong></a></li>
+                        <li sec:authorize="isAuthenticated()"><a th:href="@{/tenderNotification}">Notification</a></li>
                         <li sec:authorize="isAuthenticated()"><a th:href="@{/registerCompany}"><strong>Register a Company</strong></a></li>
                         <li sec:authorize="hasAnyRole('SYS_ADMIN','ADMIN')"><a th:href="@{/admin}"><strong>Admin Panel</strong></a></li>
                         <li><a th:href="@{/register}" sec:authorize="!isAuthenticated()"><strong>Register</strong></a></li>

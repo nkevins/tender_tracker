@@ -23,4 +23,7 @@ public interface TenderService {
     TenderBookmark findTenderBookmark(int tenderId, int userId);
     TenderBookmark bookmarkTender(Tender tender, User user);
     void removeTenderBookmark(int tenderId, int userId);
+
+    List<TenderCategorySubscription> findUserSubscription(int userId);
+    void subscribeToTenderCategory(User user, List<TenderCategory> categories);
 }

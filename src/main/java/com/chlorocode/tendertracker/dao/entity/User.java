@@ -34,6 +34,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<TenderBookmark> tenderBookmarks;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
+    private List<TenderCategorySubscription> tenderCategorySubscriptions;
+
     private int createdBy;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -158,7 +161,11 @@ public class User {
         return tenderBookmarks;
     }
 
-//    public Date getTokenExpireDate() {
+    public List<TenderCategorySubscription> getTenderCategorySubscriptions() {
+        return tenderCategorySubscriptions;
+    }
+
+    //    public Date getTokenExpireDate() {
 //        return tokenExpireDate;
 //    }
 //

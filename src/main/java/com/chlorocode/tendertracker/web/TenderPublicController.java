@@ -16,11 +16,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 @Controller
 public class TenderPublicController {
@@ -178,5 +181,37 @@ public class TenderPublicController {
         tenderService.removeTenderBookmark(tenderId, usr.getUser().getId());
 
         return "redirect:/tender/" + tenderId;
+    }
+
+    @GetMapping("/tenderNotification")
+    public String showSubscribeTenderCategoryNotification(ModelMap model) {
+        CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<TenderCategory> tenderCategories = codeValueService.getAllTenderCategories();
+        List<TenderCategorySubscription> currentSubscription = tenderService.findUserSubscription(usr.getId());
+        List<Integer> subscriptions = new LinkedList<>();
+        for (TenderCategorySubscription s : currentSubscription) {
+            subscriptions.add(s.getTenderCategory().getId());
+        }
+
+        model.addAttribute("categories", tenderCategories);
+        model.addAttribute("currentSubscriptions", subscriptions);
+        return "tenderNotification";
+    }
+
+    @PostMapping("/tenderNotification")
+    public String saveTenderCategorySubscription(@RequestParam("categories") List<Integer> categories, RedirectAttributes redirectAttrs) {
+        CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        List<TenderCategory> tenderCategoryList = new LinkedList<>();
+        for (Integer i : categories) {
+            tenderCategoryList.add(codeValueService.getTenderCategoryById(i));
+        }
+
+        tenderService.subscribeToTenderCategory(usr.getUser(), tenderCategoryList);
+
+        AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
+                "Subscription Added");
+        redirectAttrs.addFlashAttribute("alert", alert);
+        return "redirect:/tenderNotification";
     }
 }

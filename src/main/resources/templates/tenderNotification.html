@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout">
+<head>
+    <title>Tender Tracker</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <h2>Subscribe to Notification</h2>
+            <th:block th:if="${alert != null}">
+                <div th:replace="fragments/alert :: alert (type=${alert.getType()}, messages=${alert.messages})">Alert</div>
+            </th:block>
+            <p>Subscribe to tender category that you are interested.</p>
+            <p>We will update you via email for any new tender in that category.</p>
+
+            <br />
+
+            <form th:action="@{/tenderNotification}" method="POST">
+                <h3>Tender Categories</h3>
+                <div class="row">
+                    <div class="col-md-12">
+                        <ul class="checkbox-grid">
+                            <li th:each="c : ${categories}">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" th:value="${c.id}" name="categories" th:checked="${#lists.contains(currentSubscriptions, c.id)}" /><strong th:text="${c.name}">Option 1</strong></label>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-theme btn-t-primary btn-pill">Subscribe</button>
+                    </div>
+                </div>
+            </form>
+            <br />
+        </div>
+    </div>
+</div>
+</body>
+
+<th:block layout:fragment="style">
+    <style type="text/css">
+        .checkbox-grid li {
+            display: block;
+            float: left;
+            width: 33%;
+        }
+    </style>
+</th:block>
+</html>
