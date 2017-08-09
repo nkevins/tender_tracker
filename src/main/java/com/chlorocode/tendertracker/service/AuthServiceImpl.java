@@ -1,5 +1,6 @@
 package com.chlorocode.tendertracker.service;
 
+import com.chlorocode.tendertracker.constants.TTConstant;
 import com.chlorocode.tendertracker.dao.UserDAO;
 import com.chlorocode.tendertracker.dao.UserRoleDAO;
 import com.chlorocode.tendertracker.dao.entity.Company;
@@ -7,6 +8,7 @@ import com.chlorocode.tendertracker.dao.entity.CurrentUser;
 import com.chlorocode.tendertracker.dao.entity.User;
 import com.chlorocode.tendertracker.logging.TTLogger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -42,6 +44,9 @@ public class AuthServiceImpl implements AuthService {
         }
 
         TTLogger.info(className, email + " user found");
+        if (user.getStatus() != TTConstant.ACCOUNT_STATIC_ACTIVE) {
+            throw new RuntimeException("locked");
+        }
 
         String role = "ROLE_USER";
 

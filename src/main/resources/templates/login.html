@@ -10,8 +10,12 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <h1>Login</h1>
-            <th:block th:if="${alert != null}">
-                <div th:replace="fragments/alert :: alert (type=${alert.getType()}, messages=${alert.messages})">Alert</div>
+            <!--<th:block th:if="${alert != null}">-->
+                <!--<div th:replace="fragments/alert :: alert (type=${alert.getType()}, messages=${alert.messages})">Alert</div>-->
+            <!--</th:block>-->
+            <th:block>
+                <div th:if="${param.message != null}" class="alert alert-info" th:text="${param.message[0]}">message</div>
+                <div th:if="${param.error != null}" class="alert alert-danger" th:text="${session[SPRING_SECURITY_LAST_EXCEPTION]}">error</div>
             </th:block>
             <form th:method="POST" th:action="@{/login}" th:object="${login}">
                 <div class="form-group">

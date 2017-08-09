@@ -25,7 +25,8 @@ public class User {
     private String password;
     private int status;
     private String confirmationToken;
-//    private Date tokenExpireDate; //TODO need to add after field added in db.
+    private Date tokenExpireDate; //TODO need to add after field added in db.
+    private int failCount;
 
     @OneToMany
     @JoinColumn(name = "user_id", referencedColumnName = "id")
@@ -165,11 +166,19 @@ public class User {
         return tenderCategorySubscriptions;
     }
 
-    //    public Date getTokenExpireDate() {
-//        return tokenExpireDate;
-//    }
-//
-//    public void setTokenExpireDate(Date tokenExpireDate) {
-//        this.tokenExpireDate = tokenExpireDate;
-//    }
+    public Date getTokenExpireDate() {
+        return tokenExpireDate;
+    }
+
+    public void setTokenExpireDate(Date tokenExpireDate) {
+        this.tokenExpireDate = tokenExpireDate;
+    }
+
+    public int getFailCount() {
+        return failCount;
+    }
+
+    public void setFailCount(int failCount) {
+        this.failCount = failCount;
+    }
 }

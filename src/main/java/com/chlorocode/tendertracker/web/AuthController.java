@@ -43,12 +43,12 @@ public class AuthController {
     public String showLogin(ServletRequest request, Model model) {
         Map<String, String[]> paramMap = request.getParameterMap();
 
-        if (paramMap.containsKey("error"))
-        {
-            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
-                    "Invalid username or password");
-            model.addAttribute("alert", alert);
-        }
+//        if (paramMap.containsKey("error"))
+//        {
+//            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
+//                    "Invalid username or password");
+//            model.addAttribute("alert", alert);
+//        }
         model.addAttribute("login", new LoginDTO());
 
         return "login";
@@ -118,13 +118,6 @@ public class AuthController {
     @RequestMapping("/forgotPassword")
     public String forgotPassword(ServletRequest request, Model model) {
         Map<String, String[]> paramMap = request.getParameterMap();
-
-        if (paramMap.containsKey("error"))
-        {
-            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
-                    "Invalid username or password");
-            model.addAttribute("alert", alert);
-        }
         model.addAttribute("forgotPassword", new ForgotPasswordDTO());
 
         return "forgotPassword";
@@ -182,7 +175,6 @@ public class AuthController {
                     "Password Confirmation is not same as the password");
             model.addAttribute("alert", alert);
         } else {
-            // TODO can check password complexity here.
             if (userService.updatePassword(form.getEmail(), form.getPassword()) == null) {
                 AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER, "Failed to reset password.");
                 model.addAttribute("alert", alert);

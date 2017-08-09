@@ -1,7 +1,10 @@
 package com.chlorocode.tendertracker.dao.dto;
 
+import com.chlorocode.tendertracker.constants.TTConstant;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
+
+import javax.validation.constraints.Pattern;
 
 public class UserRegistrationDTO {
 
@@ -16,6 +19,7 @@ public class UserRegistrationDTO {
     private String contactNo;
 
     @NotBlank(message = "Password is required")
+    @Pattern(regexp = TTConstant.PASSWORD_COMPLEXITY, message = "Password must be non space characters and at least 6 characters.")
     private String password;
 
     @NotBlank(message = "Confirm Password is required")
