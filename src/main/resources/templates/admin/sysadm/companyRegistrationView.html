@@ -64,16 +64,14 @@
                     }
                 },{
                     'targets' : 3,
-                    'data' : null,
-                    'defaultContent' : '<button type="button" class="btn btn-primary">View</button>'
+                    'data' : 'id',
+                    'orderable' : false,
+                    'render' : function(data,type,full,meta) {
+                        return '<a type="button" class="btn btn-primary" href="/sysadm/companyRegistration/' + data + '">View</a>';
+                    }
                 }]
             });
 
-            // Handle click on "View" button
-            $('#companyRegistrations tbody').on('click', '.btn', function() {
-                var id = table.row($(this).parents('tr')).data()["id"];
-                window.location.href = "/sysadm/companyRegistration/" + id;
-            });
         });
     </script>
 </th:block>
