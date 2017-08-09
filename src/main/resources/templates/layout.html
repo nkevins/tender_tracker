@@ -65,7 +65,7 @@
                                 <img th:src="@{/assets/theme/images/people/4.jpg}" alt="" class="img-profile" /> &nbsp; <span sec:authentication="principal.name">Jhon</span> <b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="#">Profile</a></li>
+                                <li><a th:href="@{/user/profile}">Profile</a></li>
                             </ul>
                         </li>
                         <li class="link-btn" sec:authorize="isAuthenticated()">

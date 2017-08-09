@@ -1,0 +1,92 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorator="layout">
+<head>
+    <title>Tender Tracker</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="row">
+        <div class="col-md-12">
+
+            <th:block th:if="${alert != null}">
+                <div th:replace="fragments/alert :: alert (type=${alert.getType()}, messages=${alert.messages})">Alert</div>
+            </th:block>
+
+            <!-- box item details -->
+            <div class="block-section box-item-details">
+
+
+                <div>
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#tenderDetails" aria-controls="home" role="tab" data-toggle="tab">User Details</a></li>
+                        <li role="presentation"><a href="#clarification" aria-controls="profile" role="tab" data-toggle="tab">Change Password</a></li>
+                        <li role="presentation"><a href="#clarification" aria-controls="profile" role="tab" data-toggle="tab">Bookmark Tender</a></li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <!-- Tender details pane -->
+                        <div role="tabpanel" class="tab-pane active" id="tenderDetails">
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h4>User Profile:</h4>
+                                    <p>Name: <span th:text="${userprofile.name}"></span></p>
+                                    <p>Email: <span th:text="${userprofile.email}"></span></p>
+                                    <p>Contact No: <span th:text="${userprofile.contactNo}"></span></p>
+                                </div>
+
+                            </div>
+                        </div>
+                        <!-- end Tender details pane -->
+
+                        <!-- Clarification pane -->
+                        <!--
+                        <div role="tabpanel" class="tab-pane" id="clarification">
+
+                            <form th:action="@{/tender/clarification/save}" method="POST" sec:authorize="hasAnyRole('USER')">
+                                <h4>Submit Clarification</h4>
+                                <div class="form-group">
+                                    <label>Clarification</label>
+                                    <textarea class="form-control" rows="4" required="required" th:field="${clarificationDto.response}"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <input type="hidden" name="tenderId" th:value="${tender.id}" />
+                                    <input type="hidden" name="companyId" th:value="${tender.company.id}" />
+                                    <button type="submit" class="btn btn-theme btn-lg btn-t-primary btn-pill">Submit</button>
+                                </div>
+                            </form>
+
+                            <hr sec:authorize="hasAnyRole('USER')" />
+
+                            <br th:if="${#lists.isEmpty(clarification)}" />
+                            <p th:if="${#lists.isEmpty(clarification)}">No Clarification Found</p>
+
+                            <div class="box-list">
+                                <div class="item" th:each="c, iter : ${clarification}">
+                                    <div class="row">
+                                        <h3 th:text="${c.description}"></h3>
+                                        <p><strong>Submitted Date: </strong><span th:text="${#dates.format(c.createdDate, 'dd-MMM-yyyy')}"> </span></p>
+                                        <p><strong>Submitter: </strong> <span th:text="${c.company.name}"> </span></p>
+                                        <p th:unless="${#strings.isEmpty(c.response)}"><strong>Response: </strong><span th:text="${c.response}"> </span></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        -->
+                        <!-- end Clarification pane -->
+                    </div>
+                    <!-- end Tab panes -->
+                </div>
+            </div>
+            <!-- end box item details -->
+        </div>
+    </div>
+</div>
+</body>
+</html>
