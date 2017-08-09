@@ -18,7 +18,7 @@ public interface TenderService {
     void removeTenderItem(int tenderItemId);
 
     TenderDocument addTenderDocument(MultipartFile attachment, Tender tender, int createdBy);
-    void removeTenderDocument(int id);;
+    void removeTenderDocument(int id);
 
     TenderBookmark findTenderBookmark(int tenderId, int userId);
     TenderBookmark bookmarkTender(Tender tender, User user);

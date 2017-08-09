@@ -187,7 +187,6 @@ public class TenderController {
 
         model.addAttribute("tender", tender);
         model.addAttribute("tenderType", codeValueService.getDescription("tender_type", tender.getTenderType()));
-        model.addAttribute("tenderCategory", tender.getTenderCategory());
         model.addAttribute("codeValueService", codeValueService);
         model.addAttribute("s3Service", s3Service);
         return "admin/tender/tenderDetails";

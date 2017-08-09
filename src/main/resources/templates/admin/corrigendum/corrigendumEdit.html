@@ -1,0 +1,105 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="admin/layout">
+<head>
+    <title>Tender Tracker</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <th:block th:if="${alert != null}">
+        <div th:replace="fragments/alert :: alert (type=${alert.getType()}, messages=${alert.messages})">Alert</div>
+    </th:block>
+    <div class="alert alert-danger" style="display:none;" id="updateCorrigendumError"></div>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            Edit Corrigendum
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Tender Corrigendum Box -->
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Corrigendum Information</h3>
+                        <h5 th:text="${corrigendum.tender.title}"></h5>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <form th:action="@{/admin/tender/editCorrigendum}" method="POST" class="form-horizontal" th:object="${corrigendum}" id="editCorrigendumForm">
+                            <div class="form-group">
+                                <label for="description" class="col-sm-2 control-label">Description</label>
+                                <div class="col-sm-10">
+                                    <textarea class="form-control" id="description" th:field="*{description}" required="required">
+                                    </textarea>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-offset-2 col-md-4">
+                                    <h4>Attachments</h4>
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tr th:each="d : ${corrigendum.documents}">
+                                            <td>
+                                                <a th:href="${s3Service.getPreSignedURL(d.document.location)}" th:text="${d.document.name}"></a>
+                                            </td>
+                                            <td>
+                                                <form th:action="@{/tender/removeCorrigendumDocument}" method="POST">
+                                                    <input type="hidden" name="corrigendumDocumentId" th:value="${d.id}" />
+                                                    <input type="hidden" name="corrigendumId" th:value="${corrigendum.id}" />
+                                                    <button class="btn btn-danger"><span class="fa fa-trash"></span></button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <form th:action="@{/admin/tender/addCorrigendumDocument}" method="post" class="dropzone" enctype="multipart/form-data" id="attachmentUploads">
+                                        <input type="hidden" name="id" th:value="${corrigendum.id}" />
+                                    </form>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <input type="hidden" th:field="*{id}" />
+                                    <input type="submit" id="mainSubmitBtn" value="Save" class="btn btn-primary" />
+                                    <a th:href="@{/admin/tender/} + ${corrigendum.tender.id} + @{/corrigendum}" class="btn btn-default">Cancel</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+
+    </section>
+    <!-- /.content -->
+</div>
+</body>
+<th:block layout:fragment="scripts">
+    <script type="text/javascript">
+        Dropzone.options.attachmentUploads = {
+            error: function(file, errorMessage) {
+                $("#updateCorrigendumError").text(errorMessage);
+                $('#updateCorrigendumError').show();
+                $('html,body').animate({scrollTop: 0});
+            },
+            success: function(file, response) {
+                window.location.reload();
+            }
+        };
+    </script>
+</th:block>
+</html>

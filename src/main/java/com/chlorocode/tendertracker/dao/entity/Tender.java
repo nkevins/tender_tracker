@@ -69,10 +69,14 @@ public class Tender {
     @OneToMany(mappedBy = "tender", cascade = CascadeType.PERSIST)
     private List<TenderBookmark> tenderBookmarks;
 
+    @OneToMany(mappedBy = "tender", cascade = CascadeType.PERSIST)
+    private List<Corrigendum> corrigendums;
+
     public Tender() {
         items = new LinkedList<>();
         documents = new LinkedList<>();
         tenderBookmarks = new LinkedList<>();
+        corrigendums = new LinkedList<>();
     }
 
     public int getId() {
@@ -275,5 +279,9 @@ public class Tender {
 
     public List<TenderBookmark> getTenderBookmarks() {
         return tenderBookmarks;
+    }
+
+    public List<Corrigendum> getCorrigendums() {
+        return corrigendums;
     }
 }

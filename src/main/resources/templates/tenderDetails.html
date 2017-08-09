@@ -38,6 +38,7 @@
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active"><a href="#tenderDetails" aria-controls="home" role="tab" data-toggle="tab">Tender Details</a></li>
                         <li role="presentation"><a href="#clarification" aria-controls="profile" role="tab" data-toggle="tab">Clarification</a></li>
+                        <li role="presentation" th:if="${not #lists.isEmpty(corrigendums)}"><a href="#corrigendum" aria-controls="profile" role="tab" data-toggle="tab">Corrigendum</a></li>
                     </ul>
 
                     <!-- Tab panes -->
@@ -115,19 +116,43 @@
 
                             <hr sec:authorize="hasAnyRole('USER')" />
 
+                            <br th:if="${#lists.isEmpty(clarification)}" />
+                            <p th:if="${#lists.isEmpty(clarification)}">No Clarification Found</p>
+
                             <div class="box-list">
                                 <div class="item" th:each="c, iter : ${clarification}">
                                     <div class="row">
                                         <h3 th:text="${c.description}"></h3>
-                                        <p><strong>Submitted Date: </strong><label th:text="${#dates.format(c.createdDate, 'dd-MMM-yyyy')}"> </label></p>
-                                        <p><strong>Submitter: </strong> <label th:text="${c.company.name}"> </label></p>
-                                        <p><strong>Response: </strong><label th:text="${c.response}"> </label></p>
+                                        <p><strong>Submitted Date: </strong><span th:text="${#dates.format(c.createdDate, 'dd-MMM-yyyy')}"> </span></p>
+                                        <p><strong>Submitter: </strong> <span th:text="${c.company.name}"> </span></p>
+                                        <p th:unless="${#strings.isEmpty(c.response)}"><strong>Response: </strong><span th:text="${c.response}"> </span></p>
                                     </div>
                                 </div>
                             </div>
 
                         </div>
                         <!-- end Clarification pane -->
+
+                        <!-- Tender Corrigendum pane -->
+                        <div role="tabpanel" class="tab-pane" id="corrigendum" th:if="${not #lists.isEmpty(corrigendums)}">
+                            <div class="box-list">
+                                <div class="item" th:each="c : ${corrigendums}">
+                                    <div class="row">
+                                        <h4 th:text="${c.description}"></h4>
+                                        <p><strong>Corrigendum Date: </strong><span th:text="${#dates.format(c.createdDate, 'dd-MMM-yyyy')}"> </span></p>
+                                        <div>
+                                            <p>Attachments: </p>
+                                            <ul>
+                                                <li th:each="d : ${c.documents}">
+                                                    <a th:href="${s3Service.getPreSignedURL(d.document.location)}" th:text="${d.document.name}"></a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end Corrigendum pane -->
                     </div>
                     <!-- end Tab panes -->
                 </div>

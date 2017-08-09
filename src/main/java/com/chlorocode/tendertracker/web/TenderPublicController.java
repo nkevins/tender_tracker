@@ -31,15 +31,17 @@ public class TenderPublicController {
     private CodeValueService codeValueService;
     private S3Wrapper s3Wrapper;
     private ClarificationService clariSvc;
+    private CorrigendumService corrigendumService;
 
     @Autowired
     public TenderPublicController(TenderService tenderService, BidService bidService, CodeValueService codeValueService,
-                                  S3Wrapper s3Wrapper,ClarificationService clariSvc) {
+                                  S3Wrapper s3Wrapper,ClarificationService clariSvc, CorrigendumService corrigendumService) {
         this.tenderService = tenderService;
         this.bidService = bidService;
         this.codeValueService = codeValueService;
         this.s3Wrapper = s3Wrapper;
         this.clariSvc = clariSvc;
+        this.corrigendumService = corrigendumService;
     }
 
     @GetMapping("/tender/{id}")
@@ -49,6 +51,7 @@ public class TenderPublicController {
             return "redirect:/";
         }
         List<Clarification> lstClarification = clariSvc.findClarificationByTenderId(id);
+        List<Corrigendum> lstCorrigendum = corrigendumService.findTenderCorrigendum(id);
         TenderClarificationDTO td = new TenderClarificationDTO();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && !(auth instanceof AnonymousAuthenticationToken)) {
@@ -67,6 +70,7 @@ public class TenderPublicController {
         model.addAttribute("codeValueService", codeValueService);
         model.addAttribute("s3Service", s3Wrapper);
         model.addAttribute("clarification",lstClarification);
+        model.addAttribute("corrigendums", lstCorrigendum);
         model.addAttribute("clarificationDto",td);
         return "tenderDetails";
     }

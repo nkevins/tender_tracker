@@ -14,7 +14,7 @@ import java.util.List;
 @Repository
 public interface ClarificationDAO extends JpaRepository<Clarification, Integer> {
 
-    @Query("select r from Clarification r where r.tender.id = ?1")
+    @Query("select r from Clarification r where r.tender.id = ?1 order by r.createdDate desc")
     List<Clarification> findClarificationByTenderId(int tenderId);
 
 }
