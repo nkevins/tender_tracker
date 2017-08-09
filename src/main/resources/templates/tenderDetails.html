@@ -15,15 +15,7 @@
                 <div th:replace="fragments/alert :: alert (type=${alert.getType()}, messages=${alert.messages})">Alert</div>
             </th:block>
 
-            <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="active"><a href="#tenderDetails" aria-controls="home" role="tab" data-toggle="tab">Tender Details</a></li>
-                <li role="presentation"><a href="#clarification" aria-controls="profile" role="tab" data-toggle="tab">Clarification</a></li>
-            </ul>
-
-            <div class="tab-content">
-                <div role="tabpanel" class="tab-pane active" id="tenderDetails">
-
-                <!-- box item details -->
+            <!-- box item details -->
             <div class="block-section box-item-details">
                 <h2 class="title" th:text="${tender.title}">
                     Lorem ipsum dolor sit amet
@@ -39,85 +31,105 @@
                     <button type="submit" class="btn btn-danger"><span class="fa fa-bookmark"></span> Remove Bookmark</button>
                 </form>
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <h4>Details:</h4>
-                        <p>Opening Date: <span th:text="${#dates.format(tender.openDate, 'dd MMM yyyy')}"></span></p>
-                        <p>Closing Date: <span th:text="${#dates.format(tender.closedDate, 'dd MMM yyyy')}"></span></p>
-                        <p>Status: <span class="label label-success" th:if="${tender.status == 1}">OPEN</span><span class="label label-danger" th:if="${tender.status == 2}">CLOSED</span><span class="label label-primary" th:if="${tender.status == 3}">AWARDED</span></p>
-                    </div>
-                    <div class="col-md-6">
-                        <h4>Contact Person:</h4>
-                        <p th:text="${tender.contactPersonName}">John Doe</p>
-                        <p th:text="${tender.contactPersonEmail}">john@gmail.com</p>
-                        <p th:text="${tender.contactPersonPhone}">62441600</p>
-                    </div>
-                </div>
+                <br />
 
-                <h4>Description:</h4>
-                <p th:utext="${tender.description}">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis laoreet, dui sit amet ullamcorper feugiat, libero nulla molestie sem, ut pellentesque mi libero ac nibh. Suspendisse sodales tellus vitae posuere volutpat. Maecenas ut pharetra tellus. Fusce tempus gravida nisi, eget.</p>
+                <div>
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#tenderDetails" aria-controls="home" role="tab" data-toggle="tab">Tender Details</a></li>
+                        <li role="presentation"><a href="#clarification" aria-controls="profile" role="tab" data-toggle="tab">Clarification</a></li>
+                    </ul>
 
-                <h4>Document:</h4>
-                <ul>
-                    <li th:each="doc : ${tender.documents}"><a th:text="${doc.document.name}" th:href="${s3Service.getPreSignedURL(doc.document.location)}" /></li>
-                </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <!-- Tender details pane -->
+                        <div role="tabpanel" class="tab-pane active" id="tenderDetails">
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <h4>Delivery Details:</h4>
-                        <p>Delivery Date: <span th:if="${tender.deliveryDate != null}" th:text="${#dates.format(tender.deliveryDate, 'dd-MM-yyyy')}"></span></p>
-                        <p>Delivery Remarks: <span th:text="${tender.deliveryRemarks}"></span></p>
-                        <p>Delivery Location: <span th:text="${tender.deliveryLocation}"></span></p>
-                    </div>
-                </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h4>Details:</h4>
+                                    <p>Opening Date: <span th:text="${#dates.format(tender.openDate, 'dd MMM yyyy')}"></span></p>
+                                    <p>Closing Date: <span th:text="${#dates.format(tender.closedDate, 'dd MMM yyyy')}"></span></p>
+                                    <p>Status: <span class="label label-success" th:if="${tender.status == 1}">OPEN</span><span class="label label-danger" th:if="${tender.status == 2}">CLOSED</span><span class="label label-primary" th:if="${tender.status == 3}">AWARDED</span></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h4>Contact Person:</h4>
+                                    <p th:text="${tender.contactPersonName}">John Doe</p>
+                                    <p th:text="${tender.contactPersonEmail}">john@gmail.com</p>
+                                    <p th:text="${tender.contactPersonPhone}">62441600</p>
+                                </div>
+                            </div>
 
-                <h4>Tender Items:</h4>
-                <table class="table">
-                    <tr>
-                        <th>S/N</th>
-                        <th>Item</th>
-                        <th>Quantity</th>
-                        <th>UOM</th>
-                    </tr>
-                    <tr th:each="i, iterator : ${tender.items}">
-                        <td th:text="${iterator.index + 1}">1</td>
-                        <td th:text="${i.description}">Item 1</td>
-                        <td th:text="${i.quantity}">5</td>
-                        <td th:text="${codeValueService.getDescription('uom', i.uom)}">Pcs</td>
-                    </tr>
-                </table>
-                <a th:href="@{/tender/__${tender.id}__/respond}" class="btn btn-block btn-theme btn-success" sec:authorize="hasAnyRole('ADMIN','SUBMITTER')">Submit Respond</a>
-            </div>
-                </div>
-            </div>
+                            <h4>Description:</h4>
+                            <p th:utext="${tender.description}">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis laoreet, dui sit amet ullamcorper feugiat, libero nulla molestie sem, ut pellentesque mi libero ac nibh. Suspendisse sodales tellus vitae posuere volutpat. Maecenas ut pharetra tellus. Fusce tempus gravida nisi, eget.</p>
 
-            <div role="tabpanel" class="tab-pane" id="clarification">
-                <form th:action="@{/tender/clarification/save}" method="POST" sec:authorize="hasAnyRole('USER')">
-                    <h4>Submit Clarification</h4>
-                    <div class="form-group">
-                        <label>Clarification</label>
-                        <textarea class="form-control" rows="4" required="required" th:field="${clarificationDto.response}"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <input type="hidden" name="tenderId" th:value="${tender.id}" />
-                        <input type="hidden" name="companyId" th:value="${tender.company.id}" />
-                        <button type="submit" class="btn btn-theme btn-lg btn-t-primary btn-pill">Submit</button>
-                    </div>
-                </form>
+                            <h4>Document:</h4>
+                            <ul>
+                                <li th:each="doc : ${tender.documents}"><a th:text="${doc.document.name}" th:href="${s3Service.getPreSignedURL(doc.document.location)}" /></li>
+                            </ul>
 
-                <hr />
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h4>Delivery Details:</h4>
+                                    <p>Delivery Date: <span th:if="${tender.deliveryDate != null}" th:text="${#dates.format(tender.deliveryDate, 'dd-MM-yyyy')}"></span></p>
+                                    <p>Delivery Remarks: <span th:text="${tender.deliveryRemarks}"></span></p>
+                                    <p>Delivery Location: <span th:text="${tender.deliveryLocation}"></span></p>
+                                </div>
+                            </div>
 
-                <div class="box-list">
-                    <div class="item">
-                        <div class="row" th:each="c, iter : ${clarification}">
-                            <h3 th:text="${c.description}"></h3>
-                            <p><strong>Submitted Date: </strong><label th:text="${#dates.format(c.createdDate, 'dd-MMM-yyyy')}"> </label></p>
-                            <p><strong>Submitter: </strong> <label th:text="${c.company.name}"> </label></p>
-                            <p><strong>Response: </strong><label th:text="${c.response}"> </label></p>
+                            <h4>Tender Items:</h4>
+                            <table class="table">
+                                <tr>
+                                    <th>S/N</th>
+                                    <th>Item</th>
+                                    <th>Quantity</th>
+                                    <th>UOM</th>
+                                </tr>
+                                <tr th:each="i, iterator : ${tender.items}">
+                                    <td th:text="${iterator.index + 1}">1</td>
+                                    <td th:text="${i.description}">Item 1</td>
+                                    <td th:text="${i.quantity}">5</td>
+                                    <td th:text="${codeValueService.getDescription('uom', i.uom)}">Pcs</td>
+                                </tr>
+                            </table>
+                            <a th:href="@{/tender/__${tender.id}__/respond}" class="btn btn-block btn-theme btn-success" sec:authorize="hasAnyRole('ADMIN','SUBMITTER')">Submit Respond</a>
+
                         </div>
+                        <!-- end Tender details pane -->
+
+                        <!-- Clarification pane -->
+                        <div role="tabpanel" class="tab-pane" id="clarification">
+
+                            <form th:action="@{/tender/clarification/save}" method="POST" sec:authorize="hasAnyRole('USER')">
+                                <h4>Submit Clarification</h4>
+                                <div class="form-group">
+                                    <label>Clarification</label>
+                                    <textarea class="form-control" rows="4" required="required" th:field="${clarificationDto.response}"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <input type="hidden" name="tenderId" th:value="${tender.id}" />
+                                    <input type="hidden" name="companyId" th:value="${tender.company.id}" />
+                                    <button type="submit" class="btn btn-theme btn-lg btn-t-primary btn-pill">Submit</button>
+                                </div>
+                            </form>
+
+                            <hr sec:authorize="hasAnyRole('USER')" />
+
+                            <div class="box-list">
+                                <div class="item" th:each="c, iter : ${clarification}">
+                                    <div class="row">
+                                        <h3 th:text="${c.description}"></h3>
+                                        <p><strong>Submitted Date: </strong><label th:text="${#dates.format(c.createdDate, 'dd-MMM-yyyy')}"> </label></p>
+                                        <p><strong>Submitter: </strong> <label th:text="${c.company.name}"> </label></p>
+                                        <p><strong>Response: </strong><label th:text="${c.response}"> </label></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <!-- end Clarification pane -->
                     </div>
-
-
+                    <!-- end Tab panes -->
                 </div>
             </div>
             <!-- end box item details -->
