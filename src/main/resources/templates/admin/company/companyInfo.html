@@ -1,0 +1,120 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="admin/layout">
+<head>
+    <title>Tender Tracker</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <th:block th:if="${alert != null}">
+        <div th:replace="fragments/alert :: alert (type=${alert.getType()}, messages=${alert.messages})">Alert</div>
+    </th:block>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            Company Profile
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Tender Corrigendum Box -->
+                <div class="box box-primary">
+                    <div class="box-body">
+                        <form th:action="@{/admin/company}" method="POST" class="form-horizontal" th:object="${company}">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Name</label>
+                                <div class="col-sm-10">
+                                    <p th:text="${company.name}"></p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">UEN No</label>
+                                <div class="col-sm-10">
+                                    <p th:text="${company.uen}"></p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">GST Registration No</label>
+                                <div class="col-sm-10">
+                                    <p th:text="${company.gstRegNo}"></p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Company Type</label>
+                                <div class="col-sm-10">
+                                    <p th:text="${codeValueSvc.getDescription('company_type', company.type)}"></p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Area of Business</label>
+                                <div class="col-sm-10">
+                                    <p th:text="${codeValueSvc.getDescription('area_of_business', company.areaOfBusiness)}"></p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Address 1</label>
+                                <div class="col-sm-10">
+                                    <input type="text" th:field="*{address1}" required="required" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Address 2</label>
+                                <div class="col-sm-10">
+                                    <input type="text" th:field="*{address2}" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Postal Code</label>
+                                <div class="col-sm-10">
+                                    <input type="text" th:field="*{postalCode}" required="required" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">City</label>
+                                <div class="col-sm-10">
+                                    <input type="text" th:field="*{city}" required="required" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">State</label>
+                                <div class="col-sm-10">
+                                    <input type="text" th:field="*{state}" required="required" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Province</label>
+                                <div class="col-sm-10">
+                                    <input type="text" th:field="*{province}" required="required" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Country</label>
+                                <div class="col-sm-10">
+                                    <input type="text" th:field="*{country}" required="required" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <input type="hidden" th:field="*{id}" />
+                                    <input type="submit" value="Update" class="btn btn-primary" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+
+    </section>
+    <!-- /.content -->
+</div>
+</body>
+</html>

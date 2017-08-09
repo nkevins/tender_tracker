@@ -107,4 +107,9 @@ public class CompanyServiceImpl implements CompanyService {
     public Company findById(int id) {
         return companyDAO.findOne(id);
     }
+
+    @Override
+    public Company updateCompany(Company company) {
+        return companyDAO.save(company);
+    }
 }

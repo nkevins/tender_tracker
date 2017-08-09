@@ -11,4 +11,5 @@ public interface CompanyService {
     void rejectCompanyRegistration(int id, int rejectedBy);
 
     Company findById(int id);
+    Company updateCompany(Company company);
 }
