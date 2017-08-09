@@ -128,8 +128,8 @@
                                     <span class="color-black">Closing: <span th:text="${#dates.format(t.closedDate, 'dd MMM yyyy')}"></span></span>
                                     <br />
                                     <h4>
-                                        <span class="label label-success" th:if="${t.status == 1}">OPEN</span>
-                                        <span class="label label-danger" th:if="${t.status == 2}">CLOSED</span>
+                                        <span class="label label-default" th:if="${t.status == 1}">OPEN</span>
+                                        <span class="label label-warning" th:if="${t.status == 2}">CLOSED</span>
                                         <span class="label label-primary" th:if="${t.status == 3}">AWARDED</span>
                                     </h4>
                                 </div>

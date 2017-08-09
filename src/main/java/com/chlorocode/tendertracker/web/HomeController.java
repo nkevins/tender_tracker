@@ -25,4 +25,9 @@ public class HomeController {
         model.addAttribute("codeValueSvc", codeValueService);
         return "home";
     }
+
+    @GetMapping("/about")
+    public String showAboutPage() {
+        return "about";
+    }
 }

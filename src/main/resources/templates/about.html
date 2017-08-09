@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout">
+<head>
+    <title>Tender Tracker</title>
+</head>
+<body>
+<div layout:fragment="content" class="">
+    <div class="container text-center">
+        <h2>About Us</h2>
+        <h4>Tender Trackers – Management System for Tenders</h4>
+        <div class="white-space-15"></div>
+        <p>Tender Trackers is a one-stop place for businesses to trade and procure goods and services. It aggregates tenders from public sources to find relevant potential tender opportunities.
+            TenderTrackers allows users to track their tender contracts throughout the contractual period.</p>
+        <p>It is also has an open marketplace for businesses to offer their products and services.</p>
+    </div>
+
+    <!-- patners logo-->
+    <div class="bg-color1 block-section line-bottom">
+        <div class="container text-center clients ">
+            <a href="http://www.chlorocode.com/"><img th:src="@{/assets/theme/images/patner/chlorocode.png}" alt="chlorocode" /></a>
+        </div>
+    </div> <!-- end patners logo-->
+</div>
+</body>
+</html>

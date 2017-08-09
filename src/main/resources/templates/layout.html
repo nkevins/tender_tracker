@@ -139,8 +139,9 @@
                 <div class="col-sm-6">
                     <ul class="list-inline link-footer text-center-xs">
                         <li><a th:href="@{/}">Home</a></li>
-                        <li><a href="#">About Us</a></li>
+                        <li><a th:href="@{/about}">About Us</a></li>
                     </ul>
+                    <p><strong>Copyright &copy; <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}">2017</span>  ChloroCode. All rights reserved.</strong></p>
                 </div>
             </div>
         </div>
