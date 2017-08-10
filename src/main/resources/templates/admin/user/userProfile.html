@@ -31,16 +31,19 @@
                     <div class="tab-content">
                         <!-- Tender details pane -->
                         <div role="tabpanel" class="tab-pane active" id="tenderDetails">
-
+                            <form th:action="@{/user/profile/update}" method="POST" sec:authorize="hasAnyRole('USER')">
                             <div class="row">
                                 <div class="col-md-6">
                                     <h4>User Profile:</h4>
-                                    <p>Name: <span th:text="${userprofile.name}"></span></p>
-                                    <p>Email: <span th:text="${userprofile.email}"></span></p>
-                                    <p>Contact No: <span th:text="${userprofile.contactNo}"></span></p>
+                                    <input type="hidden" name="userId" th:value="${userprofile.id}" />
+                                    <p>Name:  <span th:text="${userprofile.name}"></span></p>
+                                    <p>Email: <input type="text" class="form-control" th:field="${userprofile.email}" required="required"/></p>
+                                    <p>Contact No: <input type="text" class="form-control" th:field="${userprofile.contactNumber}"/></p>
+                                    <p><button type="submit" class="btn btn-theme btn-lg btn-t-primary btn-pill">Update</button></p>
                                 </div>
 
                             </div>
+                            </form>
                         </div>
                         <!-- end Tender details pane -->
 

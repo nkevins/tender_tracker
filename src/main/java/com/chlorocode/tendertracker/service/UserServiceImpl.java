@@ -106,6 +106,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User updateUserProfile(User user) {
+        return userDAO.save(user);
+    }
+
+    @Override
     public String sendPasswordResetPIN(String email) {
         Optional<User> u = userDAO.findOneByEmail(email);
         if (u.isPresent()) {

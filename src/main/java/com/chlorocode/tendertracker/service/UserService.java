@@ -19,4 +19,6 @@ public interface UserService {
 
     User updatePassword(String email, String newPassword);
 
+    User updateUserProfile(User user);
+
 }
