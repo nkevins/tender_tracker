@@ -23,7 +23,7 @@
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active"><a href="#tenderDetails" aria-controls="home" role="tab" data-toggle="tab">User Details</a></li>
-                        <li role="presentation"><a href="#clarification" aria-controls="profile" role="tab" data-toggle="tab">Change Password</a></li>
+                        <li role="presentation"><a href="#changePassword" aria-controls="profile" role="tab" data-toggle="tab">Change Password</a></li>
                         <li role="presentation"><a href="#clarification" aria-controls="profile" role="tab" data-toggle="tab">Bookmark Tender</a></li>
                     </ul>
 
@@ -47,41 +47,29 @@
                         </div>
                         <!-- end Tender details pane -->
 
-                        <!-- Clarification pane -->
-                        <!--
-                        <div role="tabpanel" class="tab-pane" id="clarification">
+                        <!-- change password pane -->
 
-                            <form th:action="@{/tender/clarification/save}" method="POST" sec:authorize="hasAnyRole('USER')">
-                                <h4>Submit Clarification</h4>
-                                <div class="form-group">
-                                    <label>Clarification</label>
-                                    <textarea class="form-control" rows="4" required="required" th:field="${clarificationDto.response}"></textarea>
-                                </div>
-                                <div class="form-group">
-                                    <input type="hidden" name="tenderId" th:value="${tender.id}" />
-                                    <input type="hidden" name="companyId" th:value="${tender.company.id}" />
-                                    <button type="submit" class="btn btn-theme btn-lg btn-t-primary btn-pill">Submit</button>
+                        <div role="tabpanel" class="tab-pane" id="changePassword">
+
+                            <form th:action="@{/user/password/update}" method="POST" sec:authorize="hasAnyRole('USER')">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h4>Change Password:</h4>
+                                        <input type="hidden" name="userId" th:value="${userprofile.id}" />
+                                        <input type="hidden" name="email" th:value="${userprofile.email}" />
+                                        <p>New Password:  <input type="password" class="form-control" th:field="${passwordDto.password}" required="required"/></p>
+                                        <p>Confirm Password: <input type="password" class="form-control" th:field="${passwordDto.confirmPassword}" required="required"/></p>
+
+                                        <p><button type="submit" class="btn btn-theme btn-lg btn-t-primary btn-pill">Update</button></p>
+                                    </div>
+
                                 </div>
                             </form>
 
-                            <hr sec:authorize="hasAnyRole('USER')" />
 
-                            <br th:if="${#lists.isEmpty(clarification)}" />
-                            <p th:if="${#lists.isEmpty(clarification)}">No Clarification Found</p>
-
-                            <div class="box-list">
-                                <div class="item" th:each="c, iter : ${clarification}">
-                                    <div class="row">
-                                        <h3 th:text="${c.description}"></h3>
-                                        <p><strong>Submitted Date: </strong><span th:text="${#dates.format(c.createdDate, 'dd-MMM-yyyy')}"> </span></p>
-                                        <p><strong>Submitter: </strong> <span th:text="${c.company.name}"> </span></p>
-                                        <p th:unless="${#strings.isEmpty(c.response)}"><strong>Response: </strong><span th:text="${c.response}"> </span></p>
-                                    </div>
-                                </div>
-                            </div>
 
                         </div>
-                        -->
+
                         <!-- end Clarification pane -->
                     </div>
                     <!-- end Tab panes -->

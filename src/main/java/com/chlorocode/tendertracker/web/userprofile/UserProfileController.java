@@ -1,6 +1,7 @@
 package com.chlorocode.tendertracker.web.userprofile;
 
 import com.chlorocode.tendertracker.dao.dto.AlertDTO;
+import com.chlorocode.tendertracker.dao.dto.ChangePasswordDTO;
 import com.chlorocode.tendertracker.dao.dto.TenderClarificationDTO;
 import com.chlorocode.tendertracker.dao.dto.UserProfileDTO;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
@@ -54,7 +55,9 @@ public class UserProfileController {
         usrDto.setEmail(usr.getEmail());
         usrDto.setId(usr.getId());
 
+        ChangePasswordDTO pwd = new ChangePasswordDTO();
         model.addAttribute("userprofile",usrDto);
+        model.addAttribute("passwordDto",pwd);
         return "/admin/user/userProfile";
     }
 
@@ -88,4 +91,36 @@ public class UserProfileController {
         }
         return "/admin/user/userProfile";
     }
+
+    @PostMapping("/user/password/update")
+    public String updateUserPassword(ModelMap model,@Valid ChangePasswordDTO form,
+                                     @RequestParam("userId") int userId,  @RequestParam("userId") String email){
+
+        if(!form.getPassword().equalsIgnoreCase(form.getConfirmPassword())){
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER, "New password does not match");
+            model.addAttribute("alert", alert);
+        }else{
+            User usr = userService.updatePassword(email,form.getPassword());
+            if(usr == null){
+                AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER, "Failed to update user password");
+                model.addAttribute("alert", alert);
+            }else{
+                AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS, "Update password successfull");
+                model.addAttribute("alert", alert);
+            }
+        }
+
+        User usr = userService.findById(userId);
+        UserProfileDTO usrDto = new UserProfileDTO();
+        usrDto.setContactNumber(usr.getContactNo());
+        usrDto.setName(usr.getName());
+        usrDto.setEmail(usr.getEmail());
+        usrDto.setId(usr.getId());
+        ChangePasswordDTO pwd = new ChangePasswordDTO();
+
+        model.addAttribute("userprofile",usrDto);
+        model.addAttribute("passwordDto",pwd);
+        return "/admin/user/userProfile";
+    }
+
 }
