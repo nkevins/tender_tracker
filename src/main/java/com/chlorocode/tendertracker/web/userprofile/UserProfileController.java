@@ -5,7 +5,9 @@ import com.chlorocode.tendertracker.dao.dto.ChangePasswordDTO;
 import com.chlorocode.tendertracker.dao.dto.TenderClarificationDTO;
 import com.chlorocode.tendertracker.dao.dto.UserProfileDTO;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
+import com.chlorocode.tendertracker.dao.entity.TenderBookmark;
 import com.chlorocode.tendertracker.dao.entity.User;
+import com.chlorocode.tendertracker.service.TenderService;
 import com.chlorocode.tendertracker.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by andy on 9/8/2017.
@@ -25,11 +28,13 @@ import java.util.Date;
 @Controller
 public class UserProfileController {
     private UserService userService;
+    private TenderService tenderService;
 
     @Autowired
-    public UserProfileController(UserService userService)
+    public UserProfileController(UserService userService,TenderService tenderService)
     {
         this.userService = userService;
+        this.tenderService = tenderService;
     }
 
     @GetMapping("/user/profile")
@@ -55,9 +60,12 @@ public class UserProfileController {
         usrDto.setEmail(usr.getEmail());
         usrDto.setId(usr.getId());
 
+        List<TenderBookmark> lstBokkmark = tenderService.findTenderBookmarkByUserId(usr.getId());
+
         ChangePasswordDTO pwd = new ChangePasswordDTO();
         model.addAttribute("userprofile",usrDto);
         model.addAttribute("passwordDto",pwd);
+        model.addAttribute("bookmarkTenderList",lstBokkmark);
         return "/admin/user/userProfile";
     }
 

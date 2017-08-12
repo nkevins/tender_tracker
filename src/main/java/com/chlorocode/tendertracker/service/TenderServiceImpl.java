@@ -214,4 +214,9 @@ public class TenderServiceImpl implements TenderService {
 
         tenderCategorySubscriptionDAO.save(subsList);
     }
+
+    @Override
+    public List<TenderBookmark> findTenderBookmarkByUserId(int userId) {
+        return tenderBookmarkDAO.findTenderBookmarkByUserId(userId);
+    }
 }

@@ -26,4 +26,6 @@ public interface TenderService {
 
     List<TenderCategorySubscription> findUserSubscription(int userId);
     void subscribeToTenderCategory(User user, List<TenderCategory> categories);
+
+    List<TenderBookmark> findTenderBookmarkByUserId(int userId);
 }

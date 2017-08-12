@@ -70,6 +70,32 @@
 
                         </div>
 
+                        <div role="tabpanel" class="tab-pane" id="clarification">
+                            <br th:if="${#lists.isEmpty(bookmarkTenderList)}" />
+                            <p th:if="${#lists.isEmpty(bookmarkTenderList)}">No Bookmarked Tender Found</p>
+
+                            <div class="box-list">
+                                <div class="item" th:each="c, iter : ${bookmarkTenderList}">
+                                    <div class="row">
+                                        <h3 class="no-margin-top">
+                                            <a th:href="@{/tender/} + ${c.id}" class="" th:text="${c.tender.title}" target="_blank"></a>
+                                        </h3>
+                                        <div>
+                                            <span class="color-black">Open: <span th:text="${#dates.format(c.tender.openDate, 'dd MMM yyyy')}"></span></span>
+                                            <br />
+                                            <span class="color-black">Closing: <span th:text="${#dates.format(c.tender.closedDate, 'dd MMM yyyy')}"></span></span>
+                                            <br />
+                                            <h4>
+                                                <span class="label label-default" th:if="${c.tender.status == 1}">OPEN</span>
+                                                <span class="label label-warning" th:if="${c.tender.status == 2}">CLOSED</span>
+                                                <span class="label label-primary" th:if="${c.tender.status == 3}">AWARDED</span>
+                                            </h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- end Clarification pane -->
                     </div>
                     <!-- end Tab panes -->
