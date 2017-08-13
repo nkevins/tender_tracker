@@ -93,8 +93,9 @@
                                     <td th:text="${codeValueService.getDescription('uom', i.uom)}">Pcs</td>
                                 </tr>
                             </table>
-                            <a th:href="@{/tender/__${tender.id}__/respond}" class="btn btn-block btn-theme btn-success" sec:authorize="hasAnyRole('ADMIN','SUBMITTER')">Submit Respond</a>
+                            <a th:href="@{/tender/__${tender.id}__/respond}" class="btn btn-block btn-theme btn-success" sec:authorize="hasAnyRole('ADMIN','SUBMITTER')" th:unless="${isSubmitedTender}">Submit Respond</a>
 
+                            <a th:href="@{/tender/__${tender.id}__/respond}" class="btn btn-block btn-theme btn-success" sec:authorize="hasAnyRole('ADMIN','SUBMITTER')" th:if="${isBookmarked}" disabled="true">Submit Respond</a>
                         </div>
                         <!-- end Tender details pane -->
 

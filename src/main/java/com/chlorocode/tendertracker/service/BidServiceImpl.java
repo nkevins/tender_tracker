@@ -66,4 +66,9 @@ public class BidServiceImpl implements BidService {
 
         return result;
     }
+
+    @Override
+    public Bid findBidByCompanyAndTender(int companyId, int tenderId) {
+        return bidDAO.findBidByCompanyAndTender(companyId,tenderId);
+    }
 }

@@ -57,13 +57,22 @@ public class TenderPublicController {
         if (auth != null && !(auth instanceof AnonymousAuthenticationToken)) {
             CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             TenderBookmark tenderBookmark = tenderService.findTenderBookmark(tender.getId(), usr.getId());
+            Bid bid = bidService.findBidByCompanyAndTender(usr.getSelectedCompany().getId(),id);
             boolean isBookmarked;
+            boolean isSubmitedTender;
             if (tenderBookmark == null) {
                 isBookmarked = false;
             } else {
                 isBookmarked = true;
             }
+
+            if(bid == null){
+                isSubmitedTender = false;
+            }else{
+                isSubmitedTender = true;
+            }
             model.addAttribute("isBookmarked", isBookmarked);
+            model.addAttribute("isSubmitedTender", isSubmitedTender);
         }
 
         model.addAttribute("tender", tender);
