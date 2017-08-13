@@ -1,7 +1,8 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorator="admin/layout">
+      layout:decorator="admin/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>Tender Tracker</title>
 </head>
@@ -15,8 +16,25 @@
     <!-- Main content -->
     <section class="content">
 
+        <!-- SYS ADMIN Info boxes -->
+        <div class="row" sec:authorize="hasAnyRole('SYS_ADMIN')">
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="info-box">
+                    <span class="info-box-icon bg-aqua"><i class="fa fa-building"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">Company to Approve</span>
+                        <span class="info-box-number" th:text="${companyPendingApprovalCount}"></span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+        </div>
+
         <!-- Main row -->
-        <div class="row">
+        <div class="row" sec:authorize="!hasAnyRole('SYS_ADMIN')">
             <!-- Left col -->
             <section class="col-lg-6 connectedSortable">
                 <!-- Custom tabs (Charts with tabs)-->

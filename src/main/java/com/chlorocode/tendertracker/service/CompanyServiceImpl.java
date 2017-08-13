@@ -39,6 +39,11 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
+    public List<Company> findCompanyPendingApproval() {
+        return companyDAO.findCompanyPendingApproval();
+    }
+
+    @Override
     public CompanyRegistrationDetailsDTO findCompanyRegistrationById(int id) {
         Company company = companyDAO.findOne(id);
 
