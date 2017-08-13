@@ -7,9 +7,14 @@
     initLightBox();
     initBtnFile();
     clickEvents();
+    changePageAndSize();
   });
 
-
+  function changePageAndSize() {
+      $('#pageSizeSelect').change(function(evt) {
+          window.location.replace("/?pageSize=" + this.value + "&page=1");
+      });
+  }
 
   function initAffix() {
     $('#affix-box').affix({
@@ -113,6 +118,7 @@
 
 
 })(jQuery);
+
 
 
 

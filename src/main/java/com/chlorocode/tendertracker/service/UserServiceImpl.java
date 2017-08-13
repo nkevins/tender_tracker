@@ -1,13 +1,12 @@
 package com.chlorocode.tendertracker.service;
 
-import com.chlorocode.tendertracker.constants.TTConstant;
+import com.chlorocode.tendertracker.constants.TTConstants;
 import com.chlorocode.tendertracker.dao.RoleUserDAO;
 import com.chlorocode.tendertracker.dao.UserDAO;
 import com.chlorocode.tendertracker.dao.UserRoleDAO;
 import com.chlorocode.tendertracker.dao.entity.User;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 
-import com.chlorocode.tendertracker.logging.TTLogger;
 import com.chlorocode.tendertracker.service.notification.NotificationService;
 import com.chlorocode.tendertracker.service.notification.NotificationServiceImpl;
 
@@ -15,10 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
 import java.util.Random;
@@ -95,7 +92,7 @@ public class UserServiceImpl implements UserService {
             user.setPassword(passwordEncoder.encode(newPassword));
             user.setConfirmationToken(null);
             user.setTokenExpireDate(null);
-            user.setStatus(TTConstant.ACCOUNT_STATIC_ACTIVE);
+            user.setStatus(TTConstants.ACCOUNT_STATIC_ACTIVE);
             user.setFailCount(0);
             user.setLastUpdatedDate(new Date());
             user.setLastUpdatedBy(user.getId());
@@ -115,10 +112,10 @@ public class UserServiceImpl implements UserService {
         Optional<User> u = userDAO.findOneByEmail(email);
         if (u.isPresent()) {
             User user = u.get();
-            String otp = generatePIN(TTConstant.OTP_LENGTH);
+            String otp = generatePIN(TTConstants.OTP_LENGTH);
             user.setConfirmationToken(otp);
             LocalDateTime tokenExpirationDate = LocalDateTime.now();
-            tokenExpirationDate = tokenExpirationDate.plusDays(TTConstant.OTP_VALID_DAYS);
+            tokenExpirationDate = tokenExpirationDate.plusDays(TTConstants.OTP_VALID_DAYS);
             user.setTokenExpireDate(Date.from(tokenExpirationDate.atZone(ZoneId.systemDefault()).toInstant()));
             if (notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.reset_otp, user)) {
                 userDAO.save(user);
@@ -131,11 +128,11 @@ public class UserServiceImpl implements UserService {
 
     private static String generatePIN(int length) {
         // do not use I, O as looks like 1 and 0
-        String pin = TTConstant.EMPTY;
+        String pin = TTConstants.EMPTY;
         Random rand = new Random();
         for (int i = 0; i < length; ++i) {
-            int r = rand.nextInt(TTConstant.OTP_CHARS.length());
-            pin += TTConstant.OTP_CHARS.substring(r, r + 1);
+            int r = rand.nextInt(TTConstants.OTP_CHARS.length());
+            pin += TTConstants.OTP_CHARS.substring(r, r + 1);
         }
         return pin;
     }

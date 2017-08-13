@@ -1,6 +1,6 @@
 package com.chlorocode.tendertracker.dao.entity;
 
-import com.chlorocode.tendertracker.constants.TTConstant;
+import com.chlorocode.tendertracker.constants.TTConstants;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
@@ -59,7 +59,7 @@ public class User {
         this.contactNo = contactNo;
         this.password = password;
         this.tenderBookmarks = new LinkedList<>();
-        this.status = TTConstant.ACCOUNT_STATIC_ACTIVE;
+        this.status = TTConstants.ACCOUNT_STATIC_ACTIVE;
     }
 
 

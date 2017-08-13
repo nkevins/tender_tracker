@@ -1,9 +1,12 @@
 package com.chlorocode.tendertracker.service;
 
 import com.chlorocode.tendertracker.dao.*;
+import com.chlorocode.tendertracker.dao.dto.TenderSearchDTO;
 import com.chlorocode.tendertracker.dao.entity.*;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,10 +26,12 @@ public class TenderServiceImpl implements TenderService {
     private DocumentDAO documentDAO;
     private S3Wrapper s3Wrapper;
     private TenderBookmarkDAO tenderBookmarkDAO;
+    private TenderPagingDAO tenderPagingDAO;
 
     @Autowired
-    public TenderServiceImpl(TenderDAO tenderDAO, DocumentDAO documentDAO, S3Wrapper s3Wrapper, TenderBookmarkDAO tenderBookmarkDAO,
-                             TenderItemDAO tenderItemDAO, TenderDocumentDAO tenderDocumentDAO, TenderCategorySubscriptionDAO tenderCategorySubscriptionDAO) {
+    public TenderServiceImpl(TenderDAO tenderDAO, DocumentDAO documentDAO, S3Wrapper s3Wrapper, TenderBookmarkDAO tenderBookmarkDAO
+                            , TenderItemDAO tenderItemDAO, TenderDocumentDAO tenderDocumentDAO
+                            , TenderCategorySubscriptionDAO tenderCategorySubscriptionDAO, TenderPagingDAO tenderPagingDAO) {
         this.tenderDAO = tenderDAO;
         this.tenderItemDAO = tenderItemDAO;
         this.tenderDocumentDAO = tenderDocumentDAO;
@@ -34,6 +39,7 @@ public class TenderServiceImpl implements TenderService {
         this.documentDAO = documentDAO;
         this.s3Wrapper = s3Wrapper;
         this.tenderBookmarkDAO = tenderBookmarkDAO;
+        this.tenderPagingDAO = tenderPagingDAO;
     }
 
     @Override
@@ -218,5 +224,16 @@ public class TenderServiceImpl implements TenderService {
     @Override
     public List<TenderBookmark> findTenderBookmarkByUserId(int userId) {
         return tenderBookmarkDAO.findTenderBookmarkByUserId(userId);
+    }
+
+    @Override
+    public Page<Tender> listAllByPage(Pageable pageable) {
+        return tenderPagingDAO.findAll(pageable);
+    }
+
+    @Override
+    public Page<Tender> searchTender(TenderSearchDTO searchDTO, Pageable pageable) {
+        return tenderPagingDAO.searchTenders(searchDTO.getTitle(), searchDTO.getCompanyName()
+                , searchDTO.getTenderCategory(), searchDTO.getStatus(), pageable);
     }
 }

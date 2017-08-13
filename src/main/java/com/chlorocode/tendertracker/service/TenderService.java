@@ -1,6 +1,9 @@
 package com.chlorocode.tendertracker.service;
 
+import com.chlorocode.tendertracker.dao.dto.TenderSearchDTO;
 import com.chlorocode.tendertracker.dao.entity.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -28,4 +31,7 @@ public interface TenderService {
     void subscribeToTenderCategory(User user, List<TenderCategory> categories);
 
     List<TenderBookmark> findTenderBookmarkByUserId(int userId);
+
+    Page<Tender> listAllByPage(Pageable pageable);
+    Page<Tender> searchTender(TenderSearchDTO searchDTO, Pageable pageable);
 }

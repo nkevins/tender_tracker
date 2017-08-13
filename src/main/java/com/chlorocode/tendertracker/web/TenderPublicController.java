@@ -1,19 +1,20 @@
 package com.chlorocode.tendertracker.web;
 
-import com.chlorocode.tendertracker.dao.dto.AlertDTO;
-import com.chlorocode.tendertracker.dao.dto.TenderClarificationDTO;
-import com.chlorocode.tendertracker.dao.dto.TenderItemResponseSubmitDTO;
-import com.chlorocode.tendertracker.dao.dto.TenderResponseSubmitDTO;
+import com.chlorocode.tendertracker.constants.TTConstants;
+import com.chlorocode.tendertracker.dao.dto.*;
 import com.chlorocode.tendertracker.dao.entity.*;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class TenderPublicController {
@@ -229,5 +231,37 @@ public class TenderPublicController {
                 "Subscription Added");
         redirectAttrs.addFlashAttribute("alert", alert);
         return "redirect:/tenderNotification";
+    }
+
+    /**
+     * Handles all requests
+     *
+     * @param pageSize
+     * @param page
+     * @return model and view
+     */
+    @PostMapping("/tender/search")
+    public String showPersonsPage(@RequestParam("pageSize") Optional<Integer> pageSize
+                                        , @RequestParam("page") Optional<Integer> page
+                                        , @ModelAttribute("searchCriteria") TenderSearchDTO form
+                                        , ModelMap model) {
+        // Evaluate page size. If requested parameter is null, return initial
+        // page size
+        int evalPageSize = pageSize.orElse(TTConstants.INITIAL_PAGE_SIZE);
+        // Evaluate page. If requested parameter is null or less than 0 (to
+        // prevent exception), return initial size. Otherwise, return value of
+        // param. decreased by 1.
+        int evalPage = (page.orElse(0) < 1) ? TTConstants.INITIAL_PAGE : page.get() - 1;
+
+        Page<Tender> tenders = tenderService.searchTender(form, new PageRequest(evalPage, evalPageSize));
+        Pager pager = new Pager(tenders.getTotalPages(), tenders.getNumber(), TTConstants.BUTTONS_TO_SHOW);
+
+        model.addAttribute("tenders", tenders);
+        model.addAttribute("searchCriteria", form);
+        model.addAttribute("codeValueSvc", codeValueService);
+        model.addAttribute("selectedPageSize", evalPageSize);
+//        modelAndView.addObject("pageSizes", PAGE_SIZES);
+        model.addAttribute("pager", pager);
+        return "home";
     }
 }

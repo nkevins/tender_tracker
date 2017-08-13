@@ -1,9 +1,8 @@
 package com.chlorocode.tendertracker.dao.dto;
 
-import com.chlorocode.tendertracker.constants.TTConstant;
+import com.chlorocode.tendertracker.constants.TTConstants;
 import org.hibernate.validator.constraints.NotBlank;
 
-import javax.jdo.annotations.Value;
 import javax.validation.constraints.Pattern;
 
 /**
@@ -14,7 +13,7 @@ public class ChangePasswordDTO {
     private String email;
 
     @NotBlank
-    @Pattern(regexp = TTConstant.PASSWORD_COMPLEXITY, message = "Password must be non space characters and at least 6 characters.")
+    @Pattern(regexp = TTConstants.PASSWORD_COMPLEXITY, message = "Password must be non space characters and at least 6 characters.")
     private String password;
 
     @NotBlank

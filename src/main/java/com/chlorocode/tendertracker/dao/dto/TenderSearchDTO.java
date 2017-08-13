@@ -15,9 +15,9 @@ public class TenderSearchDTO {
 
     private String companyName;
 
-//    private int tenderCategory;
+    private int tenderCategory;
 
-    private String status;
+    private int status;
 
     public String getTitle() {
         return title;
@@ -35,19 +35,19 @@ public class TenderSearchDTO {
         this.companyName = companyName;
     }
 
-//    public int getTenderCategory() {
-//        return tenderCategory;
-//    }
-//
-//    public void setTenderCategory(int tenderCategory) {
-//        this.tenderCategory = tenderCategory;
-//    }
+    public int getTenderCategory() {
+        return tenderCategory;
+    }
 
-    public String getStatus() {
+    public void setTenderCategory(int tenderCategory) {
+        this.tenderCategory = tenderCategory;
+    }
+
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
