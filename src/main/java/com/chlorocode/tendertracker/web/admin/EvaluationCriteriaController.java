@@ -5,6 +5,7 @@ import com.chlorocode.tendertracker.dao.dto.EvaluateCriteriaDTO;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
 import com.chlorocode.tendertracker.dao.entity.EvaluationCriteria;
 import com.chlorocode.tendertracker.dao.entity.Tender;
+import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.logging.TTLogger;
 import com.chlorocode.tendertracker.service.CodeValueService;
 import com.chlorocode.tendertracker.service.EvaluationService;
@@ -16,6 +17,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
@@ -67,6 +69,7 @@ public class EvaluationCriteriaController {
             }
         }
 
+        model.addAttribute("tender", tender);
         model.addAttribute("criteriaList", dto);
         model.addAttribute("newCriteria", new EvaluateCriteriaDTO());
         model.addAttribute("tenderId", tenderId);
@@ -104,28 +107,41 @@ public class EvaluationCriteriaController {
     }
 
     @PostMapping("/admin/tender/criteria/update")
-    public String updateTenderCriteria(@Valid EvaluateCriteriaDTO form, RedirectAttributes redirectAttrs) {
-        TTLogger.info(className, "Update Tender Evaluation Criteria evalId:" + form.getId() + ", type: " + form.getType() + ", desc: " + form.getDescription());
+    public String updateTenderCriteria(@Valid EvaluateCriteriaDTO form, RedirectAttributes redirectAttrs,
+                                       @RequestParam("action") String action) {
+        if (action.equals("update")) {
+            TTLogger.info(className, "Update Tender Evaluation Criteria evalId:" + form.getId() + ", type: " + form.getType() + ", desc: " + form.getDescription());
 
-        EvaluationCriteria eva = evaSvc.findCriteriaById(form.getId());
-        if (eva == null) {
-            TTLogger.error(className, "Unable to find Evaluation Criteria, evalId: " + form.getId());
-            return "redirect:/admin/tender";
+            EvaluationCriteria eva = evaSvc.findCriteriaById(form.getId());
+            if (eva == null) {
+                TTLogger.error(className, "Unable to find Evaluation Criteria, evalId: " + form.getId());
+                return "redirect:/admin/tender";
+            }
+
+            CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+            eva.setType(form.getType());
+            eva.setDescription(form.getDescription());
+            eva.setLastUpdatedBy(usr.getId());
+            eva.setLastUpdatedDate(new Date());
+
+            evaSvc.update(eva);
+
+            TTLogger.info(className, "Tender Evaluation Criteria Updated");
+
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS, "Evaluation Criteria Updated");
+            redirectAttrs.addFlashAttribute("alert", alert);
+            return "redirect:/admin/tender/" + form.getTenderId() + "/setcriteria";
+        } else if (action.equals("delete")) {
+            TTLogger.info(className, "Delete Tender Evaluation Criteria evalId:" + form.getId());
+
+            evaSvc.removeEvaluationCriteria(form.getId());
+
+            TTLogger.info(className, "Tender Evaluation Criteria Removed");
+
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS, "Evaluation Criteria Removed");
+            redirectAttrs.addFlashAttribute("alert", alert);
         }
-
-        CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        eva.setType(form.getType());
-        eva.setDescription(form.getDescription());
-        eva.setLastUpdatedBy(usr.getId());
-        eva.setLastUpdatedDate(new Date());
-
-        evaSvc.update(eva);
-
-        TTLogger.info(className, "Tender Evaluation Criteria Updated");
-
-        AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS, "Evaluation Criteria Updated");
-        redirectAttrs.addFlashAttribute("alert", alert);
         return "redirect:/admin/tender/" + form.getTenderId() + "/setcriteria";
     }
 }

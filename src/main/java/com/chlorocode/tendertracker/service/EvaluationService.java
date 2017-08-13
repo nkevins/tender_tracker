@@ -12,4 +12,5 @@ public interface EvaluationService {
     EvaluationCriteria create(EvaluationCriteria svc);
     EvaluationCriteria findCriteriaById(int id);
     EvaluationCriteria update(EvaluationCriteria svc);
+    void removeEvaluationCriteria(int id);
 }

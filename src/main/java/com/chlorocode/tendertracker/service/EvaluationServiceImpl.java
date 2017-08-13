@@ -2,9 +2,8 @@ package com.chlorocode.tendertracker.service;
 
 import com.chlorocode.tendertracker.dao.EvaluationCriteriaDAO;
 import com.chlorocode.tendertracker.dao.entity.EvaluationCriteria;
-import com.chlorocode.tendertracker.dao.entity.Tender;
+import com.chlorocode.tendertracker.exception.ApplicationException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -37,5 +36,9 @@ public class EvaluationServiceImpl implements EvaluationService {
         return evaDao.findOne(id);
     }
 
-
+    @Override
+    public void removeEvaluationCriteria(int id) {
+        EvaluationCriteria evaluationCriteria = evaDao.findOne(id);
+        evaDao.delete(evaluationCriteria);
+    }
 }

@@ -12,7 +12,7 @@
     </th:block>
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1>
+        <h1 th:text="${'Evaliation Criteria Setup - '} + ${tender.title}">
             Evaluation Criteria Setup
         </h1>
     </section>
@@ -43,7 +43,8 @@
                                 <div class="form-group">
                                     <input type="hidden" th:value="${c.id}" name="id" />
                                     <input type="hidden" name="tenderId" th:value="${tenderId}" />
-                                    <button type="submit" class="btn btn-primary" value="">Update</button>
+                                    <button type="submit" class="btn btn-primary" value="update" name="action">Update</button>
+                                    <button type="submit" class="btn btn-danger" value="delete" name="action">Delete</button>
                                 </div>
                             </form>
                         </div>
