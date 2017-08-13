@@ -90,6 +90,10 @@
                                                 <span class="label label-warning" th:if="${c.tender.status == 2}">CLOSED</span>
                                                 <span class="label label-primary" th:if="${c.tender.status == 3}">AWARDED</span>
                                             </h4>
+                                            <form th:action="@{/user/profile/removeBookmark}" method="POST" sec:authorize="hasAnyRole('USER')">
+                                                <input type="hidden" name="tenderId" th:value="${c.tender.id}" />
+                                                <button type="submit" class="btn btn-danger"><span class="fa fa-bookmark"></span> Remove Bookmark</button>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>

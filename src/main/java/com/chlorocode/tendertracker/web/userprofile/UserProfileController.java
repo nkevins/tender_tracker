@@ -100,6 +100,34 @@ public class UserProfileController {
         return "/admin/user/userProfile";
     }
 
+    @PostMapping("/user/profile/removeBookmark")
+    public String removeTenderBookmark(ModelMap model,
+                                       @RequestParam("tenderId") int tenderId){
+
+        CurrentUser currentUser = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        tenderService.removeTenderBookmark(tenderId, currentUser.getUser().getId());
+
+        User usr = userService.findById(currentUser.getId());
+        if(usr == null){
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER, "invalid user profile found. user id " + currentUser.getId());
+            model.addAttribute("alert", alert);
+        }
+
+        UserProfileDTO usrDto = new UserProfileDTO();
+        usrDto.setContactNumber(usr.getContactNo());
+        usrDto.setName(usr.getName());
+        usrDto.setEmail(usr.getEmail());
+        usrDto.setId(usr.getId());
+
+        List<TenderBookmark> lstBokkmark = tenderService.findTenderBookmarkByUserId(usr.getId());
+
+        ChangePasswordDTO pwd = new ChangePasswordDTO();
+        model.addAttribute("userprofile",usrDto);
+        model.addAttribute("passwordDto",pwd);
+        model.addAttribute("bookmarkTenderList",lstBokkmark);
+        return "/admin/user/userProfile";
+    }
     @PostMapping("/user/password/update")
     public String updateUserPassword(ModelMap model,@Valid ChangePasswordDTO form,
                                      @RequestParam("userId") int userId,  @RequestParam("userId") String email){
@@ -125,7 +153,9 @@ public class UserProfileController {
         usrDto.setEmail(usr.getEmail());
         usrDto.setId(usr.getId());
         ChangePasswordDTO pwd = new ChangePasswordDTO();
+        List<TenderBookmark> lstBokkmark = tenderService.findTenderBookmarkByUserId(usr.getId());
 
+        model.addAttribute("bookmarkTenderList",lstBokkmark);
         model.addAttribute("userprofile",usrDto);
         model.addAttribute("passwordDto",pwd);
         return "/admin/user/userProfile";
