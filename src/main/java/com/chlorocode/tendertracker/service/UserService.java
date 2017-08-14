@@ -21,4 +21,8 @@ public interface UserService {
 
     User updateUserProfile(User user);
 
+    boolean isNRICValid(String nric);
+
+    boolean isFINValid(String fin);
+
 }

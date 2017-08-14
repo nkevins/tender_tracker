@@ -136,4 +136,98 @@ public class UserServiceImpl implements UserService {
         }
         return pin;
     }
+
+    @Override
+    public boolean isNRICValid(String nric) {
+        if (nric.trim().length() != 9)
+            return false;
+
+        if (!nric.substring(0, 1).equals("S") && !nric.substring(0, 1).equals("T"))
+            return false;
+
+        String numberPart = nric.substring(1, 8);
+        int num = Integer.parseInt(numberPart);
+
+        // Extract the digits
+        int digit7 = num%10; num /= 10;
+        int digit6 = num%10; num /= 10;
+        int digit5 = num%10; num /= 10;
+        int digit4 = num%10; num /= 10;
+        int digit3 = num%10; num /= 10;
+        int digit2 = num%10; num /= 10;
+        int digit1 = num%10;
+
+        int step1 = digit1*2 + digit2*7 + digit3*6 + digit4*5 +
+                digit5*4 + digit6*3 + digit7*2;
+        int step2 = step1 % 11;
+        if (nric.substring(0, 1).equals("T"))
+            step2 += 4;
+
+        char code = ' ';
+        switch (step2) {
+            case 0: code = 'J'; break;
+            case 1: code = 'Z'; break;
+            case 2: code = 'I'; break;
+            case 3: code = 'H'; break;
+            case 4: code = 'G'; break;
+            case 5: code = 'F'; break;
+            case 6: code = 'E'; break;
+            case 7: code = 'D'; break;
+            case 8: code = 'C'; break;
+            case 9: code = 'B'; break;
+            case 10: code = 'A';
+        }
+
+        if (nric.charAt(8) == code)
+            return true;
+        else
+            return false;
+    }
+
+    @Override
+    public boolean isFINValid(String fin) {
+        if (fin.trim().length() != 9)
+            return false;
+
+        if (!fin.substring(0, 1).equals("F") && !fin.substring(0, 1).equals("G"))
+            return false;
+
+        String numberPart = fin.substring(1, 8);
+        int num = Integer.parseInt(numberPart);
+
+        // Extract the digits
+        int digit7 = num%10; num /= 10;
+        int digit6 = num%10; num /= 10;
+        int digit5 = num%10; num /= 10;
+        int digit4 = num%10; num /= 10;
+        int digit3 = num%10; num /= 10;
+        int digit2 = num%10; num /= 10;
+        int digit1 = num%10;
+
+        int step1 = digit1*2 + digit2*7 + digit3*6 + digit4*5 +
+                digit5*4 + digit6*3 + digit7*2;
+        int step2 = step1 % 11;
+        if (fin.substring(0, 1).equals("G"))
+            step2 += 4;
+
+        char code = ' ';
+        switch (step2) {
+            case 0: code = 'X'; break;
+            case 1: code = 'W'; break;
+            case 2: code = 'U'; break;
+            case 3: code = 'T'; break;
+            case 4: code = 'R'; break;
+            case 5: code = 'Q'; break;
+            case 6: code = 'P'; break;
+            case 7: code = 'N'; break;
+            case 8: code = 'M'; break;
+            case 9: code = 'L'; break;
+            case 10: code = 'K';
+        }
+
+        if (fin.charAt(8) == code)
+            return true;
+        else
+            return false;
+    }
 }

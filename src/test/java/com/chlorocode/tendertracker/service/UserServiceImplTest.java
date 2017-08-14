@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
@@ -65,4 +66,69 @@ public class UserServiceImplTest {
         verify(userDAO, never()).save(any(User.class));
     }
 
+    @Test
+    public void testNRICValidation() {
+        String nric = "S2683266G";
+        boolean result = userServiceImpl.isNRICValid(nric);
+        assertTrue(result);
+
+        nric = "T6758107A";
+        result = userServiceImpl.isNRICValid(nric);
+        assertTrue(result);
+
+        nric = "S2623266G";
+        result = userServiceImpl.isNRICValid(nric);
+        assertFalse(result);
+
+        nric = "A1234567A";
+        result = userServiceImpl.isNRICValid(nric);
+        assertFalse(result);
+
+        nric = "12345";
+        result = userServiceImpl.isNRICValid(nric);
+        assertFalse(result);
+
+        nric = "G2683266G";
+        result = userServiceImpl.isNRICValid(nric);
+        assertFalse(result);
+
+        nric = "F3274338L";
+        result = userServiceImpl.isNRICValid(nric);
+        assertFalse(result);
+
+        nric = "G4463484N";
+        result = userServiceImpl.isNRICValid(nric);
+        assertFalse(result);
+    }
+
+    @Test
+    public void testFINValidation() {
+        String fin = "G4630909Q";
+        boolean result = userServiceImpl.isFINValid(fin);
+        assertTrue(result);
+
+        fin = "F5161580T";
+        result = userServiceImpl.isFINValid(fin);
+        assertTrue(result);
+
+        fin = "G4630909A";
+        result = userServiceImpl.isFINValid(fin);
+        assertFalse(result);
+
+        fin = "S6925939A";
+        result = userServiceImpl.isFINValid(fin);
+        assertFalse(result);
+
+        fin = "T2075671Z";
+        result = userServiceImpl.isFINValid(fin);
+        assertFalse(result);
+
+        fin = "A1234567A";
+        result = userServiceImpl.isFINValid(fin);
+        assertFalse(result);
+
+        fin = "12345";
+        result = userServiceImpl.isFINValid(fin);
+        assertFalse(result);
+    }
 }
