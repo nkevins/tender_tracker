@@ -1,6 +1,7 @@
 package com.chlorocode.tendertracker.web;
 
 import com.chlorocode.tendertracker.constants.TTConstants;
+import com.chlorocode.tendertracker.dao.dto.AlertDTO;
 import com.chlorocode.tendertracker.dao.dto.Pager;
 import com.chlorocode.tendertracker.dao.dto.TenderSearchDTO;
 import com.chlorocode.tendertracker.dao.entity.Tender;
@@ -64,6 +65,11 @@ public class HomeController {
         model.addAttribute("selectedPageSize", evalPageSize);
 //        modelAndView.addObject("pageSizes", PAGE_SIZES);
         model.addAttribute("pager", pager);
+        if (tenders == null || tenders.getTotalPages() == 0) {
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.WARNING,
+                    "No tenders found.");
+            model.addAttribute("alert", alert);
+        }
         return "home";
     }
 

@@ -3,10 +3,13 @@ package com.chlorocode.tendertracker.service;
 import com.chlorocode.tendertracker.dao.*;
 import com.chlorocode.tendertracker.dao.dto.TenderSearchDTO;
 import com.chlorocode.tendertracker.dao.entity.*;
+import com.chlorocode.tendertracker.dao.specs.TenderSpecs;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -233,7 +236,11 @@ public class TenderServiceImpl implements TenderService {
 
     @Override
     public Page<Tender> searchTender(TenderSearchDTO searchDTO, Pageable pageable) {
-        return tenderPagingDAO.searchTenders(searchDTO.getTitle(), searchDTO.getCompanyName()
-                , searchDTO.getTenderCategory(), searchDTO.getStatus(), pageable);
+        Specification<Tender> searchSpec = TenderSpecs.byTenderSearchCriteria(
+                searchDTO.getTitle() == null ? null : searchDTO.getTitle().trim()
+                , searchDTO.getCompanyName() == null ? null : searchDTO.getCompanyName().trim()
+                , searchDTO.getTenderCategory()
+                , searchDTO.getStatus());
+        return tenderPagingDAO.findAll(searchSpec, pageable);
     }
 }

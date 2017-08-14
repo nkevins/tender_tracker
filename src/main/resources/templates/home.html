@@ -110,65 +110,67 @@
             </th:block>
 
             <!-- box listing -->
-            <div class="block-section-sm">
-                <!-- item list -->
-                <div class="box-list">
-                    <div class="item" th:each="t : ${tenders}">
-                        <div class="row">
-                            <div class="col-md-11">
-                                <h3 class="no-margin-top">
-                                    <a th:href="@{/tender/} + ${t.id}" class="" th:text="${t.title}" target="_blank">Lorem ipsum dolor sit amet</a>
-                                </h3>
-                                <h5>
-                                    <a class="color-black" th:text="${t.company.name}" th:href="@{/company/} + ${t.company.id}">Ngee Ann Polytechnic</a>
-                                </h5>
-                                <div>
-                                    <span class="color-black">Open: <span th:text="${#dates.format(t.openDate, 'dd MMM yyyy')}"></span></span>
-                                    <br />
-                                    <span class="color-black">Closing: <span th:text="${#dates.format(t.closedDate, 'dd MMM yyyy')}"></span></span>
-                                    <br />
-                                    <h4>
-                                        <span class="label label-default" th:if="${t.status == 1}">OPEN</span>
-                                        <span class="label label-warning" th:if="${t.status == 2}">CLOSED</span>
-                                        <span class="label label-primary" th:if="${t.status == 3}">AWARDED</span>
-                                    </h4>
+            <th:block th:if="${tenders.totalPages} &gt; 0">
+                <div class="block-section-sm">
+                    <!-- item list -->
+                    <div class="box-list">
+                        <div class="item" th:each="t : ${tenders}">
+                            <div class="row">
+                                <div class="col-md-11">
+                                    <h3 class="no-margin-top">
+                                        <a th:href="@{/tender/} + ${t.id}" class="" th:text="${t.title}" target="_blank">Lorem ipsum dolor sit amet</a>
+                                    </h3>
+                                    <h5>
+                                        <a class="color-black" th:text="${t.company.name}" th:href="@{/company/} + ${t.company.id}">Ngee Ann Polytechnic</a>
+                                    </h5>
+                                    <div>
+                                        <span class="color-black">Open: <span th:text="${#dates.format(t.openDate, 'dd MMM yyyy')}"></span></span>
+                                        <br />
+                                        <span class="color-black">Closing: <span th:text="${#dates.format(t.closedDate, 'dd MMM yyyy')}"></span></span>
+                                        <br />
+                                        <h4>
+                                            <span class="label label-default" th:if="${t.status == 1}">OPEN</span>
+                                            <span class="label label-warning" th:if="${t.status == 2}">CLOSED</span>
+                                            <span class="label label-primary" th:if="${t.status == 3}">AWARDED</span>
+                                        </h4>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        <!-- end item list -->
                     </div>
-                    <!-- end item list -->
                 </div>
-            </div>
-            <!-- end box listing -->
-            <!-- Pagination Bar -->
-            <div class="row">
-                <!--<div class="form-group col-md-1">-->
-                    <!--<select class="form-control pagination" id="pageSizeSelect">-->
-                        <!--<option th:each="pageSize : ${pageSizes}" th:text="${pageSize}" th:value="${pageSize}" th:selected="${pageSize} == ${selectedPageSize}"></option>-->
-                    <!--</select>-->
-                <!--</div>-->
-                <div th:if="${tenders.totalPages != 1}" class="form-group col-md-11 pagination-centered">
-                    <ul class="pagination">
-                        <li th:class="${tenders.number == 0} ? disabled">
-                            <a class="pageLink" th:href="@{/(pageSize=${selectedPageSize}, page=1)}">&laquo;</a>
-                        </li>
-                        <!--<li th:class="${tenders.number == 0} ? disabled">-->
-                            <!--<a class="pageLink" th:href="@{/(pageSize=${selectedPageSize}, page=${tenders.number})}">&larr;</a>-->
-                        <!--</li>-->
-                        <li th:class="${tenders.number == (page - 1)} ? 'active pointer-disabled'"
-                            th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
-                            <a class="pageLink" th:href="@{/(pageSize=${selectedPageSize}, page=${page})}" th:text="${page}"></a>
-                        </li>
-                        <!--<li th:class="${tenders.number + 1 == tenders.totalPages} ? disabled">-->
-                            <!--<a class="pageLink" th:href="@{/(pageSize=${selectedPageSize}, page=${tenders.number + 2})}">&rarr;</a>-->
-                        <!--</li>-->
-                        <li th:class="${tenders.number + 1 == tenders.totalPages} ? disabled">
-                            <a class="pageLink" th:href="@{/(pageSize=${selectedPageSize}, page=${tenders.totalPages})}">&raquo;</a>
-                        </li>
-                    </ul>
+                <!-- end box listing -->
+                <!-- Pagination Bar -->
+                <div class="row">
+                    <!--<div class="form-group col-md-1">-->
+                        <!--<select class="form-control pagination" id="pageSizeSelect">-->
+                            <!--<option th:each="pageSize : ${pageSizes}" th:text="${pageSize}" th:value="${pageSize}" th:selected="${pageSize} == ${selectedPageSize}"></option>-->
+                        <!--</select>-->
+                    <!--</div>-->
+                    <div th:if="${tenders.totalPages != 1}" class="form-group col-md-11 pagination-centered">
+                        <ul class="pagination">
+                            <li th:class="${tenders.number == 0} ? disabled">
+                                <a class="pageLink" th:href="@{/(pageSize=${selectedPageSize}, page=1)}">&laquo;&nbsp;Prev</a>
+                            </li>
+                            <!--<li th:class="${tenders.number == 0} ? disabled">-->
+                                <!--<a class="pageLink" th:href="@{/(pageSize=${selectedPageSize}, page=${tenders.number})}">&larr;</a>-->
+                            <!--</li>-->
+                            <li th:class="${tenders.number == (page - 1)} ? 'active pointer-disabled'"
+                                th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
+                                <a class="pageLink" th:href="@{/(pageSize=${selectedPageSize}, page=${page})}" th:text="${page}"></a>
+                            </li>
+                            <!--<li th:class="${tenders.number + 1 == tenders.totalPages} ? disabled">-->
+                                <!--<a class="pageLink" th:href="@{/(pageSize=${selectedPageSize}, page=${tenders.number + 2})}">&rarr;</a>-->
+                            <!--</li>-->
+                            <li th:class="${tenders.number + 1 == tenders.totalPages} ? disabled">
+                                <a class="pageLink" th:href="@{/(pageSize=${selectedPageSize}, page=${tenders.totalPages})}">Next&nbsp;&raquo;</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
-            <!-- End Pagination Bar -->
+                <!-- End Pagination Bar -->
+            </th:block>
         </div>
     </div>
 </div>

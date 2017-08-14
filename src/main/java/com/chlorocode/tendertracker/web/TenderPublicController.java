@@ -262,6 +262,11 @@ public class TenderPublicController {
         model.addAttribute("selectedPageSize", evalPageSize);
 //        modelAndView.addObject("pageSizes", PAGE_SIZES);
         model.addAttribute("pager", pager);
+        if (tenders == null || tenders.getTotalPages() == 0) {
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.WARNING,
+                    "No tenders found.");
+            model.addAttribute("alert", alert);
+        }
         return "home";
     }
 }
