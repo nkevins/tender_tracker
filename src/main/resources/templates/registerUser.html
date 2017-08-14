@@ -15,6 +15,16 @@
             </th:block>
             <form th:method="POST" th:action="@{/register}" th:object="${registration}">
                 <div class="form-group">
+                    <label>ID Type</label>
+                    <select class="form-control" th:field="*{IdType}">
+                        <option th:each="c : ${IdType}" th:value="${c.code}" th:text="${c.description}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>ID Number</label>
+                    <input type="text" class="form-control" th:field="*{idNo}" required="required" />
+                </div>
+                <div class="form-group">
                     <label>Name</label>
                     <input type="text" class="form-control" th:field="*{name}" required="required" />
                 </div>

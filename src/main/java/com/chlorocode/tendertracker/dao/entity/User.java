@@ -17,6 +17,12 @@ public class User {
     @JsonView(DataTablesOutput.View.class)
     private int id;
 
+    @Column(name = "id_type")
+    private int idType;
+
+    @Column(name = "id_no")
+    private String idNo;
+
     @JsonView(DataTablesOutput.View.class)
     private String name;
     @JsonView(DataTablesOutput.View.class)
@@ -62,6 +68,21 @@ public class User {
         this.status = TTConstants.ACCOUNT_STATIC_ACTIVE;
     }
 
+    public int getIdType() {
+        return idType;
+    }
+
+    public void setIdType(int idType) {
+        this.idType = idType;
+    }
+
+    public String getIdNo() {
+        return idNo;
+    }
+
+    public void setIdNo(String idNo) {
+        this.idNo = idNo;
+    }
 
     public int getId() {
         return id;

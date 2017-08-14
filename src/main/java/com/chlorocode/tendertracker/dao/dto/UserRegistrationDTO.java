@@ -15,6 +15,11 @@ public class UserRegistrationDTO {
     @Email(message = "Invalid email format")
     private String email;
 
+    private int IdType;
+
+    @NotBlank(message = "Id No is required")
+    private String idNo;
+
     @NotBlank(message = "Contact No is required")
     private String contactNo;
 
@@ -59,6 +64,22 @@ public class UserRegistrationDTO {
 
     public String getConfirmPassword() {
         return confirmPassword;
+    }
+
+    public int getIdType() {
+        return IdType;
+    }
+
+    public void setIdType(int idType) {
+        IdType = idType;
+    }
+
+    public String getIdNo() {
+        return idNo;
+    }
+
+    public void setIdNo(String idNo) {
+        this.idNo = idNo;
     }
 
     public void setConfirmPassword(String confirmPassword) {

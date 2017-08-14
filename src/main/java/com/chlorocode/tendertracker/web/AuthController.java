@@ -5,6 +5,7 @@ import com.chlorocode.tendertracker.dao.entity.Company;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
 import com.chlorocode.tendertracker.dao.entity.User;
 import com.chlorocode.tendertracker.exception.ApplicationException;
+import com.chlorocode.tendertracker.service.CodeValueService;
 import com.chlorocode.tendertracker.service.CompanyService;
 import com.chlorocode.tendertracker.service.UserService;
 import com.chlorocode.tendertracker.service.notification.NotificationService;
@@ -31,12 +32,14 @@ public class AuthController {
     private UserService userService;
     private CompanyService companyService;
     private NotificationService notificationService;
+    private CodeValueService codeValueService;
 
     @Autowired
-    public AuthController(UserService userService, CompanyService companyService, NotificationService notificationService) {
+    public AuthController(UserService userService, CompanyService companyService, NotificationService notificationService,CodeValueService codeValueService) {
         this.userService = userService;
         this.companyService = companyService;
         this.notificationService = notificationService;
+        this.codeValueService = codeValueService;
     }
 
     @RequestMapping("/login")
@@ -55,8 +58,10 @@ public class AuthController {
     }
 
     @GetMapping("/register")
-    public ModelAndView showUserRegistration() {
+    public ModelAndView showUserRegistration(ModelMap model) {
+        model.addAttribute("IdType",codeValueService.getByType("id_type"));
         return new ModelAndView("registerUser", "registration", new UserRegistrationDTO());
+
     }
 
     @PostMapping("/register")
@@ -74,11 +79,31 @@ public class AuthController {
             return "registerUser";
         }
 
+        if(form.getIdType() == 1){
+            if(!userService.isNRICValid(form.getIdNo())){
+                AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
+                        "Invalid NRIC No.");
+                model.addAttribute("alert", alert);
+                model.addAttribute("IdType",codeValueService.getByType("id_type"));
+                return "registerUser";
+            }
+        }else{
+            if(!userService.isFINValid(form.getIdNo())){
+                AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
+                        "Invalid FIN No.");
+                model.addAttribute("alert", alert);
+                model.addAttribute("IdType",codeValueService.getByType("id_type"));
+                return "registerUser";
+            }
+        }
+
         User user = new User();
         user.setName(form.getName());
         user.setEmail(form.getEmail());
         user.setContactNo(form.getContactNo());
         user.setPassword(form.getPassword());
+        user.setIdType(form.getIdType());
+        user.setIdNo(form.getIdNo());
 
         try {
             userService.create(user);
