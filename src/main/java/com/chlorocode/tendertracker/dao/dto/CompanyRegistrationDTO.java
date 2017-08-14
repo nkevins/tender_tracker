@@ -41,6 +41,25 @@ public class CompanyRegistrationDTO {
     @NotBlank(message = "Country is required")
     private String country;
 
+    private String mailingAddress;
+    private String principleBusinessActivity;
+
+    public String getMailingAddress() {
+        return mailingAddress;
+    }
+
+    public void setMailingAddress(String mailingAddress) {
+        this.mailingAddress = mailingAddress;
+    }
+
+    public String getPrincipleBusinessActivity() {
+        return principleBusinessActivity;
+    }
+
+    public void setPrincipleBusinessActivity(String principleBusinessActivity) {
+        this.principleBusinessActivity = principleBusinessActivity;
+    }
+
     public String getName() {
         return name;
     }

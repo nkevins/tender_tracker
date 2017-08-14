@@ -68,6 +68,9 @@ public class CompanyController {
         reg.setProvince(form.getProvince());
         reg.setCountry(form.getCountry());
 
+        reg.setPrincpleBusinessActivity(form.getPrincipleBusinessActivity());
+        reg.setMailingAddress(form.getMailingAddress());
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         CurrentUser usr = (CurrentUser) auth.getPrincipal();
         reg.setCreatedBy(usr.getUser().getId());
