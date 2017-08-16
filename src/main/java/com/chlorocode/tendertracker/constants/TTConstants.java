@@ -20,4 +20,10 @@ public class TTConstants {
     public static final int INITIAL_PAGE = 0;
     public static final int INITIAL_PAGE_SIZE = 5;
 //    public static final int[] PAGE_SIZES = { 5, 10, 20 };
+    public static final String PARAM_NAME = "name";
+    public static final String PARAM_EMAIL = "email";
+    public static final String PARAM_EMAILS = "emails";
+    public static final String PARAM_TOKEN = "confirmation_token";
+    public static final String PARAM_TENDER_ID = "tender_id";
+    public static final String PARAM_TENDER = "tender";
 }

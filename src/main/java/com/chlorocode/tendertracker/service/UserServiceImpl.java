@@ -16,9 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -28,15 +26,15 @@ public class UserServiceImpl implements UserService {
     private RoleUserDAO userRoleDAO;
     private UserRoleDAO usrRoleDao;
     private String className;
-    @Autowired
     private NotificationService notificationService;
 
     @Autowired
-    public UserServiceImpl(UserDAO userDAO, PasswordEncoder passwordEncoder,RoleUserDAO userRoleDAO) {
+    public UserServiceImpl(UserDAO userDAO, PasswordEncoder passwordEncoder,RoleUserDAO userRoleDAO, NotificationService notificationService) {
         this.userDAO = userDAO;
         this.passwordEncoder = passwordEncoder;
         this.userRoleDAO = userRoleDAO;
         this.className = this.getClass().getName();
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -57,7 +55,15 @@ public class UserServiceImpl implements UserService {
         User savedUser = userDAO.save(user);
         savedUser.setCreatedBy(savedUser.getId());
         savedUser.setLastUpdatedBy(savedUser.getId());
-        return userDAO.saveAndFlush(savedUser);
+        user = userDAO.saveAndFlush(savedUser);
+        if (user != null) {
+            Map<String, Object> params = new HashMap<>();
+            params.put(TTConstants.PARAM_NAME, user.getName());
+            params.put(TTConstants.PARAM_EMAIL, user.getEmail());
+            notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.welcome_message, params);
+        }
+
+        return user;
     }
 
     @Override
@@ -117,11 +123,14 @@ public class UserServiceImpl implements UserService {
             LocalDateTime tokenExpirationDate = LocalDateTime.now();
             tokenExpirationDate = tokenExpirationDate.plusDays(TTConstants.OTP_VALID_DAYS);
             user.setTokenExpireDate(Date.from(tokenExpirationDate.atZone(ZoneId.systemDefault()).toInstant()));
-            if (notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.reset_otp, user)) {
-                userDAO.save(user);
-                return null;
-            }
-            return "Email cannot send to your email address. Please contact to administrator.";
+
+            Map<String, Object> params = new HashMap<>();
+            params.put(TTConstants.PARAM_NAME, user.getName());
+            params.put(TTConstants.PARAM_EMAIL, user.getEmail());
+            params.put(TTConstants.PARAM_TOKEN, user.getConfirmationToken());
+            notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.reset_otp, params);
+            userDAO.save(user);
+            return null;
         }
         return "No account found for that email address.";
     }

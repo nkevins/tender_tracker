@@ -6,5 +6,5 @@ import java.util.List;
  * Kyaw Min Thu
  */
 public interface MailSenderService {
-    public boolean sendEmail(String body, List<String> emails);
+    public boolean sendEmail(String subject, String body, String... emails);
 }

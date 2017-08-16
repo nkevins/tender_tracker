@@ -15,4 +15,7 @@ public interface TenderBookmarkDAO extends JpaRepository<TenderBookmark, Integer
 
     @Query("select t from TenderBookmark t where t.user.id = ?1")
     List<TenderBookmark> findTenderBookmarkByUserId(int userId);
+
+    @Query("select t from TenderBookmark t where t.tender.id = ?1")
+    List<TenderBookmark> findTenderBookmarkByTender(int tenderId);
 }
