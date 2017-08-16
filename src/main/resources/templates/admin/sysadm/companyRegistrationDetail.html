@@ -33,6 +33,9 @@
                             <tr>
                                 <th>UEN No</th>
                                 <td th:text="${reg.uen}"></td>
+                                <td class="label label-success" th:if="${uenValidLabel}" th:text="${uenValidLabel}"></td>
+                                <td class="label label-danger" th:if="${uenInvalidLabel}" th:text="${uenInvalidLabel}"></td>
+
                             </tr>
                             <tr>
                                 <th>GST Registration No:</th>

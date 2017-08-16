@@ -3,9 +3,11 @@ package com.chlorocode.tendertracker.web.sysadm;
 import com.chlorocode.tendertracker.dao.dto.AlertDTO;
 import com.chlorocode.tendertracker.dao.dto.CompanyRegistrationDetailsDTO;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
+import com.chlorocode.tendertracker.dao.entity.UenEntity;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.exception.ResourceNotFoundException;
 import com.chlorocode.tendertracker.service.CompanyService;
+import com.chlorocode.tendertracker.service.UenEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -20,10 +22,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class CompanySysAdmController {
 
     private CompanyService companyService;
+    private UenEntityService uenEntService;
 
     @Autowired
-    public CompanySysAdmController(CompanyService companyService) {
+    public CompanySysAdmController(CompanyService companyService, UenEntityService uenEntService) {
         this.companyService = companyService;
+        this.uenEntService = uenEntService;
     }
 
     @GetMapping("/sysadm/companyRegistration")
@@ -34,6 +38,13 @@ public class CompanySysAdmController {
     @GetMapping("/sysadm/companyRegistration/{id}")
     public String showCompanyRegistrationDetail(@PathVariable(value="id") Integer id, Model model) {
         CompanyRegistrationDetailsDTO companyRegistration = companyService.findCompanyRegistrationById(id);
+        UenEntity uenEnt = uenEntService.findByUen(companyRegistration.getUen());
+        if(uenEnt == null){
+            model.addAttribute("uenInvalidLabel","This is invalid UEN");
+        }else{
+            model.addAttribute("uenValidLabel", "This is valid UEN");
+        }
+
         if (companyRegistration == null) {
             throw new ResourceNotFoundException();
         } else {
