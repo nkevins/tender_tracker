@@ -12,6 +12,24 @@ public class UserProfileDTO {
     private String email;
     private String contactNumber;
     private int id;
+    private String idType;
+    private String idNo;
+
+    public String getIdType() {
+        return idType;
+    }
+
+    public void setIdType(String idType) {
+        this.idType = idType;
+    }
+
+    public String getIdNo() {
+        return idNo;
+    }
+
+    public void setIdNo(String idNo) {
+        this.idNo = idNo;
+    }
 
     public int getId() {
         return id;

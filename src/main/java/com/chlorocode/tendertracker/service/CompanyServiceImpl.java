@@ -67,6 +67,8 @@ public class CompanyServiceImpl implements CompanyService {
         reg.setCountry(company.getCountry());
         reg.setApplicant(userService.findById(company.getCreatedBy()));
         reg.setApplicationDate(company.getCreatedDate());
+        reg.setMailingAddress(company.getMailingAddress());
+        reg.setPrincipleActivity(company.getPrincpleBusinessActivity());
 
         return reg;
     }

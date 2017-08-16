@@ -4,9 +4,11 @@ import com.chlorocode.tendertracker.dao.dto.AlertDTO;
 import com.chlorocode.tendertracker.dao.dto.ChangePasswordDTO;
 import com.chlorocode.tendertracker.dao.dto.TenderClarificationDTO;
 import com.chlorocode.tendertracker.dao.dto.UserProfileDTO;
+import com.chlorocode.tendertracker.dao.entity.CodeValue;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
 import com.chlorocode.tendertracker.dao.entity.TenderBookmark;
 import com.chlorocode.tendertracker.dao.entity.User;
+import com.chlorocode.tendertracker.service.CodeValueService;
 import com.chlorocode.tendertracker.service.TenderService;
 import com.chlorocode.tendertracker.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +31,14 @@ import java.util.List;
 public class UserProfileController {
     private UserService userService;
     private TenderService tenderService;
+    private CodeValueService codeValueService;
 
     @Autowired
-    public UserProfileController(UserService userService,TenderService tenderService)
+    public UserProfileController(UserService userService,TenderService tenderService, CodeValueService codeValueService)
     {
         this.userService = userService;
         this.tenderService = tenderService;
+        this.codeValueService = codeValueService;
     }
 
     @GetMapping("/user/profile")
@@ -45,7 +49,7 @@ public class UserProfileController {
             model.addAttribute("alert", alert);
             return "redirect:/";
         }
-
+        List<CodeValue> idTypeValue = codeValueService.getByType("id_type");
         CurrentUser currentUser = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         User usr = userService.findById(currentUser.getId());
@@ -60,6 +64,15 @@ public class UserProfileController {
         usrDto.setEmail(usr.getEmail());
         usrDto.setId(usr.getId());
 
+        for(int i = 0; i < idTypeValue.size(); i++){
+            CodeValue code = idTypeValue.get(i);
+            if(code.getCode() == usr.getIdType()){
+                usrDto.setIdType(code.getDescription());
+                break;
+            }
+        }
+
+        usrDto.setIdNo(usr.getIdNo());
         List<TenderBookmark> lstBokkmark = tenderService.findTenderBookmarkByUserId(usr.getId());
 
         ChangePasswordDTO pwd = new ChangePasswordDTO();

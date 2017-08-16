@@ -36,6 +36,8 @@
                                 <div class="col-md-6">
                                     <h4>User Profile:</h4>
                                     <input type="hidden" name="userId" th:value="${userprofile.id}" />
+                                    <p>ID Type:  <span th:text="${userprofile.idType}"></span></p>
+                                    <p>ID No:  <span th:text="${userprofile.idNo}"></span></p>
                                     <p>Name:  <span th:text="${userprofile.name}"></span></p>
                                     <p>Email: <input type="text" class="form-control" th:field="${userprofile.email}" required="required"/></p>
                                     <p>Contact No: <input type="text" class="form-control" th:field="${userprofile.contactNumber}"/></p>

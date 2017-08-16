@@ -20,6 +20,24 @@ public class CompanyRegistrationDetailsDTO {
     private String country;
     private User applicant;
     private Date applicationDate;
+    private String mailingAddress;
+    private String principleActivity;
+
+    public String getMailingAddress() {
+        return mailingAddress;
+    }
+
+    public void setMailingAddress(String mailingAddress) {
+        this.mailingAddress = mailingAddress;
+    }
+
+    public String getPrincipleActivity() {
+        return principleActivity;
+    }
+
+    public void setPrincipleActivity(String principleActivity) {
+        this.principleActivity = principleActivity;
+    }
 
     public int getId() {
         return id;
