@@ -31,13 +31,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="title" class="col-sm-2 control-label">Title</label>
+                                <label for="title" class="col-sm-2 control-label">Title<span style="color:red">*</span></label>
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="title" th:field="*{title}" required="required" />
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="tenderType" class="col-sm-2 control-label">Tender Type</label>
+                                <label for="tenderType" class="col-sm-2 control-label">Tender Type<span style="color:red">*</span></label>
                                 <div class="col-sm-10">
                                     <select class="form-control" id="tenderType" th:field="*{tenderType}" required="required">
                                         <option th:each="t : ${tenderType}" th:text="${t.description}" th:value="${t.code}">Open</option>
@@ -51,7 +51,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="category" class="col-sm-2 control-label">Category</label>
+                                <label for="category" class="col-sm-2 control-label">Category<span style="color:red">*</span></label>
                                 <div class="col-sm-10">
                                     <select class="form-control" id="category" th:field="*{tenderCategory}" required="required">
                                         <option th:each="c : ${tenderCategories}" th:text="${c.name}" th:value="${c.id}">IT</option>
@@ -61,7 +61,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="openDate" class="col-sm-4 control-label">Opening Date</label>
+                                <label for="openDate" class="col-sm-4 control-label">Opening Date<span style="color:red">*</span></label>
                                 <div class="input-group date col-sm-4">
                                     <div class="input-group-addon">
                                         <i class="fa fa-calendar"></i>
@@ -70,7 +70,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="closedDate" class="col-sm-4 control-label">Closing Date</label>
+                                <label for="closedDate" class="col-sm-4 control-label">Closing Date<span style="color:red">*</span></label>
                                 <div class="input-group date col-sm-4">
                                     <div class="input-group-addon">
                                         <i class="fa fa-calendar"></i>
@@ -79,7 +79,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="epv" class="col-sm-4 control-label">EPV</label>
+                                <label for="epv" class="col-sm-4 control-label">EPV<span style="color:red">*</span></label>
                                 <div class="input-group col-sm-4">
                                     <div class="input-group-addon">
                                         <i class="fa fa-dollar"></i>
@@ -106,13 +106,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="contactName" class="col-sm-2 control-label">Name</label>
+                                <label for="contactName" class="col-sm-2 control-label">Name<span style="color:red">*</span></label>
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="contactName" th:field="*{contactPersonName}" required="required" />
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="contactEmail" class="col-sm-2 control-label">Email</label>
+                                <label for="contactEmail" class="col-sm-2 control-label">Email<span style="color:red">*</span></label>
                                 <div class="col-sm-10">
                                     <input type="email" class="form-control" id="contactEmail" th:field="*{contactPersonEmail}" required="required" />
                                 </div>
@@ -120,7 +120,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="contactPhone" class="col-sm-2 control-label">Phone</label>
+                                <label for="contactPhone" class="col-sm-2 control-label">Phone<span style="color:red">*</span></label>
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="contactPhone" th:field="*{contactPersonPhone}" required="required" />
                                 </div>
@@ -169,9 +169,9 @@
                             <table class="table table-striped" id="itemTable">
                                 <thead>
                                     <tr>
-                                        <th>UOM</th>
-                                        <th>Quantity</th>
-                                        <th>Description</th>
+                                        <th>UOM<span style="color:red">*</span></th>
+                                        <th>Quantity<span style="color:red">*</span></th>
+                                        <th>Description<span style="color:red">*</span></th>
                                         <th></th>
                                     </tr>
                                 </thead>
