@@ -15,33 +15,33 @@
             </th:block>
             <form th:method="POST" th:action="@{/register}" th:object="${registration}">
                 <div class="form-group">
-                    <label>ID Type</label>
+                    <label>ID Type<span style="color:red">*</span></label>
                     <select class="form-control" th:field="*{IdType}">
                         <option th:each="c : ${IdType}" th:value="${c.code}" th:text="${c.description}"></option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>ID Number</label>
+                    <label>ID Number<span style="color:red">*</span></label>
                     <input type="text" class="form-control" th:field="*{idNo}" required="required" />
                 </div>
                 <div class="form-group">
-                    <label>Name</label>
+                    <label>Name<span style="color:red">*</span></label>
                     <input type="text" class="form-control" th:field="*{name}" required="required" />
                 </div>
                 <div class="form-group">
-                    <label>Email</label>
+                    <label>Email<span style="color:red">*</span></label>
                     <input type="email" class="form-control" th:field="*{email}" required="required" />
                 </div>
                 <div class="form-group">
-                    <label>Contact No</label>
+                    <label>Contact No<span style="color:red">*</span></label>
                     <input type="text" class="form-control" th:field="*{contactNo}" required="required" />
                 </div>
                 <div class="form-group">
-                    <label>Password</label>
+                    <label>Password<span style="color:red">*</span></label>
                     <input type="password" class="form-control" th:field="*{password}" required="required" />
                 </div>
                 <div class="form-group">
-                    <label>Confirm Password</label>
+                    <label>Confirm Password<span style="color:red">*</span></label>
                     <input type="password" class="form-control" th:field="*{confirmPassword}" required="required" />
                 </div>
                 <div class="white-space-10"></div>
