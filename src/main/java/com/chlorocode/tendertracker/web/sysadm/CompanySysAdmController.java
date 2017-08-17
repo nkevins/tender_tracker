@@ -38,20 +38,21 @@ public class CompanySysAdmController {
     @GetMapping("/sysadm/companyRegistration/{id}")
     public String showCompanyRegistrationDetail(@PathVariable(value="id") Integer id, Model model) {
         CompanyRegistrationDetailsDTO companyRegistration = companyService.findCompanyRegistrationById(id);
-        UenEntity uenEnt = uenEntService.findByUen(companyRegistration.getUen());
-        if(uenEnt == null){
-            model.addAttribute("uenInvalidLabel","This is invalid UEN");
-        }else{
-            model.addAttribute("uenValidLabel", "This is valid UEN");
-        }
 
         if (companyRegistration == null) {
             throw new ResourceNotFoundException();
-        } else {
-            model.addAttribute("reg", companyRegistration);
-
-            return "admin/sysadm/companyRegistrationDetail";
         }
+
+        model.addAttribute("reg", companyRegistration);
+
+        UenEntity uenEnt = uenEntService.findByUen(companyRegistration.getUen());
+        if(uenEnt == null){
+            model.addAttribute("uenInvalidLabel","Unverified UEN");
+        }else{
+            model.addAttribute("uenValidLabel", "UEN Verified");
+        }
+
+        return "admin/sysadm/companyRegistrationDetail";
     }
 
     @PostMapping("/sysadm/companyRegistration")
