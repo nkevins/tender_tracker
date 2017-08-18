@@ -59,9 +59,15 @@ public class TenderPublicController {
         if (auth != null && !(auth instanceof AnonymousAuthenticationToken)) {
             CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             TenderBookmark tenderBookmark = tenderService.findTenderBookmark(tender.getId(), usr.getId());
-            Bid bid = bidService.findBidByCompanyAndTender(usr.getSelectedCompany().getId(),id);
+            Bid bid = null;
             boolean isBookmarked;
             boolean isSubmitedTender;
+
+            if(usr.getSelectedCompany() != null)
+            {
+                bid = bidService.findBidByCompanyAndTender(usr.getSelectedCompany().getId(),id);
+            }
+
             if (tenderBookmark == null) {
                 isBookmarked = false;
             } else {
@@ -118,6 +124,7 @@ public class TenderPublicController {
         model.addAttribute("company", company);
         model.addAttribute("data", data);
         model.addAttribute("codeValueService", codeValueService);
+        model.addAttribute("currency",codeValueService.getByType("currency"));
 
         return "tenderResponse";
     }
