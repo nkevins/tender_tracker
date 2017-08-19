@@ -6,7 +6,16 @@ public class TenderItemResponseSubmitDTO {
 
     private TenderItem item;
     private Double quotedPrice;
+    private int currency;
     private int itemId;
+
+    public int getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(int currency) {
+        this.currency = currency;
+    }
 
     public TenderItem getItem() {
         return item;

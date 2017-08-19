@@ -33,6 +33,7 @@
                             <th>Item</th>
                             <th>Quantity</th>
                             <th>UOM</th>
+                            <th>Currency</th>
                             <th>Quoted Price</th>
                         </tr>
                         <tr th:each="i, iterator : ${data.items}">
@@ -41,8 +42,14 @@
                             <td th:text="${i.item.quantity}">5</td>
                             <td th:text="${codeValueService.getDescription('uom', i.item.uom)}">Pcs</td>
                             <td>
+                                <select class="form-control" th:field="*{items[__${iterator.index}__].currency}">
+                                <option th:each="c : ${currency}" th:value="${c.code}" th:text="${c.description}"></option>
+                            </select>
+                            </td>
+                            <td>
                                 <input type="number" th:field="*{items[__${iterator.index}__].quotedPrice}" required="required" />
                                 <input type="hidden" th:field="*{items[__${iterator.index}__].itemId}" th:value="${i.item.id}" />
+
                             </td>
                         </tr>
                     </table>

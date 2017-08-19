@@ -156,6 +156,7 @@ public class TenderPublicController {
             bidItem.setCreatedDate(new Date());
             bidItem.setLastUpdatedBy(usr.getId());
             bidItem.setLastUpdatedDate(new Date());
+            bidItem.setCurrency(item.getCurrency());
 
             bid.addBidItem(bidItem);
         }
