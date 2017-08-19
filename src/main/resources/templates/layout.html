@@ -52,7 +52,7 @@
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
                     <ul class="nav navbar-nav">
-                        <li class=""><a th:href="@{/}"><strong>Find a Tender</strong></a></li>
+                        <li class=""><a th:href="@{/}"><strong>Home</strong></a></li>
                         <li class="" sec:authorize="isAuthenticated()"><a th:href="@{/tenderNotification}"><strong>Notification</strong></a></li>
                         <li class="" sec:authorize="isAuthenticated()"><a th:href="@{/registerCompany}"><strong>Register a Company</strong></a></li>
                         <li class="" sec:authorize="hasAnyRole('SYS_ADMIN','ADMIN')"><a th:href="@{/admin}"><strong>Admin Panel</strong></a></li>
@@ -94,7 +94,7 @@
                     </a>
 
                     <ul class="nav navbar-nav">
-                        <li><a th:href="@{/}"><strong>Find a Tender</strong></a></li>
+                        <li><a th:href="@{/}"><strong>Home</strong></a></li>
                         <li sec:authorize="isAuthenticated()"><a th:href="@{/tenderNotification}">Notification</a></li>
                         <li sec:authorize="isAuthenticated()"><a th:href="@{/registerCompany}"><strong>Register a Company</strong></a></li>
                         <li sec:authorize="hasAnyRole('SYS_ADMIN','ADMIN')"><a th:href="@{/admin}"><strong>Admin Panel</strong></a></li>
