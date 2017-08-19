@@ -1,17 +1,18 @@
 package com.chlorocode.tendertracker.service;
 
+import com.chlorocode.tendertracker.constants.TTConstants;
 import com.chlorocode.tendertracker.dao.CompanyDAO;
 import com.chlorocode.tendertracker.dao.dto.CompanyRegistrationDetailsDTO;
 import com.chlorocode.tendertracker.dao.entity.Company;
 import com.chlorocode.tendertracker.dao.entity.Role;
 import com.chlorocode.tendertracker.dao.entity.User;
 import com.chlorocode.tendertracker.exception.ApplicationException;
+import com.chlorocode.tendertracker.service.notification.NotificationService;
+import com.chlorocode.tendertracker.service.notification.NotificationServiceImpl;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class CompanyServiceImpl implements CompanyService {
@@ -21,13 +22,16 @@ public class CompanyServiceImpl implements CompanyService {
     private CodeValueService codeValueService;
     private UserService userService;
     private UserRoleService userRoleService;
+    private NotificationService notificationService;
 
     public CompanyServiceImpl(CompanyDAO companyDAO,
-                              CodeValueService codeValueService, UserService userService, UserRoleService userRoleService) {
+                              CodeValueService codeValueService, UserService userService
+                                , UserRoleService userRoleService, NotificationService notificationService) {
         this.companyDAO = companyDAO;
         this.codeValueService = codeValueService;
         this.userService = userService;
         this.userRoleService = userRoleService;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -92,6 +96,13 @@ public class CompanyServiceImpl implements CompanyService {
             List<Role> roles = new LinkedList<>();
             roles.add(userRoleService.findRoleById(2));
             userRoleService.addUserRole(user, roles, company, approvedBy);
+
+            Map<String, Object> params = new HashMap<>();
+            params.put(TTConstants.PARAM_APPROVAL_ACTION, TTConstants.APPROVED);
+            params.put(TTConstants.PARAM_COMPANY_ID, company.getId());
+            params.put(TTConstants.PARAM_COMPANY_NAME, company.getName());
+            params.put(TTConstants.PARAM_EMAIL, company.getMailingAddress());
+            notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.company_reviewed_noti, params);
         }
     }
 
@@ -107,6 +118,13 @@ public class CompanyServiceImpl implements CompanyService {
             company.setLastUpdatedDate(new Date());
 
             companyDAO.save(company);
+
+            Map<String, Object> params = new HashMap<>();
+            params.put(TTConstants.PARAM_APPROVAL_ACTION, TTConstants.REJECTED);
+            params.put(TTConstants.PARAM_COMPANY_ID, company.getId());
+            params.put(TTConstants.PARAM_COMPANY_NAME, company.getName());
+            params.put(TTConstants.PARAM_EMAIL, company.getMailingAddress());
+            notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.company_reviewed_noti, params);
         }
     }
 

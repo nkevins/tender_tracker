@@ -42,6 +42,22 @@ public class MailSenderServiceImpl implements MailSenderService {
             + "<p>Regards,<br>Tender Tracker</p>"
             + "</body></html>";
 
+    public static final String CREATE_TENDER_SUBJECT = "[TenderTracker] New tender created.";
+    public static final String CREATE_TENDER_TEMPLATE = "<html><body>"
+            + "<p>Tender \"%s\" has been created.</p>"
+            + "<p>Please see more information on following link."
+            + "<br><a href=\"http://localhost:8080/tender/%s\">\"http://localhost:8080/tender/%s\"</a></p>"
+            + "<p>Regards,<br>Tender Tracker</p>"
+            + "</body></html>";
+
+    public static final String COMPANY_REVIEW_SUBJECT = "[TenderTracker] Your company registration has been reviewed.";
+    public static final String COMPANY_REVIEW_TEMPLATE = "<html><body>"
+            + "<p>Registration of \"%s\" company has been %s.</p>"
+            + "<p>Please see more information on following link."
+            + "<br><a href=\"http://localhost:8080/company/%s\">\"http://localhost:8080/company/%s\"</a></p>"
+            + "<p>Regards,<br>Tender Tracker</p>"
+            + "</body></html>";
+
     @Override
     public boolean sendEmail(String subject, String body, String... emails) {
         // Do the business calculations...

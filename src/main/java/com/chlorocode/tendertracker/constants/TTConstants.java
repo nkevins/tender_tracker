@@ -9,6 +9,8 @@ public class TTConstants {
     public static String OTP_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ";
     public static final String PASSWORD_COMPLEXITY = "^[\\S]{6,}$";
     public static final String EMPTY = "";
+    public static final String APPROVED = "approved";
+    public static final String REJECTED = "rejected";
 
     public static final int ACCOUNT_STATIC_ACTIVE = 1;
     public static final int ACCOUNT_STATIC_EXPIRE = 2;
@@ -25,5 +27,9 @@ public class TTConstants {
     public static final String PARAM_EMAILS = "emails";
     public static final String PARAM_TOKEN = "confirmation_token";
     public static final String PARAM_TENDER_ID = "tender_id";
+    public static final String PARAM_TENDER_TITLE = "tender_title";
+    public static final String PARAM_COMPANY_ID = "company_id";
+    public static final String PARAM_COMPANY_NAME = "company_name";
     public static final String PARAM_TENDER = "tender";
+    public static final String PARAM_APPROVAL_ACTION = "approval_action";
 }

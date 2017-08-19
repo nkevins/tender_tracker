@@ -17,4 +17,7 @@ public interface TenderCategorySubscriptionDAO extends JpaRepository<TenderCateg
 
     @Query("select s from TenderCategorySubscription s where s.user.id = ?1")
     List<TenderCategorySubscription> findUserSubscription(int userId);
+
+    @Query("select s from TenderCategorySubscription s where s.tenderCategory.id = ?1")
+    List<TenderCategorySubscription> findUserSubscriptionByTenderCategory(int categoryId);
 }

@@ -104,7 +104,34 @@ public class TenderServiceImpl implements TenderService {
             t.addTenderDocument(tenderDocument);
         }
 
+        if (result != null) {
+            String[] emails = getSubscriptionEmails(result.getTenderCategory().getId());
+            if (emails != null && emails.length > 0) {
+                Map<String, Object> params = new HashMap<>();
+                params.put(TTConstants.PARAM_APPROVAL_ACTION, TTConstants.REJECTED);
+                params.put(TTConstants.PARAM_TENDER_ID, result.getId());
+                params.put(TTConstants.PARAM_TENDER_TITLE, result.getTitle());
+                params.put(TTConstants.PARAM_EMAILS, emails);
+                notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.company_reviewed_noti, params);
+            }
+        }
+
         return result;
+    }
+
+    public String[] getSubscriptionEmails(int tenderCategoryId) {
+        List<TenderCategorySubscription> subscriptions = tenderCategorySubscriptionDAO.findUserSubscriptionByTenderCategory(tenderCategoryId);
+        if (subscriptions != null) {
+            Set<String> emails = new HashSet<>();
+            for (TenderCategorySubscription subscription : subscriptions) {
+                if (subscription.getUser() != null) {
+                    emails.add(subscription.getUser().getEmail());
+                }
+            }
+            return emails.toArray(new String[subscriptions.size()]);
+        } else {
+            return null;
+        }
     }
 
     @Override

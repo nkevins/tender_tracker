@@ -23,6 +23,8 @@ public class NotificationServiceImpl implements NotificationService {
     public enum NOTI_MODE {
         welcome_message,
         bookmark_noti,
+        tender_create_noti,
+        company_reviewed_noti,
         reset_otp,
         decision_noti,
         // TODO add other mode such as tender_noti, etc...
@@ -37,30 +39,57 @@ public class NotificationServiceImpl implements NotificationService {
             sendWelcomeMsg(params);
         } else if (mode == NOTI_MODE.bookmark_noti) {
             sendBookmarkNotiMsg(params);
+        } else if (mode == NOTI_MODE.tender_create_noti) {
+            sendTenderCreateNotiMsg(params);
+        } else if (mode == NOTI_MODE.company_reviewed_noti) {
+            sendCompanyReviewedNotiMsg(params);
         } else {
             sendEmail("Email Subject","Email body", (String)params.get(TTConstants.PARAM_EMAIL));
         }
     }
 
     public boolean sendOTP(Map<String, Object> params) {
-        String body = String.format(MailSenderServiceImpl.OTP_TEMPLATE
-                                    , params.get(TTConstants.PARAM_NAME)
-                                    , params.get(TTConstants.PARAM_EMAIL)
-                                    , params.get(TTConstants.PARAM_TOKEN)
-                                    , params.get(TTConstants.PARAM_EMAIL)
-                                    , params.get(TTConstants.PARAM_TOKEN));
-        return sendEmail(MailSenderServiceImpl.OTP_SUBJECT, body, (String)params.get(TTConstants.PARAM_EMAIL));
+        String name = (String) params.get(TTConstants.PARAM_NAME);
+        String email = (String) params.get(TTConstants.PARAM_EMAIL);
+        String token = (String) params.get(TTConstants.PARAM_TOKEN);
+        String body = String.format(MailSenderServiceImpl.OTP_TEMPLATE, name, email, token, email, token);
+        return sendEmail(MailSenderServiceImpl.OTP_SUBJECT, body, email);
     }
 
     public boolean sendWelcomeMsg(Map<String, Object> params) {
-        String body = String.format(MailSenderServiceImpl.WELCOME_TEMPLATE, params.get(TTConstants.PARAM_NAME));
-        return sendEmail(MailSenderServiceImpl.WELCOME_SUBJECT, body, (String)params.get(TTConstants.PARAM_EMAIL));
+        String name = (String) params.get(TTConstants.PARAM_NAME);
+        String email = (String) params.get(TTConstants.PARAM_EMAIL);
+        String body = String.format(MailSenderServiceImpl.WELCOME_TEMPLATE, name);
+        return sendEmail(MailSenderServiceImpl.WELCOME_SUBJECT, body, email);
     }
 
     public boolean  sendBookmarkNotiMsg(Map<String, Object> params) {
-        Tender tender = (Tender) params.get(TTConstants.PARAM_TENDER);
-        String body = String.format(MailSenderServiceImpl.UPDATE_TENDER_TEMPLATE, tender.getTitle(), tender.getId(), tender.getId());
-        sendEmail(MailSenderServiceImpl.UPDATE_TENDER_SUBJECT, body, (String[])params.get(TTConstants.PARAM_EMAILS));
+        String id = (String) params.get(TTConstants.PARAM_TENDER_ID);
+        String title = (String) params.get(TTConstants.PARAM_TENDER_TITLE);
+        String[] emails = (String[]) params.get(TTConstants.PARAM_EMAILS);
+        String body = String.format(MailSenderServiceImpl.UPDATE_TENDER_TEMPLATE, title, id, id);
+        sendEmail(MailSenderServiceImpl.UPDATE_TENDER_SUBJECT, body, emails);
+
+        return true;
+    }
+
+    public boolean  sendTenderCreateNotiMsg(Map<String, Object> params) {
+        String id = (String) params.get(TTConstants.PARAM_TENDER_ID);
+        String title = (String) params.get(TTConstants.PARAM_TENDER_TITLE);
+        String[] emails = (String[]) params.get(TTConstants.PARAM_EMAILS);
+        String body = String.format(MailSenderServiceImpl.CREATE_TENDER_TEMPLATE, title, id, id);
+        sendEmail(MailSenderServiceImpl.CREATE_TENDER_SUBJECT, body, emails);
+
+        return true;
+    }
+
+    public boolean  sendCompanyReviewedNotiMsg(Map<String, Object> params) {
+        String id = (String) params.get(TTConstants.PARAM_COMPANY_ID);
+        String name = (String) params.get(TTConstants.PARAM_COMPANY_NAME);
+        String action = (String) params.get(TTConstants.PARAM_APPROVAL_ACTION);
+        String emails = (String) params.get(TTConstants.PARAM_EMAIL);
+        String body = String.format(MailSenderServiceImpl.COMPANY_REVIEW_TEMPLATE, name, action, id, id);
+        sendEmail(MailSenderServiceImpl.COMPANY_REVIEW_SUBJECT, body, emails);
 
         return true;
     }
