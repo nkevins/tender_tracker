@@ -5,6 +5,7 @@ import com.chlorocode.tendertracker.dao.entity.Company;
 import com.chlorocode.tendertracker.dao.entity.Role;
 import com.chlorocode.tendertracker.dao.entity.User;
 import com.chlorocode.tendertracker.exception.ApplicationException;
+import com.chlorocode.tendertracker.service.notification.NotificationServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -33,6 +34,9 @@ public class CompanyServiceImplTest {
 
     @Mock
     private UserService userService;
+
+    @Mock
+    private NotificationServiceImpl notificationService;
 
     @InjectMocks
     private CompanyServiceImpl companyServiceImpl;

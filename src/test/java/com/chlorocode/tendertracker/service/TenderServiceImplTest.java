@@ -2,9 +2,11 @@ package com.chlorocode.tendertracker.service;
 
 import com.chlorocode.tendertracker.dao.DocumentDAO;
 import com.chlorocode.tendertracker.dao.TenderBookmarkDAO;
+import com.chlorocode.tendertracker.dao.TenderCategorySubscriptionDAO;
 import com.chlorocode.tendertracker.dao.TenderDAO;
 import com.chlorocode.tendertracker.dao.entity.*;
 import com.chlorocode.tendertracker.exception.ApplicationException;
+import com.chlorocode.tendertracker.service.notification.NotificationServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -31,6 +33,9 @@ public class TenderServiceImplTest {
     private TenderDAO tenderDAO;
 
     @Mock
+    private TenderCategorySubscriptionDAO tenderCategorySubscriptionDAO;
+
+    @Mock
     private DocumentDAO documentDAO;
 
     @Mock
@@ -38,6 +43,9 @@ public class TenderServiceImplTest {
 
     @Mock
     private TenderBookmarkDAO tenderBookmarkDAO;
+
+    @Mock
+    private NotificationServiceImpl notificationService;
 
     @InjectMocks
     private TenderServiceImpl tenderServiceImpl;
@@ -48,8 +56,12 @@ public class TenderServiceImplTest {
         MockMultipartFile firstFile = new MockMultipartFile("data", "filename.txt", "text/plain", "some content".getBytes());
         files.add(firstFile);
 
+        TenderCategory cat = new TenderCategory();
+        cat.setId(1);
+
         Tender t = new Tender();
         t.setOpenDate(new Date());
+        t.setTenderCategory(cat);
 
         Calendar c = Calendar.getInstance();
         c.setTime(new Date());
