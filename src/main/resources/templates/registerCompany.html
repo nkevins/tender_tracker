@@ -16,35 +16,35 @@
             <form th:method="POST" th:action="@{/registerCompany}" th:object="${registration}">
 
                 <div class="form-group">
-                    <label>Name</label>
+                    <label>Name<span style="color:red">*</span></label>
                     <input type="text" class="form-control" th:field="*{name}" required="required" />
                 </div>
                 <div class="form-group">
-                    <label>UEN No</label>
+                    <label>UEN No<span style="color:red">*</span></label>
                     <input type="text" class="form-control" th:field="*{uen}" required="required" />
                 </div>
                 <div class="form-group">
-                    <label>GST Registration No</label>
+                    <label>GST Registration No<span style="color:red">*</span></label>
                     <input type="text" class="form-control" th:field="*{gstRegNo}" required="required" />
                 </div>
                 <div class="form-group">
-                    <label>Company Type</label>
+                    <label>Company Type<span style="color:red">*</span></label>
                     <select class="form-control" th:field="*{type}">
                         <option th:each="c : ${companyType}" th:value="${c.code}" th:text="${c.description}"></option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Principle Business Activity</label>
+                    <label>Principle Business Activity<span style="color:red">*</span></label>
                     <input type="text" class="form-control" th:field="*{principleBusinessActivity}" required="required" />
                 </div>
                 <div class="form-group">
-                    <label>Area of Business</label>
+                    <label>Area of Business<span style="color:red">*</span></label>
                     <select class="form-control" th:field="*{areaOfBusiness}">
                         <option th:each="c : ${areaOfBusiness}" th:value="${c.code}" th:text="${c.description}"></option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Address 1</label>
+                    <label>Address 1<span style="color:red">*</span></label>
                     <input type="text" class="form-control" th:field="*{address1}" required="required" />
                 </div>
                 <div class="form-group">
@@ -52,27 +52,27 @@
                     <input type="text" class="form-control" th:field="*{address2}" />
                 </div>
                 <div class="form-group">
-                    <label>Mailing Address</label>
+                    <label>Mailing Address<span style="color:red">*</span></label>
                     <input type="text" class="form-control" th:field="*{mailingAddress}" required="required" />
                 </div>
                 <div class="form-group">
-                    <label>Postal Code</label>
+                    <label>Postal Code<span style="color:red">*</span></label>
                     <input type="text" class="form-control" th:field="*{postalCode}" required="required" />
                 </div>
                 <div class="form-group">
-                    <label>City</label>
+                    <label>City<span style="color:red">*</span></label>
                     <input type="text" class="form-control" th:field="*{city}" required="required" />
                 </div>
                 <div class="form-group">
-                    <label>State</label>
+                    <label>State<span style="color:red">*</span></label>
                     <input type="text" class="form-control" th:field="*{state}" required="required" />
                 </div>
                 <div class="form-group">
-                    <label>Province</label>
+                    <label>Province<span style="color:red">*</span></label>
                     <input type="text" class="form-control" th:field="*{province}" required="required" />
                 </div>
                 <div class="form-group">
-                    <label>Country</label>
+                    <label>Country<span style="color:red">*</span></label>
                     <input type="text" class="form-control" th:field="*{country}" required="required" />
                 </div>
                 <div class="white-space-10"></div>

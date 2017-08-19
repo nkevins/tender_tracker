@@ -32,9 +32,9 @@
                         <form class="form-horizontal" th:action="@{/admin/companyUser/add}" method="POST" th:object="${form}">
                             <div class="box-body">
                                 <div class="form-group">
-                                    <label class="col-sm-2 control-label" for="email">User Email</label>
+                                    <label class="col-sm-2 control-label" for="email">User Email<span style="color:red">*</span></label>
                                     <div class="col-sm-10">
-                                        <input type="email" class="form-control" id="email" th:field="*{email}" />
+                                        <input type="email" class="form-control" id="email" th:field="*{email}" required="required" />
                                     </div>
                                 </div>
                                 <div class="form-group">

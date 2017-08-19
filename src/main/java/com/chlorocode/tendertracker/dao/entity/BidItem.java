@@ -12,6 +12,7 @@ public class BidItem {
     private int id;
 
     private double amount;
+    private int currency;
     private int createdBy;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -27,6 +28,14 @@ public class BidItem {
 
     @ManyToOne
     private TenderItem tenderItem;
+
+    public int getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(int currency) {
+        this.currency = currency;
+    }
 
     public int getId() {
         return id;

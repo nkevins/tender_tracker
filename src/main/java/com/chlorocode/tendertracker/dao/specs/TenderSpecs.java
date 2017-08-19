@@ -14,7 +14,7 @@ public class TenderSpecs {
 
     private TenderSpecs() {}
 
-    public static Specification<Tender> byTenderSearchCriteria(String title, String companyName, int tcId, int status) {
+    public static Specification<Tender> byTenderSearchCriteria(String title, String companyName, int tcId, int status, String refNo) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             if (title != null && !title.isEmpty()) {
@@ -28,6 +28,10 @@ public class TenderSpecs {
             }
             if (status > 0) {
                 predicates.add(cb.equal(root.<Integer>get(Tender_.status), status));
+            }
+
+            if(refNo != null && !refNo.isEmpty()){
+                predicates.add(cb.like(cb.lower(root.<String>get(Tender_.refNo)), getContainsLikePattern(refNo)));
             }
 
             return cb.and(predicates.toArray(new Predicate[predicates.size()]));

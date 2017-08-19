@@ -71,6 +71,7 @@ public class AuthControllerTest {
 
     @Test
     public void testSuccessfulRegistration() throws Exception {
+        when(userService.isNRICValid(any(String.class))).thenReturn(true);
         this.mvc.perform(
                 post("/register")
                         .param("name", "Name")
@@ -78,6 +79,8 @@ public class AuthControllerTest {
                         .param("contactNo", "12345678")
                         .param("password", "password")
                         .param("confirmPassword", "password")
+                        .param("idType", "1")
+                        .param("IdNo", "SS6673172C")
                         .with(csrf())
                 )
                 .andExpect(view().name("redirect:/login"));
@@ -86,6 +89,7 @@ public class AuthControllerTest {
 
     @Test
     public void testRegistrationWithWrongConfirmPassword() throws Exception {
+        when(userService.isNRICValid(any(String.class))).thenReturn(true);
         this.mvc.perform(
                 post("/register")
                         .param("name", "Name")
@@ -93,6 +97,8 @@ public class AuthControllerTest {
                         .param("contactNo", "12345678")
                         .param("password", "password")
                         .param("confirmPassword", "password1")
+                        .param("idType", "1")
+                        .param("IdNo", "SS6673172C")
                         .with(csrf())
         )
                 .andExpect(view().name("registerUser"));
@@ -102,6 +108,7 @@ public class AuthControllerTest {
     @Test
     public void testDuplicateUserRegistration() throws Exception {
         when(userService.create(any(User.class))).thenThrow(new ApplicationException("User already exist"));
+        when(userService.isNRICValid(any(String.class))).thenReturn(true);
         this.mvc.perform(
                 post("/register")
                         .param("name", "Name")
@@ -109,6 +116,8 @@ public class AuthControllerTest {
                         .param("contactNo", "12345678")
                         .param("password", "password")
                         .param("confirmPassword", "password")
+                        .param("idType", "1")
+                        .param("IdNo", "SS6673172C")
                         .with(csrf())
         )
                 .andExpect(view().name("registerUser"));
