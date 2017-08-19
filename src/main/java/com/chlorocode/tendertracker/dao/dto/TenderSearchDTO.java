@@ -18,6 +18,15 @@ public class TenderSearchDTO {
     private int tenderCategory;
 
     private int status;
+    private String refNo;
+
+    public String getRefNo() {
+        return refNo;
+    }
+
+    public void setRefNo(String refNo) {
+        this.refNo = refNo;
+    }
 
     public String getTitle() {
         return title;

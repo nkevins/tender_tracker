@@ -249,7 +249,7 @@ public class TenderServiceImpl implements TenderService {
                 searchDTO.getTitle() == null ? null : searchDTO.getTitle().trim()
                 , searchDTO.getCompanyName() == null ? null : searchDTO.getCompanyName().trim()
                 , searchDTO.getTenderCategory()
-                , searchDTO.getStatus());
+                , searchDTO.getStatus(),searchDTO.getRefNo());
         return tenderPagingDAO.findAll(searchSpec, pageable);
     }
 

@@ -12,6 +12,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 @StaticMetamodel(Tender.class)
 public abstract class Tender_ {
     public static volatile SingularAttribute<Tender, String> title;
+    public static volatile SingularAttribute<Tender, String> refNo;
     public static volatile SingularAttribute<Tender, Integer> status;
     public static volatile SingularAttribute<Tender, Company> company;
     public static volatile SingularAttribute<Tender, TenderCategory> tenderCategory;
