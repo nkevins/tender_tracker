@@ -3,6 +3,7 @@ package com.chlorocode.tendertracker;
 import com.chlorocode.tendertracker.filter.AdminFilter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.datatables.repository.DataTablesRepositoryFactoryBean;

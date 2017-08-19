@@ -7,4 +7,5 @@ import java.util.List;
  */
 public interface MailSenderService {
     public boolean sendEmail(String subject, String body, String... emails);
+    public boolean sendEmail(String subject, String templatePath, String[] emails, String... params);
 }
