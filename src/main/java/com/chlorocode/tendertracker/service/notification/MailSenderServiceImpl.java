@@ -42,6 +42,14 @@ public class MailSenderServiceImpl implements MailSenderService {
             + "<p>Regards,<br>Tender Tracker</p>"
             + "</body></html>";
 
+    public static final String ADD_CORRIGENDUM_SUBJECT = "[TenderTracker] New corrigendum added to tender.";
+    public static final String ADD_CORRIGENDUM_TEMPLATE = "<html><body>"
+            + "<p>New corrigendum add into the tender \"%s\".</p>"
+            + "<p>Please see more information on following link."
+            + "<br><a href=\"http://localhost:8080/tender/%s\">\"http://localhost:8080/tender/%s\"</a></p>"
+            + "<p>Regards,<br>Tender Tracker</p>"
+            + "</body></html>";
+
     public static final String CREATE_TENDER_SUBJECT = "[TenderTracker] New tender created.";
     public static final String CREATE_TENDER_TEMPLATE = "<html><body>"
             + "<p>Tender \"%s\" has been created.</p>"
@@ -51,10 +59,12 @@ public class MailSenderServiceImpl implements MailSenderService {
             + "</body></html>";
 
     public static final String COMPANY_REVIEW_SUBJECT = "[TenderTracker] Your company registration has been reviewed.";
-    public static final String COMPANY_REVIEW_TEMPLATE = "<html><body>"
-            + "<p>Registration of \"%s\" company has been %s.</p>"
-            + "<p>Please see more information on following link."
-            + "<br><a href=\"http://localhost:8080/company/%s\">\"http://localhost:8080/company/%s\"</a></p>"
+    public static final String COMPANY_APPROVE_TEMPLATE = "<html><body>"
+            + "<p>Congratulation, your company \"%s\" registration request has been approved.</p>"
+            + "<p>Regards,<br>Tender Tracker</p>"
+            + "</body></html>";
+    public static final String COMPANY_REJECT_TEMPLATE = "<html><body>"
+            + "<p>Sorry, your company \"%s\" registration request has been rejected.</p>"
             + "<p>Regards,<br>Tender Tracker</p>"
             + "</body></html>";
 

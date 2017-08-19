@@ -5,8 +5,10 @@ import com.chlorocode.tendertracker.dao.entity.Tender;
 import com.chlorocode.tendertracker.dao.entity.TenderCategory;
 
 import javax.annotation.Generated;
+import javax.management.openmbean.OpenDataException;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
+import java.util.Date;
 
 @Generated(value = "org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor")
 @StaticMetamodel(Tender.class)
@@ -16,4 +18,5 @@ public abstract class Tender_ {
     public static volatile SingularAttribute<Tender, Integer> status;
     public static volatile SingularAttribute<Tender, Company> company;
     public static volatile SingularAttribute<Tender, TenderCategory> tenderCategory;
+    public static volatile SingularAttribute<Tender, Date> openDate;
 }

@@ -101,7 +101,7 @@ public class CompanyServiceImpl implements CompanyService {
             params.put(TTConstants.PARAM_APPROVAL_ACTION, TTConstants.APPROVED);
             params.put(TTConstants.PARAM_COMPANY_ID, company.getId());
             params.put(TTConstants.PARAM_COMPANY_NAME, company.getName());
-            params.put(TTConstants.PARAM_EMAIL, company.getMailingAddress());
+            params.put(TTConstants.PARAM_EMAIL, user.getEmail());
             notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.company_reviewed_noti, params);
         }
     }
@@ -119,12 +119,16 @@ public class CompanyServiceImpl implements CompanyService {
 
             companyDAO.save(company);
 
-            Map<String, Object> params = new HashMap<>();
-            params.put(TTConstants.PARAM_APPROVAL_ACTION, TTConstants.REJECTED);
-            params.put(TTConstants.PARAM_COMPANY_ID, company.getId());
-            params.put(TTConstants.PARAM_COMPANY_NAME, company.getName());
-            params.put(TTConstants.PARAM_EMAIL, company.getMailingAddress());
-            notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.company_reviewed_noti, params);
+            // Assign creator as Admin
+            User user = userService.findById(company.getCreatedBy());
+            if (user != null) {
+                Map<String, Object> params = new HashMap<>();
+                params.put(TTConstants.PARAM_APPROVAL_ACTION, TTConstants.REJECTED);
+                params.put(TTConstants.PARAM_COMPANY_ID, company.getId());
+                params.put(TTConstants.PARAM_COMPANY_NAME, company.getName());
+                params.put(TTConstants.PARAM_EMAIL, user.getEmail());
+                notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.company_reviewed_noti, params);
+            }
         }
     }
 

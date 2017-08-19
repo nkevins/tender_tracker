@@ -1,5 +1,6 @@
 package com.chlorocode.tendertracker.service;
 
+import com.chlorocode.tendertracker.constants.TTConstants;
 import com.chlorocode.tendertracker.dao.CorrigendumDAO;
 import com.chlorocode.tendertracker.dao.CorrigendumDocumentDAO;
 import com.chlorocode.tendertracker.dao.DocumentDAO;
@@ -23,14 +24,16 @@ public class CorrigendumServiceImpl implements CorrigendumService {
     private CorrigendumDocumentDAO corrigendumDocumentDAO;
     private DocumentDAO documentDAO;
     private S3Wrapper s3Wrapper;
+    private TenderService tenderService;
 
     @Autowired
     public CorrigendumServiceImpl(CorrigendumDAO corrigendumDAO, CorrigendumDocumentDAO corrigendumDocumentDAO,
-                                  DocumentDAO documentDAO, S3Wrapper s3Wrapper) {
+                                  DocumentDAO documentDAO, S3Wrapper s3Wrapper, TenderService tenderService) {
         this.corrigendumDAO = corrigendumDAO;
         this.corrigendumDocumentDAO = corrigendumDocumentDAO;
         this.documentDAO = documentDAO;
         this.s3Wrapper = s3Wrapper;
+        this.tenderService = tenderService;
     }
 
     @Override
@@ -71,6 +74,10 @@ public class CorrigendumServiceImpl implements CorrigendumService {
             CorrigendumDocument corrigendumDocument = new CorrigendumDocument();
             corrigendumDocument.setDocument(doc);
             corrigendum.addDocument(corrigendumDocument);
+        }
+
+        if (result != null) {
+            tenderService.sendBookmarkNoti(result.getTender(), TTConstants.ADD_CORRIGENDUM);
         }
 
         return result;

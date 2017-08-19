@@ -4,7 +4,7 @@ package com.chlorocode.tendertracker.constants;
  * Created by Kyaw Min Thu on 3/7/2017.
  */
 public class TTConstants {
-    public static final int OTP_VALID_DAYS = 1;
+    public static final int OTP_VALID_HOURS = 1;
     public static final int OTP_LENGTH = 6;
     public static String OTP_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ";
     public static final String PASSWORD_COMPLEXITY = "^[\\S]{6,}$";
@@ -25,6 +25,7 @@ public class TTConstants {
     public static final String PARAM_NAME = "name";
     public static final String PARAM_EMAIL = "email";
     public static final String PARAM_EMAILS = "emails";
+    public static final String PARAM_CHANGE_TYPE = "change_type";
     public static final String PARAM_TOKEN = "confirmation_token";
     public static final String PARAM_TENDER_ID = "tender_id";
     public static final String PARAM_TENDER_TITLE = "tender_title";
@@ -32,4 +33,7 @@ public class TTConstants {
     public static final String PARAM_COMPANY_NAME = "company_name";
     public static final String PARAM_TENDER = "tender";
     public static final String PARAM_APPROVAL_ACTION = "approval_action";
+
+    public static int UPDATE_TENDER = 1;
+    public static int ADD_CORRIGENDUM = 2;
 }

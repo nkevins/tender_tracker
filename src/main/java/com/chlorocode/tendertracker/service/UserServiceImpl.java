@@ -121,7 +121,7 @@ public class UserServiceImpl implements UserService {
             String otp = generatePIN(TTConstants.OTP_LENGTH);
             user.setConfirmationToken(otp);
             LocalDateTime tokenExpirationDate = LocalDateTime.now();
-            tokenExpirationDate = tokenExpirationDate.plusDays(TTConstants.OTP_VALID_DAYS);
+            tokenExpirationDate = tokenExpirationDate.plusHours(TTConstants.OTP_VALID_HOURS);
             user.setTokenExpireDate(Date.from(tokenExpirationDate.atZone(ZoneId.systemDefault()).toInstant()));
 
             Map<String, Object> params = new HashMap<>();

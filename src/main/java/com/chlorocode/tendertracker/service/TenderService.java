@@ -34,4 +34,6 @@ public interface TenderService {
 
     Page<Tender> listAllByPage(Pageable pageable);
     Page<Tender> searchTender(TenderSearchDTO searchDTO, Pageable pageable);
+
+    void sendBookmarkNoti(Tender tender, int changeType);
 }

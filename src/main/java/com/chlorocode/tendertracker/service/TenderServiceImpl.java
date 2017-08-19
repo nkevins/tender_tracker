@@ -119,7 +119,7 @@ public class TenderServiceImpl implements TenderService {
         return result;
     }
 
-    public String[] getSubscriptionEmails(int tenderCategoryId) {
+    private String[] getSubscriptionEmails(int tenderCategoryId) {
         List<TenderCategorySubscription> subscriptions = tenderCategorySubscriptionDAO.findUserSubscriptionByTenderCategory(tenderCategoryId);
         if (subscriptions != null) {
             Set<String> emails = new HashSet<>();
@@ -137,7 +137,7 @@ public class TenderServiceImpl implements TenderService {
     @Override
     public Tender updateTender(Tender tender) {
         tender = tenderDAO.save(tender);
-        sendEmails(tender);
+        sendBookmarkNoti(tender, TTConstants.UPDATE_TENDER);
         return tender;
     }
 
@@ -154,7 +154,7 @@ public class TenderServiceImpl implements TenderService {
     @Override
     public TenderItem updateTenderItem(TenderItem tenderItem) {
         tenderItem = tenderItemDAO.save(tenderItem);
-        sendEmails(tenderItem.getTender());
+        sendBookmarkNoti(tenderItem.getTender(), TTConstants.UPDATE_TENDER);
 
         return tenderItem;
     }
@@ -280,7 +280,8 @@ public class TenderServiceImpl implements TenderService {
         return tenderPagingDAO.findAll(searchSpec, pageable);
     }
 
-    private void sendEmails(Tender tender) {
+    @Override
+    public void sendBookmarkNoti(Tender tender, int changeType) {
         if (tender != null) {
             // Send tender information to bookmark users.
             List<TenderBookmark>  tenderBookmarks = tenderBookmarkDAO.findTenderBookmarkByTender(tender.getId());
@@ -293,7 +294,8 @@ public class TenderServiceImpl implements TenderService {
                     Map<String, Object> params = new HashMap<>();
                     params.put(TTConstants.PARAM_TENDER, tender);
                     params.put(TTConstants.PARAM_EMAILS, users.toArray(new User[users.size()]));
-                    notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.bookmark_noti, params);
+                    params.put(TTConstants.PARAM_CHANGE_TYPE, changeType);
+                    notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.tender_bookmark_noti, params);
                 }
             }
         }

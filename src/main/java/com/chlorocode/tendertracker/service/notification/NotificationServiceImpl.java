@@ -22,7 +22,8 @@ public class NotificationServiceImpl implements NotificationService {
 
     public enum NOTI_MODE {
         welcome_message,
-        bookmark_noti,
+        tender_bookmark_noti,
+        add_corrigendum_noti,
         tender_create_noti,
         company_reviewed_noti,
         reset_otp,
@@ -37,7 +38,7 @@ public class NotificationServiceImpl implements NotificationService {
             sendOTP(params);
         } else if (mode == NOTI_MODE.welcome_message) {
             sendWelcomeMsg(params);
-        } else if (mode == NOTI_MODE.bookmark_noti) {
+        } else if (mode == NOTI_MODE.tender_bookmark_noti) {
             sendBookmarkNotiMsg(params);
         } else if (mode == NOTI_MODE.tender_create_noti) {
             sendTenderCreateNotiMsg(params);
@@ -66,9 +67,14 @@ public class NotificationServiceImpl implements NotificationService {
     public boolean  sendBookmarkNotiMsg(Map<String, Object> params) {
         String id = (String) params.get(TTConstants.PARAM_TENDER_ID);
         String title = (String) params.get(TTConstants.PARAM_TENDER_TITLE);
+        int changeType = (int) params.get(TTConstants.PARAM_CHANGE_TYPE);
         String[] emails = (String[]) params.get(TTConstants.PARAM_EMAILS);
-        String body = String.format(MailSenderServiceImpl.UPDATE_TENDER_TEMPLATE, title, id, id);
-        sendEmail(MailSenderServiceImpl.UPDATE_TENDER_SUBJECT, body, emails);
+        String body = String.format(changeType == TTConstants.UPDATE_TENDER
+                                    ? MailSenderServiceImpl.UPDATE_TENDER_TEMPLATE
+                                    : MailSenderServiceImpl.ADD_CORRIGENDUM_TEMPLATE, title, id, id);
+        sendEmail(changeType == TTConstants.UPDATE_TENDER
+                    ? MailSenderServiceImpl.UPDATE_TENDER_SUBJECT
+                    : MailSenderServiceImpl.ADD_CORRIGENDUM_SUBJECT, body, emails);
 
         return true;
     }
@@ -88,7 +94,10 @@ public class NotificationServiceImpl implements NotificationService {
         String name = (String) params.get(TTConstants.PARAM_COMPANY_NAME);
         String action = (String) params.get(TTConstants.PARAM_APPROVAL_ACTION);
         String emails = (String) params.get(TTConstants.PARAM_EMAIL);
-        String body = String.format(MailSenderServiceImpl.COMPANY_REVIEW_TEMPLATE, name, action, id, id);
+        String body = String.format(action.equals(TTConstants.APPROVED)
+                                    ? MailSenderServiceImpl.COMPANY_APPROVE_TEMPLATE
+                                    : MailSenderServiceImpl.COMPANY_REJECT_TEMPLATE
+                                    , name, action, id, id);
         sendEmail(MailSenderServiceImpl.COMPANY_REVIEW_SUBJECT, body, emails);
 
         return true;
