@@ -79,7 +79,7 @@ public class UserProfileController {
         model.addAttribute("userprofile",usrDto);
         model.addAttribute("passwordDto",pwd);
         model.addAttribute("bookmarkTenderList",lstBokkmark);
-        return "/admin/user/userProfile";
+        return "userProfile";
     }
 
     @PostMapping("/user/profile/update")
@@ -94,23 +94,36 @@ public class UserProfileController {
         usr = userService.updateUserProfile(usr);
 
         if(usr==null){
+            usr = userService.findById(userId);
             AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER, "Failed to update user profile");
             model.addAttribute("alert", alert);
-            UserProfileDTO usrDto = new UserProfileDTO();
-            model.addAttribute("userprofile",usrDto);
         }else{
             AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS, "Update user profile successfull");
             model.addAttribute("alert", alert);
-
-            UserProfileDTO usrDto = new UserProfileDTO();
-            usrDto.setContactNumber(usr.getContactNo());
-            usrDto.setName(usr.getName());
-            usrDto.setEmail(usr.getEmail());
-            usrDto.setId(usr.getId());
-
-            model.addAttribute("userprofile",usrDto);
         }
-        return "/admin/user/userProfile";
+
+        UserProfileDTO usrDto = new UserProfileDTO();
+        usrDto.setContactNumber(usr.getContactNo());
+        usrDto.setName(usr.getName());
+        usrDto.setEmail(usr.getEmail());
+        usrDto.setId(usr.getId());
+        usrDto.setIdNo(usr.getIdNo());
+        List<CodeValue> idTypeValue = codeValueService.getByType("id_type");
+
+        for(int i = 0; i < idTypeValue.size(); i++){
+            CodeValue code = idTypeValue.get(i);
+            if(code.getCode() == usr.getIdType()){
+                usrDto.setIdType(code.getDescription());
+                break;
+            }
+        }
+        model.addAttribute("userprofile",usrDto);
+
+        List<TenderBookmark> lstBokkmark = tenderService.findTenderBookmarkByUserId(userId);
+        model.addAttribute("bookmarkTenderList",lstBokkmark);
+        ChangePasswordDTO pwd = new ChangePasswordDTO();
+        model.addAttribute("passwordDto",pwd);
+        return "userProfile";
     }
 
     @PostMapping("/user/profile/removeBookmark")
@@ -132,6 +145,17 @@ public class UserProfileController {
         usrDto.setName(usr.getName());
         usrDto.setEmail(usr.getEmail());
         usrDto.setId(usr.getId());
+        usrDto.setIdNo(usr.getIdNo());
+
+        List<CodeValue> idTypeValue = codeValueService.getByType("id_type");
+
+        for(int i = 0; i < idTypeValue.size(); i++){
+            CodeValue code = idTypeValue.get(i);
+            if(code.getCode() == usr.getIdType()){
+                usrDto.setIdType(code.getDescription());
+                break;
+            }
+        }
 
         List<TenderBookmark> lstBokkmark = tenderService.findTenderBookmarkByUserId(usr.getId());
 
@@ -139,11 +163,11 @@ public class UserProfileController {
         model.addAttribute("userprofile",usrDto);
         model.addAttribute("passwordDto",pwd);
         model.addAttribute("bookmarkTenderList",lstBokkmark);
-        return "/admin/user/userProfile";
+        return "userProfile";
     }
     @PostMapping("/user/password/update")
     public String updateUserPassword(ModelMap model,@Valid ChangePasswordDTO form,
-                                     @RequestParam("userId") int userId,  @RequestParam("userId") String email){
+                                     @RequestParam("userId") int userId,  @RequestParam("email") String email){
 
         if(!form.getPassword().equalsIgnoreCase(form.getConfirmPassword())){
             AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER, "New password does not match");
@@ -165,13 +189,25 @@ public class UserProfileController {
         usrDto.setName(usr.getName());
         usrDto.setEmail(usr.getEmail());
         usrDto.setId(usr.getId());
+        usrDto.setIdNo(usr.getIdNo());
+
+        List<CodeValue> idTypeValue = codeValueService.getByType("id_type");
+
+        for(int i = 0; i < idTypeValue.size(); i++){
+            CodeValue code = idTypeValue.get(i);
+            if(code.getCode() == usr.getIdType()){
+                usrDto.setIdType(code.getDescription());
+                break;
+            }
+        }
+
         ChangePasswordDTO pwd = new ChangePasswordDTO();
-        List<TenderBookmark> lstBokkmark = tenderService.findTenderBookmarkByUserId(usr.getId());
+        List<TenderBookmark> lstBokkmark = tenderService.findTenderBookmarkByUserId(userId);
 
         model.addAttribute("bookmarkTenderList",lstBokkmark);
         model.addAttribute("userprofile",usrDto);
         model.addAttribute("passwordDto",pwd);
-        return "/admin/user/userProfile";
+        return "userProfile";
     }
 
 }
