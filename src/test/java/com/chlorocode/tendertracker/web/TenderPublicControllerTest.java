@@ -109,7 +109,7 @@ public class TenderPublicControllerTest {
         Company c = new Company();
         c.setName("Abc Pte. Ltd");
         managedCompany.add(c);
-        currentUser = new CurrentUser(u, AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER,ROLE_PREPARER"), managedCompany);
+        currentUser = new CurrentUser(u, AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER,ROLE_SUBMITTER"), managedCompany);
         this.mvc.perform(
                 get("/tender/1/respond").with(user(currentUser))
         ).andExpect(status().isOk())

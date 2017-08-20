@@ -96,7 +96,7 @@ public class TenderPublicController {
     public String showTenderResponsePage(@PathVariable(value = "id") Integer id, HttpServletRequest request,
                                          HttpServletResponse response, ModelMap model) {
         // Check access right
-        if (!request.isUserInRole("ROLE_ADMIN") && !request.isUserInRole("ROLE_PREPARER")) {
+        if (!request.isUserInRole("ROLE_ADMIN") && !request.isUserInRole("ROLE_SUBMITTER")) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return null;
         }
