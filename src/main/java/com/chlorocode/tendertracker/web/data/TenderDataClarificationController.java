@@ -32,8 +32,11 @@ public class TenderDataClarificationController {
     @RequestMapping(value = "/admin/data/tenderClarification", method = RequestMethod.GET)
     public DataTablesOutput<Clarification> getTenders(@Valid DataTablesInput input) {
 
+        CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        int companyId = usr.getSelectedCompany().getId();
+
         return clariDao.findAll(input, null, (root, criteriaQuery, criteriaBuilder) -> {
-            return criteriaBuilder.equal(root.get("status"), 0);
+            return criteriaBuilder.equal(root.join("company").get("id"), companyId);
         });
     }
 }

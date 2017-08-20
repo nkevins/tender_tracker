@@ -37,7 +37,7 @@ public class Clarification {
     private int createdBy;
 
     @JsonView(DataTablesOutput.View.class)
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     @Column(name = "created_date")
     private Date createdDate;
 
@@ -45,7 +45,7 @@ public class Clarification {
     private int lastUpdatedBy;
 
     @JsonView(DataTablesOutput.View.class)
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     @Column(name = "last_updated_date")
     private Date lastUpdatedDate;
 
