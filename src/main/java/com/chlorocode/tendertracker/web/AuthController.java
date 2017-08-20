@@ -25,6 +25,7 @@ import javax.servlet.ServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 public class AuthController {
@@ -71,11 +72,13 @@ public class AuthController {
         if (result.hasErrors()) {
             AlertDTO alert = new AlertDTO(result.getAllErrors());
             model.addAttribute("alert", alert);
+            model.addAttribute("IdType",codeValueService.getByType("id_type"));
             return "registerUser";
         } else if (!form.getPassword().equals(form.getConfirmPassword())) {
             AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
                     "Password Confirmation is not same as the password");
             model.addAttribute("alert", alert);
+            model.addAttribute("IdType",codeValueService.getByType("id_type"));
             return "registerUser";
         }
 
@@ -87,7 +90,7 @@ public class AuthController {
                 model.addAttribute("IdType",codeValueService.getByType("id_type"));
                 return "registerUser";
             }
-        }else{
+        }else if (form.getIdType() == 2){
             if(!userService.isFINValid(form.getIdNo())){
                 AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
                         "Invalid FIN No.");
@@ -106,6 +109,15 @@ public class AuthController {
         user.setIdNo(form.getIdNo());
 
         try {
+            Optional<User> u = userService.findByEmail(user.getEmail());
+            if (u.isPresent()) {
+//                AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
+//                        "Password Confirmation is not same as the password");
+//                model.addAttribute("alert", alert);
+                model.addAttribute("IdType",codeValueService.getByType("id_type"));
+                throw new ApplicationException("User already exist");
+
+            }
             userService.create(user);
         } catch (ApplicationException ex) {
             AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER, ex.getMessage());

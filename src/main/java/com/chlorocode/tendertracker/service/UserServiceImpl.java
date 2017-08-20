@@ -41,10 +41,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User create(User user) throws ApplicationException {
         // validate duplicate email
-        Optional<User> u = userDAO.findOneByEmail(user.getEmail());
-        if (u.isPresent()) {
-            throw new ApplicationException("User already exist");
-        }
+//        Optional<User> u = userDAO.findOneByEmail(user.getEmail());
+//        if (u.isPresent()) {
+//            throw new ApplicationException("User already exist");
+//        }
 
         // Encrypt password
         user.setPassword(passwordEncoder.encode(user.getPassword()));
