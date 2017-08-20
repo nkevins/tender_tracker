@@ -4,6 +4,7 @@ import com.chlorocode.tendertracker.dao.entity.Company_;
 import com.chlorocode.tendertracker.dao.entity.Tender;
 import com.chlorocode.tendertracker.dao.entity.TenderCategory_;
 import com.chlorocode.tendertracker.dao.entity.Tender_;
+import com.chlorocode.tendertracker.utils.DateUtility;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.Predicate;
@@ -18,7 +19,7 @@ public class TenderSpecs {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            predicates.add(cb.lessThan(root.get(Tender_.openDate), cb.currentDate()));
+            predicates.add(cb.lessThanOrEqualTo(root.get(Tender_.openDate), DateUtility.getCurrentDate()));
             if (title != null && !title.isEmpty()) {
                 predicates.add(cb.like(cb.lower(root.<String>get(Tender_.title)), getContainsLikePattern(title)));
             }

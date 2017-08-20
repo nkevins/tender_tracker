@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Date;
 import java.util.List;
 
 public interface TenderPagingDAO extends PagingAndSortingRepository<Tender, Integer>, JpaSpecificationExecutor<Tender> {
@@ -19,4 +20,6 @@ public interface TenderPagingDAO extends PagingAndSortingRepository<Tender, Inte
 //            "and t.status=:status " +
 //            "order by t.createdDate desc")
 //    Page<Tender> searchTenders(@Param("title") String title, @Param("company") String company, @Param("category") int category, @Param("status") int status, Pageable pageable);
+    @Query("select t from Tender t where t.openDate <= ?1 order by t.createdDate desc")
+    Page<Tender> findAllOpenedTender(Date today, Pageable pageable);
 }

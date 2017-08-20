@@ -8,6 +8,7 @@ import com.chlorocode.tendertracker.dao.specs.TenderSpecs;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.service.notification.NotificationService;
 import com.chlorocode.tendertracker.service.notification.NotificationServiceImpl;
+import com.chlorocode.tendertracker.utils.DateUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -267,7 +268,7 @@ public class TenderServiceImpl implements TenderService {
 
     @Override
     public Page<Tender> listAllByPage(Pageable pageable) {
-        return tenderPagingDAO.findAll(pageable);
+        return tenderPagingDAO.findAllOpenedTender(DateUtility.getCurrentDate(), pageable);
     }
 
     @Override
