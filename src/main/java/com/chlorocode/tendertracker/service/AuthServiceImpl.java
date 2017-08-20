@@ -62,8 +62,12 @@ public class AuthServiceImpl implements AuthService {
                 role += ",ROLE_" + r.getRole().getName();
             }
             return new CurrentUser(user, AuthorityUtils.commaSeparatedStringToAuthorityList(role), companyAdministered);
+        } else if (companyAdministered.size() == 0) {
+            // For normal user not belongs to any company
+            return new CurrentUser(user, AuthorityUtils.commaSeparatedStringToAuthorityList(role), companyAdministered);
         }
 
+        // For user that belongs to mulltiple company
         return new CurrentUser(user, AuthorityUtils.commaSeparatedStringToAuthorityList(role), companyAdministered, true);
     }
 }
