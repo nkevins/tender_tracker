@@ -101,7 +101,7 @@
                         <li><a th:href="@{/register}" sec:authorize="!isAuthenticated()"><strong>Register</strong></a></li>
                         <li><a th:href="@{/login}" sec:authorize="!isAuthenticated()"><strong>Login</strong></a></li>
                         <li sec:authorize="isAuthenticated()">
-                            <a href="javascript: document.logoutForm.submit()"><span class="btn btn-theme btn-pill btn-xs btn-line">Logout</span></a>
+                            <a href="javascript: document.logoutForm.submit()"><strong>Logout</strong></a>
                         </li>
                     </ul>
                 </div>
