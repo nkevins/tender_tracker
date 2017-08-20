@@ -3,15 +3,18 @@ package com.chlorocode.tendertracker.web;
 import com.chlorocode.tendertracker.dao.dto.*;
 import com.chlorocode.tendertracker.dao.entity.Company;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
+import com.chlorocode.tendertracker.dao.entity.Role;
 import com.chlorocode.tendertracker.dao.entity.User;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.service.CodeValueService;
 import com.chlorocode.tendertracker.service.CompanyService;
+import com.chlorocode.tendertracker.service.UserRoleService;
 import com.chlorocode.tendertracker.service.UserService;
 import com.chlorocode.tendertracker.service.notification.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,22 +28,24 @@ import javax.servlet.ServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Controller
 public class AuthController {
 
     private UserService userService;
+    private UserRoleService userRoleService;
     private CompanyService companyService;
     private NotificationService notificationService;
     private CodeValueService codeValueService;
 
     @Autowired
-    public AuthController(UserService userService, CompanyService companyService, NotificationService notificationService,CodeValueService codeValueService) {
+    public AuthController(UserService userService, CompanyService companyService, NotificationService notificationService,
+                          CodeValueService codeValueService, UserRoleService userRoleService) {
         this.userService = userService;
         this.companyService = companyService;
         this.notificationService = notificationService;
         this.codeValueService = codeValueService;
+        this.userRoleService = userRoleService;
     }
 
     @RequestMapping("/login")
@@ -109,19 +114,11 @@ public class AuthController {
         user.setIdNo(form.getIdNo());
 
         try {
-            Optional<User> u = userService.findByEmail(user.getEmail());
-            if (u.isPresent()) {
-//                AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
-//                        "Password Confirmation is not same as the password");
-//                model.addAttribute("alert", alert);
-                model.addAttribute("IdType",codeValueService.getByType("id_type"));
-                throw new ApplicationException("User already exist");
-
-            }
             userService.create(user);
         } catch (ApplicationException ex) {
             AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER, ex.getMessage());
             model.addAttribute("alert", alert);
+            model.addAttribute("IdType",codeValueService.getByType("id_type"));
             return "registerUser";
         }
 
@@ -146,10 +143,18 @@ public class AuthController {
         CurrentUser usr = (CurrentUser) auth.getPrincipal();
 
         usr.setSelectedCompany(companyService.findById(Integer.parseInt(companyId)));
-        Authentication newAuth = new UsernamePasswordAuthenticationToken(usr, null, usr.getAuthorities());
+        usr.setNeedToSelectCompany(false);
+
+        List<Role> roles = userRoleService.findCompanyUserRole(usr.getId(), Integer.parseInt(companyId));
+        String role = "ROLE_USER";
+        for (Role r : roles) {
+            role += ",ROLE_" + r.getName();
+        }
+
+        Authentication newAuth = new UsernamePasswordAuthenticationToken(usr, null, AuthorityUtils.commaSeparatedStringToAuthorityList(role));
         SecurityContextHolder.getContext().setAuthentication(newAuth);
 
-        return "redirect:/admin";
+        return "redirect:/";
     }
 
     @RequestMapping("/forgotPassword")

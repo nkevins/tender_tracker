@@ -121,7 +121,7 @@
                         <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                     </a>
                 </li>
-                <th:block sec:authorize="hasRole('ADMIN')">
+                <th:block>
                     <li class="treeview">
                         <a href="#">
                             <i class="fa fa-file-text"></i>
@@ -136,10 +136,10 @@
                             <li><a th:href="@{/admin/tender/evaluation}"><i class="fa fa-circle-o"></i> Evaluation</a></li>
                         </ul>
                     </li>
-                    <li>
+                    <li sec:authorize="hasRole('ADMIN')">
                         <a th:href="@{/admin/company}"><i class="fa fa-building-o"></i> <span>Company Profile</span></a>
                     </li>
-                    <li>
+                    <li sec:authorize="hasRole('ADMIN')">
                         <a th:href="@{/admin/companyUser}"><i class="fa fa-users"></i> <span>Company User</span></a>
                     </li>
                 </th:block>

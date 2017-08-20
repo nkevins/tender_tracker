@@ -6,6 +6,7 @@ import com.chlorocode.tendertracker.dao.UserRoleDAO;
 import com.chlorocode.tendertracker.dao.entity.Company;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
 import com.chlorocode.tendertracker.dao.entity.User;
+import com.chlorocode.tendertracker.dao.entity.UserRole;
 import com.chlorocode.tendertracker.logging.TTLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -49,18 +50,20 @@ public class AuthServiceImpl implements AuthService {
 
         String role = "ROLE_USER";
 
-        List<String> userRoles = userRoleDAO.findUniqueUserRole(user.getId());
-        for (String ur : userRoles) {
-            role += ",ROLE_" + ur;
-        }
-
-        TTLogger.debug(className, email + " user roles authorized: " + role);
-
         List<Company> companyAdministered = userRoleDAO.findUserAdministeredCompany(user.getId());
 
         TTLogger.debug(className, email + " managed companies: " + companyAdministered.stream().map(Company::getName)
                 .collect(Collectors.joining(",")));
 
-        return new CurrentUser(user, AuthorityUtils.commaSeparatedStringToAuthorityList(role), companyAdministered);
+        // For user that belong only to one company, assign the role for that particular company
+        if (companyAdministered.size() == 1) {
+            List<UserRole> companyRoles = userRoleDAO.findUserRoleByUserAndCompany(user.getId(), companyAdministered.get(0).getId());
+            for (UserRole r : companyRoles) {
+                role += ",ROLE_" + r.getRole().getName();
+            }
+            return new CurrentUser(user, AuthorityUtils.commaSeparatedStringToAuthorityList(role), companyAdministered);
+        }
+
+        return new CurrentUser(user, AuthorityUtils.commaSeparatedStringToAuthorityList(role), companyAdministered, true);
     }
 }

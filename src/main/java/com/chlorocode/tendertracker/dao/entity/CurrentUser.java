@@ -9,6 +9,7 @@ public class CurrentUser extends org.springframework.security.core.userdetails.U
     private User user;
     private List<Company> companyAdministered;
     private Company selectedCompany;
+    private boolean needToSelectCompany;
 
     public CurrentUser(User user, List<GrantedAuthority> roles, List<Company> companyAdministered) {
         super(user.getEmail(), user.getPassword(), roles);
@@ -20,6 +21,12 @@ public class CurrentUser extends org.springframework.security.core.userdetails.U
         } else {
             selectedCompany = null;
         }
+        this.needToSelectCompany = false;
+    }
+
+    public CurrentUser(User user, List<GrantedAuthority> roles, List<Company> companyAdministered, boolean needToSelectCompany) {
+        this(user, roles, companyAdministered);
+        this.needToSelectCompany = needToSelectCompany;
     }
 
     public int getId() {
@@ -44,5 +51,13 @@ public class CurrentUser extends org.springframework.security.core.userdetails.U
 
     public void setSelectedCompany(Company selectedCompany) {
         this.selectedCompany = selectedCompany;
+    }
+
+    public boolean isNeedToSelectCompany() {
+        return needToSelectCompany;
+    }
+
+    public void setNeedToSelectCompany(boolean needToSelectCompany) {
+        this.needToSelectCompany = needToSelectCompany;
     }
 }

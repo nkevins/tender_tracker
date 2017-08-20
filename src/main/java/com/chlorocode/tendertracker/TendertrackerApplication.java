@@ -1,9 +1,8 @@
 package com.chlorocode.tendertracker;
 
-import com.chlorocode.tendertracker.filter.AdminFilter;
+import com.chlorocode.tendertracker.filter.AuthorizationFilter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.datatables.repository.DataTablesRepositoryFactoryBean;
@@ -25,8 +24,8 @@ public class TendertrackerApplication {
 	@Bean
 	public FilterRegistrationBean adminFilter() {
 		FilterRegistrationBean registration = new FilterRegistrationBean();
-		registration.setFilter(new AdminFilter());
-		registration.addUrlPatterns("/admin/*");
+		registration.setFilter(new AuthorizationFilter());
+		registration.addUrlPatterns("*");
 		return registration;
 	}
 

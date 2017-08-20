@@ -92,11 +92,6 @@ public class AuthServiceImplTest {
             assertEquals(u.getEmail(), usr.getUsername());
             CurrentUser currentUser = (CurrentUser) usr;
 
-            // Test user must have USER and ADMIN role
-            Collection<? extends GrantedAuthority> authorities = usr.getAuthorities();
-            Collection<? extends GrantedAuthority> expectedAuthorities = AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER,ROLE_ADMIN");
-            assertTrue(authorities.containsAll(expectedAuthorities));
-
             assertEquals(companies, currentUser.getCompanyAdministered());
             assertEquals(companies.get(0), currentUser.getSelectedCompany());
         } catch (Exception e) {
@@ -128,11 +123,6 @@ public class AuthServiceImplTest {
             assertTrue(usr instanceof CurrentUser);
             assertEquals(u.getEmail(), usr.getUsername());
             CurrentUser currentUser = (CurrentUser) usr;
-
-            // Test user must have USER and ADMIN role
-            Collection<? extends GrantedAuthority> authorities = usr.getAuthorities();
-            Collection<? extends GrantedAuthority> expectedAuthorities = AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER,ROLE_ADMIN");
-            assertTrue(authorities.containsAll(expectedAuthorities));
 
             assertEquals(companies, currentUser.getCompanyAdministered());
             assertNull(currentUser.getSelectedCompany());
