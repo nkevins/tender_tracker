@@ -141,4 +141,9 @@ public class CompanyServiceImpl implements CompanyService {
     public Company updateCompany(Company company) {
         return companyDAO.save(company);
     }
+
+    @Override
+    public List<Company> findCompanyByUen(String uen) {
+        return companyDAO.findCompanyByUen(uen);
+    }
 }

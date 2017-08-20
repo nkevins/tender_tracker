@@ -12,4 +12,7 @@ public interface CompanyDAO extends DataTablesRepository<Company, Integer> {
 
     @Query("select c from Company c where c.status = 0")
     List<Company> findCompanyPendingApproval();
+
+    @Query("select c from Company c where c.uen = ?1")
+    List<Company> findCompanyByUen(String uen);
 }

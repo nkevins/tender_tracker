@@ -15,4 +15,5 @@ public interface CompanyService {
 
     Company findById(int id);
     Company updateCompany(Company company);
+    List<Company> findCompanyByUen(String uen);
 }

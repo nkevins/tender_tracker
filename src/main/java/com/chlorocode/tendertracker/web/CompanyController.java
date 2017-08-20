@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 public class CompanyController {
@@ -48,6 +49,18 @@ public class CompanyController {
                                           BindingResult result, RedirectAttributes redirectAttrs, ModelMap model) {
         if (result.hasErrors()) {
             AlertDTO alert = new AlertDTO(result.getAllErrors());
+            model.addAttribute("alert", alert);
+            model.addAttribute("registration", form);
+            model.addAttribute("areaOfBusiness", codeValueService.getByType("area_of_business"));
+            model.addAttribute("companyType", codeValueService.getByType("company_type"));
+            return "registerCompany";
+        }
+
+        List<Company> compList = companyService.findCompanyByUen(form.getUen());
+
+        if(compList != null && compList.size() > 0){
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
+                    "This company UEN already exist");
             model.addAttribute("alert", alert);
             model.addAttribute("registration", form);
             model.addAttribute("areaOfBusiness", codeValueService.getByType("area_of_business"));
