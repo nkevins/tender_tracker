@@ -2,7 +2,6 @@ package com.chlorocode.tendertracker.service.notification;
 
 import com.chlorocode.tendertracker.logging.TTLogger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -10,11 +9,9 @@ import org.springframework.stereotype.Component;
 
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  * Kyaw Min Thu
@@ -95,12 +92,9 @@ public class MailSenderServiceImpl implements MailSenderService {
     }
 
     private String getEmailBody(String templatePath, String... params) throws Exception {
-        File file = new ClassPathResource(templatePath).getFile();
-        FileReader reader = null;
-            reader = new FileReader(file);
-        char[] chars = new char[(int) file.length()];
-        reader.read(chars);
-        String content = new String(chars);
+        InputStream is = new ClassPathResource(templatePath).getInputStream();
+        Scanner s = new Scanner(is).useDelimiter("\\A");
+        String content = s.hasNext() ? s.next() : "";
 
         if (params.length > 0) {
             for (int i=0; i<params.length; i++) {
