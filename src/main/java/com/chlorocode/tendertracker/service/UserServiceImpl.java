@@ -10,6 +10,7 @@ import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.service.notification.NotificationService;
 import com.chlorocode.tendertracker.service.notification.NotificationServiceImpl;
 
+import com.chlorocode.tendertracker.utils.DateUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -82,7 +83,7 @@ public class UserServiceImpl implements UserService {
         if (u.isPresent()) {
             User user = u.get();
             if (user.getConfirmationToken() != null && user.getConfirmationToken().equals(pin)
-                    && user.getTokenExpireDate().after(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
+                    && user.getTokenExpireDate().after(DateUtility.getCurrentDateTime())
                     ) {
                 return true;
             }
@@ -120,9 +121,7 @@ public class UserServiceImpl implements UserService {
             User user = u.get();
             String otp = generatePIN(TTConstants.OTP_LENGTH);
             user.setConfirmationToken(otp);
-            LocalDateTime tokenExpirationDate = LocalDateTime.now();
-            tokenExpirationDate = tokenExpirationDate.plusHours(TTConstants.OTP_VALID_HOURS);
-            user.setTokenExpireDate(Date.from(tokenExpirationDate.atZone(ZoneId.systemDefault()).toInstant()));
+            user.setTokenExpireDate(DateUtility.getFutureDateTime(0, 0, TTConstants.OTP_VALID_HOURS, 0));
 
             Map<String, Object> params = new HashMap<>();
             params.put(TTConstants.PARAM_NAME, user.getName());

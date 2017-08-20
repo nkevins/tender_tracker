@@ -3,6 +3,7 @@ package com.chlorocode.tendertracker.service.notification;
 import com.chlorocode.tendertracker.logging.TTLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
@@ -87,32 +88,26 @@ public class MailSenderServiceImpl implements MailSenderService {
             mailSender.send(message);
         } catch (Exception ex) {
             TTLogger.error(MailSenderServiceImpl.class.getName(), ex.getMessage());
+            ex.printStackTrace();
             return false;
         }
         return true;
     }
 
-    private String getEmailBody(String templatePath, String... params) {
-        try {
-            File file = new File(templatePath);
-            FileReader reader = null;
-                reader = new FileReader(file);
-            char[] chars = new char[(int) file.length()];
-            reader.read(chars);
-            String content = new String(chars);
+    private String getEmailBody(String templatePath, String... params) throws Exception {
+        File file = new ClassPathResource(templatePath).getFile();
+        FileReader reader = null;
+            reader = new FileReader(file);
+        char[] chars = new char[(int) file.length()];
+        reader.read(chars);
+        String content = new String(chars);
 
-            if (params.length > 0) {
-                for (int i=0; i<params.length; i++) {
-                    content = content.replaceFirst("PARAM"+i, params[i]);
-                }
+        if (params.length > 0) {
+            for (int i=0; i<params.length; i++) {
+                content = content.replaceFirst("PARAM"+i, params[i]);
             }
-            return content;
-        } catch (FileNotFoundException e) {
-            TTLogger.error(MailSenderServiceImpl.class.getName(), "Exception", e);
-        } catch (IOException e) {
-            TTLogger.error(MailSenderServiceImpl.class.getName(), "Exception", e);
         }
-        return null;
+        return content;
     }
 
     private InternetAddress[] getAddresses(List<String> emails) throws Exception {
