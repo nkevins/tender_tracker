@@ -73,7 +73,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     public boolean  sendBookmarkNotiMsg(Map<String, Object> params) {
-        String id = (String) params.get(TTConstants.PARAM_TENDER_ID);
+        String id = String.valueOf(params.get(TTConstants.PARAM_TENDER_ID));
         String title = (String) params.get(TTConstants.PARAM_TENDER_TITLE);
         int changeType = (int) params.get(TTConstants.PARAM_CHANGE_TYPE);
         String[] emails = (String[]) params.get(TTConstants.PARAM_EMAILS);
@@ -85,14 +85,14 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     public boolean  sendTenderCreateNotiMsg(Map<String, Object> params) {
-        String id = (String) params.get(TTConstants.PARAM_TENDER_ID);
+        String id = String.valueOf(params.get(TTConstants.PARAM_TENDER_ID));
         String title = (String) params.get(TTConstants.PARAM_TENDER_TITLE);
         String[] emails = (String[]) params.get(TTConstants.PARAM_EMAILS);
-        return sendEmail(mailProperties.getSubCreateTender(), mailProperties.getTemplateCreateTender(), emails, title, id, id);
+        return sendEmail(mailProperties.getSubCreateTender(), mailProperties.getTemplateCreateTender(), emails, title, id, (String)id);
     }
 
     public boolean  sendCompanyReviewedNotiMsg(Map<String, Object> params) {
-        String id = (String) params.get(TTConstants.PARAM_COMPANY_ID);
+        String id = String.valueOf(params.get(TTConstants.PARAM_COMPANY_ID));
         String name = (String) params.get(TTConstants.PARAM_COMPANY_NAME);
         String action = (String) params.get(TTConstants.PARAM_APPROVAL_ACTION);
         String email = (String) params.get(TTConstants.PARAM_EMAIL);

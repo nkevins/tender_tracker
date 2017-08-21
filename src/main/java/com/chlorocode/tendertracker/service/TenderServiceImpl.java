@@ -117,7 +117,7 @@ public class TenderServiceImpl implements TenderService {
                 params.put(TTConstants.PARAM_TENDER_ID, result.getId());
                 params.put(TTConstants.PARAM_TENDER_TITLE, result.getTitle());
                 params.put(TTConstants.PARAM_EMAILS, emails);
-                notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.company_reviewed_noti, params);
+                notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.tender_create_noti, params);
             }
         }
 
