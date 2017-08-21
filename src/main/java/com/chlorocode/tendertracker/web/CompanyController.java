@@ -80,6 +80,7 @@ public class CompanyController {
         reg.setState(form.getState());
         reg.setProvince(form.getProvince());
         reg.setCountry(form.getCountry());
+        reg.setAreaOfBusiness(form.getAreaOfBusiness());
 
         reg.setPrincpleBusinessActivity(form.getPrincipleBusinessActivity());
         reg.setMailingAddress(form.getMailingAddress());
