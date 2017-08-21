@@ -49,6 +49,12 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String role = "ROLE_USER";
+        List<String> allRoles = userRoleDAO.findUniqueUserRole(user.getId());
+        for (String r : allRoles) {
+            if (r.equals("SYS_ADMIN")) {
+                role += ",ROLE_SYS_ADMIN";
+            }
+        }
 
         List<Company> companyAdministered = userRoleDAO.findUserAdministeredCompany(user.getId());
 
