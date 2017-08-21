@@ -71,6 +71,10 @@ public class TenderServiceImpl implements TenderService {
             throw new ApplicationException("Tender Closing Date must be later than Tender Opening Date");
         }
 
+        if (t.getDeliveryDate() != null && t.getDeliveryDate().before(t.getClosedDate())) {
+            throw new ApplicationException("Tender Delivery Date must be before Tender Closing Date");
+        }
+
         if (t.getItems() == null || t.getItems().size() == 0) {
             throw new ApplicationException("At least one Tender Item must be provided");
         }
@@ -137,6 +141,14 @@ public class TenderServiceImpl implements TenderService {
 
     @Override
     public Tender updateTender(Tender tender) {
+        if (tender.getOpenDate().after(tender.getClosedDate())) {
+            throw new ApplicationException("Tender Closing Date must be later than Tender Opening Date");
+        }
+
+        if (tender.getDeliveryDate() != null && tender.getDeliveryDate().before(tender.getClosedDate())) {
+            throw new ApplicationException("Tender Delivery Date must be before Tender Closing Date");
+        }
+
         tender = tenderDAO.save(tender);
         sendBookmarkNoti(tender, TTConstants.UPDATE_TENDER);
         return tender;

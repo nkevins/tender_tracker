@@ -209,6 +209,9 @@ public class TenderController {
         tenderUpdateDTO.setDescription(tender.getDescription());
         tenderUpdateDTO.setTenderType(tender.getTenderType());
         tenderUpdateDTO.setEstimatePurchaseValue(tender.getEstimatePurchaseValue());
+        tenderUpdateDTO.setDeliveryDate(tender.getDeliveryDate());
+        tenderUpdateDTO.setDeliveryLocation(tender.getDeliveryLocation());
+        tenderUpdateDTO.setDeliveryRemarks(tender.getDeliveryRemarks());
         tenderUpdateDTO.setContactPersonName(tender.getContactPersonName());
         tenderUpdateDTO.setContactPersonEmail(tender.getContactPersonEmail());
         tenderUpdateDTO.setContactPersonPhone(tender.getContactPersonPhone());
@@ -271,7 +274,14 @@ public class TenderController {
         tender.setLastUpdatedBy(usr.getId());
         tender.setLastUpdatedDate(new Date());
 
-        tenderService.updateTender(tender);
+        try {
+            tenderService.updateTender(tender);
+        } catch (ApplicationException ex) {
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
+                    ex.getMessage());
+            redirectAttrs.addFlashAttribute("alert", alert);
+            return "redirect:/admin/tender/" + form.getTenderId() + "/update";
+        }
 
         AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS, "Tender Updated");
         redirectAttrs.addFlashAttribute("alert", alert);
