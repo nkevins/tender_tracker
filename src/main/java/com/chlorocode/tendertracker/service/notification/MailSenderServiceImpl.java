@@ -2,6 +2,7 @@ package com.chlorocode.tendertracker.service.notification;
 
 import com.chlorocode.tendertracker.logging.TTLogger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -21,6 +22,9 @@ public class MailSenderServiceImpl implements MailSenderService {
 
     @Autowired
     private JavaMailSenderImpl mailSender;
+
+    @Value("${mail.from.account}")
+    private String fromAccount;
 
     @Override
     public boolean sendEmail(String subject, String body, String... emails) {
@@ -76,6 +80,7 @@ public class MailSenderServiceImpl implements MailSenderService {
 
             // use the true flag to indicate you need a multipart message
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setFrom(fromAccount);
             helper.setTo(emails);
             helper.setSubject(subject);
 
