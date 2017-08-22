@@ -34,18 +34,9 @@ public class Company {
     private int areaOfBusiness;
     private int status;
     private int createdBy;
-    @Column(name = "mailing_address")
-    private String mailingAddress;
+
     @Column(name = "principle_business_activity")
     private String princpleBusinessActivity;
-
-    public String getMailingAddress() {
-        return mailingAddress;
-    }
-
-    public void setMailingAddress(String mailingAddress) {
-        this.mailingAddress = mailingAddress;
-    }
 
     public String getPrincpleBusinessActivity() {
         return princpleBusinessActivity;

@@ -29,28 +29,16 @@ public class CompanyRegistrationDTO {
     @NotBlank(message = "Postal Code is required")
     private String postalCode;
 
-    @NotBlank(message = "City is required")
     private String city;
 
-    @NotBlank(message = "State is required")
     private String state;
 
-    @NotBlank(message = "Province is required")
     private String province;
 
     @NotBlank(message = "Country is required")
     private String country;
 
-    private String mailingAddress;
     private String principleBusinessActivity;
-
-    public String getMailingAddress() {
-        return mailingAddress;
-    }
-
-    public void setMailingAddress(String mailingAddress) {
-        this.mailingAddress = mailingAddress;
-    }
 
     public String getPrincipleBusinessActivity() {
         return principleBusinessActivity;
