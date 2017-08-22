@@ -69,6 +69,7 @@ public class TenderClarificationController {
             dto.setSubmittedByContactNo(usr.getContactNo());
             dto.setSubmittedByEmail(usr.getEmail());
             dto.setSubmittedDate(clarfi.getCreatedDate());
+            dto.setResponse(clarfi.getResponse());
             List<CodeValue> lstCode = codeValueService.getByType("tender_type");
             for(int i = 0; i < lstCode.size(); i++){
                 CodeValue code = lstCode.get(i);
