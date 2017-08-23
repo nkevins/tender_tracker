@@ -80,12 +80,12 @@
                 'columnDefs' : [{
                     'targets' : 4,
                     'render' : function (data, type, full, meta) {
-                        return moment(data, 'YYYY-MM-DD').format('DD MMM YY');
+                        return moment(data).format('DD MMM YY HH:mm:ss');
                     }
                 },{
                     'targets' : 6,
                     'render' : function (data, type, full, meta) {
-                        return moment(data, 'YYYY-MM-DD').format('DD MMM YY');
+                        return moment(data).format('DD MMM YY HH:mm:ss');
                     }
                 },{
                     'targets' : 7,
