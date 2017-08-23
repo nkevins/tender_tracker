@@ -48,11 +48,11 @@
                             </div>
                             <div class="col-md-6">
                                 <strong>Opening Date</strong>
-                                <p th:text="${#dates.format(tender.openDate, 'dd-MM-yyyy')}"></p>
+                                <p th:text="${#dates.format(tender.openDate, 'dd-MM-yyyy HH:mm')}"></p>
                                 <hr />
 
                                 <strong>Closing Date</strong>
-                                <p th:text="${#dates.format(tender.closedDate, 'dd-MM-yyyy')}"></p>
+                                <p th:text="${#dates.format(tender.closedDate, 'dd-MM-yyyy HH:mm')}"></p>
                                 <hr />
 
                                 <strong>EPV</strong>

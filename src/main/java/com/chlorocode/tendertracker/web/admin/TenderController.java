@@ -162,7 +162,7 @@ public class TenderController {
         binder.registerCustomEditor(Date.class, new PropertyEditorSupport() {
             public void setAsText(String value) {
                 try {
-                    setValue(new SimpleDateFormat("dd/MM/yyyy").parse(value));
+                    setValue(new SimpleDateFormat("dd/MM/yyyy HH:mm").parse(value));
                 } catch(ParseException e) {
                     setValue(null);
                 }
@@ -172,7 +172,7 @@ public class TenderController {
                 if (getValue() == null) {
                     return "";
                 } else {
-                    return new SimpleDateFormat("dd/MM/yyyy").format((Date) getValue());
+                    return new SimpleDateFormat("dd/MM/yyyy HH:mm").format((Date) getValue());
                 }
             }
         });

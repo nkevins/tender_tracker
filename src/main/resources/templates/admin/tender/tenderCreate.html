@@ -224,14 +224,18 @@
 </body>
 <th:block layout:fragment="scripts">
     <script type="text/javascript">
-        $('#openDate').datepicker({
-            autoclose: true,
-            format: 'dd/mm/yyyy'
+        $('#openDate').datetimepicker({
+            format: 'DD/MM/YYYY HH:mm'
+        }).on('dp.change', function(e){
+            $('#openDate').attr("value", e.date.format('DD/MM/YYYY HH:mm'));
         });
-        $('#closedDate').datepicker({
-            autoclose: true,
-            format: 'dd/mm/yyyy'
+
+        $('#closedDate').datetimepicker({
+            format: 'DD/MM/YYYY HH:mm'
+        }).on('dp.change', function(e){
+            $('#closedDate').attr("value", e.date.format('DD/MM/YYYY HH:mm'));
         });
+
         $('#deliveryDate').datepicker({
             autoclose: true,
             format: 'dd/mm/yyyy'
@@ -269,7 +273,7 @@
             uploadMultiple: true,
             parallelUploads: 5,
             maxFiles: 5,
-            maxFilesize: 1,
+            maxFilesize: 50,
             addRemoveLinks: true,
             paramName: 'attachments',
             init: function() {
@@ -302,6 +306,7 @@
                 });
             },
             error: function(file, errorMessage) {
+                this.removeFile(file);
                 $.each(dzClosure.files, function(i, file) {
                     file.status = Dropzone.QUEUED
                 });

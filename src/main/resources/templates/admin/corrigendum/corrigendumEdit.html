@@ -91,7 +91,10 @@
 <th:block layout:fragment="scripts">
     <script type="text/javascript">
         Dropzone.options.attachmentUploads = {
+            maxFilesize: 50,
+            addRemoveLinks: true,
             error: function(file, errorMessage) {
+                this.removeFile(file);
                 $("#updateCorrigendumError").text(errorMessage);
                 $('#updateCorrigendumError').show();
                 $('html,body').animate({scrollTop: 0});
