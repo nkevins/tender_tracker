@@ -22,11 +22,11 @@ public class Tender {
     @JsonView(DataTablesOutput.View.class)
     private String title;
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @JsonView(DataTablesOutput.View.class)
     private Date openDate;
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @JsonView(DataTablesOutput.View.class)
     private Date closedDate;
 
@@ -216,7 +216,12 @@ public class Tender {
     }
 
     public int getStatus() {
-        return status;
+        Date currentDate = new Date();
+        if (status == 1 && currentDate.after(this.closedDate)) {
+            return 2;
+        } else {
+            return status;
+        }
     }
 
     public void setStatus(int status) {

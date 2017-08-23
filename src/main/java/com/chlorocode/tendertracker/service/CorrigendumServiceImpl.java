@@ -51,29 +51,31 @@ public class CorrigendumServiceImpl implements CorrigendumService {
     public Corrigendum addCorrigendum(Corrigendum corrigendum, List<MultipartFile> attachments) {
         Corrigendum result = corrigendumDAO.save(corrigendum);
 
-        for (MultipartFile f : attachments) {
-            // Upload to AWS S3
-            String bucketPath = "tender_corrigendums/" + corrigendum.getId() + "/" + f.getOriginalFilename();
-            try {
-                s3Wrapper.upload(f.getInputStream(), bucketPath);
-            } catch (IOException ex) {
-                throw new ApplicationException("Upload failed " + ex.getMessage());
+        if (attachments != null) {
+            for (MultipartFile f : attachments) {
+                // Upload to AWS S3
+                String bucketPath = "tender_corrigendums/" + corrigendum.getId() + "/" + f.getOriginalFilename();
+                try {
+                    s3Wrapper.upload(f.getInputStream(), bucketPath);
+                } catch (IOException ex) {
+                    throw new ApplicationException("Upload failed " + ex.getMessage());
+                }
+
+                // Save to DB
+                Document doc = new Document();
+                doc.setName(f.getOriginalFilename());
+                doc.setLocation(bucketPath);
+                doc.setType(3);
+                doc.setCreatedBy(corrigendum.getCreatedBy());
+                doc.setCreatedDate(new Date());
+                doc.setLastUpdatedBy(corrigendum.getLastUpdatedBy());
+                doc.setLastUpdatedDate(new Date());
+                documentDAO.save(doc);
+
+                CorrigendumDocument corrigendumDocument = new CorrigendumDocument();
+                corrigendumDocument.setDocument(doc);
+                corrigendum.addDocument(corrigendumDocument);
             }
-
-            // Save to DB
-            Document doc = new Document();
-            doc.setName(f.getOriginalFilename());
-            doc.setLocation(bucketPath);
-            doc.setType(3);
-            doc.setCreatedBy(corrigendum.getCreatedBy());
-            doc.setCreatedDate(new Date());
-            doc.setLastUpdatedBy(corrigendum.getLastUpdatedBy());
-            doc.setLastUpdatedDate(new Date());
-            documentDAO.save(doc);
-
-            CorrigendumDocument corrigendumDocument = new CorrigendumDocument();
-            corrigendumDocument.setDocument(doc);
-            corrigendum.addDocument(corrigendumDocument);
         }
 
         if (result != null) {

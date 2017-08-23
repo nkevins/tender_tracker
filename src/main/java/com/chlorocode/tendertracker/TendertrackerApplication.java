@@ -1,6 +1,7 @@
 package com.chlorocode.tendertracker;
 
 import com.chlorocode.tendertracker.filter.AuthorizationFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -10,12 +11,22 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import javax.annotation.PostConstruct;
+import java.util.TimeZone;
 import java.util.concurrent.Executor;
 
 @SpringBootApplication
 @EnableAsync
 @EnableJpaRepositories(repositoryFactoryBeanClass = DataTablesRepositoryFactoryBean.class)
 public class TendertrackerApplication {
+
+	@Value("${application.timezone}")
+	private String timeZone;
+
+	@PostConstruct
+	void started() {
+		TimeZone.setDefault(TimeZone.getTimeZone(timeZone));
+	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(TendertrackerApplication.class, args);

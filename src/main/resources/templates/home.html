@@ -132,9 +132,9 @@
                                         <a class="color-black" th:text="${t.company.name}" th:href="@{/company/} + ${t.company.id}">Ngee Ann Polytechnic</a>
                                     </h5>
                                     <div>
-                                        <span class="color-black">Open: <span th:text="${#dates.format(t.openDate, 'dd MMM yyyy')}"></span></span>
+                                        <span class="color-black">Open: <span th:text="${#dates.format(t.openDate, 'dd MMM yyyy HH:mm')}"></span></span>
                                         <br />
-                                        <span class="color-black">Closing: <span th:text="${#dates.format(t.closedDate, 'dd MMM yyyy')}"></span></span>
+                                        <span class="color-black">Closing: <span th:text="${#dates.format(t.closedDate, 'dd MMM yyyy HH:mm')}"></span></span>
                                         <br />
                                         <h4>
                                             <span class="label label-default" th:if="${t.status == 1}">OPEN</span>

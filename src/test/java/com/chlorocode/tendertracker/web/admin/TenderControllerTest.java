@@ -77,8 +77,8 @@ public class TenderControllerTest {
         this.mvc.perform(
                 post("/admin/tender/create")
                 .param("title", "title")
-                .param("openDate", "18/07/2017")
-                .param("closedDate", "01/09/2017")
+                .param("openDate", "18/07/2017 09:00")
+                .param("closedDate", "01/09/2017 11:00")
                 .param("tenderCategory", "1")
                 .param("tenderType", "1")
                 .param("estimatePurchaseValue", "2000")
