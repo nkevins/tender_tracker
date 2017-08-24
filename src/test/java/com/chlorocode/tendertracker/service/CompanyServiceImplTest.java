@@ -50,6 +50,7 @@ public class CompanyServiceImplTest {
         Company reg = new Company("Abc123 Pte. Ltd", "123456K", "123456", 1, "12 Middle Rd", "",
                 "123456", "Singapore", "Singapore", "Singapore", country, 1, 1, new Date(), 1, new Date());
         when(companyDAO.save(any(Company.class))).thenReturn(reg);
+        when(userService.findById(anyInt())).thenReturn(new User());
 
         companyServiceImpl.registerCompany(reg);
         verify(companyDAO, times(1)).save(any(Company.class));

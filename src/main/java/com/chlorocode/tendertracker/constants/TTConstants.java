@@ -29,6 +29,7 @@ public class TTConstants {
     public static final String PARAM_TOKEN = "confirmation_token";
     public static final String PARAM_TENDER_ID = "tender_id";
     public static final String PARAM_TENDER_TITLE = "tender_title";
+    public static final String PARAM_COMPANY = "company";
     public static final String PARAM_COMPANY_ID = "company_id";
     public static final String PARAM_COMPANY_NAME = "company_name";
     public static final String PARAM_TENDER = "tender";

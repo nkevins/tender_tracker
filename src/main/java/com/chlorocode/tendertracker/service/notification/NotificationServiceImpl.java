@@ -1,16 +1,13 @@
 package com.chlorocode.tendertracker.service.notification;
 
 import com.chlorocode.tendertracker.constants.TTConstants;
-import com.chlorocode.tendertracker.dao.entity.Tender;
-import com.chlorocode.tendertracker.dao.entity.User;
+import com.chlorocode.tendertracker.dao.entity.Company;
 import com.chlorocode.tendertracker.props.MailProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,6 +29,7 @@ public class NotificationServiceImpl implements NotificationService {
         company_reviewed_noti,
         reset_otp,
         decision_noti,
+        company_reg_noti,
         // TODO add other mode such as tender_noti, etc...
         other;
     }
@@ -54,6 +52,8 @@ public class NotificationServiceImpl implements NotificationService {
             sendTenderCreateNotiMsg(params);
         } else if (mode == NOTI_MODE.company_reviewed_noti) {
             sendCompanyReviewedNotiMsg(params);
+        } else if (mode == NOTI_MODE.company_reg_noti) {
+            sendCompanyRegisteredNotiMsg(params);
         } else {
             //sendEmail("Email Subject","Email body", (String)params.get(TTConstants.PARAM_EMAIL));
         }
@@ -100,6 +100,13 @@ public class NotificationServiceImpl implements NotificationService {
                             , action.equals(TTConstants.APPROVED)
                                 ? mailProperties.getTemplateCompanyApproved() : mailProperties.getTemplateCompanyRejected()
                             , new String[]{email}, name, action, id, id);
+    }
+
+    public boolean sendCompanyRegisteredNotiMsg(Map<String, Object> params) {
+        Company company = (Company) params.get(TTConstants.PARAM_COMPANY);
+        String email = (String) params.get(TTConstants.PARAM_EMAIL);
+        return sendEmail(mailProperties.getSubCompanyRegistered(), mailProperties.getTemplateCompanyRegistered(),
+                new String[]{email}, company.getName());
     }
 
 //    private boolean sendEmail(String emailSubject, String emailBody, String... to) {
