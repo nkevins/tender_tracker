@@ -1,6 +1,7 @@
 package com.chlorocode.tendertracker.dao.entity;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import javax.persistence.*;
@@ -30,7 +31,11 @@ public class Company {
     private String city;
     private String state;
     private String province;
-    private String country;
+
+    @ManyToOne
+    @JoinColumn(name = "country")
+    private Country country;
+
     private int areaOfBusiness;
     private int status;
     private int createdBy;
@@ -50,7 +55,7 @@ public class Company {
 
     }
     public Company(String name, String uen, String gstRegNo, int type, String address1, String address2, String postalCode,
-                   String city, String state, String province, String country, int areaOfBusiness, int createdBy,
+                   String city, String state, String province, Country country, int areaOfBusiness, int createdBy,
                    Date createdDate, int lastUpdatedBy, Date lastUpdatedDate) {
         this.name = name;
         this.uen = uen;
@@ -173,11 +178,11 @@ public class Company {
         this.province = province;
     }
 
-    public String getCountry() {
+    public Country getCountry() {
         return country;
     }
 
-    public void setCountry(String country) {
+    public void setCountry(Country country) {
         this.country = country;
     }
 
@@ -239,5 +244,15 @@ public class Company {
 
     public List<Bid> getBids() {
         return bids;
+    }
+
+    public boolean isPostalCodeValid() {
+        // Singapore postal code validation
+        if (country.getId().equals("SG")) {
+            if (postalCode.length() != 6 || !StringUtils.isNumeric(postalCode)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
