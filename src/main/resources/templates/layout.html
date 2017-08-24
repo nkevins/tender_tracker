@@ -62,10 +62,11 @@
                         <li class="link-btn" sec:authorize="!isAuthenticated()"><a th:href="@{/register}"><span class="btn btn-theme  btn-pill btn-xs btn-line">Register</span></a></li>
                         <li class="dropdown" sec:authorize="isAuthenticated()">
                             <a href="#" class="link-profile dropdown-toggle"  data-toggle="dropdown" >
-                                <img th:src="@{/assets/theme/images/people/4.jpg}" alt="" class="img-profile" /> &nbsp; <span sec:authentication="principal.name">Jhon</span> <b class="caret"></b>
+                                <img th:src="@{/assets/theme/images/people/4.jpg}" alt="" class="img-profile" /> &nbsp; <span sec:authentication="principal.name">Jhon</span><span th:if="${#authentication.getPrincipal().getSelectedCompany() != null}" th:text="' - ' + ${#authentication.getPrincipal().getSelectedCompany().getName()}">Company A Pte. Ltd.</span> <b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu" role="menu">
                                 <li><a th:href="@{/user/profile}">Profile</a></li>
+                                <li th:if="${#lists.size(#authentication.getPrincipal().getCompanyAdministered()) > 1}"><a th:href="@{/selectCompany}">Switch Company</a></li>
                             </ul>
                         </li>
                         <li class="link-btn" sec:authorize="isAuthenticated()">
