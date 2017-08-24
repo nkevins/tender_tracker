@@ -114,7 +114,7 @@ public class CompanyController {
         }
 
         AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
-                "Company Registered Successfuly");
+                "Company Registered Successfully and Pending Approval from Administrator");
         redirectAttrs.addFlashAttribute("alert", alert);
         return "redirect:/";
     }
