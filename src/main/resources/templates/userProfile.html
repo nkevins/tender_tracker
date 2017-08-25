@@ -106,6 +106,9 @@
 
                         <div role="tabpanel" class="tab-pane" id="companyRegistration">
 
+                            <br th:if="${#lists.isEmpty(companyList)}" />
+                            <p th:if="${#lists.isEmpty(companyList)}">No Company Registration Found</p>
+
                             <div class="box-list">
                                 <div class="item" th:each="c, iter : ${companyList}">
                                     <div class="row">

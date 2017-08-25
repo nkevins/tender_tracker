@@ -74,11 +74,17 @@ public class TenderPublicController {
                 isBookmarked = true;
             }
 
-            if(bid == null){
-                isSubmitedTender = false;
-            }else{
+            if(tender.getStatus() == 2 || tender.getStatus() == 3){
                 isSubmitedTender = true;
+            }else
+            {
+                if(bid == null){
+                    isSubmitedTender = false;
+                }else{
+                    isSubmitedTender = true;
+                }
             }
+
             model.addAttribute("isBookmarked", isBookmarked);
             model.addAttribute("isSubmitedTender", isSubmitedTender);
         }
