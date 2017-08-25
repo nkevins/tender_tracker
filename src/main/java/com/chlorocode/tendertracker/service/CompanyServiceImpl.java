@@ -35,11 +35,23 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public Company registerCompany(Company companyRegistration) {
+    public Company registerCompany(Company companyRegistration) throws ApplicationException {
+        if (!companyRegistration.isPostalCodeValid()) {
+            throw new ApplicationException("Invalid postal code");
+        }
+
         companyRegistration.setCreatedDate(new Date());
         companyRegistration.setLastUpdatedDate(new Date());
 
-        return companyDAO.save(companyRegistration);
+        Company company = companyDAO.save(companyRegistration);
+
+        Map<String, Object> params = new HashMap<>();
+        params.put(TTConstants.PARAM_COMPANY, company);
+        User user = userService.findById(company.getCreatedBy());
+        params.put(TTConstants.PARAM_EMAIL, user.getEmail());
+        notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.company_reg_noti, params);
+
+        return company;
     }
 
     @Override
@@ -68,7 +80,7 @@ public class CompanyServiceImpl implements CompanyService {
         reg.setCity(company.getCity());
         reg.setState(company.getState());
         reg.setProvince(company.getProvince());
-        reg.setCountry(company.getCountry());
+        reg.setCountry(company.getCountry().getName());
         reg.setApplicant(userService.findById(company.getCreatedBy()));
         reg.setApplicationDate(company.getCreatedDate());
         reg.setPrincipleActivity(company.getPrincpleBusinessActivity());
@@ -137,7 +149,11 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public Company updateCompany(Company company) {
+    public Company updateCompany(Company company) throws ApplicationException {
+        if (!company.isPostalCodeValid()) {
+            throw new ApplicationException("Invalid postal code");
+        }
+
         return companyDAO.save(company);
     }
 

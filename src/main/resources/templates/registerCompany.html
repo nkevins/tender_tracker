@@ -57,6 +57,12 @@
                     <input type="text" class="form-control" th:field="*{postalCode}" required="required" />
                 </div>
                 <div class="form-group">
+                    <label>Country<span style="color:red">*</span></label>
+                    <select class="form-control" th:field="*{country}" required="required">
+                        <option th:each="c : ${countries}" th:value="${c.id}" th:text="${c.name}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
                     <label>City</label>
                     <input type="text" class="form-control" th:field="*{city}"  />
                 </div>
@@ -67,10 +73,6 @@
                 <div class="form-group">
                     <label>Province</label>
                     <input type="text" class="form-control" th:field="*{province}" />
-                </div>
-                <div class="form-group">
-                    <label>Country<span style="color:red">*</span></label>
-                    <input type="text" class="form-control" th:field="*{country}" required="required" />
                 </div>
                 <div class="white-space-10"></div>
                 <div class="form-group no-margin">

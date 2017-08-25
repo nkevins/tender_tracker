@@ -3,10 +3,13 @@ package com.chlorocode.tendertracker.web.admin;
 import com.chlorocode.tendertracker.dao.dto.AlertDTO;
 import com.chlorocode.tendertracker.dao.dto.CompanyInfoDTO;
 import com.chlorocode.tendertracker.dao.entity.Company;
+import com.chlorocode.tendertracker.dao.entity.Country;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
+import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.service.CodeValueService;
 import com.chlorocode.tendertracker.service.CompanyService;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -35,13 +38,20 @@ public class CompanyAdminController {
     @GetMapping("/admin/company")
     public String showCompanyInfoPage(ModelMap model) {
         CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Company company = usr.getSelectedCompany();
+        Company company = companyService.findById(usr.getSelectedCompany().getId());
 
         ModelMapper modelMapper = new ModelMapper();
+        PropertyMap<Company, CompanyInfoDTO> companyMap = new PropertyMap<Company, CompanyInfoDTO>() {
+            protected void configure() {
+                map().setCountry(source.getCountry().getId());
+            }
+        };
+        modelMapper.addMappings(companyMap);
         CompanyInfoDTO companyData = modelMapper.map(company, CompanyInfoDTO.class);
 
         model.addAttribute("company", companyData);
         model.addAttribute("codeValueSvc", codeValueService);
+        model.addAttribute("countries", codeValueService.getAllCountries());
         return "admin/company/companyInfo";
     }
 
@@ -53,6 +63,7 @@ public class CompanyAdminController {
             model.addAttribute("alert", alert);
             model.addAttribute("company", form);
             model.addAttribute("codeValueSvc", codeValueService);
+            model.addAttribute("countries", codeValueService.getAllCountries());
             return "admin/company/companyInfo";
         }
 
@@ -64,11 +75,25 @@ public class CompanyAdminController {
         company.setCity(form.getCity());
         company.setState(form.getState());
         company.setProvince(form.getProvince());
-        company.setCountry(form.getCountry());
+
+        Country country = new Country();
+        country.setId(form.getCountry());
+        company.setCountry(country);
+
         company.setLastUpdatedBy(usr.getId());
         company.setLastUpdatedDate(new Date());
 
-        companyService.updateCompany(company);
+        try {
+            Company updatedCompany = companyService.updateCompany(company);
+            usr.setSelectedCompany(updatedCompany);
+        } catch (ApplicationException ex) {
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER, ex.getMessage());
+            model.addAttribute("alert", alert);
+            model.addAttribute("company", form);
+            model.addAttribute("codeValueSvc", codeValueService);
+            model.addAttribute("countries", codeValueService.getAllCountries());
+            return "admin/company/companyInfo";
+        }
 
         AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS, "Company Info Updated");
         redirectAttrs.addFlashAttribute("alert", alert);

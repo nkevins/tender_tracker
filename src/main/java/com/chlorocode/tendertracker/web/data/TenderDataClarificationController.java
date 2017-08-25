@@ -35,8 +35,16 @@ public class TenderDataClarificationController {
         CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         int companyId = usr.getSelectedCompany().getId();
 
-        return clariDao.findAll(input, null, (root, criteriaQuery, criteriaBuilder) -> {
-            return criteriaBuilder.equal(root.join("company").get("id"), companyId);
+//        return clariDao.findAll(input, null, (root, criteriaQuery, criteriaBuilder) -> {
+//           // return criteriaBuilder.equal(root.join("tender.company").get("id"), companyId);
+//            );
+//
+//        });
+        return clariDao.findAll(input, null, (root, criteriaQuery, cb) -> {
+            criteriaQuery.distinct(true);
+            return cb.and(
+                    cb.equal(root.join("tender").join("company").get("id"), companyId)
+            );
         });
     }
 }

@@ -3,15 +3,13 @@ package com.chlorocode.tendertracker.web.admin;
 import com.chlorocode.tendertracker.dao.dto.AlertDTO;
 import com.chlorocode.tendertracker.dao.dto.EvaluateCriteriaDTO;
 import com.chlorocode.tendertracker.dao.dto.TenderClarificationDTO;
-import com.chlorocode.tendertracker.dao.entity.Clarification;
-import com.chlorocode.tendertracker.dao.entity.CodeValue;
-import com.chlorocode.tendertracker.dao.entity.Tender;
-import com.chlorocode.tendertracker.dao.entity.User;
+import com.chlorocode.tendertracker.dao.entity.*;
 import com.chlorocode.tendertracker.logging.TTLogger;
 import com.chlorocode.tendertracker.service.ClarificationService;
 import com.chlorocode.tendertracker.service.CodeValueService;
 import com.chlorocode.tendertracker.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -96,8 +94,10 @@ public class TenderClarificationController {
     @PostMapping("/tender/clarification/save")
     public String saveTenderClarification(ModelMap model,@Valid TenderClarificationDTO form,
                                           @RequestParam("tenderId") int tenderId,@RequestParam("companyId") int companyId){
-        Tender td = new Tender();
-        Clarification clar = clariSvc.create(form.getResponse(),tenderId,companyId);
+
+        CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Company company = usr.getSelectedCompany();
+        Clarification clar = clariSvc.create(form.getResponse(),tenderId,company.getId());
 
         if(clar == null){
             AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,

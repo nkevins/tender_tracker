@@ -1,6 +1,7 @@
 package com.chlorocode.tendertracker.dao;
 
 import com.chlorocode.tendertracker.dao.entity.CodeValue;
+import com.chlorocode.tendertracker.dao.entity.Country;
 import com.chlorocode.tendertracker.dao.entity.TenderCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -21,4 +22,7 @@ public interface CodeValueDAO extends JpaRepository<CodeValue, Integer> {
 
     @Query("select c from TenderCategory c where c.id = ?1")
     TenderCategory getTenderCategoryById(int id);
+
+    @Query("select c from Country c order by c.name")
+    List<Country> getAllCountries();
 }

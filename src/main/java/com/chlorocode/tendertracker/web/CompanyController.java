@@ -3,7 +3,9 @@ package com.chlorocode.tendertracker.web;
 import com.chlorocode.tendertracker.dao.dto.AlertDTO;
 import com.chlorocode.tendertracker.dao.dto.CompanyRegistrationDTO;
 import com.chlorocode.tendertracker.dao.entity.Company;
+import com.chlorocode.tendertracker.dao.entity.Country;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
+import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.service.CodeValueService;
 import com.chlorocode.tendertracker.service.CompanyService;
 import com.chlorocode.tendertracker.service.UserService;
@@ -38,9 +40,13 @@ public class CompanyController {
 
     @GetMapping("registerCompany")
     public String showRegisterCompany(ModelMap model) {
-        model.addAttribute("registration", new CompanyRegistrationDTO());
+        CompanyRegistrationDTO dto = new CompanyRegistrationDTO();
+        dto.setCountry("SG");
+
+        model.addAttribute("registration", dto);
         model.addAttribute("areaOfBusiness", codeValueService.getByType("area_of_business"));
         model.addAttribute("companyType", codeValueService.getByType("company_type"));
+        model.addAttribute("countries", codeValueService.getAllCountries());
         return "registerCompany";
     }
 
@@ -53,6 +59,7 @@ public class CompanyController {
             model.addAttribute("registration", form);
             model.addAttribute("areaOfBusiness", codeValueService.getByType("area_of_business"));
             model.addAttribute("companyType", codeValueService.getByType("company_type"));
+            model.addAttribute("countries", codeValueService.getAllCountries());
             return "registerCompany";
         }
 
@@ -65,6 +72,7 @@ public class CompanyController {
             model.addAttribute("registration", form);
             model.addAttribute("areaOfBusiness", codeValueService.getByType("area_of_business"));
             model.addAttribute("companyType", codeValueService.getByType("company_type"));
+            model.addAttribute("countries", codeValueService.getAllCountries());
             return "registerCompany";
         }
 
@@ -79,7 +87,11 @@ public class CompanyController {
         reg.setCity(form.getCity());
         reg.setState(form.getState());
         reg.setProvince(form.getProvince());
-        reg.setCountry(form.getCountry());
+
+        Country country = new Country();
+        country.setId(form.getCountry());
+        reg.setCountry(country);
+
         reg.setAreaOfBusiness(form.getAreaOfBusiness());
 
         reg.setPrincpleBusinessActivity(form.getPrincipleBusinessActivity());
@@ -89,11 +101,20 @@ public class CompanyController {
         reg.setCreatedBy(usr.getUser().getId());
         reg.setLastUpdatedBy(usr.getUser().getId());
 
-        companyService.registerCompany(reg);
-
+        try {
+            companyService.registerCompany(reg);
+        } catch (ApplicationException ex) {
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER, ex.getMessage());
+            model.addAttribute("alert", alert);
+            model.addAttribute("registration", form);
+            model.addAttribute("areaOfBusiness", codeValueService.getByType("area_of_business"));
+            model.addAttribute("companyType", codeValueService.getByType("company_type"));
+            model.addAttribute("countries", codeValueService.getAllCountries());
+            return "registerCompany";
+        }
 
         AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
-                "Company Registered Successfuly");
+                "Company Registered Successfully and Pending Approval from Administrator");
         redirectAttrs.addFlashAttribute("alert", alert);
         return "redirect:/";
     }

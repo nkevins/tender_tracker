@@ -23,7 +23,7 @@
                     <h4>Address</h4>
                     <p th:text="${company.address1}"></p>
                     <p th:text="${company.address2}"></p>
-                    <p th:text="${company.city} + ' ' + ${company.postalCode}"></p>
+                    <p th:text="${company.country.name} + ' ' + ${company.postalCode}"></p>
                 </div>
             </div>
 

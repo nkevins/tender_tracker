@@ -38,35 +38,6 @@
                                     </textarea>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-sm-offset-2 col-md-4">
-                                    <h4>Attachments</h4>
-                                    <table class="table table-striped">
-                                        <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th></th>
-                                        </tr>
-                                        </thead>
-                                        <tr th:each="d : ${corrigendum.documents}">
-                                            <td>
-                                                <a th:href="${s3Service.getPreSignedURL(d.document.location)}" th:text="${d.document.name}"></a>
-                                            </td>
-                                            <td>
-                                                <form th:action="@{/tender/removeCorrigendumDocument}" method="POST">
-                                                    <input type="hidden" name="corrigendumDocumentId" th:value="${d.id}" />
-                                                    <input type="hidden" name="corrigendumId" th:value="${corrigendum.id}" />
-                                                    <button class="btn btn-danger"><span class="fa fa-trash"></span></button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                    <form th:action="@{/admin/tender/addCorrigendumDocument}" method="post" class="dropzone" enctype="multipart/form-data" id="attachmentUploads">
-                                        <input type="hidden" name="id" th:value="${corrigendum.id}" />
-                                    </form>
-                                </div>
-                            </div>
-                            <br />
                             <div class="form-group">
                                 <div class="col-sm-offset-2 col-sm-10">
                                     <input type="hidden" th:field="*{id}" />
@@ -75,6 +46,35 @@
                                 </div>
                             </div>
                         </form>
+
+                        <div class="row">
+                            <div class="col-sm-offset-2 col-md-4">
+                                <h4>Attachments</h4>
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tr th:each="d : ${corrigendum.documents}">
+                                        <td>
+                                            <a th:href="${s3Service.getPreSignedURL(d.document.location)}" th:text="${d.document.name}"></a>
+                                        </td>
+                                        <td>
+                                            <form th:action="@{/tender/removeCorrigendumDocument}" method="POST">
+                                                <input type="hidden" name="corrigendumDocumentId" th:value="${d.id}" />
+                                                <input type="hidden" name="corrigendumId" th:value="${corrigendum.id}" />
+                                                <button class="btn btn-danger"><span class="fa fa-trash"></span></button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <form th:action="@{/admin/tender/addCorrigendumDocument}" method="post" class="dropzone" enctype="multipart/form-data" id="attachmentUploads">
+                                    <input type="hidden" name="id" th:value="${corrigendum.id}" />
+                                </form>
+                            </div>
+                        </div>
                     </div>
                     <!-- /.box-body -->
                 </div>
