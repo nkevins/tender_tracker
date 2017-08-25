@@ -161,4 +161,9 @@ public class CompanyServiceImpl implements CompanyService {
     public List<Company> findCompanyByUen(String uen) {
         return companyDAO.findCompanyByUen(uen);
     }
+
+    @Override
+    public List<Company> findCompanyByCreatedBy(int userId) {
+        return companyDAO.findCompanyByCreatedBy(userId);
+    }
 }

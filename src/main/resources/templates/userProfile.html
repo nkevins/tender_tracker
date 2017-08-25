@@ -25,6 +25,7 @@
                         <li role="presentation" class="active"><a href="#tenderDetails" aria-controls="home" role="tab" data-toggle="tab">User Details</a></li>
                         <li role="presentation"><a href="#changePassword" aria-controls="profile" role="tab" data-toggle="tab">Change Password</a></li>
                         <li role="presentation"><a href="#clarification" aria-controls="profile" role="tab" data-toggle="tab">Bookmark Tender</a></li>
+                        <li role="presentation"><a href="#companyRegistration" aria-controls="profile" role="tab" data-toggle="tab">Company Registration</a></li>
                     </ul>
 
                     <!-- Tab panes -->
@@ -83,9 +84,9 @@
                                             <a th:href="@{/tender/} + ${c.id}" class="" th:text="${c.tender.title}" target="_blank"></a>
                                         </h3>
                                         <div>
-                                            <span class="color-black">Open: <span th:text="${#dates.format(c.tender.openDate, 'dd MMM yyyy')}"></span></span>
+                                            <span class="color-black">Open: <span th:text="${#dates.format(c.tender.openDate, 'dd MMM yyyy HH:mm:ss')}"></span></span>
                                             <br />
-                                            <span class="color-black">Closing: <span th:text="${#dates.format(c.tender.closedDate, 'dd MMM yyyy')}"></span></span>
+                                            <span class="color-black">Closing: <span th:text="${#dates.format(c.tender.closedDate, 'dd MMM yyyy HH:mm:ss')}"></span></span>
                                             <br />
                                             <h4>
                                                 <span class="label label-default" th:if="${c.tender.status == 1}">OPEN</span>
@@ -101,8 +102,31 @@
                                 </div>
                             </div>
                         </div>
-
                         <!-- end Clarification pane -->
+
+                        <div role="tabpanel" class="tab-pane" id="companyRegistration">
+
+                            <div class="box-list">
+                                <div class="item" th:each="c, iter : ${companyList}">
+                                    <div class="row">
+                                        <div>
+                                            <span class="color-black">Company Name: <span th:text="${c.name}"></span></span>
+                                            <br />
+                                            <span class="color-black">Company UEN: <span th:text="${c.uen}"></span></span>
+                                            <br />
+                                            <h4>
+                                                <span class="label label-default" th:if="${c.status == 0}">Pending Approval</span>
+                                                <span class="label label-success" th:if="${c.status == 1}">Approved</span>
+                                                <span class="label label-danger" th:if="${c.status == 2}">Rejected</span>
+                                            </h4>
+                                            <span class="color-black">Registration Date: <span th:text="${#dates.format(c.createdDate, 'dd MMM yyyy HH:mm:ss')}"></span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
                     </div>
                     <!-- end Tab panes -->
                 </div>

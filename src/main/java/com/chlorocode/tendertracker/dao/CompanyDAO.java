@@ -15,4 +15,8 @@ public interface CompanyDAO extends DataTablesRepository<Company, Integer> {
 
     @Query("select c from Company c where c.uen = ?1")
     List<Company> findCompanyByUen(String uen);
+
+    @Query("select c from Company c where c.createdBy = ?1")
+    List<Company> findCompanyByCreatedBy(int userId);
+
 }
