@@ -8,13 +8,13 @@ import com.chlorocode.tendertracker.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -241,6 +241,53 @@ public class TenderPublicController {
         return "redirect:/tenderNotification";
     }
 
+//    /**
+//     * Handles all requests
+//     *
+//     * @param pageSize
+//     * @param page
+//     * @return model and view
+//     */
+//    @PostMapping("/tender/search")
+//    public String showPersonsPage(@RequestParam("pageSize") Optional<Integer> pageSize
+//                                        , @RequestParam("page") Optional<Integer> page
+//                                        , @ModelAttribute("searchCriteria") TenderSearchDTO form
+//                                        , ModelMap model) {
+//        // Evaluate page size. If requested parameter is null, return initial
+//        // page size
+//        int evalPageSize = pageSize.orElse(TTConstants.INITIAL_PAGE_SIZE);
+//        // Evaluate page. If requested parameter is null or less than 0 (to
+//        // prevent exception), return initial size. Otherwise, return value of
+//        // param. decreased by 1.
+//        int evalPage = (page.orElse(0) < 1) ? TTConstants.INITIAL_PAGE : page.get() - 1;
+//
+//        Page<Tender> tenders = tenderService.searchTender(form
+//                , new PageRequest(
+//                        evalPage, evalPageSize, new Sort(new Sort.Order(Sort.Direction.ASC, TTConstants.OPEN_DATE))
+//                ));
+//        Pager pager = new Pager(tenders.getTotalPages(), tenders.getNumber(), TTConstants.BUTTONS_TO_SHOW);
+//
+//        form.setOrderBy(TTConstants.OPEN_DATE);
+//        model.addAttribute("tenders", tenders);
+//        model.addAttribute("searchCriteria", form);
+//        model.addAttribute("codeValueSvc", codeValueService);
+//        model.addAttribute("selectedPageSize", evalPageSize);
+////        modelAndView.addObject("pageSizes", PAGE_SIZES);
+//        model.addAttribute("pager", pager);
+//        if (tenders == null || tenders.getTotalPages() == 0) {
+//            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.WARNING,
+//                    "No tenders found.");
+//            model.addAttribute("alert", alert);
+//        }
+//        return "home";
+//    }
+
+    @ModelAttribute("searchCriteria")
+    public TenderSearchDTO getTenderSearchDTO(HttpServletRequest request)
+    {
+        return (TenderSearchDTO) request.getAttribute("searchCriteria");
+    }
+
     /**
      * Handles all requests
      *
@@ -248,24 +295,43 @@ public class TenderPublicController {
      * @param page
      * @return model and view
      */
-    @PostMapping("/tender/search")
-    public String showPersonsPage(@RequestParam("pageSize") Optional<Integer> pageSize
-                                        , @RequestParam("page") Optional<Integer> page
-                                        , @ModelAttribute("searchCriteria") TenderSearchDTO form
-                                        , ModelMap model) {
-        // Evaluate page size. If requested parameter is null, return initial
-        // page size
+    @GetMapping("/tenders")
+    public String showPersonsPageWithOrder(@RequestParam("pageSize") Optional<Integer> pageSize
+            , @RequestParam("page") Optional<Integer> page
+            , @RequestParam("searchText") Optional<String> searchText
+            , @RequestParam("title") Optional<String> title
+            , @RequestParam("companyName") Optional<String> companyName
+            , @RequestParam("tenderCategory") Optional<Integer> tenderCategory
+            , @RequestParam("status") Optional<Integer> status
+            , @RequestParam("refNo") Optional<String> refNo
+            , @RequestParam("orderBy") Optional<String> orderBy
+            , ModelMap model) {
+        // Evaluate page size. If requested parameter is null, return initial page size
+        TenderSearchDTO dto = new TenderSearchDTO();
+        dto.setSearchText(searchText.orElse(null));
+        dto.setTitle(title.orElse(null));
+        dto.setCompanyName(companyName.orElse(null));
+        dto.setTenderCategory(tenderCategory.orElse(0));
+        dto.setStatus(status.orElse(0));
+        dto.setRefNo(refNo.orElse(null));
+        dto.setOrderBy(orderBy.orElse(null) == null? TTConstants.DEFAULT_SORT : orderBy.get());
+        dto.setAdvance(dto.getSearchText() != null || dto.getTitle() != null || dto.getCompanyName() != null
+                        || dto.getTenderCategory() > 0 || dto.getStatus() > 0 || dto.getRefNo() != null);
+
         int evalPageSize = pageSize.orElse(TTConstants.INITIAL_PAGE_SIZE);
         // Evaluate page. If requested parameter is null or less than 0 (to
         // prevent exception), return initial size. Otherwise, return value of
         // param. decreased by 1.
         int evalPage = (page.orElse(0) < 1) ? TTConstants.INITIAL_PAGE : page.get() - 1;
 
-        Page<Tender> tenders = tenderService.searchTender(form, new PageRequest(evalPage, evalPageSize));
+        Page<Tender> tenders = tenderService.searchTender(dto
+                , new PageRequest(
+                        evalPage, evalPageSize, getSortPattern(dto)
+                ));
         Pager pager = new Pager(tenders.getTotalPages(), tenders.getNumber(), TTConstants.BUTTONS_TO_SHOW);
 
         model.addAttribute("tenders", tenders);
-        model.addAttribute("searchCriteria", form);
+        model.addAttribute("searchCriteria", dto);
         model.addAttribute("codeValueSvc", codeValueService);
         model.addAttribute("selectedPageSize", evalPageSize);
 //        modelAndView.addObject("pageSizes", PAGE_SIZES);
@@ -276,5 +342,15 @@ public class TenderPublicController {
             model.addAttribute("alert", alert);
         }
         return "home";
+    }
+
+    private Sort getSortPattern(TenderSearchDTO searchDTO) {
+        if (searchDTO.getOrderBy().equals(TTConstants.OPEN_DATE)) {
+            return new Sort(new Sort.Order(Sort.Direction.ASC, TTConstants.OPEN_DATE));
+        } else if(searchDTO.getOrderBy().equals(TTConstants.CLOSED_DATE)) {
+            return new Sort(new Sort.Order(Sort.Direction.ASC, TTConstants.CLOSED_DATE));
+        } else {
+            return new Sort(new Sort.Order(Sort.Direction.ASC, TTConstants.TITLE));
+        }
     }
 }

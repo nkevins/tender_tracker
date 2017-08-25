@@ -10,12 +10,17 @@ import com.chlorocode.tendertracker.service.TenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @Controller
@@ -56,11 +61,16 @@ public class HomeController {
         // param. decreased by 1.
         int evalPage = (page.orElse(0) < 1) ? TTConstants.INITIAL_PAGE : page.get() - 1;
 
-        Page<Tender> tenders = tenderService.listAllByPage(new PageRequest(evalPage, evalPageSize));
+        Page<Tender> tenders = tenderService.listAllByPage(
+                new PageRequest(
+                    evalPage, evalPageSize, new Sort(new Sort.Order(Sort.Direction.ASC, TTConstants.OPEN_DATE))
+                ));
         Pager pager = new Pager(tenders.getTotalPages(), tenders.getNumber(), TTConstants.BUTTONS_TO_SHOW);
 
+        TenderSearchDTO tenderSearchDTO = new TenderSearchDTO();
+        tenderSearchDTO.setOrderBy(TTConstants.OPEN_DATE);
         model.addAttribute("tenders", tenders);
-        model.addAttribute("searchCriteria", new TenderSearchDTO());
+        model.addAttribute("searchCriteria", tenderSearchDTO);
         model.addAttribute("codeValueSvc", codeValueService);
         model.addAttribute("selectedPageSize", evalPageSize);
 //        modelAndView.addObject("pageSizes", PAGE_SIZES);

@@ -15,6 +15,26 @@ public class TenderSpecs {
 
     private TenderSpecs() {}
 
+    public static Specification<Tender> getAllOpenTender() {
+        return (root, query, cb) -> {
+            return cb.lessThanOrEqualTo(root.get(Tender_.openDate), DateUtility.getCurrentDate());
+        };
+    }
+
+    public static Specification<Tender> byTenderSearchString(String searchString) {
+        return (root, query, cb) -> {
+            Predicate openDateFilter = cb.lessThanOrEqualTo(root.get(Tender_.openDate), DateUtility.getCurrentDate());
+            List<Predicate> predicates = new ArrayList<>();
+            if (searchString != null && !searchString.isEmpty()) {
+                predicates.add(cb.like(cb.lower(root.<String>get(Tender_.title)), getContainsLikePattern(searchString)));
+                predicates.add(cb.like(cb.lower(root.get(Tender_.company).get(Company_.name)), getContainsLikePattern(searchString)));
+                predicates.add(cb.like(cb.lower(root.<String>get(Tender_.description)), getContainsLikePattern(searchString)));
+            }
+
+            return cb.and(openDateFilter, cb.or(predicates.toArray(new Predicate[predicates.size()])));
+        };
+    }
+
     public static Specification<Tender> byTenderSearchCriteria(String title, String companyName, int tcId, int status, String refNo) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();

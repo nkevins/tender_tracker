@@ -11,7 +11,6 @@
     <!-- form search area-->
     <div class="container">
         <div class="row">
-
             <div class="col-md-4">
                 <!-- logo -->
                 <div class="logo text-center-sm"> <a th:href="@{/}"><img th:src="@{/assets/theme/images/logo.png}" alt="logo" /></a></div>
@@ -19,20 +18,20 @@
 
             <div class="col-md-8">
                 <!-- form search -->
-                <form class="form-search-list" th:action="@{/tender/search}" method="POST" enctype="multipart/form-data" th:object="${searchCriteria}">
+                <form class="form-search-list" th:action="@{/tenders}" method="get" enctype="multipart/form-data" th:object="${searchCriteria}">
                     <div class="row">
-                        <div class="col-sm-5 col-xs-6 ">
+                        <div class="col-sm-10 col-xs-6 ">
                             <div class="form-group">
                                 <label class="color-white"></label>
-                                <input class="form-control" placeholder="tender title" th:field="*{title}" />
+                                <input class="form-control" placeholder="Search..." th:field="*{searchText}" />
                             </div>
                         </div>
-                        <div class="col-sm-5 col-xs-6 ">
-                            <div class="form-group">
-                                <label class="color-white"></label>
-                                <input class="form-control" placeholder="company name" th:field="*{companyName}" />
-                            </div>
-                        </div>
+                        <!--<div class="col-sm-5 col-xs-6 ">-->
+                            <!--<div class="form-group">-->
+                                <!--<label class="color-white"></label>-->
+                                <!--<input class="form-control" placeholder="company name" th:field="*{companyName}" />-->
+                            <!--</div>-->
+                        <!--</div>-->
                         <div class="col-sm-2 col-xs-12 ">
                             <div class="form-group">
                                 <label class="hidden-xs">&nbsp;</label>
@@ -53,7 +52,7 @@
         <div class="modal fade" id="modal-advanced" >
             <div class="modal-dialog ">
                 <div class="modal-content">
-                    <form class="form-search-list" th:action="@{/tender/search}" method="POST" enctype="multipart/form-data" th:object="${searchCriteria}">
+                    <form class="form-search-list" th:action="@{/tenders}" method="get" enctype="multipart/form-data" th:object="${searchCriteria}">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                             <h4 class="modal-title" id="myModalLabel">Advanced Tender Search</h4>
@@ -119,6 +118,27 @@
 
             <!-- box listing -->
             <th:block th:if="${tenders.totalPages} &gt; 0">
+
+                <div class="block-section-sm">
+                    <form class="form-search-list" th:action="@{/tenders}" method="get" enctype="multipart/form-data" th:object="${searchCriteria}">
+
+                        <input type="hidden" class="form-control" th:field="*{searchText}" th:if="*{searchText != null and !searchText.isEmpty()}"/>
+                        <input type="hidden" class="form-control" th:field="*{title}" th:if="*{title != null and !title.isEmpty()}"/>
+                        <input type="hidden" class="form-control" th:field="*{companyName}" th:if="*{companyName != null and !companyName.isEmpty()}"/>
+                        <input type="hidden" class="form-control" th:field="*{tenderCategory}" th:if="*{tenderCategory gt 0}"/>
+                        <input type="hidden" class="form-control" th:field="*{status}" th:if="*{status gt 0}"/>
+                        <input type="hidden" class="form-control" th:field="*{refNo}" th:if="*{refNo != null and !refNo.isEmpty()}"/>
+                        <div class="form-inline">
+                            <div class="form-group">
+                                <label class="control-label">Sort By&nbsp;:&nbsp;</label>
+                                <select class="form-control" name="orderBy" th:field="*{orderBy}" onchange="this.form.submit()">
+                                    <option th:each="entry : ${codeValueSvc.getTenderOrderModes().entrySet()}"
+                                            th:value="${entry.key}" th:text="${entry.value}">Order By</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
                 <div class="block-section-sm">
                     <!-- item list -->
                     <div class="box-list">
@@ -156,25 +176,55 @@
                             <!--<option th:each="pageSize : ${pageSizes}" th:text="${pageSize}" th:value="${pageSize}" th:selected="${pageSize} == ${selectedPageSize}"></option>-->
                         <!--</select>-->
                     <!--</div>-->
-                    <div th:if="${tenders.totalPages != 1}" class="form-group col-md-11 pagination-centered">
-                        <ul class="pagination">
-                            <li th:class="${tenders.number == 0} ? disabled">
-                                <a class="pageLink" th:href="@{/(pageSize=${selectedPageSize}, page=1)}">&laquo;&nbsp;Prev</a>
-                            </li>
-                            <!--<li th:class="${tenders.number == 0} ? disabled">-->
+                    <div th:if="${!searchCriteria.advance}">
+                        <div th:if="${tenders.totalPages != 1}" class="form-group col-md-11 pagination-centered">
+                            <ul class="pagination">
+                                <li th:class="${tenders.number == 0} ? disabled">
+                                    <a class="pageLink" th:href="@{/tenders/(orderBy=${searchCriteria.orderBy}, pageSize=${selectedPageSize}, page=1)}">&laquo;&nbsp;Prev</a>
+                                </li>
+                                <!--<li th:class="${tenders.number == 0} ? disabled">-->
                                 <!--<a class="pageLink" th:href="@{/(pageSize=${selectedPageSize}, page=${tenders.number})}">&larr;</a>-->
-                            <!--</li>-->
-                            <li th:class="${tenders.number == (page - 1)} ? 'active pointer-disabled'"
-                                th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
-                                <a class="pageLink" th:href="@{/(pageSize=${selectedPageSize}, page=${page})}" th:text="${page}"></a>
-                            </li>
-                            <!--<li th:class="${tenders.number + 1 == tenders.totalPages} ? disabled">-->
+                                <!--</li>-->
+                                <li th:class="${tenders.number == (page - 1)} ? 'active pointer-disabled'"
+                                    th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
+                                    <a class="pageLink" th:href="@{/tenders/(orderBy=${searchCriteria.orderBy}, pageSize=${selectedPageSize}, page=${page})}" th:text="${page}"></a>
+                                </li>
+                                <!--<li th:class="${tenders.number + 1 == tenders.totalPages} ? disabled">-->
                                 <!--<a class="pageLink" th:href="@{/(pageSize=${selectedPageSize}, page=${tenders.number + 2})}">&rarr;</a>-->
-                            <!--</li>-->
-                            <li th:class="${tenders.number + 1 == tenders.totalPages} ? disabled">
-                                <a class="pageLink" th:href="@{/(pageSize=${selectedPageSize}, page=${tenders.totalPages})}">Next&nbsp;&raquo;</a>
-                            </li>
-                        </ul>
+                                <!--</li>-->
+                                <li th:class="${tenders.number + 1 == tenders.totalPages} ? disabled">
+                                    <a class="pageLink" th:href="@{/tenders/(orderBy=${searchCriteria.orderBy}, pageSize=${selectedPageSize}, page=${tenders.totalPages})}">Next&nbsp;&raquo;</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div th:if="${searchCriteria.advance}">
+                        <div th:if="${tenders.totalPages != 1}" class="form-group col-md-11 pagination-centered">
+                            <ul class="pagination">
+                                <li th:class="${tenders.number == 0} ? disabled">
+                                    <a class="pageLink" th:href="@{/tenders/(orderBy=${searchCriteria.orderBy}, pageSize=${selectedPageSize}, page=1
+                                    , searchText=${searchCriteria.searchText}, title=${searchCriteria.title}, companyName=${searchCriteria.companyName}
+                                    , refNo=${searchCriteria.refNo}, tenderCategory=${searchCriteria.tenderCategory}, status=${searchCriteria.status})}">&laquo;&nbsp;Prev</a>
+                                </li>
+                                <!--<li th:class="${tenders.number == 0} ? disabled">-->
+                                <!--<a class="pageLink" th:href="@{/(pageSize=${selectedPageSize}, page=${tenders.number})}">&larr;</a>-->
+                                <!--</li>-->
+                                <li th:class="${tenders.number == (page - 1)} ? 'active pointer-disabled'"
+                                    th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
+                                    <a class="pageLink" th:href="@{/tenders/(orderBy=${searchCriteria.orderBy}, pageSize=${selectedPageSize}, page=${page}
+                                    , searchText=${searchCriteria.searchText}, title=${searchCriteria.title}, companyName=${searchCriteria.companyName}
+                                    , refNo=${searchCriteria.refNo}, tenderCategory=${searchCriteria.tenderCategory}, status=${searchCriteria.status})}" th:text="${page}"></a>
+                                </li>
+                                <!--<li th:class="${tenders.number + 1 == tenders.totalPages} ? disabled">-->
+                                <!--<a class="pageLink" th:href="@{/(pageSize=${selectedPageSize}, page=${tenders.number + 2})}">&rarr;</a>-->
+                                <!--</li>-->
+                                <li th:class="${tenders.number + 1 == tenders.totalPages} ? disabled">
+                                    <a class="pageLink" th:href="@{/tenders/(orderBy=${searchCriteria.orderBy}, pageSize=${selectedPageSize}, page=${tenders.totalPages}
+                                    , searchText=${searchCriteria.searchText}, title=${searchCriteria.title}, companyName=${searchCriteria.companyName}
+                                    , refNo=${searchCriteria.refNo}, tenderCategory=${searchCriteria.tenderCategory}, status=${searchCriteria.status})}">Next&nbsp;&raquo;</a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
                 <!-- End Pagination Bar -->
