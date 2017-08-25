@@ -35,6 +35,16 @@ public class TTConstants {
     public static final String PARAM_TENDER = "tender";
     public static final String PARAM_APPROVAL_ACTION = "approval_action";
 
+    public static final String OPEN_DATE = "openDate";
+    public static final String CLOSED_DATE = "closedDate";
+    public static final String TITLE = "title";
+
+    public static final String DEFAULT_SORT = OPEN_DATE;
+
+    public static final String LBL_OPEN_DATE = "Open Date";
+    public static final String LBL_CLOSED_DATE = "Closed Date";
+    public static final String LBL_TITLE = "Title";
+
     public static int UPDATE_TENDER = 1;
     public static int ADD_CORRIGENDUM = 2;
 }
