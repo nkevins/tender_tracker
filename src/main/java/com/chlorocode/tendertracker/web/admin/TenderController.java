@@ -4,10 +4,12 @@ import com.chlorocode.tendertracker.dao.dto.*;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
 import com.chlorocode.tendertracker.dao.entity.Tender;
 import com.chlorocode.tendertracker.dao.entity.TenderItem;
+import com.chlorocode.tendertracker.dao.entity.User;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.service.CodeValueService;
 import com.chlorocode.tendertracker.service.S3Wrapper;
 import com.chlorocode.tendertracker.service.TenderService;
+import com.chlorocode.tendertracker.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,12 +36,14 @@ public class TenderController {
     private CodeValueService codeValueService;
     private TenderService tenderService;
     private S3Wrapper s3Service;
+    private UserService userService;
 
     @Autowired
-    public TenderController(CodeValueService codeValueService, TenderService tenderService, S3Wrapper s3Service) {
+    public TenderController(CodeValueService codeValueService, TenderService tenderService, S3Wrapper s3Service,UserService userService) {
         this.codeValueService = codeValueService;
         this.tenderService = tenderService;
         this.s3Service = s3Service;
+        this.userService = userService;
     }
 
     @GetMapping("/admin/tender")
@@ -179,16 +183,28 @@ public class TenderController {
     }
 
     @GetMapping("/admin/tender/{id}")
-    public String showTenderDetails(@PathVariable(value="id") Integer id, ModelMap model) {
+    public String showTenderDetails(@PathVariable(value="id") Integer id, ModelMap model,RedirectAttributes redirectAttrs) {
         Tender tender = tenderService.findById(id);
         if (tender == null) {
             return "redirect:/admin/tender";
         }
 
+        //perform validation check, if the tender is not created by this company, stop to view it
+        CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(tender.getCompany().getId() != usr.getSelectedCompany().getId()){
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
+                    "You are not auhtorized to view the tender details");
+            redirectAttrs.addFlashAttribute("alert", alert);
+            return "redirect:/admin/tender";
+        }
+
+        User user = userService.findById(tender.getCreatedBy());
+
         model.addAttribute("tender", tender);
         model.addAttribute("tenderType", codeValueService.getDescription("tender_type", tender.getTenderType()));
         model.addAttribute("codeValueService", codeValueService);
         model.addAttribute("s3Service", s3Service);
+        model.addAttribute("createdBy", user.getName());
         return "admin/tender/tenderDetails";
     }
 
