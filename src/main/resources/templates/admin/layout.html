@@ -28,6 +28,8 @@
     <link rel="stylesheet" th:href="@{/assets/admin/bower_components/jvectormap/jquery-jvectormap.css}" />
     <!-- Date Picker -->
     <link rel="stylesheet" th:href="@{/assets/admin/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css}" />
+    <!-- Datetime picker -->
+    <link rel="stylesheet" th:href="@{/assets/admin/bower_components/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css}" />
     <!-- Daterange picker -->
     <link rel="stylesheet" th:href="@{/assets/admin/bower_components/bootstrap-daterangepicker/daterangepicker.css}" />
     <!-- bootstrap wysihtml5 - text editor -->
@@ -80,6 +82,15 @@
                                     <span th:text ="${#authentication.getPrincipal().getName()}">Alexander Pierce</span>
                                     <small th:if="${#authentication.getPrincipal().getSelectedCompany() != null}" th:text="${#authentication.getPrincipal().getSelectedCompany().getName()}">Company A Pte. Ltd.</small>
                                 </p>
+                            </li>
+                            <!-- Menu Body -->
+                            <li class="user-body" th:if="${#lists.size(#authentication.getPrincipal().getCompanyAdministered()) > 1}">
+                                <div class="row">
+                                    <div class="col-xs-12 text-center">
+                                        <a th:href="@{/selectCompany}">Switch Company</a>
+                                    </div>
+                                </div>
+                                <!-- /.row -->
                             </li>
                             <!-- Menu Footer-->
                             <li class="user-footer">
@@ -201,6 +212,8 @@
 <script th:src="@{/assets/admin/bower_components/bootstrap-daterangepicker/daterangepicker.js}"></script>
 <!-- datepicker -->
 <script th:src="@{/assets/admin/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js}"></script>
+<!-- bootstrap date time picker -->
+<script th:src="@{/assets/admin/bower_components/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js}"></script>
 <!-- Bootstrap WYSIHTML5 -->
 <script th:src="@{/assets/admin/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js}"></script>
 <!-- Slimscroll -->

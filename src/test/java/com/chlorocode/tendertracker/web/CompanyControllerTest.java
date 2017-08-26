@@ -1,6 +1,7 @@
 package com.chlorocode.tendertracker.web;
 
 import com.chlorocode.tendertracker.dao.entity.Company;
+import com.chlorocode.tendertracker.dao.entity.Country;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
 import com.chlorocode.tendertracker.dao.entity.User;
 import com.chlorocode.tendertracker.service.CompanyService;
@@ -102,7 +103,12 @@ public class CompanyControllerTest {
 
     @Test
     public void testViewCompanyDetails() throws Exception {
+        Country country = new Country();
+        country.setId("SG");
+        country.setName("Singapore");
+
         Company company = new Company();
+        company.setCountry(country);
         company.setCreatedBy(1);
         company.setStatus(1);
         User user = new User();

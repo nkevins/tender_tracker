@@ -1,15 +1,8 @@
 package com.chlorocode.tendertracker.dao.dto;
 
-import org.hibernate.validator.constraints.NotBlank;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-
 public class TenderSearchDTO {
+
+    private String searchText;
 
     private String title;
 
@@ -18,7 +11,22 @@ public class TenderSearchDTO {
     private int tenderCategory;
 
     private int status;
+
     private String refNo;
+
+    private String orderBy;
+
+    private String orderMode;
+
+    private boolean advance;
+
+    public String getSearchText() {
+        return searchText;
+    }
+
+    public void setSearchText(String searchText) {
+        this.searchText = searchText;
+    }
 
     public String getRefNo() {
         return refNo;
@@ -52,6 +60,10 @@ public class TenderSearchDTO {
         this.tenderCategory = tenderCategory;
     }
 
+    public void setTenderCategory(String tenderCategory) {
+        this.tenderCategory = tenderCategory == null ? 0 : Integer.parseInt(tenderCategory);
+    }
+
     public int getStatus() {
         return status;
     }
@@ -60,4 +72,31 @@ public class TenderSearchDTO {
         this.status = status;
     }
 
+    public void setStatus(String status) {
+        this.status = status == null ? 0 : Integer.parseInt(status);
+    }
+
+    public String getOrderBy() {
+        return orderBy;
+    }
+
+    public void setOrderBy(String orderBy) {
+        this.orderBy = orderBy;
+    }
+
+    public boolean isAdvance() {
+        return advance;
+    }
+
+    public void setAdvance(boolean advance) {
+        this.advance = advance;
+    }
+
+    public String getOrderMode() {
+        return orderMode;
+    }
+
+    public void setOrderMode(String orderMode) {
+        this.orderMode = orderMode;
+    }
 }

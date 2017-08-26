@@ -17,6 +17,7 @@ public abstract class Tender_ {
     public static volatile SingularAttribute<Tender, String> refNo;
     public static volatile SingularAttribute<Tender, Integer> status;
     public static volatile SingularAttribute<Tender, Company> company;
+    public static volatile SingularAttribute<Tender, String> description;
     public static volatile SingularAttribute<Tender, TenderCategory> tenderCategory;
     public static volatile SingularAttribute<Tender, Date> openDate;
 }

@@ -16,6 +16,9 @@
 
     <!-- Main content -->
     <section class="content">
+        <th:block th:if="${alert != null}">
+            <div th:replace="fragments/alert :: alert (type=${alert.getType()}, messages=${alert.messages})">Alert</div>
+        </th:block>
         <div class="row">
             <div class="col-md-12">
                 <!-- Tender Info Box -->
@@ -42,18 +45,26 @@
                                 <strong>Category</strong>
                                 <p th:text="${tender.tenderCategory.name}"></p>
                                 <hr />
+
+                                <strong>Created By</strong>
+                                <p th:text="${createdBy}"></p>
+                                <hr />
                             </div>
                             <div class="col-md-6">
                                 <strong>Opening Date</strong>
-                                <p th:text="${#dates.format(tender.openDate, 'dd-MM-yyyy')}"></p>
+                                <p th:text="${#dates.format(tender.openDate, 'dd-MM-yyyy HH:mm')}"></p>
                                 <hr />
 
                                 <strong>Closing Date</strong>
-                                <p th:text="${#dates.format(tender.closedDate, 'dd-MM-yyyy')}"></p>
+                                <p th:text="${#dates.format(tender.closedDate, 'dd-MM-yyyy HH:mm')}"></p>
                                 <hr />
 
                                 <strong>EPV</strong>
                                 <p>$ <span th:text="${#numbers.formatDecimal(tender.estimatePurchaseValue, 1, 'COMMA', 2, 'POINT')}"></span></p>
+                                <hr />
+
+                                <strong>Tender Created Date</strong>
+                                <p th:text="${#dates.format(tender.openDate, 'dd-MM-yyyy HH:mm')}"></p>
                                 <hr />
                             </div>
                         </div>

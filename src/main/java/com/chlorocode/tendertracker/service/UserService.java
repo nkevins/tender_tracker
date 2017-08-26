@@ -1,6 +1,5 @@
 package com.chlorocode.tendertracker.service;
 
-import com.chlorocode.tendertracker.dao.entity.RoleUser;
 import com.chlorocode.tendertracker.dao.entity.User;
 
 import java.util.Optional;

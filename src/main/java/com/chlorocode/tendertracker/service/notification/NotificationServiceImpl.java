@@ -1,16 +1,13 @@
 package com.chlorocode.tendertracker.service.notification;
 
 import com.chlorocode.tendertracker.constants.TTConstants;
-import com.chlorocode.tendertracker.dao.entity.Tender;
-import com.chlorocode.tendertracker.dao.entity.User;
+import com.chlorocode.tendertracker.dao.entity.Company;
 import com.chlorocode.tendertracker.props.MailProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,6 +29,7 @@ public class NotificationServiceImpl implements NotificationService {
         company_reviewed_noti,
         reset_otp,
         decision_noti,
+        company_reg_noti,
         // TODO add other mode such as tender_noti, etc...
         other;
     }
@@ -54,6 +52,8 @@ public class NotificationServiceImpl implements NotificationService {
             sendTenderCreateNotiMsg(params);
         } else if (mode == NOTI_MODE.company_reviewed_noti) {
             sendCompanyReviewedNotiMsg(params);
+        } else if (mode == NOTI_MODE.company_reg_noti) {
+            sendCompanyRegisteredNotiMsg(params);
         } else {
             //sendEmail("Email Subject","Email body", (String)params.get(TTConstants.PARAM_EMAIL));
         }
@@ -73,7 +73,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     public boolean  sendBookmarkNotiMsg(Map<String, Object> params) {
-        String id = (String) params.get(TTConstants.PARAM_TENDER_ID);
+        String id = String.valueOf(params.get(TTConstants.PARAM_TENDER_ID));
         String title = (String) params.get(TTConstants.PARAM_TENDER_TITLE);
         int changeType = (int) params.get(TTConstants.PARAM_CHANGE_TYPE);
         String[] emails = (String[]) params.get(TTConstants.PARAM_EMAILS);
@@ -85,14 +85,14 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     public boolean  sendTenderCreateNotiMsg(Map<String, Object> params) {
-        String id = (String) params.get(TTConstants.PARAM_TENDER_ID);
+        String id = String.valueOf(params.get(TTConstants.PARAM_TENDER_ID));
         String title = (String) params.get(TTConstants.PARAM_TENDER_TITLE);
         String[] emails = (String[]) params.get(TTConstants.PARAM_EMAILS);
-        return sendEmail(mailProperties.getSubCreateTender(), mailProperties.getTemplateCreateTender(), emails, title, id, id);
+        return sendEmail(mailProperties.getSubCreateTender(), mailProperties.getTemplateCreateTender(), emails, title, id, (String)id);
     }
 
     public boolean  sendCompanyReviewedNotiMsg(Map<String, Object> params) {
-        String id = (String) params.get(TTConstants.PARAM_COMPANY_ID);
+        String id = String.valueOf(params.get(TTConstants.PARAM_COMPANY_ID));
         String name = (String) params.get(TTConstants.PARAM_COMPANY_NAME);
         String action = (String) params.get(TTConstants.PARAM_APPROVAL_ACTION);
         String email = (String) params.get(TTConstants.PARAM_EMAIL);
@@ -102,9 +102,12 @@ public class NotificationServiceImpl implements NotificationService {
                             , new String[]{email}, name, action, id, id);
     }
 
-//    private boolean sendEmail(String emailSubject, String emailBody, String... to) {
-//        return mailSenderManager.sendEmail(emailSubject, emailBody, to);
-//    }
+    public boolean sendCompanyRegisteredNotiMsg(Map<String, Object> params) {
+        Company company = (Company) params.get(TTConstants.PARAM_COMPANY);
+        String email = (String) params.get(TTConstants.PARAM_EMAIL);
+        return sendEmail(mailProperties.getSubCompanyRegistered(), mailProperties.getTemplateCompanyRegistered(),
+                new String[]{email}, company.getName());
+    }
 
     private boolean sendEmail(String emailSubject, String path, String[] to, String... params) {
         return mailSenderManager.sendEmail(emailSubject, path, to, params);

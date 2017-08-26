@@ -277,14 +277,18 @@
 </body>
 <th:block layout:fragment="scripts">
     <script type="text/javascript">
-        $('#openDate').datepicker({
-            autoclose: true,
-            format: 'dd/mm/yyyy'
+        $('#openDate').datetimepicker({
+            format: 'DD/MM/YYYY HH:mm'
+        }).on('dp.change', function(e){
+            $('#openDate').attr("value", e.date.format('DD/MM/YYYY HH:mm'));
         });
-        $('#closedDate').datepicker({
-            autoclose: true,
-            format: 'dd/mm/yyyy'
+
+        $('#closedDate').datetimepicker({
+            format: 'DD/MM/YYYY HH:mm'
+        }).on('dp.change', function(e){
+            $('#closedDate').attr("value", e.date.format('DD/MM/YYYY HH:mm'));
         });
+
         $('#deliveryDate').datepicker({
             autoclose: true,
             format: 'dd/mm/yyyy'
@@ -295,13 +299,19 @@
         });
 
         Dropzone.options.attachmentUploads = {
+            maxFilesize: 50,
+            addRemoveLinks: true,
             error: function(file, errorMessage) {
+                this.removeFile(file);
                 $("#updateTenderError").text(errorMessage);
                 $('#updateTenderError').show();
                 $('html,body').animate({scrollTop: 0});
             },
             success: function(file, response) {
                 window.location.reload();
+            },
+            maxfilesexceeded: function(file) {
+                alert('aaa');
             }
         };
     </script>

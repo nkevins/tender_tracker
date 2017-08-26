@@ -16,7 +16,7 @@
             <form th:method="POST" th:action="@{/registerCompany}" th:object="${registration}">
 
                 <div class="form-group">
-                    <label>Name<span style="color:red">*</span></label>
+                    <label>Company Name<span style="color:red">*</span></label>
                     <input type="text" class="form-control" th:field="*{name}" required="required" />
                 </div>
                 <div class="form-group">
@@ -51,29 +51,28 @@
                     <label>Address 2</label>
                     <input type="text" class="form-control" th:field="*{address2}" />
                 </div>
-                <div class="form-group">
-                    <label>Mailing Address<span style="color:red">*</span></label>
-                    <input type="text" class="form-control" th:field="*{mailingAddress}" required="required" />
-                </div>
+
                 <div class="form-group">
                     <label>Postal Code<span style="color:red">*</span></label>
                     <input type="text" class="form-control" th:field="*{postalCode}" required="required" />
                 </div>
                 <div class="form-group">
-                    <label>City<span style="color:red">*</span></label>
-                    <input type="text" class="form-control" th:field="*{city}" required="required" />
-                </div>
-                <div class="form-group">
-                    <label>State<span style="color:red">*</span></label>
-                    <input type="text" class="form-control" th:field="*{state}" required="required" />
-                </div>
-                <div class="form-group">
-                    <label>Province<span style="color:red">*</span></label>
-                    <input type="text" class="form-control" th:field="*{province}" required="required" />
-                </div>
-                <div class="form-group">
                     <label>Country<span style="color:red">*</span></label>
-                    <input type="text" class="form-control" th:field="*{country}" required="required" />
+                    <select class="form-control" th:field="*{country}" required="required">
+                        <option th:each="c : ${countries}" th:value="${c.id}" th:text="${c.name}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>City</label>
+                    <input type="text" class="form-control" th:field="*{city}"  />
+                </div>
+                <div class="form-group">
+                    <label>State</label>
+                    <input type="text" class="form-control" th:field="*{state}"  />
+                </div>
+                <div class="form-group">
+                    <label>Province</label>
+                    <input type="text" class="form-control" th:field="*{province}" />
                 </div>
                 <div class="white-space-10"></div>
                 <div class="form-group no-margin">

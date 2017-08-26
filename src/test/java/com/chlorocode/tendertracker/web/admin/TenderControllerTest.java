@@ -54,6 +54,7 @@ public class TenderControllerTest {
         List<Company> managedCompany = new LinkedList<Company>();
         Company c = new Company();
         c.setName("Abc Pte. Ltd");
+        c.setId(1);
         managedCompany.add(c);
         currentUser = new CurrentUser(u, AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER,ROLE_ADMIN"), managedCompany);
     }
@@ -77,8 +78,8 @@ public class TenderControllerTest {
         this.mvc.perform(
                 post("/admin/tender/create")
                 .param("title", "title")
-                .param("openDate", "18/07/2017")
-                .param("closedDate", "01/09/2017")
+                .param("openDate", "18/07/2017 09:00")
+                .param("closedDate", "01/09/2017 11:00")
                 .param("tenderCategory", "1")
                 .param("tenderType", "1")
                 .param("estimatePurchaseValue", "2000")
@@ -116,6 +117,10 @@ public class TenderControllerTest {
         t.setTenderCategory(cat);
         t.setOpenDate(new Date());
         t.setClosedDate(new Date());
+        Company c = new Company();
+        c.setId(1);
+        t.setCompany(c);
+        t.setCreatedBy(1);
         when(tenderService.findById(anyInt())).thenReturn(t);
 
         this.mvc.perform(

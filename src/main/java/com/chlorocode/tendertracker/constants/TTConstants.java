@@ -1,5 +1,7 @@
 package com.chlorocode.tendertracker.constants;
 
+import org.springframework.data.domain.Sort;
+
 /**
  * Created by Kyaw Min Thu on 3/7/2017.
  */
@@ -29,10 +31,27 @@ public class TTConstants {
     public static final String PARAM_TOKEN = "confirmation_token";
     public static final String PARAM_TENDER_ID = "tender_id";
     public static final String PARAM_TENDER_TITLE = "tender_title";
+    public static final String PARAM_COMPANY = "company";
     public static final String PARAM_COMPANY_ID = "company_id";
     public static final String PARAM_COMPANY_NAME = "company_name";
     public static final String PARAM_TENDER = "tender";
     public static final String PARAM_APPROVAL_ACTION = "approval_action";
+
+    public static final String OPEN_DATE = "openDate";
+    public static final String CLOSED_DATE = "closedDate";
+    public static final String TITLE = "title";
+    public static final String ASC = "asc";
+    public static final String DESC = "desc";
+
+    public static final String DEFAULT_SORT = OPEN_DATE;
+    public static final String DEFAULT_SORT_DIRECTION = ASC;
+
+    public static final String LBL_OPEN_DATE = "Open Date";
+    public static final String LBL_CLOSED_DATE = "Closed Date";
+    public static final String LBL_TITLE = "Title";
+
+    public static final String LBL_ASC = "Ascending";
+    public static final String LBL_DESC = "Descending";
 
     public static int UPDATE_TENDER = 1;
     public static int ADD_CORRIGENDUM = 2;

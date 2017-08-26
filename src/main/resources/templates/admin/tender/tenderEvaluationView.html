@@ -67,12 +67,12 @@
                 'columnDefs' : [{
                     'targets' : 3,
                     'render' : function (data, type, full, meta) {
-                        return moment(data, 'YYYY-MM-DD').format('DD MMM YY');
+                        return moment(data).format('DD MMM YY HH:mm');
                     }
                 },{
                     'targets' : 4,
                     'render' : function (data, type, full, meta) {
-                        return moment(data, 'YYYY-MM-DD').format('DD MMM YY');
+                        return moment(data).format('DD MMM YY HH:mm');
                     }
                 }]
             });

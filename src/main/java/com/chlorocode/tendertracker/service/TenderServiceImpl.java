@@ -8,12 +8,10 @@ import com.chlorocode.tendertracker.dao.specs.TenderSpecs;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.service.notification.NotificationService;
 import com.chlorocode.tendertracker.service.notification.NotificationServiceImpl;
-import com.chlorocode.tendertracker.utils.DateUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -117,7 +115,7 @@ public class TenderServiceImpl implements TenderService {
                 params.put(TTConstants.PARAM_TENDER_ID, result.getId());
                 params.put(TTConstants.PARAM_TENDER_TITLE, result.getTitle());
                 params.put(TTConstants.PARAM_EMAILS, emails);
-                notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.company_reviewed_noti, params);
+                notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.tender_create_noti, params);
             }
         }
 
@@ -280,16 +278,28 @@ public class TenderServiceImpl implements TenderService {
 
     @Override
     public Page<Tender> listAllByPage(Pageable pageable) {
-        return tenderPagingDAO.findAllOpenedTender(DateUtility.getCurrentDate(), pageable);
+        Specification<Tender> searchSpec = TenderSpecs.getAllOpenTender();
+        return tenderPagingDAO.findAll(searchSpec, pageable);
     }
 
     @Override
     public Page<Tender> searchTender(TenderSearchDTO searchDTO, Pageable pageable) {
-        Specification<Tender> searchSpec = TenderSpecs.byTenderSearchCriteria(
-                searchDTO.getTitle() == null ? null : searchDTO.getTitle().trim()
-                , searchDTO.getCompanyName() == null ? null : searchDTO.getCompanyName().trim()
-                , searchDTO.getTenderCategory()
-                , searchDTO.getStatus(),searchDTO.getRefNo());
+        Specification<Tender> searchSpec = null;
+        if (searchDTO.getSearchText() != null && !searchDTO.getSearchText().trim().isEmpty()) {
+            searchSpec = TenderSpecs.byTenderSearchString(searchDTO.getSearchText().trim());
+            searchDTO.setCompanyName(null);
+            searchDTO.setTitle(null);
+            searchDTO.setRefNo(null);
+            searchDTO.setStatus(0);
+            searchDTO.setTenderCategory(0);
+        } else {
+            searchSpec = TenderSpecs.byTenderSearchCriteria(
+                    searchDTO.getTitle() == null ? null : searchDTO.getTitle().trim()
+                    , searchDTO.getCompanyName() == null ? null : searchDTO.getCompanyName().trim()
+                    , searchDTO.getTenderCategory()
+                    , searchDTO.getStatus(), searchDTO.getRefNo());
+            searchDTO.setSearchText(null);
+        }
         return tenderPagingDAO.findAll(searchSpec, pageable);
     }
 

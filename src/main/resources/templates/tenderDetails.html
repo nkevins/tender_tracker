@@ -49,8 +49,8 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <h4>Details:</h4>
-                                    <p>Opening Date: <span th:text="${#dates.format(tender.openDate, 'dd MMM yyyy')}"></span></p>
-                                    <p>Closing Date: <span th:text="${#dates.format(tender.closedDate, 'dd MMM yyyy')}"></span></p>
+                                    <p>Opening Date: <span th:text="${#dates.format(tender.openDate, 'dd MMM yyyy HH:mm')}"></span></p>
+                                    <p>Closing Date: <span th:text="${#dates.format(tender.closedDate, 'dd MMM yyyy HH:mm')}"></span></p>
                                     <p>Status: <span class="label label-success" th:if="${tender.status == 1}">OPEN</span><span class="label label-danger" th:if="${tender.status == 2}">CLOSED</span><span class="label label-primary" th:if="${tender.status == 3}">AWARDED</span></p>
                                 </div>
                                 <div class="col-md-6">
@@ -93,9 +93,9 @@
                                     <td th:text="${codeValueService.getDescription('uom', i.uom)}">Pcs</td>
                                 </tr>
                             </table>
-                            <a th:href="@{/tender/__${tender.id}__/respond}" class="btn btn-block btn-theme btn-success" sec:authorize="hasAnyRole('ADMIN','SUBMITTER')" th:unless="${isSubmitedTender}">Submit Respond</a>
+                            <a th:href="@{/tender/__${tender.id}__/respond}" class="btn btn-block btn-theme btn-success" sec:authorize="hasAnyRole('ADMIN','SUBMITTER')" th:unless="${isSubmitedTender}">Submit Response</a>
 
-                            <a th:href="@{/tender/__${tender.id}__/respond}" class="btn btn-block btn-theme btn-success" sec:authorize="hasAnyRole('ADMIN','SUBMITTER')" th:if="${isSubmitedTender}" disabled="true">Submit Respond</a>
+                            <a th:href="@{/tender/__${tender.id}__/respond}" class="btn btn-block btn-theme btn-success" sec:authorize="hasAnyRole('ADMIN','SUBMITTER')" th:if="${isSubmitedTender}" disabled="true">Submit Response</a>
                         </div>
                         <!-- end Tender details pane -->
 
@@ -103,12 +103,12 @@
                         <div role="tabpanel" class="tab-pane" id="clarification">
 
                             <form th:action="@{/tender/clarification/save}" method="POST" sec:authorize="hasAnyRole('USER')">
-                                <h4>Submit Clarification</h4>
-                                <div class="form-group">
+                                <h4 sec:authorize="hasAnyRole('ADMIN,SUBMITTER')">Submit Clarification</h4>
+                                <div class="form-group" sec:authorize="hasAnyRole('ADMIN,SUBMITTER,SYS_ADMIN')">
                                     <label>Clarification</label>
                                     <textarea class="form-control" rows="4" required="required" th:field="${clarificationDto.response}"></textarea>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group" sec:authorize="hasAnyRole('ADMIN,SUBMITTER,SYS_ADMIN')">
                                     <input type="hidden" name="tenderId" th:value="${tender.id}" />
                                     <input type="hidden" name="companyId" th:value="${tender.company.id}" />
                                     <button type="submit" class="btn btn-theme btn-lg btn-t-primary btn-pill">Submit</button>
@@ -124,7 +124,7 @@
                                 <div class="item" th:each="c, iter : ${clarification}">
                                     <div class="row">
                                         <h3 th:text="${c.description}"></h3>
-                                        <p><strong>Submitted Date: </strong><span th:text="${#dates.format(c.createdDate, 'dd-MMM-yyyy')}"> </span></p>
+                                        <p><strong>Submitted Date: </strong><span th:text="${#dates.format(c.createdDate, 'dd-MMM-yyyy HH:mm:ss')}"> </span></p>
                                         <p><strong>Submitter: </strong> <span th:text="${c.company.name}"> </span></p>
                                         <p th:unless="${#strings.isEmpty(c.response)}"><strong>Response: </strong><span th:text="${c.response}"> </span></p>
                                     </div>
