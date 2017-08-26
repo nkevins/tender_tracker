@@ -109,10 +109,6 @@ public class NotificationServiceImpl implements NotificationService {
                 new String[]{email}, company.getName());
     }
 
-//    private boolean sendEmail(String emailSubject, String emailBody, String... to) {
-//        return mailSenderManager.sendEmail(emailSubject, emailBody, to);
-//    }
-
     private boolean sendEmail(String emailSubject, String path, String[] to, String... params) {
         return mailSenderManager.sendEmail(emailSubject, path, to, params);
     }

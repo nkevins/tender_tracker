@@ -1,8 +1,5 @@
 package com.chlorocode.tendertracker.service.notification;
 
-import com.chlorocode.tendertracker.dao.entity.User;
-
-import java.util.List;
 import java.util.Map;
 
 /**

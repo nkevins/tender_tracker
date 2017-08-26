@@ -1,7 +1,5 @@
 package com.chlorocode.tendertracker.service.notification;
 
-import java.util.List;
-
 /**
  * Kyaw Min Thu
  */

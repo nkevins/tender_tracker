@@ -29,19 +29,8 @@ public class MailSenderServiceImpl implements MailSenderService {
     @Override
     public boolean sendEmail(String subject, String body, String... emails) {
         // Do the business calculations...
-
         // Call the collaborators to persist the order...
         try {
-//            MimeMessagePreparator preparator = new MimeMessagePreparator() {
-//                public void prepare(MimeMessage mimeMessage) throws Exception {
-//
-//                    mimeMessage.setRecipients(Message.RecipientType.TO, getAddresses(emails));
-//                    mimeMessage.setFrom(new InternetAddress("tendertracker.nusiss@gmail.com"));
-//                    mimeMessage.setText("Dear Kyaw Min Thu, thank you for placing order. Your order number is 0001.");
-//                }
-//            };
-//            this.mailSender.send(preparator);
-
             MimeMessage message = mailSender.createMimeMessage();
 
             // use the true flag to indicate you need a multipart message
@@ -63,19 +52,8 @@ public class MailSenderServiceImpl implements MailSenderService {
     @Override
     public boolean sendEmail(String subject, String templatePath, String[] emails, String... params) {
         // Do the business calculations...
-
         // Call the collaborators to persist the order...
         try {
-//            MimeMessagePreparator preparator = new MimeMessagePreparator() {
-//                public void prepare(MimeMessage mimeMessage) throws Exception {
-//
-//                    mimeMessage.setRecipients(Message.RecipientType.TO, getAddresses(emails));
-//                    mimeMessage.setFrom(new InternetAddress("tendertracker.nusiss@gmail.com"));
-//                    mimeMessage.setText("Dear Kyaw Min Thu, thank you for placing order. Your order number is 0001.");
-//                }
-//            };
-//            this.mailSender.send(preparator);
-
             MimeMessage message = mailSender.createMimeMessage();
 
             // use the true flag to indicate you need a multipart message

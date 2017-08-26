@@ -261,7 +261,7 @@ public class TenderPublicController {
      * @return model and view
      */
     @GetMapping("/tenders")
-    public String showPersonsPageWithOrder(@RequestParam("pageSize") Optional<Integer> pageSize
+    public String showTenders(@RequestParam("pageSize") Optional<Integer> pageSize
             , @RequestParam("page") Optional<Integer> page
             , @RequestParam("searchText") Optional<String> searchText
             , @RequestParam("title") Optional<String> title
