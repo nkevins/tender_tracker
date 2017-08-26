@@ -54,6 +54,7 @@ public class TenderControllerTest {
         List<Company> managedCompany = new LinkedList<Company>();
         Company c = new Company();
         c.setName("Abc Pte. Ltd");
+        c.setId(1);
         managedCompany.add(c);
         currentUser = new CurrentUser(u, AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER,ROLE_ADMIN"), managedCompany);
     }
@@ -116,6 +117,10 @@ public class TenderControllerTest {
         t.setTenderCategory(cat);
         t.setOpenDate(new Date());
         t.setClosedDate(new Date());
+        Company c = new Company();
+        c.setId(1);
+        t.setCompany(c);
+        t.setCreatedBy(1);
         when(tenderService.findById(anyInt())).thenReturn(t);
 
         this.mvc.perform(
