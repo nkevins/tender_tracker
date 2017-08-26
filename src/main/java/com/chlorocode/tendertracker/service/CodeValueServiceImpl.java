@@ -43,11 +43,20 @@ public class CodeValueServiceImpl implements CodeValueService {
     }
 
     @Override
-    public Map<String, String> getTenderOrderModes() {
+    public Map<String, String> getTenderOrderBy() {
         Map<String, String> orderMode = new HashMap<>();
         orderMode.put(TTConstants.TITLE, TTConstants.LBL_TITLE);
         orderMode.put(TTConstants.OPEN_DATE, TTConstants.LBL_OPEN_DATE);
         orderMode.put(TTConstants.CLOSED_DATE, TTConstants.LBL_CLOSED_DATE);
+
+        return orderMode;
+    }
+
+    @Override
+    public Map<String, String> getTenderOrderMode() {
+        Map<String, String> orderMode = new HashMap<>();
+        orderMode.put(TTConstants.ASC, TTConstants.LBL_ASC);
+        orderMode.put(TTConstants.DESC, TTConstants.LBL_DESC);
 
         return orderMode;
     }

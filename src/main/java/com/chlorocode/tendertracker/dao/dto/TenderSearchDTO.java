@@ -16,6 +16,8 @@ public class TenderSearchDTO {
 
     private String orderBy;
 
+    private String orderMode;
+
     private boolean advance;
 
     public String getSearchText() {
@@ -88,5 +90,13 @@ public class TenderSearchDTO {
 
     public void setAdvance(boolean advance) {
         this.advance = advance;
+    }
+
+    public String getOrderMode() {
+        return orderMode;
+    }
+
+    public void setOrderMode(String orderMode) {
+        this.orderMode = orderMode;
     }
 }
