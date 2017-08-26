@@ -17,7 +17,9 @@ public interface CodeValueService {
 
     TenderCategory getTenderCategoryById(int id);
 
-    Map<String, String> getTenderOrderModes();
+    Map<String, String> getTenderOrderBy();
+
+    Map<String, String> getTenderOrderMode();
 
     List<Country> getAllCountries();
 }

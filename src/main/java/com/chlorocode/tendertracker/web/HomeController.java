@@ -34,13 +34,6 @@ public class HomeController {
         this.codeValueService = codeValueService;
     }
 
-//    @GetMapping("/")
-//    public String showHomePage(ModelMap model) {
-//        model.addAttribute("tenders", tenderService.findTender());
-//        model.addAttribute("codeValueSvc", codeValueService);
-//        return "home";
-//    }
-
     /**
      * Handles all requests
      *
@@ -51,8 +44,6 @@ public class HomeController {
     @GetMapping("/")
     public String showPersonsPage(@RequestParam("pageSize") Optional<Integer> pageSize,
                                         @RequestParam("page") Optional<Integer> page, ModelMap model) {
-        //ModelAndView modelAndView = new ModelAndView("home");
-
         // Evaluate page size. If requested parameter is null, return initial
         // page size
         int evalPageSize = pageSize.orElse(TTConstants.INITIAL_PAGE_SIZE);
@@ -73,7 +64,6 @@ public class HomeController {
         model.addAttribute("searchCriteria", tenderSearchDTO);
         model.addAttribute("codeValueSvc", codeValueService);
         model.addAttribute("selectedPageSize", evalPageSize);
-//        modelAndView.addObject("pageSizes", PAGE_SIZES);
         model.addAttribute("pager", pager);
         if (tenders == null || tenders.getTotalPages() == 0) {
             AlertDTO alert = new AlertDTO(AlertDTO.AlertType.WARNING,

@@ -112,34 +112,44 @@
 <div layout:fragment="content">
     <div class="row">
         <div class="col-md-12">
-            <th:block th:if="${alert != null}">
-                <div th:replace="fragments/alert :: alert (type=${alert.getType()}, messages=${alert.messages})">Alert</div>
-            </th:block>
+
+            <br />
+            <div th:if="${noTenderFound}" class="alert alert-info">
+                <strong>No tender found.</strong>
+            </div>
 
             <!-- box listing -->
             <th:block th:if="${tenders.totalPages} &gt; 0">
 
                 <div class="block-section-sm">
-                    <form class="form-search-list" th:action="@{/tenders}" method="get" enctype="multipart/form-data" th:object="${searchCriteria}">
+                    <div>
+                        <form class="form-search-list" th:action="@{/tenders}" method="get" enctype="multipart/form-data" th:object="${searchCriteria}">
 
-                        <input type="hidden" class="form-control" th:field="*{searchText}" th:if="*{searchText != null and !searchText.isEmpty()}"/>
-                        <input type="hidden" class="form-control" th:field="*{title}" th:if="*{title != null and !title.isEmpty()}"/>
-                        <input type="hidden" class="form-control" th:field="*{companyName}" th:if="*{companyName != null and !companyName.isEmpty()}"/>
-                        <input type="hidden" class="form-control" th:field="*{tenderCategory}" th:if="*{tenderCategory gt 0}"/>
-                        <input type="hidden" class="form-control" th:field="*{status}" th:if="*{status gt 0}"/>
-                        <input type="hidden" class="form-control" th:field="*{refNo}" th:if="*{refNo != null and !refNo.isEmpty()}"/>
-                        <div class="form-inline">
-                            <div class="form-group">
-                                <label class="control-label">Sort By&nbsp;:&nbsp;</label>
-                                <select class="form-control" name="orderBy" th:field="*{orderBy}" onchange="this.form.submit()">
-                                    <option th:each="entry : ${codeValueSvc.getTenderOrderModes().entrySet()}"
-                                            th:value="${entry.key}" th:text="${entry.value}">Order By</option>
-                                </select>
+                            <input type="hidden" class="form-control" th:field="*{searchText}" th:if="*{searchText != null and !searchText.isEmpty()}"/>
+                            <input type="hidden" class="form-control" th:field="*{title}" th:if="*{title != null and !title.isEmpty()}"/>
+                            <input type="hidden" class="form-control" th:field="*{companyName}" th:if="*{companyName != null and !companyName.isEmpty()}"/>
+                            <input type="hidden" class="form-control" th:field="*{tenderCategory}" th:if="*{tenderCategory gt 0}"/>
+                            <input type="hidden" class="form-control" th:field="*{status}" th:if="*{status gt 0}"/>
+                            <input type="hidden" class="form-control" th:field="*{refNo}" th:if="*{refNo != null and !refNo.isEmpty()}"/>
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <label class="control-label">Sort By&nbsp;:&nbsp;</label>
+                                    <select class="form-control" name="orderBy" th:field="*{orderBy}" onchange="this.form.submit()">
+                                        <option th:each="entry : ${codeValueSvc.getTenderOrderBy().entrySet()}"
+                                                th:value="${entry.key}" th:text="${entry.value}">Order By</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">&nbsp;</label>
+                                    <select class="form-control" name="orderMode" th:field="*{orderMode}" onchange="this.form.submit()">
+                                        <option th:each="entry : ${codeValueSvc.getTenderOrderMode().entrySet()}"
+                                                th:value="${entry.key}" th:text="${entry.value}">Order Mode</option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="block-section-sm">
+                        </form>
+                    </div>
+
                     <!-- item list -->
                     <div class="box-list">
                         <div class="item" th:each="t : ${tenders}">
@@ -180,20 +190,20 @@
                         <div th:if="${tenders.totalPages != 1}" class="form-group col-md-11 pagination-centered">
                             <ul class="pagination">
                                 <li th:class="${tenders.number == 0} ? disabled">
-                                    <a class="pageLink" th:href="@{/tenders/(orderBy=${searchCriteria.orderBy}, pageSize=${selectedPageSize}, page=1)}">&laquo;&nbsp;Prev</a>
+                                    <a class="pageLink" th:href="@{/tenders/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=1)}">&laquo;&nbsp;Prev</a>
                                 </li>
                                 <!--<li th:class="${tenders.number == 0} ? disabled">-->
                                 <!--<a class="pageLink" th:href="@{/(pageSize=${selectedPageSize}, page=${tenders.number})}">&larr;</a>-->
                                 <!--</li>-->
                                 <li th:class="${tenders.number == (page - 1)} ? 'active pointer-disabled'"
                                     th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
-                                    <a class="pageLink" th:href="@{/tenders/(orderBy=${searchCriteria.orderBy}, pageSize=${selectedPageSize}, page=${page})}" th:text="${page}"></a>
+                                    <a class="pageLink" th:href="@{/tenders/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=${page})}" th:text="${page}"></a>
                                 </li>
                                 <!--<li th:class="${tenders.number + 1 == tenders.totalPages} ? disabled">-->
                                 <!--<a class="pageLink" th:href="@{/(pageSize=${selectedPageSize}, page=${tenders.number + 2})}">&rarr;</a>-->
                                 <!--</li>-->
                                 <li th:class="${tenders.number + 1 == tenders.totalPages} ? disabled">
-                                    <a class="pageLink" th:href="@{/tenders/(orderBy=${searchCriteria.orderBy}, pageSize=${selectedPageSize}, page=${tenders.totalPages})}">Next&nbsp;&raquo;</a>
+                                    <a class="pageLink" th:href="@{/tenders/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=${tenders.totalPages})}">Next&nbsp;&raquo;</a>
                                 </li>
                             </ul>
                         </div>
@@ -202,7 +212,7 @@
                         <div th:if="${tenders.totalPages != 1}" class="form-group col-md-11 pagination-centered">
                             <ul class="pagination">
                                 <li th:class="${tenders.number == 0} ? disabled">
-                                    <a class="pageLink" th:href="@{/tenders/(orderBy=${searchCriteria.orderBy}, pageSize=${selectedPageSize}, page=1
+                                    <a class="pageLink" th:href="@{/tenders/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=1
                                     , searchText=${searchCriteria.searchText}, title=${searchCriteria.title}, companyName=${searchCriteria.companyName}
                                     , refNo=${searchCriteria.refNo}, tenderCategory=${searchCriteria.tenderCategory}, status=${searchCriteria.status})}">&laquo;&nbsp;Prev</a>
                                 </li>
@@ -211,7 +221,7 @@
                                 <!--</li>-->
                                 <li th:class="${tenders.number == (page - 1)} ? 'active pointer-disabled'"
                                     th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
-                                    <a class="pageLink" th:href="@{/tenders/(orderBy=${searchCriteria.orderBy}, pageSize=${selectedPageSize}, page=${page}
+                                    <a class="pageLink" th:href="@{/tenders/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=${page}
                                     , searchText=${searchCriteria.searchText}, title=${searchCriteria.title}, companyName=${searchCriteria.companyName}
                                     , refNo=${searchCriteria.refNo}, tenderCategory=${searchCriteria.tenderCategory}, status=${searchCriteria.status})}" th:text="${page}"></a>
                                 </li>
@@ -219,7 +229,7 @@
                                 <!--<a class="pageLink" th:href="@{/(pageSize=${selectedPageSize}, page=${tenders.number + 2})}">&rarr;</a>-->
                                 <!--</li>-->
                                 <li th:class="${tenders.number + 1 == tenders.totalPages} ? disabled">
-                                    <a class="pageLink" th:href="@{/tenders/(orderBy=${searchCriteria.orderBy}, pageSize=${selectedPageSize}, page=${tenders.totalPages}
+                                    <a class="pageLink" th:href="@{/tenders/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=${tenders.totalPages}
                                     , searchText=${searchCriteria.searchText}, title=${searchCriteria.title}, companyName=${searchCriteria.companyName}
                                     , refNo=${searchCriteria.refNo}, tenderCategory=${searchCriteria.tenderCategory}, status=${searchCriteria.status})}">Next&nbsp;&raquo;</a>
                                 </li>
