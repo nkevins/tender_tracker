@@ -4,6 +4,5 @@ jdk:
 
 notifications:
   slack: mtechse:7hzMwVEuGkmymMBLFwRxWSwa
-    on_success: never
-    on_failure: always
-    
+  on_failure: always
+  on_success: never
