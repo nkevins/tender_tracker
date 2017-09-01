@@ -26,14 +26,13 @@ public class TenderServiceImpl implements TenderService {
     private TenderItemDAO tenderItemDAO;
     private TenderDocumentDAO tenderDocumentDAO;
     private TenderCategorySubscriptionDAO tenderCategorySubscriptionDAO;
-    private DocumentDAO documentDAO;
     private S3Wrapper s3Wrapper;
     private TenderBookmarkDAO tenderBookmarkDAO;
     private TenderPagingDAO tenderPagingDAO;
     private NotificationService notificationService;
 
     @Autowired
-    public TenderServiceImpl(TenderDAO tenderDAO, DocumentDAO documentDAO, S3Wrapper s3Wrapper, TenderBookmarkDAO tenderBookmarkDAO
+    public TenderServiceImpl(TenderDAO tenderDAO, S3Wrapper s3Wrapper, TenderBookmarkDAO tenderBookmarkDAO
                             , TenderItemDAO tenderItemDAO, TenderDocumentDAO tenderDocumentDAO
                             , TenderCategorySubscriptionDAO tenderCategorySubscriptionDAO, TenderPagingDAO tenderPagingDAO
                             , NotificationService notificationService) {
@@ -41,7 +40,6 @@ public class TenderServiceImpl implements TenderService {
         this.tenderItemDAO = tenderItemDAO;
         this.tenderDocumentDAO = tenderDocumentDAO;
         this.tenderCategorySubscriptionDAO = tenderCategorySubscriptionDAO;
-        this.documentDAO = documentDAO;
         this.s3Wrapper = s3Wrapper;
         this.tenderBookmarkDAO = tenderBookmarkDAO;
         this.tenderPagingDAO = tenderPagingDAO;
@@ -92,19 +90,15 @@ public class TenderServiceImpl implements TenderService {
             }
 
             // Save to DB
-            Document doc = new Document();
+            TenderDocument doc = new TenderDocument();
             doc.setName(f.getOriginalFilename());
             doc.setLocation(bucketPath);
-            doc.setType(1);
             doc.setCreatedBy(t.getCreatedBy());
             doc.setCreatedDate(new Date());
             doc.setLastUpdatedBy(t.getLastUpdatedBy());
             doc.setLastUpdatedDate(new Date());
-            documentDAO.save(doc);
-
-            TenderDocument tenderDocument = new TenderDocument();
-            tenderDocument.setDocument(doc);
-            t.addTenderDocument(tenderDocument);
+            t.addTenderDocument(doc);
+            tenderDocumentDAO.save(doc);
         }
 
         if (result != null) {
@@ -187,37 +181,28 @@ public class TenderServiceImpl implements TenderService {
         }
 
         // Save to DB
-        Document doc = new Document();
+        TenderDocument doc = new TenderDocument();
         doc.setName(attachment.getOriginalFilename());
         doc.setLocation(bucketPath);
-        doc.setType(1);
         doc.setCreatedBy(createdBy);
         doc.setCreatedDate(new Date());
         doc.setLastUpdatedBy(createdBy);
         doc.setLastUpdatedDate(new Date());
-        documentDAO.save(doc);
-
-        TenderDocument tenderDocument = new TenderDocument();
-        tenderDocument.setDocument(doc);
-        tenderDocument.setTender(tender);
-
-        return tenderDocumentDAO.save(tenderDocument);
+        doc.setTender(tender);
+        return tenderDocumentDAO.save(doc);
     }
 
     @Override
     @Transactional
     public void removeTenderDocument(int id) {
         TenderDocument tenderDocument = tenderDocumentDAO.findOne(id);
-        Document document = tenderDocument.getDocument();
 
         // Remove from S3
-        String bucketPath = "tender_documents/" + tenderDocument.getTender().getId() + "/" + document.getName();
+        String bucketPath = "tender_documents/" + tenderDocument.getTender().getId() + "/" + tenderDocument.getName();
         s3Wrapper.deleteObject(bucketPath);
 
         tenderDocument.setTender(null);
-        tenderDocument.setDocument(null);
         tenderDocumentDAO.delete(tenderDocument);
-        documentDAO.delete(document);
     }
 
     @Override

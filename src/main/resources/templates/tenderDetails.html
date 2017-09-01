@@ -66,7 +66,7 @@
 
                             <h4>Document:</h4>
                             <ul>
-                                <li th:each="doc : ${tender.documents}"><a th:text="${doc.document.name}" th:href="${s3Service.getPreSignedURL(doc.document.location)}" /></li>
+                                <li th:each="doc : ${tender.documents}"><a th:text="${doc.name}" th:href="${s3Service.getPreSignedURL(doc.location)}" /></li>
                             </ul>
 
                             <div class="row">
@@ -145,7 +145,7 @@
                                             <p>Attachments: </p>
                                             <ul>
                                                 <li th:each="d : ${c.documents}">
-                                                    <a th:href="${s3Service.getPreSignedURL(d.document.location)}" th:text="${d.document.name}"></a>
+                                                    <a th:href="${s3Service.getPreSignedURL(d.location)}" th:text="${d.name}"></a>
                                                 </li>
                                             </ul>
                                         </div>
