@@ -168,7 +168,11 @@ public class TenderController {
                 try {
                     setValue(new SimpleDateFormat("dd/MM/yyyy HH:mm").parse(value));
                 } catch(ParseException e) {
-                    setValue(null);
+                    try {
+                        setValue(new SimpleDateFormat("dd/MM/yyyy").parse(value));
+                    } catch(ParseException e2) {
+                        setValue(null);
+                    }
                 }
             }
 

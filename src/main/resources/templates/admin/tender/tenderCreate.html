@@ -239,6 +239,8 @@
         $('#deliveryDate').datepicker({
             autoclose: true,
             format: 'dd/mm/yyyy'
+        }).on('changeDate', function(ev) {
+            $('#deliveryDate').attr("value", ev.target.value);
         });
 
         $(function () {

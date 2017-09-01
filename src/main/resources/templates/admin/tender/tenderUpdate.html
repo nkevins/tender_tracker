@@ -292,7 +292,15 @@
         $('#deliveryDate').datepicker({
             autoclose: true,
             format: 'dd/mm/yyyy'
+        }).on('changeDate', function(ev) {
+            $('#deliveryDate').attr("value", ev.target.value);
         });
+        // Reformat delivery date to remove time component
+        if ($('#deliveryDate').val()) {
+            var originalDate = $('#deliveryDate').val();
+            var formatted = moment(originalDate, 'DD/MM/YYYY HH:mm').format('DD/MM/YYYY');
+            $('#deliveryDate').attr("value", formatted);
+        }
 
         $(function () {
             CKEDITOR.replace('description');
