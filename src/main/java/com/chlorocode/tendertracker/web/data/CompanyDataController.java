@@ -29,4 +29,13 @@ public class CompanyDataController {
             return criteriaBuilder.equal(root.get("status"), 0);
         });
     }
+
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/sysadm/data/companyinfolist", method = RequestMethod.GET)
+    public DataTablesOutput<Company> getCompanyInfoList(@Valid DataTablesInput input) {
+        return companyDAO.findAll(input, null, (root, criteriaQuery, criteriaBuilder) -> {
+            return criteriaBuilder.notEqual(root.get("status"), 0);
+        });
+    }
+
 }
