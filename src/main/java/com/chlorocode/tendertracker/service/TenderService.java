@@ -19,6 +19,8 @@ public interface TenderService {
     TenderItem addTenderItem(TenderItem tenderItem);
     TenderItem updateTenderItem(TenderItem tenderItem);
     void removeTenderItem(int tenderItemId);
+    void moveUpTenderItem(int tenderItemId, int tenderId);
+    void moveDownTenderItem(int tenderItemId, int tenderId);
 
     TenderDocument addTenderDocument(MultipartFile attachment, Tender tender, int createdBy);
     void removeTenderDocument(int id);

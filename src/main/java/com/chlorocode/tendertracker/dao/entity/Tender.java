@@ -58,6 +58,7 @@ public class Tender {
     private Date lastUpdatedDate;
 
     @OneToMany(mappedBy = "tender", cascade = CascadeType.PERSIST)
+    @OrderBy("sort")
     private List<TenderItem> items;
 
     @OneToMany(mappedBy = "tender", cascade = CascadeType.PERSIST)
