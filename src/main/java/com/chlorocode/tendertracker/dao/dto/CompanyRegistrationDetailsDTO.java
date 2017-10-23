@@ -22,6 +22,15 @@ public class CompanyRegistrationDetailsDTO {
     private Date applicationDate;
     private String mailingAddress;
     private String principleActivity;
+    private String status;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public String getMailingAddress() {
         return mailingAddress;
