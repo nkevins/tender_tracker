@@ -252,6 +252,7 @@ public class TenderController {
         model.addAttribute("tenderCategories", codeValueService.getAllTenderCategories());
         model.addAttribute("uom", codeValueService.getByType("uom"));
         model.addAttribute("s3Service", s3Service);
+        model.addAttribute("maxTenderItemIndex", tender.getItems().size() - 1);
         return "admin/tender/tenderUpdate";
     }
 
@@ -368,6 +369,26 @@ public class TenderController {
         tenderService.removeTenderItem(tenderItemId);
 
         AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS, "Tender Item Removed");
+        redirectAttrs.addFlashAttribute("alert", alert);
+        return "redirect:/admin/tender/" + tenderId + "/update";
+    }
+
+    @PostMapping("/admin/tender/moveUpTenderItem")
+    public String moveUpTenderItem(@RequestParam(name = "tenderItemId") int tenderItemId, @RequestParam(name = "tenderId") int tenderId,
+            RedirectAttributes redirectAttrs) {
+        tenderService.moveUpTenderItem(tenderItemId, tenderId);
+
+        AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS, "Tender Item Order Updated");
+        redirectAttrs.addFlashAttribute("alert", alert);
+        return "redirect:/admin/tender/" + tenderId + "/update";
+    }
+
+    @PostMapping("/admin/tender/moveDownTenderItem")
+    public String moveDownTenderItem(@RequestParam(name = "tenderItemId") int tenderItemId, @RequestParam(name = "tenderId") int tenderId,
+                                   RedirectAttributes redirectAttrs) {
+        tenderService.moveDownTenderItem(tenderItemId, tenderId);
+
+        AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS, "Tender Item Order Updated");
         redirectAttrs.addFlashAttribute("alert", alert);
         return "redirect:/admin/tender/" + tenderId + "/update";
     }

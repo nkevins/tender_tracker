@@ -171,6 +171,36 @@ public class TenderServiceImpl implements TenderService {
 
     @Override
     @Transactional
+    public void moveUpTenderItem(int tenderItemId, int tenderId) {
+        TenderItem tenderItem = tenderItemDAO.findOne(tenderItemId);
+        int currentOrder = tenderItem.getSort();
+
+        TenderItem tenderItemReplaced = tenderItemDAO.getTenderItemBySort(tenderId, currentOrder - 1);
+
+        tenderItem.setSort(currentOrder - 1);
+        tenderItemReplaced.setSort(currentOrder);
+
+        tenderItemDAO.save(tenderItem);
+        tenderItemDAO.save(tenderItemReplaced);
+    }
+
+    @Override
+    @Transactional
+    public void moveDownTenderItem(int tenderItemId, int tenderId) {
+        TenderItem tenderItem = tenderItemDAO.findOne(tenderItemId);
+        int currentOrder = tenderItem.getSort();
+
+        TenderItem tenderItemReplaced = tenderItemDAO.getTenderItemBySort(tenderId, currentOrder + 1);
+
+        tenderItem.setSort(currentOrder + 1);
+        tenderItemReplaced.setSort(currentOrder);
+
+        tenderItemDAO.save(tenderItem);
+        tenderItemDAO.save(tenderItemReplaced);
+    }
+
+    @Override
+    @Transactional
     public TenderDocument addTenderDocument(MultipartFile attachment, Tender tender, int createdBy) {
         // Upload to AWS S3
         String bucketPath = "tender_documents/" + tender.getId() + "/" + attachment.getOriginalFilename();
