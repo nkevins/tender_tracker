@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Created by Kyaw Min Thu on 3/7/2017.
@@ -45,6 +46,14 @@ public class ExternalTender {
     @JsonView(DataTablesOutput.View.class)
     @Column(name = "tender_source")
     private String tenderSource;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_date")
+    private Date createdDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "last_updated_date")
+    private Date lastUpdatedDate;
 
     public long getId() {
         return id;
@@ -116,6 +125,22 @@ public class ExternalTender {
 
     public void setTenderSource(String tenderSource) {
         this.tenderSource = tenderSource;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public Date getLastUpdatedDate() {
+        return lastUpdatedDate;
+    }
+
+    public void setLastUpdatedDate(Date lastUpdatedDate) {
+        this.lastUpdatedDate = lastUpdatedDate;
     }
 
     @Override
