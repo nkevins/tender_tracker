@@ -2,6 +2,7 @@ package com.chlorocode.tendertracker.dao;
 
 import com.chlorocode.tendertracker.dao.entity.Tender;
 import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -15,4 +16,8 @@ public interface TenderDAO extends DataTablesRepository<Tender, Integer> {
             "where t.company_id = ?1 " +
             "group by c.description", nativeQuery = true)
     List<Object[]> getTenderStatusStatisticByCompany(int companyId);
+
+    @Modifying
+    @Query("update Tender t set t.status = 2, t.lastUpdatedBy = -1, t.lastUpdatedDate = CURRENT_TIMESTAMP where t.closedDate < CURRENT_TIMESTAMP and t.status = 1")
+    void autoCloseTender();
 }
