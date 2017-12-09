@@ -30,11 +30,11 @@ public class ExternalTender {
 
     @JsonView(DataTablesOutput.View.class)
     @Column(name = "published_date")
-    private String publishedDate;
+    private Date publishedDate;
 
     @JsonView(DataTablesOutput.View.class)
     @Column(name = "closing_date")
-    private String closingDate;
+    private Date closingDate;
 
     @JsonView(DataTablesOutput.View.class)
     private String status;
@@ -87,19 +87,19 @@ public class ExternalTender {
         this.companyName = companyName;
     }
 
-    public String getPublishedDate() {
+    public Date getPublishedDate() {
         return publishedDate;
     }
 
-    public void setPublishedDate(String publishedDate) {
+    public void setPublishedDate(Date publishedDate) {
         this.publishedDate = publishedDate;
     }
 
-    public String getClosingDate() {
+    public Date getClosingDate() {
         return closingDate;
     }
 
-    public void setClosingDate(String closingDate) {
+    public void setClosingDate(Date closingDate) {
         this.closingDate = closingDate;
     }
 
