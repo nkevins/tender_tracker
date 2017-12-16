@@ -73,11 +73,19 @@ public class Tender {
     @OneToMany(mappedBy = "tender", cascade = CascadeType.PERSIST)
     private List<Corrigendum> corrigendums;
 
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @JoinTable(name = "tender_invite",
+            joinColumns = @JoinColumn(name = "tender_id"),
+            inverseJoinColumns = @JoinColumn(name = "company_id")
+    )
+    private List<Company> invitedCompanies;
+
     public Tender() {
         items = new LinkedList<>();
         documents = new LinkedList<>();
         tenderBookmarks = new LinkedList<>();
         corrigendums = new LinkedList<>();
+        invitedCompanies = new LinkedList<>();
     }
 
     public int getId() {
@@ -289,5 +297,13 @@ public class Tender {
 
     public List<Corrigendum> getCorrigendums() {
         return corrigendums;
+    }
+
+    public List<Company> getInvitedCompanies() {
+        return invitedCompanies;
+    }
+
+    public void addInvitedCompany(Company company) {
+        invitedCompanies.add(company);
     }
 }

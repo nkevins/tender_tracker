@@ -44,6 +44,14 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="form-group" id="invitedCompanyForm" style="display:none;">
+                                <label for="title" class="col-sm-2 control-label">Invited Company<span style="color:red">*</span></label>
+                                <div class="col-sm-10">
+                                    <div id="remote">
+                                        <input type="text" class="form-control" id="invitedCompany" name="invitedCompany" />
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label for="refNo" class="col-sm-2 control-label">Reference No</label>
                                 <div class="col-sm-10">
@@ -281,7 +289,11 @@
 </div>
 </body>
 <th:block layout:fragment="scripts">
-    <script type="text/javascript">
+    <script th:src="@{/assets/admin/plugins/typeahead/typeahead.js}"></script>
+    <script th:src="@{/assets/admin/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js}"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+
         $('#openDate').datetimepicker({
             format: 'DD/MM/YYYY HH:mm'
         }).on('dp.change', function(e){
@@ -372,6 +384,89 @@
             $('body').append(form);
             form.submit();
         }
+
+        $(document).ready(function() {
+            var companies = new Bloodhound({
+                datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                prefetch: '/admin/data/company',
+                remote: {
+                    url: '/admin/data/company?name=%QUERY',
+                    wildcard: '%QUERY'
+                }
+            });
+            companies.initialize();
+
+            $('#invitedCompany').tagsinput({
+                itemValue: 'id',
+                itemText: 'name',
+                typeaheadjs: [{
+                    minLength: 2,
+                    highlight: true
+                }, {
+                    name: 'companies',
+                    displayKey: 'name',
+                    source: companies.ttAdapter()
+                }]
+            });
+
+            if ($("#tenderType").val() == 2) {
+                $.ajax({
+                    type: 'GET',
+                    url: '/admin/data/invitedCompany/[[${tender.tenderId}]]',
+                    dataType: 'json',
+                    success: function (data) {
+                        $.each(data, function(i, item) {
+                            $('#invitedCompany').tagsinput('add', item);
+                        })
+                    }
+                });
+
+                $("#invitedCompanyForm").show();
+            } else {
+                $("#invitedCompanyForm").hide();
+            }
+
+            $('#invitedCompany').on('beforeItemRemove', function(event) {
+                var tag = event.item;
+                var csrf = $("meta[name='_csrf']").attr("content");
+
+                if (!event.options || !event.options.preventPost) {
+                    $.ajax({
+                        type: 'DELETE',
+                        url: '/admin/data/invitedCompany/[[${tender.tenderId}]]',
+                        headers: {"X-CSRF-TOKEN": csrf},
+                        contentType: 'application/json',
+                        data: JSON.stringify( { "companyId": tag.id } ),
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            alert(xhr);
+                            $('#invitedCompany').tagsinput('add', tag);
+                        }
+                    });
+                }
+            });
+
+            $('#invitedCompany').on('beforeItemAdd', function(event) {
+                var tag = event.item;
+                var csrf = $("meta[name='_csrf']").attr("content");
+
+                if (!event.options || !event.options.preventPost) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/admin/data/invitedCompany/[[${tender.tenderId}]]',
+                        headers: {"X-CSRF-TOKEN": csrf},
+                        contentType: 'application/json',
+                        data: JSON.stringify( { "companyId": tag.id } ),
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            alert(xhr);
+                            $('#invitedCompany').tagsinput('remove', tag);
+                        }
+                    });
+                }
+            });
+        });
+
+        /*]]>*/
     </script>
 </th:block>
 </html>

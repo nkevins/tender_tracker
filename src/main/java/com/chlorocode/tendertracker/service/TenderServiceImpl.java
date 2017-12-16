@@ -75,6 +75,10 @@ public class TenderServiceImpl implements TenderService {
             throw new ApplicationException("At least one Tender Item must be provided");
         }
 
+        if (t.getTenderType() == 2 && t.getInvitedCompanies().size() == 0) {
+            throw new ApplicationException("For Closed Tender, please provide at least one company to be invited");
+        }
+
         // Set tender status to OPEN
         t.setStatus(1);
 

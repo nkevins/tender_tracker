@@ -19,4 +19,6 @@ public interface CompanyDAO extends DataTablesRepository<Company, Integer> {
     @Query("select c from Company c where c.createdBy = ?1")
     List<Company> findCompanyByCreatedBy(int userId);
 
+    @Query("select c from Company c where c.name LIKE CONCAT('%',?1,'%') and status = 1")
+    List<Company> findCompanyByName(String name);
 }
