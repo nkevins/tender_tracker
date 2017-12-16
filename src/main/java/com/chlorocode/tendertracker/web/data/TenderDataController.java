@@ -30,8 +30,13 @@ public class TenderDataController {
         CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         int companyId = usr.getSelectedCompany().getId();
 
-        return tenderDAO.findAll(input, null, (root, criteriaQuery, criteriaBuilder) -> {
+        DataTablesOutput<Tender> tenders = tenderDAO.findAll(input, null, (root, criteriaQuery, criteriaBuilder) -> {
             return criteriaBuilder.equal(root.join("company").get("id"), companyId);
         });
+
+//        return tenderDAO.findAll(input, null, (root, criteriaQuery, criteriaBuilder) -> {
+//            return criteriaBuilder.equal(root.join("company").get("id"), companyId);
+//        });
+        return tenders;
     }
 }
