@@ -30,12 +30,15 @@ public class TenderServiceImpl implements TenderService {
     private TenderBookmarkDAO tenderBookmarkDAO;
     private TenderPagingDAO tenderPagingDAO;
     private NotificationService notificationService;
+    private IPGeoLocationService ipGeoLocationService;
+    private TenderVisitDAO tenderVisitDAO;
 
     @Autowired
     public TenderServiceImpl(TenderDAO tenderDAO, S3Wrapper s3Wrapper, TenderBookmarkDAO tenderBookmarkDAO
                             , TenderItemDAO tenderItemDAO, TenderDocumentDAO tenderDocumentDAO
                             , TenderCategorySubscriptionDAO tenderCategorySubscriptionDAO, TenderPagingDAO tenderPagingDAO
-                            , NotificationService notificationService) {
+                            , NotificationService notificationService, IPGeoLocationService ipGeoLocationService
+                            , TenderVisitDAO tenderVisitDAO) {
         this.tenderDAO = tenderDAO;
         this.tenderItemDAO = tenderItemDAO;
         this.tenderDocumentDAO = tenderDocumentDAO;
@@ -44,6 +47,8 @@ public class TenderServiceImpl implements TenderService {
         this.tenderBookmarkDAO = tenderBookmarkDAO;
         this.tenderPagingDAO = tenderPagingDAO;
         this.notificationService = notificationService;
+        this.ipGeoLocationService = ipGeoLocationService;
+        this.tenderVisitDAO = tenderVisitDAO;
     }
 
     @Override
@@ -340,6 +345,15 @@ public class TenderServiceImpl implements TenderService {
                     notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.tender_bookmark_noti, params);
                 }
             }
+        }
+    }
+
+    @Override
+    public void logVisit(Tender tender, String ipAddress) {
+        TenderVisit visit = ipGeoLocationService.getIPDetails(ipAddress);
+        if (visit != null) {
+            visit.setTender(tender);
+            tenderVisitDAO.save(visit);
         }
     }
 }

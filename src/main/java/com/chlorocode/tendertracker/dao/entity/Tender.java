@@ -80,12 +80,16 @@ public class Tender {
     )
     private List<Company> invitedCompanies;
 
+    @OneToMany(mappedBy = "tender", cascade = CascadeType.PERSIST)
+    private List<TenderVisit> tenderVisits;
+
     public Tender() {
         items = new LinkedList<>();
         documents = new LinkedList<>();
         tenderBookmarks = new LinkedList<>();
         corrigendums = new LinkedList<>();
         invitedCompanies = new LinkedList<>();
+        tenderVisits = new LinkedList<>();
     }
 
     public int getId() {
@@ -305,5 +309,14 @@ public class Tender {
 
     public void addInvitedCompany(Company company) {
         invitedCompanies.add(company);
+    }
+
+    public List<TenderVisit> getTenderVisits() {
+        return tenderVisits;
+    }
+
+    public void addTenderVisit(TenderVisit visit) {
+        tenderVisits.add(visit);
+        visit.setTender(this);
     }
 }

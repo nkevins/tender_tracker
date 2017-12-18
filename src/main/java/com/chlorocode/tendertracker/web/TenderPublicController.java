@@ -4,6 +4,7 @@ import com.chlorocode.tendertracker.constants.TTConstants;
 import com.chlorocode.tendertracker.dao.dto.*;
 import com.chlorocode.tendertracker.dao.entity.*;
 import com.chlorocode.tendertracker.exception.ApplicationException;
+import com.chlorocode.tendertracker.logging.TTLogger;
 import com.chlorocode.tendertracker.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -47,11 +48,26 @@ public class TenderPublicController {
     }
 
     @GetMapping("/tender/{id}")
-    public String showTenderDetails(@PathVariable(value="id") Integer id, ModelMap model) {
+    public String showTenderDetails(@PathVariable(value="id") Integer id, ModelMap model, HttpServletRequest request) {
         Tender tender = tenderService.findById(id);
         if (tender == null) {
             return "redirect:/";
         }
+
+        // Log visit statistic
+        try {
+            String remoteAddr;
+
+            remoteAddr = request.getHeader("X-FORWARDED-FOR");
+            if (remoteAddr == null || "".equals(remoteAddr)) {
+                remoteAddr = request.getRemoteAddr();
+            }
+
+            tenderService.logVisit(tender, remoteAddr);
+        } catch (Exception e) {
+            TTLogger.error(this.getClass().getName(), "Error when logging tender visit", e);
+        }
+
         List<Clarification> lstClarification = clariSvc.findClarificationByTenderId(id);
         List<Corrigendum> lstCorrigendum = corrigendumService.findTenderCorrigendum(id);
         TenderClarificationDTO td = new TenderClarificationDTO();
