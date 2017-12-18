@@ -1,13 +1,14 @@
 package com.chlorocode.tendertracker.service.notification;
 
-import com.chlorocode.tendertracker.dao.entity.ProcurementReport;
+import com.chlorocode.tendertracker.dao.dto.ProcurementReportDTO;
 
+import java.util.Date;
 import java.util.List;
 
 /**
  * Created by fistg on 17-Dec-17.
  */
 public interface ReportService {
-    List<ProcurementReport> findAllByDateRange(String startDate, String endDate);
+    List<ProcurementReportDTO> findAllByDateRange(Date startDate, Date endDate);
 
 }

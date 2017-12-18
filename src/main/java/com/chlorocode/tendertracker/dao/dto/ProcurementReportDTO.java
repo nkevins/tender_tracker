@@ -1,43 +1,39 @@
-package com.chlorocode.tendertracker.dao.entity;
+package com.chlorocode.tendertracker.dao.dto;
 
-import javax.persistence.Column;
 import java.util.Date;
 
 /**
  * Created by fistg on 17-Dec-17.
  */
-public class ProcurementReport {
+public class ProcurementReportDTO {
 
-    @Column(name = "ref_no")
     private String refNum;
-
-    @Column(name = "title")
-    private int tenderName;
-
-    @Column(name = "tender_type")
+    private String tenderName;
     private String tenderType;
-
-    @Column(name = "tender_categoryname")
     private String tenderCategory;
-
-    @Column(name = "open_date")
     private Date openingDate;
-
-    @Column(name = "closed_date")
     private Date closingDate;
-
-    @Column(name = "status")
     private String tenderStatus;
+
+    public ProcurementReportDTO(String refNum, String tenderName, String tenderType, String tenderCategory, Date openingDate, Date closingDate, String tenderStatus) {
+        this.refNum = refNum;
+        this.tenderName = tenderName;
+        this.tenderType = tenderType;
+        this.tenderCategory = tenderCategory;
+        this.openingDate = openingDate;
+        this.closingDate = closingDate;
+        this.tenderStatus = tenderStatus;
+    }
 
     public String getRefNum() { return refNum; }
 
     public void setRefNum(String refNum) { this.refNum = refNum; }
 
-    public int getTenderName() {
+    public String getTenderName() {
         return tenderName;
     }
 
-    public void setTenderName(int tenderName) {
+    public void setTenderName(String tenderName) {
         this.tenderName = tenderName;
     }
 

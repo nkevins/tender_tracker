@@ -1,14 +1,17 @@
 package com.chlorocode.tendertracker.web.reports;
 
-import com.chlorocode.tendertracker.dao.ReportDAO;
-import com.chlorocode.tendertracker.dao.entity.ProcurementReport;
-import com.chlorocode.tendertracker.service.ReportServiceImpl;
+import com.chlorocode.tendertracker.dao.dto.ProcurementReportDTO;
 import com.chlorocode.tendertracker.service.notification.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -31,13 +34,12 @@ public class TenderReportsController {
     }
 
     @PostMapping("/admin/tender/reportdetails")
-    public String showReportDetails(@RequestParam("reportType") String reportType, ModelMap model){
+    public String showReportDetails(@RequestParam("reportType") String reportType, ModelMap model) throws ParseException {
 
         System.out.println("reportType: " + reportType);
 
-        //ReportDAO reportDAO = new ReportDAO
-        //ReportService reportService = new ReportServiceImpl(reportDAO);
-        List<ProcurementReport> procurementReportList = reportService.findAllByDateRange("2017-07-01","2017-12-01");
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        List<ProcurementReportDTO> procurementReportList = reportService.findAllByDateRange(df.parse("01-06-2017"), df.parse("31-12-2017"));
 
         //for (int i=0; i<procurementReportList.size();i++)
             System.out.println(procurementReportList);

@@ -1,11 +1,13 @@
 package com.chlorocode.tendertracker.service;
 
-import com.chlorocode.tendertracker.dao.ReportDAO;
-import com.chlorocode.tendertracker.dao.entity.ProcurementReport;
+import com.chlorocode.tendertracker.dao.TenderDAO;
+import com.chlorocode.tendertracker.dao.dto.ProcurementReportDTO;
 import com.chlorocode.tendertracker.service.notification.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -14,16 +16,25 @@ import java.util.List;
 @Service
 public class ReportServiceImpl implements ReportService {
 
-    private ReportDAO reportDAO;
+    private TenderDAO tenderDAO;
 
     @Autowired
-    public ReportServiceImpl(ReportDAO reportDAO) {
-        this.reportDAO = reportDAO;
+    public ReportServiceImpl(TenderDAO tenderDAO) {
+        this.tenderDAO = tenderDAO;
     }
 
     @Override
-    public List<ProcurementReport> findAllByDateRange(String startDate, String endDate) {
+    public List<ProcurementReportDTO> findAllByDateRange(Date startDate, Date endDate) {
 
-        return reportDAO.findAllByDateRange(startDate, endDate);
+        List<ProcurementReportDTO> results = new LinkedList<>();
+
+        List<Object[]> rawResult = tenderDAO.findAllByDateRange(startDate, endDate);
+        for (Object[] rows : rawResult) {
+            ProcurementReportDTO row = new ProcurementReportDTO((String)rows[0], (String)rows[1], (String)rows[2],
+                    (String)rows[3], (Date)rows[4], (Date)rows[5], (String)rows[6]);
+            results.add(row);
+        }
+
+        return results;
     }
 }
