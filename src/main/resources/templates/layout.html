@@ -56,6 +56,7 @@
                         <li class="" sec:authorize="isAuthenticated()"><a th:href="@{/tenderNotification}"><strong>Notification</strong></a></li>
                         <li class="" sec:authorize="isAuthenticated()"><a th:href="@{/registerCompany}"><strong>Register a Company</strong></a></li>
                         <li class="" sec:authorize="hasAnyRole('SYS_ADMIN','ADMIN','PREPARER')"><a th:href="@{/admin}"><strong>Admin Panel</strong></a></li>
+                        <li class=""><a th:href="@{/marketplace}"><strong>Marketplace</strong></a> </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li class="link-btn" sec:authorize="!isAuthenticated()"><a th:href="@{/login}"><span class="btn btn-theme btn-pill btn-xs btn-line">Login</span></a></li>

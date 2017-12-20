@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout">
+<head>
+    <title>Marketplace</title>
+</head>
+<body>
+<div layout:fragment="headerContainer">
+    <!--form search area-->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <!--logo-->
+                <div class="logo text-center-sm"><a th:href="@{/}"><img th:src="@{/assets/theme/images/logo.png}"
+                                                                        alt="logo"/> </a></div>
+            </div>
+            <div class="col-md-8">
+                <!--form search-->
+                <form class="form-search-list">
+                    <div class="row">
+                        <div class="col-sm-10 col-xs-6">
+                            <div class="form-group">
+                                <label class="color-white"></label>
+                                <input class="form-control" placeholder="Search product ..."/>
+                            </div>
+                        </div>
+                        <div class="col-sm-2 col-xs-12">
+                            <div class="form-group">
+                                <label class="hidden-xs">&nbsp;</label>
+                                <input type="submit" value="Search" class="btn btn-block btn-theme btn-success"/>
+                            </div>
+                        </div>
+                        <p class="text-right"><a href="" class="link-white">Advanced Search</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div layout:fragment="content">
+    <div class="row">
+        <div class="col-md-12">
+            <br/>
+            <div class="alert alert-info">
+                <strong>No product yet.</strong>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
