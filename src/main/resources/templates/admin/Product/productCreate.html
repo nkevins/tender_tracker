@@ -1,0 +1,209 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="admin/layout">
+<head>
+    <title>Tender Tracker</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <th:block th:if="${alert != null}">
+        <div th:replace="fragments/alert :: alert (type=${alert.getType()}, messages=${alert.messages})">Alert</div>
+    </th:block>
+    <div class="alert alert-danger" style="display:none;" id="createProductError"></div>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            Create Product
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+        <!-- Default box -->
+        <div class="box">
+            <div class="box-body">
+                <form class="form-horizontal" id="createProductForm" th:action="@{/admin/product/create}" method="POST"
+                      th:object="${product}" enctype="multipart/form-data">
+                    <h4>Product Information</h4>
+                    <hr/>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="title" class="col-sm-2 control-label">Title<span style="color:red">*</span></label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="title" th:field="*{title}"
+                                           required="required"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="price" class="col-sm-2 control-label">Price<span style="color:red">*</span></label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="price" th:field="*{price}"
+                                           required="required"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4>Product Description</h4>
+                    <hr/>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <textarea id="description" th:field="*{description}" rows="10" cols="80">
+                            </textarea>
+                        </div>
+                    </div>
+
+                    <!--<h4>Contact Details</h4>-->
+                    <!--<hr/>-->
+
+                    <!--<div class="row">-->
+                        <!--<div class="col-md-6">-->
+                            <!--<div class="form-group">-->
+                                <!--<label for="contactName" class="col-sm-2 control-label">Name<span-->
+                                        <!--style="color:red">*</span></label>-->
+                                <!--<div class="col-sm-10">-->
+                                    <!--<input type="text" class="form-control" id="contactName"-->
+                                           <!--th:field="*{contactPersonName}" required="required"/>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--<div class="form-group">-->
+                                <!--<label for="contactEmail" class="col-sm-2 control-label">Email<span-->
+                                        <!--style="color:red">*</span></label>-->
+                                <!--<div class="col-sm-10">-->
+                                    <!--<input type="email" class="form-control" id="contactEmail"-->
+                                           <!--th:field="*{contactPersonEmail}" required="required"/>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="col-md-6">-->
+                            <!--<div class="form-group">-->
+                                <!--<label for="contactPhone" class="col-sm-2 control-label">Phone<span-->
+                                        <!--style="color:red">*</span></label>-->
+                                <!--<div class="col-sm-10">-->
+                                    <!--<input type="text" class="form-control" id="contactPhone"-->
+                                           <!--th:field="*{contactPersonPhone}" required="required"/>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <h4>Attachment</h4>
+                    <hr/>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="dropzone" id="attachmentUploads">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="padding-top: 10px;">
+                        <div class="col-md-12">
+                            <hr/>
+                            <input type="submit" id="mainSubmitBtn" value="Save" class="btn btn-primary"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+
+    </section>
+    <!-- /.content -->
+</div>
+</body>
+<th:block layout:fragment="scripts">
+    <script th:src="@{/assets/admin/plugins/typeahead/typeahead.js}"></script>
+    <script th:src="@{/assets/admin/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js}"></script>
+    <script type="text/javascript">
+        $(function () {
+            CKEDITOR.replace('description');
+        });
+
+        // Attachment uploader
+        Dropzone.options.attachmentUploads = {
+            url: '/admin/tender/create',
+            autoProcessQueue: false,
+            uploadMultiple: true,
+            parallelUploads: 5,
+            maxFiles: 5,
+            maxFilesize: 50,
+            addRemoveLinks: true,
+            paramName: 'attachments',
+            init: function () {
+                dzClosure = this; // Makes sure that 'this' is understood inside the functions below.
+
+                // for Dropzone to process the queue (instead of default form behavior):
+                document.getElementById("mainSubmitBtn").addEventListener("click", function (e) {
+                    // Make sure that the form isn't actually being sent.
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    if (dzClosure.getQueuedFiles().length > 0) {
+                        dzClosure.processQueue();
+                    } else {
+                        $("#createTenderForm").submit();
+                    }
+                });
+
+                //send all the form data along with the files:
+                this.on("sendingmultiple", function (data, xhr, formData) {
+                    formData.append("description", CKEDITOR.instances['description'].getData());
+                    formData.append("deliveryRemarks", jQuery("#deliveryRemarks").val());
+
+                    $("form").find("input").each(function () {
+                        formData.append($(this).attr("name"), $(this).val());
+                    });
+                    $("form").find("select").each(function () {
+                        formData.append($(this).attr("name"), $(this).val());
+                    });
+                });
+            },
+            error: function (file, errorMessage) {
+                this.removeFile(file);
+                $.each(dzClosure.files, function (i, file) {
+                    file.status = Dropzone.QUEUED
+                });
+
+                $("#createProductError").text(errorMessage);
+                $('#createProductError').show();
+                $('html,body').animate({scrollTop: 0});
+            },
+            success: function (file, response) {
+                window.location.replace("/admin/product");
+            }
+        }
+
+        $(document).ready(function () {
+            var companies = new Bloodhound({
+                datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                prefetch: '/admin/data/company',
+                remote: {
+                    url: '/admin/data/company?name=%QUERY',
+                    wildcard: '%QUERY'
+                }
+            });
+            companies.initialize();
+
+            $('#invitedCompany').tagsinput({
+                itemValue: 'id',
+                itemText: 'name',
+                typeaheadjs: [{
+                    minLength: 2,
+                    highlight: true
+                }, {
+                    name: 'companies',
+                    displayKey: 'name',
+                    source: companies.ttAdapter()
+                }]
+            });
+        });
+    </script>
+</th:block>
+</html>
