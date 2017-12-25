@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorator="layout">
+      layout:decorator="admin/layout">
 <head>
     <title>Tender Tracker</title>
 </head>
@@ -24,23 +24,44 @@
         <div class="box">
 
             <div class="box-body">
-                <form th:method="POST" th:action="@{/admin/tender/reportdetails}">
-                    Report Type:
-                    <!--
-                    <select class="form-control" name="reportType">
-                        <option value="tenderReport" selected="(${selectedReportType} == this.value)">Overall Tender Report</option>
-                        <option value="registeredCompanyReport" selected="(${selectedReportType} == this.value)">Registered Company Report</option>
-                        <option value="tenderStatusReport" selected="(${selectedReportType}==this.value)">Tender Status Report</option>
-                    </select>
-                    -->
-                    <select class="form-control" name="reportType">
-                        <option value="tenderReport" th:selected="(${selectedReportType} == 'tenderReport')">Overall Tender Report</option>
-                        <option value="registeredCompanyReport" th:selected="(${selectedReportType} == 'registeredCompanyReport')">Registered Company Report</option>
-                        <option value="tenderStatusReport" th:selected="(${selectedReportType}=='tenderStatusReport')">Tender Status Report</option>
-                    </select>
+                <form th:method="POST" th:action="@{/admin/tender/reports}">
 
-                    <button type="submit"> Submit </button>
-                    <br/>
+                    <div class="form-group">
+                        <label for="reportType" class="col-sm-4 control-label">Report Type<span style="color:red">*</span></label>
+                        <div class="input-group date col-sm-4">
+                            <select class="form-control pull-right" id="reportType" name="reportType">
+                                <option value="tenderReport" th:selected="(${selectedReportType} == 'tenderReport')">Overall Tender Report</option>
+                                <option value="registeredCompanyReport" th:selected="(${selectedReportType} == 'registeredCompanyReport')">Registered Company Report</option>
+                                <option value="tenderStatusReport" th:selected="(${selectedReportType}=='tenderStatusReport')">Tender Status Report</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="startDate" class="col-sm-4 control-label">Start Date<span style="color:red">*</span></label>
+                        <div class="input-group date col-sm-4">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input type="text" class="form-control pull-right" id="startDate"  name="startDate" required="required" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="endDate" class="col-sm-4 control-label">End Date<span style="color:red">*</span></label>
+                        <div class="input-group date col-sm-4">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input type="text" class="form-control pull-right" id="endDate" name="endDate"  required="required" />
+                        </div>
+                    </div>
+
+
+                    <div class="row" style="padding-top: 10px;">
+                        <div class="col-md-12">
+                            <hr />
+                            <input type="submit" id="mainSubmitBtn" value="submit" class="btn btn-primary" />
+                        </div>
+                    </div>
                 </form>
 
                 <br/><span th:text="${selectedReportType}"></span>
@@ -55,4 +76,19 @@
     <!-- /.content -->
 </div>
 </body>
+<th:block layout:fragment="scripts">
+    <script type="text/javascript">
+        $('#startDate').datetimepicker({
+            format: 'DD/MM/YYYY'
+        }).on('dp.change', function(e){
+            $('#startDate').attr("value", e.date.format('DD/MM/YYYY'));
+        });
+
+        $('#endDate').datetimepicker({
+            format: 'DD/MM/YYYY'
+        }).on('dp.change', function(e){
+            $('#endDate').attr("value", e.date.format('DD/MM/YYYY'));
+        });
+    </script>
+</th:block>
 </html>
