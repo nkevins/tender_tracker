@@ -32,6 +32,7 @@
                         <th>Reference No</th>
                         <th>Open Date</th>
                         <th>Closed Date</th>
+                        <th>Status</th>
                     </tr>
                     </thead>
                 </table>
@@ -63,7 +64,9 @@
                     'data' : 'openDate'
                 }, {
                     'data' : 'closedDate'
-                }],
+                },{
+                        'data' : 'status'
+                    }],
                 'columnDefs' : [{
                     'targets' : 3,
                     'render' : function (data, type, full, meta) {
@@ -73,6 +76,18 @@
                     'targets' : 4,
                     'render' : function (data, type, full, meta) {
                         return moment(data).format('DD MMM YY HH:mm');
+                    }
+                },{
+                    'targets' : 5,
+                    'render' : function (data, type, full, meta) {
+
+                        if(data == 1){
+                            return 'Open';
+                        }else if(data == 2){
+                            return 'Closed';
+                        }else{
+                            return 'Awarded';
+                        };
                     }
                 }]
             });
