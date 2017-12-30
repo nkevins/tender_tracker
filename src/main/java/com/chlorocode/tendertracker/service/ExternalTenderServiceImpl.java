@@ -1,9 +1,17 @@
 package com.chlorocode.tendertracker.service;
 
-import com.chlorocode.tendertracker.dao.ExternalTenderDAO;
+import com.chlorocode.tendertracker.dao.*;
+import com.chlorocode.tendertracker.dao.dto.TenderSearchDTO;
 import com.chlorocode.tendertracker.dao.entity.ExternalTender;
+import com.chlorocode.tendertracker.dao.entity.Tender;
+import com.chlorocode.tendertracker.dao.specs.ExternalTenderSpecs;
+import com.chlorocode.tendertracker.dao.specs.TenderSpecs;
 import com.chlorocode.tendertracker.logging.TTLogger;
+import com.chlorocode.tendertracker.service.notification.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -17,10 +25,16 @@ import java.util.List;
 @Service
 public class ExternalTenderServiceImpl implements ExternalTenderService {
 
-    @Autowired
     private ExternalTenderDAO externalTenderDAO;
+    private ExternalTenderPagingDAO externalTenderPagingDAO;
 
     private String className;
+
+    @Autowired
+    public ExternalTenderServiceImpl(ExternalTenderDAO externalTenderDAO, ExternalTenderPagingDAO externalTenderPagingDAO) {
+        this.externalTenderDAO = externalTenderDAO;
+        this.externalTenderPagingDAO = externalTenderPagingDAO;
+    }
 
     @PostConstruct
     public void postConstruct() {
@@ -68,5 +82,30 @@ public class ExternalTenderServiceImpl implements ExternalTenderService {
             }
         }
         return "success";
+    }
+
+    @Override
+    public Page<ExternalTender> listAllByPage(Pageable pageable) {
+        Specification<ExternalTender> searchSpec = ExternalTenderSpecs.getAllOpenTender();
+        return externalTenderPagingDAO.findAll(searchSpec, pageable);
+    }
+
+    @Override
+    public Page<ExternalTender> searchTender(TenderSearchDTO searchDTO, Pageable pageable) {
+        Specification<ExternalTender> searchSpec = null;
+        if (searchDTO.getSearchText() != null && !searchDTO.getSearchText().trim().isEmpty()) {
+            searchSpec = ExternalTenderSpecs.byTenderSearchString(searchDTO.getSearchText().trim());
+            searchDTO.setCompanyName(null);
+            searchDTO.setTitle(null);
+            searchDTO.setRefNo(null);
+            searchDTO.setEtStatus(null);
+        } else {
+            searchSpec = ExternalTenderSpecs.byTenderSearchCriteria(
+                    searchDTO.getTitle() == null ? null : searchDTO.getTitle().trim()
+                    , searchDTO.getCompanyName() == null ? null : searchDTO.getCompanyName().trim()
+                    , searchDTO.getEtStatus(), searchDTO.getTenderSource(), searchDTO.getRefNo());
+            searchDTO.setSearchText(null);
+        }
+        return externalTenderPagingDAO.findAll(searchSpec, pageable);
     }
 }
