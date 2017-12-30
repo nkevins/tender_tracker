@@ -39,7 +39,7 @@ public class TenderReportsController {
     }
 
     @PostMapping("/admin/tender/reports")
-    public String showReportDetails(@RequestParam("reportType") String reportType, ModelMap model,
+    public void showReportDetails(@RequestParam("reportType") String reportType, ModelMap model,
                                     HttpServletRequest request, HttpServletResponse response) {
 
         System.out.println("reportType: " + reportType);
@@ -57,7 +57,7 @@ public class TenderReportsController {
             out.write(header.getBytes());
             procurementReportList = reportService.findAllByDateRange(df.parse(startDate), df.parse(endDate));
             for (ProcurementReportDTO procurementReportDTO : procurementReportList) {
-                System.out.println(procurementReportDTO.getRefNum() + " : " + procurementReportDTO.getTenderName() );
+                //System.out.println(procurementReportDTO.getRefNum() + " : " + procurementReportDTO.getTenderName() );
                 String line=new String(procurementReportDTO.getRefNum()
                         +","+procurementReportDTO.getTenderName()
                         +","+procurementReportDTO.getTenderCategory()
@@ -68,8 +68,9 @@ public class TenderReportsController {
                         +"\n");
 
                 out.write(line.toString().getBytes());
-                out.flush();
             }
+            out.flush();
+            out.close();
             model.addAttribute("selectedReportType", reportType);
 
         } catch (ParseException ex) {
@@ -81,8 +82,7 @@ public class TenderReportsController {
                     e.getMessage());
         }
 
-
-        return "admin/reports/reportsDashboard";
+        //return "admin/reports/reportsDashboard";
     }
 
 }
