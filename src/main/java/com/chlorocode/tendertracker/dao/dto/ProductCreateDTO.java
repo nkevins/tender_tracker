@@ -12,7 +12,7 @@ public class ProductCreateDTO {
     @NotBlank(message = "Title is required")
     private String title;
 
-    @NotBlank(message = "Price is required")
+    @Valid
     private double price;
 
     private String description;
