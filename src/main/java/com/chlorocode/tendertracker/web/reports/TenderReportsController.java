@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -37,20 +40,35 @@ public class TenderReportsController {
 
     @PostMapping("/admin/tender/reports")
     public String showReportDetails(@RequestParam("reportType") String reportType, ModelMap model,
-                                    HttpServletRequest request) {
+                                    HttpServletRequest request, HttpServletResponse response) {
 
         System.out.println("reportType: " + reportType);
         String startDate = request.getParameter("startDate");
         String endDate = request.getParameter("endDate");
-        //System.out.println("startDate: " + request.getParameter("startDate"));
-        //System.out.println("endDate: " + request.getParameter("endDate"));
 
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-        List<ProcurementReportDTO> procurementReportList = null;
+
         try {
+            List<ProcurementReportDTO> procurementReportList = null;
+            response.setContentType("application/ms-excel"); // or you can use text/csv
+            response.setHeader("Content-Disposition", "attachment; filename=output.csv");
+            OutputStream out = response.getOutputStream();
+            String header = "Ref. No,Tender Name,Category,Tender Type,Start Date,End Date,Status\n";
+            out.write(header.getBytes());
             procurementReportList = reportService.findAllByDateRange(df.parse(startDate), df.parse(endDate));
             for (ProcurementReportDTO procurementReportDTO : procurementReportList) {
                 System.out.println(procurementReportDTO.getRefNum() + " : " + procurementReportDTO.getTenderName() );
+                String line=new String(procurementReportDTO.getRefNum()
+                        +","+procurementReportDTO.getTenderName()
+                        +","+procurementReportDTO.getTenderCategory()
+                        +","+procurementReportDTO.getTenderType()
+                        +","+procurementReportDTO.getOpeningDate()
+                        +","+procurementReportDTO.getClosingDate()
+                        +","+procurementReportDTO.getTenderStatus()
+                        +"\n");
+
+                out.write(line.toString().getBytes());
+                out.flush();
             }
             model.addAttribute("selectedReportType", reportType);
 
@@ -58,11 +76,13 @@ public class TenderReportsController {
             AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
                     ex.getMessage());
             model.addAttribute("alert", alert);
+        } catch (IOException e) {
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
+                    e.getMessage());
         }
 
-        //for (int i=0; i<procurementReportList.size();i++)
-            //System.out.println(procurementReportList);
 
         return "admin/reports/reportsDashboard";
     }
+
 }
