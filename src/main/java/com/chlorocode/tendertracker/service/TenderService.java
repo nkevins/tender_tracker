@@ -40,4 +40,6 @@ public interface TenderService {
     void sendBookmarkNoti(Tender tender, int changeType);
 
     void logVisit(Tender tender, String ipAddress);
+
+    void autoCloseTenderAndNotify();
 }

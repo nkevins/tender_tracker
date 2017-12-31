@@ -8,6 +8,7 @@ import com.chlorocode.tendertracker.dao.specs.TenderSpecs;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.service.notification.NotificationService;
 import com.chlorocode.tendertracker.service.notification.NotificationServiceImpl;
+import com.chlorocode.tendertracker.utils.DateUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,13 +33,14 @@ public class TenderServiceImpl implements TenderService {
     private NotificationService notificationService;
     private IPGeoLocationService ipGeoLocationService;
     private TenderVisitDAO tenderVisitDAO;
+    private UserService userService;
 
     @Autowired
     public TenderServiceImpl(TenderDAO tenderDAO, S3Wrapper s3Wrapper, TenderBookmarkDAO tenderBookmarkDAO
                             , TenderItemDAO tenderItemDAO, TenderDocumentDAO tenderDocumentDAO
                             , TenderCategorySubscriptionDAO tenderCategorySubscriptionDAO, TenderPagingDAO tenderPagingDAO
                             , NotificationService notificationService, IPGeoLocationService ipGeoLocationService
-                            , TenderVisitDAO tenderVisitDAO) {
+                            , TenderVisitDAO tenderVisitDAO, UserService userService) {
         this.tenderDAO = tenderDAO;
         this.tenderItemDAO = tenderItemDAO;
         this.tenderDocumentDAO = tenderDocumentDAO;
@@ -49,6 +51,7 @@ public class TenderServiceImpl implements TenderService {
         this.notificationService = notificationService;
         this.ipGeoLocationService = ipGeoLocationService;
         this.tenderVisitDAO = tenderVisitDAO;
+        this.userService = userService;
     }
 
     @Override
@@ -354,6 +357,25 @@ public class TenderServiceImpl implements TenderService {
         if (visit != null) {
             visit.setTender(tender);
             tenderVisitDAO.save(visit);
+        }
+    }
+
+    @Override
+    public void autoCloseTenderAndNotify() {
+        //Date currentDateTime = DateUtility.getCurrentDateTime();
+        List<Tender> closingTenders = tenderDAO.findClosingTender();
+        if (closingTenders != null && !closingTenders.isEmpty()) {
+            for (Tender t : closingTenders) {
+                User user = userService.findById(t.getCompany().getCreatedBy());
+                if (user != null) {
+                    Map<String, Object> params = new HashMap<>();
+                    params.put(TTConstants.PARAM_TENDER_ID, t.getId());
+                    params.put(TTConstants.PARAM_TENDER_TITLE, t.getTitle());
+                    params.put(TTConstants.PARAM_EMAIL, user.getEmail());
+                    notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.tender_closed_noti, params);
+                }
+                tenderDAO.closeTender(t.getId());
+            }
         }
     }
 }
