@@ -1,10 +1,15 @@
 package com.chlorocode.tendertracker.service;
 
 import com.chlorocode.tendertracker.dao.ProductDAO;
+import com.chlorocode.tendertracker.dao.ProductPagingDAO;
 import com.chlorocode.tendertracker.dao.entity.Product;
+import com.chlorocode.tendertracker.dao.specs.ProductSpecs;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.service.notification.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,12 +20,14 @@ import java.util.List;
 public class ProductServiceImpl implements ProductService {
 
     private ProductDAO productDAO;
+    private ProductPagingDAO productPagingDAO;
     private S3Wrapper s3Wrapper;
     private NotificationService notificationService;
 
     @Autowired
-    public ProductServiceImpl(ProductDAO productDAO, S3Wrapper s3Wrapper, NotificationService notificationService) {
+    public ProductServiceImpl(ProductDAO productDAO, ProductPagingDAO productPagingDAO, S3Wrapper s3Wrapper, NotificationService notificationService) {
         this.productDAO = productDAO;
+        this.productPagingDAO = productPagingDAO;
         this.s3Wrapper = s3Wrapper;
         this.notificationService = notificationService;
     }
@@ -46,6 +53,12 @@ public class ProductServiceImpl implements ProductService {
         }
 
         return result;
+    }
+
+    @Override
+    public Page<Product> listAllByPage(Pageable pageable) {
+        Specification<Product> specification = ProductSpecs.getAll();
+        return productPagingDAO.findAll(specification, pageable);
     }
 
     public ProductDAO getProductDAO() {

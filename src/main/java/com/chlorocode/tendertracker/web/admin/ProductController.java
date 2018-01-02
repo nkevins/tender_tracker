@@ -77,7 +77,6 @@ public class ProductController {
         CurrentUser currentUser = (CurrentUser) authentication.getPrincipal();
 
         Product product = new Product();
-//        product.setProductCode(1);
         product.setTitle(form.getTitle());
         product.setPrice(form.getPrice());
         product.setDescription(form.getDescription());
