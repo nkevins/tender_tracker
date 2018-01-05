@@ -44,6 +44,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<TenderCategorySubscription> tenderCategorySubscriptions;
 
+    @OneToMany(mappedBy = "evaluator", cascade = CascadeType.PERSIST)
+    private List<EvaluationResult> evaluationResults;
+
     private int createdBy;
 
     @Temporal(TemporalType.TIMESTAMP)

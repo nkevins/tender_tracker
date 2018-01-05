@@ -1,28 +1,26 @@
 package com.chlorocode.tendertracker.dao.entity;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
-/**
- * Created by andy on 1/8/2017.
- */
 @Entity
-@Table(name = "evaluation_criteria")
-public class EvaluationCriteria {
+@Table(name = "evaluation_result")
+public class EvaluationResult {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonView(DataTablesOutput.View.class)
     private int id;
 
     @ManyToOne
-    private Tender tender;
+    private Bid bid;
 
-    private String description;
-    private int type;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User evaluator;
+
+    @ManyToOne
+    private EvaluationCriteria criteria;
+
+    private int result;
 
     @Column(name = "created_by")
     private int createdBy;
@@ -38,9 +36,6 @@ public class EvaluationCriteria {
     @Column(name = "last_updated_date")
     private Date lastUpdatedDate;
 
-    @OneToMany(mappedBy = "criteria")
-    private List<EvaluationResult> results;
-
     public int getId() {
         return id;
     }
@@ -49,28 +44,36 @@ public class EvaluationCriteria {
         this.id = id;
     }
 
-    public Tender getTender() {
-        return tender;
+    public Bid getBid() {
+        return bid;
     }
 
-    public void setTender(Tender tender) {
-        this.tender = tender;
+    public void setBid(Bid bid) {
+        this.bid = bid;
     }
 
-    public String getDescription() {
-        return description;
+    public User getEvaluator() {
+        return evaluator;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setEvaluator(User evaluator) {
+        this.evaluator = evaluator;
     }
 
-    public int getType() {
-        return type;
+    public EvaluationCriteria getCriteria() {
+        return criteria;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setCriteria(EvaluationCriteria criteria) {
+        this.criteria = criteria;
+    }
+
+    public int getResult() {
+        return result;
+    }
+
+    public void setResult(int result) {
+        this.result = result;
     }
 
     public int getCreatedBy() {

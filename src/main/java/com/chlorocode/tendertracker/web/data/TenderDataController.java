@@ -31,7 +31,10 @@ public class TenderDataController {
         int companyId = usr.getSelectedCompany().getId();
 
         DataTablesOutput<Tender> tenders = tenderDAO.findAll(input, null, (root, criteriaQuery, criteriaBuilder) -> {
-            return criteriaBuilder.equal(root.join("company").get("id"), companyId);
+            return criteriaBuilder.and(
+                    criteriaBuilder.equal(root.join("company").get("id"), companyId),
+                    criteriaBuilder.equal(root.get("status"), 2)
+            );
         });
 
 //        return tenderDAO.findAll(input, null, (root, criteriaQuery, criteriaBuilder) -> {

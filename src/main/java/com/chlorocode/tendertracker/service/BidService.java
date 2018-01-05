@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface BidService {
 
+    Bid findById(int id);
+
     Bid saveBid(Bid bid, List<MultipartFile> attachments);
 
     Bid findBidByCompanyAndTender(int companyId, int tenderId);

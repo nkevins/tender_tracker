@@ -29,6 +29,11 @@ public class BidServiceImpl implements BidService {
     }
 
     @Override
+    public Bid findById(int id) {
+        return bidDAO.findOne(id);
+    }
+
+    @Override
     @Transactional
     public Bid saveBid(Bid bid, List<MultipartFile> attachments) {
         // Check duplicate bid
