@@ -13,7 +13,7 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1>
-           Evaluate Tender
+            Evaluate Tender
         </h1>
     </section>
 
@@ -33,7 +33,6 @@
                         <th>Open Date</th>
                         <th>Closed Date</th>
                         <th>Status</th>
-                        <th></th>
                     </tr>
                     </thead>
                 </table>
@@ -61,11 +60,11 @@
                 },{
                     'data' : 'refNo'
                 }
-                , {
-                    'data' : 'openDate'
-                }, {
-                    'data' : 'closedDate'
-                },{
+                    , {
+                        'data' : 'openDate'
+                    }, {
+                        'data' : 'closedDate'
+                    },{
                         'data' : 'status'
                     }],
                 'columnDefs' : [{
@@ -81,6 +80,7 @@
                 },{
                     'targets' : 5,
                     'render' : function (data, type, full, meta) {
+
                         if(data == 1){
                             return 'Open';
                         }else if(data == 2){
@@ -89,13 +89,8 @@
                             return 'Awarded';
                         };
                     }
-                },{
-                    'targets' : 6,
-                    'data' : null,
-                    'render' : function (data, type, full, meta) {
-                        return '<button type="button" class="btn btn-primary" onclick="location.href = \'/admin/tender/evaluation/' + data['id'] + '/bid\';">Evaluate</button>';
-                    }
-                }]
+                }
+                ]
             });
         });
     </script>

@@ -30,8 +30,35 @@ public class TenderDataController {
         CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         int companyId = usr.getSelectedCompany().getId();
 
-        return tenderDAO.findAll(input, null, (root, criteriaQuery, criteriaBuilder) -> {
-            return criteriaBuilder.equal(root.join("company").get("id"), companyId);
+        DataTablesOutput<Tender> tenders = tenderDAO.findAll(input, null, (root, criteriaQuery, criteriaBuilder) -> {
+            return criteriaBuilder.and(
+                    criteriaBuilder.equal(root.join("company").get("id"), companyId),
+                    criteriaBuilder.equal(root.get("status"), 2)
+            );
         });
+
+//        return tenderDAO.findAll(input, null, (root, criteriaQuery, criteriaBuilder) -> {
+//            return criteriaBuilder.equal(root.join("company").get("id"), companyId);
+//        });
+        return tenders;
+    }
+
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/admin/data/open/tenders", method = RequestMethod.GET)
+    public DataTablesOutput<Tender> getOpenTenders(@Valid DataTablesInput input) {
+        CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        int companyId = usr.getSelectedCompany().getId();
+
+        DataTablesOutput<Tender> tenders = tenderDAO.findAll(input, null, (root, criteriaQuery, criteriaBuilder) -> {
+            return criteriaBuilder.and(
+                    criteriaBuilder.equal(root.join("company").get("id"), companyId),
+                    criteriaBuilder.equal(root.get("status"), 1)
+            );
+        });
+
+//        return tenderDAO.findAll(input, null, (root, criteriaQuery, criteriaBuilder) -> {
+//            return criteriaBuilder.equal(root.join("company").get("id"), companyId);
+//        });
+        return tenders;
     }
 }

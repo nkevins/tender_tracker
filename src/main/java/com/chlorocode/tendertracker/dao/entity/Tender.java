@@ -46,6 +46,7 @@ public class Tender {
     private String contactPersonName;
     private String contactPersonEmail;
     private String contactPersonPhone;
+    @JsonView(DataTablesOutput.View.class)
     private int status;
     private int createdBy;
 

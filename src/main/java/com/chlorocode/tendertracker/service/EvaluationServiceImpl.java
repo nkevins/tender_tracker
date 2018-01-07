@@ -1,7 +1,9 @@
 package com.chlorocode.tendertracker.service;
 
 import com.chlorocode.tendertracker.dao.EvaluationCriteriaDAO;
+import com.chlorocode.tendertracker.dao.EvaluationResultDAO;
 import com.chlorocode.tendertracker.dao.entity.EvaluationCriteria;
+import com.chlorocode.tendertracker.dao.entity.EvaluationResult;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +15,12 @@ import java.util.List;
 @Service
 public class EvaluationServiceImpl implements EvaluationService {
     private EvaluationCriteriaDAO evaDao;
+    private EvaluationResultDAO evaResDao;
 
-    private EvaluationServiceImpl(EvaluationCriteriaDAO evaDao)
+    private EvaluationServiceImpl(EvaluationCriteriaDAO evaDao, EvaluationResultDAO evaResDao)
     {
         this.evaDao = evaDao;
+        this.evaResDao = evaResDao;
     }
 
     @Override
@@ -40,5 +44,24 @@ public class EvaluationServiceImpl implements EvaluationService {
     public void removeEvaluationCriteria(int id) {
         EvaluationCriteria evaluationCriteria = evaDao.findOne(id);
         evaDao.delete(evaluationCriteria);
+    }
+
+    @Override
+    public boolean isDuplicateEvaluation(int bidId, int userId) {
+        List<EvaluationResult> results = evaResDao.findEvaluationResultByBidAndEvaluator(bidId, userId);
+        if (results.size() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public void saveEvaluationResult(List<EvaluationResult> results) {
+        if (isDuplicateEvaluation(results.get(0).getBid().getId(), results.get(0).getEvaluator().getId())) {
+            throw new ApplicationException("Evaluator has submitted evaluation result before.");
+        }
+
+        evaResDao.save(results);
     }
 }
