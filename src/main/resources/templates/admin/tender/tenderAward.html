@@ -1,0 +1,131 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="admin/layout">
+<head>
+    <title>Tender Tracker</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <th:block th:if="${alert != null}">
+        <div th:replace="fragments/alert :: alert (type=${alert.getType()}, messages=${alert.messages})">Alert</div>
+    </th:block>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            Award Tender
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <!-- /.row -->
+        <div class="row">
+            <!-- Horizontal Form -->
+            <div class="box box-info">
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h3>Tender</h3>
+                            <p><b>Title:</b> <span th:text="${tender.title}">Quotation for Supply of Instructors for P6 Mural Art</span></p>
+                            <p><b>Ref No:</b> <span th:text="${tender.refNo}">MOESCHETQ17003249</span></p>
+                            <p><b>EPV:</b> $<span th:text="${#numbers.formatDecimal(tender.estimatePurchaseValue, 0, 'COMMA', 2, 'POINT')}">10,000.00</span></p>
+                        </div>
+                        <div class="col-md-4">
+                            <h3>Participating Tenderer</h3>
+                            <ol>
+                                <li th:each="b : ${tender.bids}" th:text="${b.company.name}">Arck Pte. Ltd.</li>
+                            </ol>
+                            <p th:if="${#lists.isEmpty(tender.bids)}">No one bid for this tender</p>
+                        </div>
+                    </div>
+                    <div th:if="${not #lists.isEmpty(tender.bids)}">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h3>Overall Price Comparison</h3>
+                                <div id="overall-price" style="height: 300px;"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <h3>Item Price Comparison</h3>
+                                <div id="item-price" style="height: 300px;"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4>Award</h4>
+                                <form method="POST" th:action="@{/admin/tender/award/} + ${tender.id}">
+                                    <div class="form-group">
+                                        <label>Award to</label>
+                                        <select class="form-control" name="awardTo">
+                                            <option th:each="b : ${tender.bids}" th:text="${b.company.name}" th:value="${b.id}">Chlorocode</option>
+                                        </select>
+                                    </div>
+                                    <input type="hidden" id="tenderId" th:value="${tender.id}" />
+                                    <button type="submit" class="btn btn-primary">Submit Award</button>
+                                </form>
+                            </div>
+                        </div>
+                        <br />
+                    </div>
+                    <a class="btn btn-primary" th:href="@{/admin/tender/award/}">Back</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+</body>
+<th:block layout:fragment="scripts">
+    <script type="text/javascript">
+        /*
+         * OVERALL PRICE COMPARISON
+         * ---------
+         */
+        var overallPriceChart = new Morris.Bar({
+            element: 'overall-price',
+            resize: true,
+            data: [],
+            barColors: ['#00a65a', '#f56954'],
+            xkey: 'y',
+            ykeys: ['a'],
+            labels: ['Price'],
+            hideHover: 'auto'
+        });
+
+        $.ajax({
+            type: "GET",
+            dataType: 'json',
+            url: "/admin/data/awardtenders/overallprice/" + document.getElementById("tenderId").value
+        })
+        .done(function(data) {
+            overallPriceChart.setData(data);
+        })
+        .fail(function() {
+            alert( "error occured" );
+        });
+        /* END OVERALL PRICE COMPARISON */
+
+        /*
+         * ITEM PRICE COMPARISON
+         * ---------
+         */
+        $.ajax({
+            url: "/admin/data/awardtenders/itemPriceComparission/" + document.getElementById("tenderId").value,
+            type: "GET",
+            statusCode: {
+                200: function (msg) {
+                    Morris.Bar({
+                        element: 'item-price',
+                        data: msg.data,
+                        xkey: 'y',
+                        ykeys: msg.yAxis,
+                        labels: msg.label,
+                        hideHover: 'auto'
+                    });
+                }
+            }
+        });
+        /* END ITEM PRICE COMPARISON */
+    </script>
+</th:block>
+</html>

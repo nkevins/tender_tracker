@@ -32,13 +32,14 @@ public class TenderServiceImpl implements TenderService {
     private NotificationService notificationService;
     private IPGeoLocationService ipGeoLocationService;
     private TenderVisitDAO tenderVisitDAO;
+    private TenderAwardDAO tenderAwardDAO;
 
     @Autowired
     public TenderServiceImpl(TenderDAO tenderDAO, S3Wrapper s3Wrapper, TenderBookmarkDAO tenderBookmarkDAO
                             , TenderItemDAO tenderItemDAO, TenderDocumentDAO tenderDocumentDAO
                             , TenderCategorySubscriptionDAO tenderCategorySubscriptionDAO, TenderPagingDAO tenderPagingDAO
                             , NotificationService notificationService, IPGeoLocationService ipGeoLocationService
-                            , TenderVisitDAO tenderVisitDAO) {
+                            , TenderVisitDAO tenderVisitDAO, TenderAwardDAO tenderAwardDAO) {
         this.tenderDAO = tenderDAO;
         this.tenderItemDAO = tenderItemDAO;
         this.tenderDocumentDAO = tenderDocumentDAO;
@@ -49,6 +50,7 @@ public class TenderServiceImpl implements TenderService {
         this.notificationService = notificationService;
         this.ipGeoLocationService = ipGeoLocationService;
         this.tenderVisitDAO = tenderVisitDAO;
+        this.tenderAwardDAO = tenderAwardDAO;
     }
 
     @Override
@@ -355,5 +357,14 @@ public class TenderServiceImpl implements TenderService {
             visit.setTender(tender);
             tenderVisitDAO.save(visit);
         }
+    }
+
+    @Override
+    @Transactional
+    public void awardTender(TenderAward tenderAward) {
+        tenderAwardDAO.save(tenderAward);
+        Tender tender = tenderAward.getTender();
+        tender.setStatus(3);
+        tenderDAO.save(tender);
     }
 }

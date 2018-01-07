@@ -53,11 +53,6 @@ public class TenderController {
         return "admin/tender/tenderEvaluationView";
     }
 
-    @GetMapping("/admin/tender/award")
-    public String showTenderAwardPage() {
-        return "admin/tender/tenderAwardList";
-    }
-
     @GetMapping("/admin/tender/create")
     public String showCreateTenderPage(ModelMap model) {
         model.addAttribute("tender", new TenderCreateDTO());

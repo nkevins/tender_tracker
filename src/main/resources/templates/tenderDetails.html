@@ -94,6 +94,13 @@
                                     <td th:text="${codeValueService.getDescription('uom', i.uom)}">Pcs</td>
                                 </tr>
                             </table>
+
+                            <div th:if="${tender.status == 3}">
+                                <h4>Award Details:</h4>
+                                <p>Awarded to: <span th:text="${tender.tenderAward.company.name}"></span></p>
+                                <p>Award date: <span th:text="${#dates.format(tender.tenderAward.createdDate, 'dd MMM yyyy HH:mm')}"></span></p>
+                            </div>
+
                             <a th:href="@{/tender/__${tender.id}__/respond}" class="btn btn-block btn-theme btn-success" sec:authorize="hasAnyRole('ADMIN','SUBMITTER')" th:unless="${isSubmitedTender}">Submit Response</a>
 
                             <a th:href="@{/tender/__${tender.id}__/respond}" class="btn btn-block btn-theme btn-success" sec:authorize="hasAnyRole('ADMIN','SUBMITTER')" th:if="${isSubmitedTender}" disabled="true">Submit Response</a>

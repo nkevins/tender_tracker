@@ -36,6 +36,9 @@ public class Tender {
     @ManyToOne
     private TenderCategory tenderCategory;
 
+    @OneToOne(mappedBy = "tender")
+    private TenderAward tenderAward;
+
     private String description;
     private int tenderType;
     private float estimatePurchaseValue;
@@ -319,5 +322,13 @@ public class Tender {
     public void addTenderVisit(TenderVisit visit) {
         tenderVisits.add(visit);
         visit.setTender(this);
+    }
+
+    public TenderAward getTenderAward() {
+        return tenderAward;
+    }
+
+    public void setTenderAward(TenderAward tenderAward) {
+        this.tenderAward = tenderAward;
     }
 }
