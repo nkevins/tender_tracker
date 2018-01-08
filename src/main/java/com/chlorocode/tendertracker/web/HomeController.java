@@ -94,7 +94,7 @@ public class HomeController {
 
         Page<ExternalTender> externalTenders = externalTenderService.listAllByPage(
                 new PageRequest(
-                        evalPage, evalPageSize, new Sort(new Sort.Order(Sort.Direction.ASC, TTConstants.PUBLISHED_DATE))
+                        evalPage, evalPageSize, new Sort(new Sort.Order(Sort.Direction.DESC, TTConstants.PUBLISHED_DATE))
                 ));
         Pager pager = new Pager(externalTenders.getTotalPages(), externalTenders.getNumber(), TTConstants.BUTTONS_TO_SHOW);
 
@@ -104,6 +104,7 @@ public class HomeController {
 
         TenderSearchDTO tenderSearchDTO = new TenderSearchDTO();
         tenderSearchDTO.setOrderBy(TTConstants.OPEN_DATE);
+        tenderSearchDTO.setOrderMode(TTConstants.DESC);
         model.addAttribute("external_tenders", externalTenders);
         model.addAttribute("searchCriteria", tenderSearchDTO);
         model.addAttribute("codeValueSvc", codeValueService);
