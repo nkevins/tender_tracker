@@ -49,12 +49,13 @@ public class HomeController {
 
         Page<Tender> tenders = tenderService.listAllByPage(
                 new PageRequest(
-                    evalPage, evalPageSize, new Sort(new Sort.Order(Sort.Direction.ASC, TTConstants.OPEN_DATE))
+                    evalPage, evalPageSize, new Sort(new Sort.Order(Sort.Direction.DESC, TTConstants.OPEN_DATE))
                 ));
         Pager pager = new Pager(tenders.getTotalPages(), tenders.getNumber(), TTConstants.BUTTONS_TO_SHOW);
 
         TenderSearchDTO tenderSearchDTO = new TenderSearchDTO();
         tenderSearchDTO.setOrderBy(TTConstants.OPEN_DATE);
+        tenderSearchDTO.setOrderMode(TTConstants.DESC);
         model.addAttribute("tenders", tenders);
         model.addAttribute("searchCriteria", tenderSearchDTO);
         model.addAttribute("codeValueSvc", codeValueService);
