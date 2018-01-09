@@ -54,7 +54,6 @@
                     <ul class="nav navbar-nav">
                         <li class=""><a th:href="@{/}"><strong>Home</strong></a></li>
                         <li><a th:href="@{/external_tender}"><strong>External Tender</strong></a></li>
-                        <li class="" sec:authorize="isAuthenticated()"><a th:href="@{/tenderNotification}"><strong>Notification</strong></a></li>
                         <li class="" sec:authorize="isAuthenticated()"><a th:href="@{/registerCompany}"><strong>Register a Company</strong></a></li>
                         <li class="" sec:authorize="hasAnyRole('SYS_ADMIN','ADMIN','PREPARER')"><a th:href="@{/admin}"><strong>Admin Panel</strong></a></li>
                     </ul>
@@ -67,6 +66,7 @@
                             </a>
                             <ul class="dropdown-menu" role="menu">
                                 <li><a th:href="@{/user/profile}">Profile</a></li>
+                                <li sec:authorize="isAuthenticated()"><a th:href="@{/tenderNotification}">Notification</a></li>
                                 <li th:if="${#lists.size(#authentication.getPrincipal().getCompanyAdministered()) > 1}"><a th:href="@{/selectCompany}">Switch Company</a></li>
                             </ul>
                         </li>
