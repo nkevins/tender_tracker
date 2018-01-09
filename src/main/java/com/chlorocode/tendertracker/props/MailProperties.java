@@ -10,6 +10,7 @@ public class MailProperties {
     private String subUpdateTender;
     private String subAddCorrigendum;
     private String subCreateTender;
+    private String subClosedTender;
     private String subCompanyReview;
     private String subCompanyRegistered;
     private String templateOTP;
@@ -17,6 +18,7 @@ public class MailProperties {
     private String templateUpdateTender;
     private String templateAddCorrigendum;
     private String templateCreateTender;
+    private String templateClosedTender;
     private String templateCompanyApproved;
     private String templateCompanyRejected;
     private String templateCompanyRegistered;
@@ -139,6 +141,22 @@ public class MailProperties {
 
     public void setTemplateCompanyRegistered(String templateCompanyRegistered) {
         this.templateCompanyRegistered = templateCompanyRegistered;
+    }
+
+    public String getSubClosedTender() {
+        return subClosedTender;
+    }
+
+    public void setSubClosedTender(String subClosedTender) {
+        this.subClosedTender = subClosedTender;
+    }
+
+    public String getTemplateClosedTender() {
+        return templateClosedTender;
+    }
+
+    public void setTemplateClosedTender(String templateClosedTender) {
+        this.templateClosedTender = templateClosedTender;
     }
     //    private String subjectOTP;
 //    public static final String OTP_TEMPLATE = "<html><body>"

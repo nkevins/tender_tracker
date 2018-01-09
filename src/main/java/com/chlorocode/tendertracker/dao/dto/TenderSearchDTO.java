@@ -12,6 +12,10 @@ public class TenderSearchDTO {
 
     private int status;
 
+    private int tenderSource;
+
+    private String etStatus;
+
     private String refNo;
 
     private String orderBy;
@@ -98,5 +102,21 @@ public class TenderSearchDTO {
 
     public void setOrderMode(String orderMode) {
         this.orderMode = orderMode;
+    }
+
+    public String getEtStatus() {
+        return etStatus;
+    }
+
+    public void setEtStatus(String etStatus) {
+        this.etStatus = etStatus;
+    }
+
+    public int getTenderSource() {
+        return tenderSource;
+    }
+
+    public void setTenderSource(int tenderSource) {
+        this.tenderSource = tenderSource;
     }
 }

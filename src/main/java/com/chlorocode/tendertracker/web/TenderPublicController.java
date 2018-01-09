@@ -6,6 +6,7 @@ import com.chlorocode.tendertracker.dao.entity.*;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.logging.TTLogger;
 import com.chlorocode.tendertracker.service.*;
+import com.chlorocode.tendertracker.utils.TTCommonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,6 +31,7 @@ import java.util.Optional;
 public class TenderPublicController {
 
     private TenderService tenderService;
+    private ExternalTenderService externalTenderService;
     private BidService bidService;
     private CodeValueService codeValueService;
     private S3Wrapper s3Wrapper;
@@ -37,9 +39,11 @@ public class TenderPublicController {
     private CorrigendumService corrigendumService;
 
     @Autowired
-    public TenderPublicController(TenderService tenderService, BidService bidService, CodeValueService codeValueService,
-                                  S3Wrapper s3Wrapper,ClarificationService clariSvc, CorrigendumService corrigendumService) {
+    public TenderPublicController(TenderService tenderService, ExternalTenderService externalTenderService
+                , BidService bidService, CodeValueService codeValueService, S3Wrapper s3Wrapper
+                , ClarificationService clariSvc, CorrigendumService corrigendumService) {
         this.tenderService = tenderService;
+        this.externalTenderService = externalTenderService;
         this.bidService = bidService;
         this.codeValueService = codeValueService;
         this.s3Wrapper = s3Wrapper;
@@ -309,7 +313,7 @@ public class TenderPublicController {
 
         Page<Tender> tenders = tenderService.searchTender(dto
                 , new PageRequest(
-                        evalPage, evalPageSize, getSortPattern(dto)
+                        evalPage, evalPageSize, getSortPattern(dto, false)
                 ));
         Pager pager = new Pager(tenders.getTotalPages(), tenders.getNumber(), TTConstants.BUTTONS_TO_SHOW);
 
@@ -326,7 +330,66 @@ public class TenderPublicController {
         return "home";
     }
 
-    private Sort getSortPattern(TenderSearchDTO searchDTO) {
+    /**
+     * Handles all requests
+     *
+     * @param pageSize
+     * @param page
+     * @return model and view
+     */
+    @GetMapping("/external_tenders")
+    public String showExternalTenders(@RequestParam("pageSize") Optional<Integer> pageSize
+            , @RequestParam("page") Optional<Integer> page
+            , @RequestParam("searchText") Optional<String> searchText
+            , @RequestParam("title") Optional<String> title
+            , @RequestParam("companyName") Optional<String> companyName
+            , @RequestParam("status") Optional<Integer> status
+            , @RequestParam("tenderSource") Optional<Integer> tenderSource
+            , @RequestParam("refNo") Optional<String> refNo
+            , @RequestParam("orderBy") Optional<String> orderBy
+            , @RequestParam("orderMode") Optional<String> orderMode
+            , ModelMap model) {
+        // Evaluate page size. If requested parameter is null, return initial page size
+        TenderSearchDTO dto = new TenderSearchDTO();
+        dto.setSearchText(searchText.orElse(null));
+        dto.setTitle(title.orElse(null));
+        dto.setCompanyName(companyName.orElse(null));
+        if (status.orElse(0) > 0) {
+            dto.setEtStatus(TTCommonUtil.getExternalTenderStatus(status.orElse(0)));
+        }
+        dto.setTenderSource(tenderSource.orElse(0));
+        dto.setRefNo(refNo.orElse(null));
+        dto.setOrderBy(orderBy.orElse(null) == null? TTConstants.DEFAULT_SORT : orderBy.get());
+        dto.setOrderMode(orderMode.orElse(null) == null? TTConstants.DEFAULT_SORT_DIRECTION : orderMode.get());
+        dto.setAdvance(dto.getSearchText() != null || dto.getTitle() != null || dto.getCompanyName() != null
+                || dto.getEtStatus() != null || dto.getTenderSource() > 0 || dto.getRefNo() != null);
+
+        int evalPageSize = pageSize.orElse(TTConstants.INITIAL_PAGE_SIZE);
+        // Evaluate page. If requested parameter is null or less than 0 (to
+        // prevent exception), return initial size. Otherwise, return value of
+        // param. decreased by 1.
+        int evalPage = (page.orElse(0) < 1) ? TTConstants.INITIAL_PAGE : page.get() - 1;
+
+        Page<ExternalTender> externalTenders = externalTenderService.searchTender(dto
+                , new PageRequest(
+                        evalPage, evalPageSize, getSortPattern(dto, true)
+                ));
+        Pager pager = new Pager(externalTenders.getTotalPages(), externalTenders.getNumber(), TTConstants.BUTTONS_TO_SHOW);
+
+        model.addAttribute("external_tenders", externalTenders);
+        model.addAttribute("searchCriteria", dto);
+        model.addAttribute("codeValueSvc", codeValueService);
+        model.addAttribute("selectedPageSize", evalPageSize);
+        model.addAttribute("pager", pager);
+        if (externalTenders == null || externalTenders.getTotalPages() == 0) {
+            model.addAttribute("noTenderFound", true);
+        } else {
+            model.addAttribute("noTenderFound", false);
+        }
+        return "external_tenders";
+    }
+
+    private Sort getSortPattern(TenderSearchDTO searchDTO, boolean isExternal) {
         Sort.Direction direction = Sort.Direction.ASC;
         // Set order direction.
         if (searchDTO.getOrderMode().equals(TTConstants.DESC)) {
@@ -335,9 +398,17 @@ public class TenderPublicController {
 
         // Set order by attribute.
         if (searchDTO.getOrderBy().equals(TTConstants.OPEN_DATE)) {
-            return new Sort(new Sort.Order(direction, TTConstants.OPEN_DATE));
+            if (isExternal) {
+                return new Sort(new Sort.Order(direction, TTConstants.PUBLISHED_DATE));
+            } else {
+                return new Sort(new Sort.Order(direction, TTConstants.OPEN_DATE));
+            }
         } else if(searchDTO.getOrderBy().equals(TTConstants.CLOSED_DATE)) {
-            return new Sort(new Sort.Order(direction, TTConstants.CLOSED_DATE));
+            if (isExternal) {
+                return new Sort(new Sort.Order(direction, TTConstants.CLOSING_DATE));
+            } else {
+                return new Sort(new Sort.Order(direction, TTConstants.CLOSED_DATE));
+            }
         } else {
             return new Sort(new Sort.Order(direction, TTConstants.TITLE));
         }
