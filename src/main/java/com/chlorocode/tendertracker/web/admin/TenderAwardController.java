@@ -1,11 +1,9 @@
 package com.chlorocode.tendertracker.web.admin;
 
 import com.chlorocode.tendertracker.dao.dto.AlertDTO;
-import com.chlorocode.tendertracker.dao.entity.Bid;
-import com.chlorocode.tendertracker.dao.entity.CurrentUser;
-import com.chlorocode.tendertracker.dao.entity.Tender;
-import com.chlorocode.tendertracker.dao.entity.TenderAward;
+import com.chlorocode.tendertracker.dao.entity.*;
 import com.chlorocode.tendertracker.service.BidService;
+import com.chlorocode.tendertracker.service.EvaluationService;
 import com.chlorocode.tendertracker.service.TenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,17 +16,20 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Date;
+import java.util.List;
 
 @Controller
 public class TenderAwardController {
 
     private TenderService tenderService;
     private BidService bidService;
+    private EvaluationService evaluationService;
 
     @Autowired
-    public TenderAwardController(TenderService tenderService, BidService bidService) {
+    public TenderAwardController(TenderService tenderService, BidService bidService, EvaluationService evaluationService) {
         this.tenderService = tenderService;
         this.bidService = bidService;
+        this.evaluationService = evaluationService;
     }
 
     @GetMapping("/admin/tender/award")
@@ -40,7 +41,16 @@ public class TenderAwardController {
     public String showTenderAwardPage(@PathVariable(value="id") Integer id, ModelMap model) {
         Tender tender = tenderService.findById(id);
 
+        List<EvaluationCriteria> criteria = evaluationService.findEvaluationCriteriaByTender(id);
+        String criteriaList = "";
+        for (EvaluationCriteria c : criteria) {
+            criteriaList += c.getId() + ",";
+        }
+        criteriaList = criteriaList.substring(0, criteriaList.length() - 1);
+
         model.addAttribute("tender", tender);
+        model.addAttribute("evaluationCriteria", criteria);
+        model.addAttribute("evaluationCriteraList", criteriaList);
 
         return "admin/tender/tenderAward";
     }
