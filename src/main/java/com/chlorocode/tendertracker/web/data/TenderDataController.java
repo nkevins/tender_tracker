@@ -1,5 +1,6 @@
 package com.chlorocode.tendertracker.web.data;
 
+import com.chlorocode.tendertracker.dao.EvaluationResultDAO;
 import com.chlorocode.tendertracker.dao.TenderDAO;
 import com.chlorocode.tendertracker.dao.entity.*;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -20,10 +21,12 @@ import java.util.HashSet;
 public class TenderDataController {
 
     private TenderDAO tenderDAO;
+    private EvaluationResultDAO evaResDAO;
 
     @Autowired
-    public TenderDataController(TenderDAO tenderDAO) {
+    public TenderDataController(TenderDAO tenderDAO, EvaluationResultDAO evaResDAO) {
         this.tenderDAO = tenderDAO;
+        this.evaResDAO = evaResDAO;
     }
 
     @JsonView(DataTablesOutput.View.class)
@@ -89,7 +92,7 @@ public class TenderDataController {
         return data.toString();
     }
 
-    @RequestMapping(value = "/admin/data/awardtenders/itemPriceComparission/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/admin/data/awardtenders/itemPriceComparison/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody String getTenderItemPriceComparisson(@PathVariable(value="id") Integer id) throws JSONException {
         JSONObject info = new JSONObject();
         JSONArray data = new JSONArray();
@@ -130,5 +133,53 @@ public class TenderDataController {
         info.put("label", label);
 
         return info.toString();
+    }
+
+    @RequestMapping(value = "/admin/data/awardtenders/overallScore/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody String getOverallScoreComparisson(@PathVariable(value="id") Integer id) throws JSONException {
+        JSONArray data = new JSONArray();
+
+        Tender tender = tenderDAO.findOne(id);
+        for (Bid b : tender.getBids()) {
+            JSONObject scoreInfo = new JSONObject();
+            scoreInfo.put("y", b.getCompany().getName());
+            scoreInfo.put("a", evaResDAO.getBidAverageEvaluationScore(b.getId()));
+            data.put(scoreInfo);
+        }
+
+        return data.toString();
+    }
+
+    @RequestMapping(value = "/admin/data/awardtenders/criteriaScore/{id}/{criteriaId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody String getEvaluationCriteriaComparisson(@PathVariable(value="id") Integer id,
+                                                                 @PathVariable(value = "criteriaId") Integer criteriaId) throws JSONException {
+        JSONArray data = new JSONArray();
+
+        Tender tender = tenderDAO.findOne(id);
+        for (Bid b : tender.getBids()) {
+            JSONObject scoreInfo = new JSONObject();
+            scoreInfo.put("y", b.getCompany().getName());
+            scoreInfo.put("a", evaResDAO.getBidCriteriaAverageEvaluationScore(b.getId(), criteriaId));
+            data.put(scoreInfo);
+        }
+
+        return data.toString();
+    }
+
+    @RequestMapping(value = "/admin/data/awardtenders/dualCriteriaScore/{id}/{criteriaId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody String getEvaluationDualCriteriaComparisson(@PathVariable(value="id") Integer id,
+                                                                 @PathVariable(value = "criteriaId") Integer criteriaId) throws JSONException {
+        JSONArray data = new JSONArray();
+
+        Tender tender = tenderDAO.findOne(id);
+        for (Bid b : tender.getBids()) {
+            JSONObject scoreInfo = new JSONObject();
+            scoreInfo.put("y", b.getCompany().getName());
+            scoreInfo.put("yes", evaResDAO.getDualCriteriaEvaluationCount(b.getId(), criteriaId, 1));
+            scoreInfo.put("no", evaResDAO.getDualCriteriaEvaluationCount(b.getId(), criteriaId, 2));
+            data.put(scoreInfo);
+        }
+
+        return data.toString();
     }
 }
