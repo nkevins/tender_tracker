@@ -3,11 +3,13 @@ package com.chlorocode.tendertracker.web.reports;
 import com.chlorocode.tendertracker.dao.dto.AlertDTO;
 import com.chlorocode.tendertracker.dao.dto.ProcurementReportDTO;
 import com.chlorocode.tendertracker.service.CodeValueService;
+import com.chlorocode.tendertracker.service.TenderService;
 import com.chlorocode.tendertracker.service.notification.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -29,12 +31,13 @@ public class TenderReportsController {
     public static final String PROCUREMENTREPORT_HEADER = "Ref. No,Tender Name,Category,Tender Type,Start Date,End Date,Status\n";
     private ReportService reportService;
     private CodeValueService codeValueService;
+    private TenderService tenderService;
 
     @Autowired
-    public TenderReportsController(ReportService reportService, CodeValueService codeValueService) {
-
+    public TenderReportsController(ReportService reportService, CodeValueService codeValueService, TenderService tenderService) {
         this.reportService = reportService;
         this.codeValueService = codeValueService;
+        this.tenderService = tenderService;
     }
 
     @GetMapping("/admin/tender/procurementreport")
@@ -143,4 +146,18 @@ public class TenderReportsController {
 
     }
 
+    @GetMapping("/admin/report/analyticreport")
+    public String viewAnalyticReportList() {
+        return "admin/reports/analyticReport";
+    }
+
+    @GetMapping("/admin/report/analyticreport/{id}")
+    public String viewAnalyticReportDetail(@PathVariable(value="id") int id, ModelMap model) {
+        model.addAttribute("tender", tenderService.findById(id));
+        model.addAttribute("visit", reportService.getNumberOfVisit(id));
+        model.addAttribute("uniqueVisit", reportService.getNumberOfUniqueVisit(id));
+        model.addAttribute("topCountryVisit", reportService.getTopCountryVisitor(id));
+
+        return "admin/reports/analyticReportDetails";
+    }
 }

@@ -150,6 +150,20 @@
                             <li><a th:href="@{/admin/tender/award}"><i class="fa fa-circle-o"></i> Award Tender</a></li>
                         </ul>
                     </li>
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-area-chart"></i>
+                            <span>Report</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a th:href="@{/admin/tender/procurementreport}"><i class="fa fa-circle-o"></i> Procurement Report</a></li>
+                            <li><a th:href="@{/admin/tender/statisticsreport}"><i class="fa fa-circle-o"></i> Statistic Report</a></li>
+                            <li><a th:href="@{/admin/report/analyticreport}"><i class="fa fa-circle-o"></i> Analytic Report</a></li>
+                        </ul>
+                    </li>
                     <li sec:authorize="hasRole('ADMIN')">
                         <a th:href="@{/admin/company}"><i class="fa fa-building-o"></i> <span>Company Profile</span></a>
                     </li>

@@ -11,4 +11,7 @@ import java.util.List;
 public interface ReportService {
     List<ProcurementReportDTO> findAllByDateRange(Date startDate, Date endDate);
 
+    Integer getNumberOfVisit(int tenderId);
+    Integer getNumberOfUniqueVisit(int tenderId);
+    List<Object[]> getTopCountryVisitor(int tenderId);
 }

@@ -1,6 +1,7 @@
 package com.chlorocode.tendertracker.dao;
 
 import com.chlorocode.tendertracker.dao.entity.Tender;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -35,4 +36,13 @@ public interface TenderDAO extends DataTablesRepository<Tender, Integer> {
     @Modifying
     @Query("update Tender t set t.status = 2, t.lastUpdatedBy = -1, t.lastUpdatedDate = CURRENT_TIMESTAMP where t.id = ?1")
     void closeTender(int id);
+
+    @Query("select count(v) from Tender t join t.tenderVisits v where t.id = ?1")
+    Integer getNumberOfVisit(int tenderId);
+
+    @Query("select count(distinct v.ipAddress) from Tender t join t.tenderVisits v where t.id = ?1")
+    Integer getNumberOfUniqueVisit(int tenderId);
+
+    @Query("select v.country, count(v) from Tender t join t.tenderVisits v where t.id = ?1 group by v.country order by count(v) desc")
+    List<Object[]> getTopCountryVisitor(int tenderId, Pageable pageable);
 }
