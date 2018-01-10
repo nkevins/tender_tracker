@@ -1,17 +1,16 @@
-package com.chlorocode.tendertracker.web.reports;
+package com.chlorocode.tendertracker.web.admin;
 
 import com.chlorocode.tendertracker.dao.dto.AlertDTO;
 import com.chlorocode.tendertracker.dao.dto.ProcurementReportDTO;
 import com.chlorocode.tendertracker.service.CodeValueService;
 import com.chlorocode.tendertracker.service.TenderService;
-import com.chlorocode.tendertracker.service.notification.ReportService;
+import com.chlorocode.tendertracker.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,14 +39,14 @@ public class TenderReportsController {
         this.tenderService = tenderService;
     }
 
-    @GetMapping("/admin/tender/procurementreport")
+    @GetMapping("/admin/report/procurementreport")
     public String viewReportsPage(ModelMap model){
         model.addAttribute("tenderType", codeValueService.getByType("tender_type"));
         model.addAttribute("tenderCategories", codeValueService.getAllTenderCategories());
         return "admin/reports/procurementreport";
     }
 
-    @PostMapping("/admin/tender/procurementreport")
+    @PostMapping("/admin/report/procurementreport")
     public void downloadProcurementReport(ModelMap model,
                                           HttpServletRequest request, HttpServletResponse response) {
 
@@ -95,14 +94,14 @@ public class TenderReportsController {
     }
 
 
-    @GetMapping("/admin/tender/statisticsreport")
+    @GetMapping("/admin/report/statisticsreport")
     public String viewStatisticsReportsPage(ModelMap model){
         model.addAttribute("tenderType", codeValueService.getByType("tender_type"));
         model.addAttribute("tenderCategories", codeValueService.getAllTenderCategories());
         return "admin/reports/statisticsreport";
     }
 
-    @PostMapping("/admin/tender/statisticsreport")
+    @PostMapping("/admin/report/statisticsreport")
     public void downloadStatisticsReport(ModelMap model,
                                           HttpServletRequest request, HttpServletResponse response) {
 

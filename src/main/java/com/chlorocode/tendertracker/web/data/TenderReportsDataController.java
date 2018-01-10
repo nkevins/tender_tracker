@@ -1,21 +1,14 @@
 package com.chlorocode.tendertracker.web.data;
 
 import com.chlorocode.tendertracker.dao.TenderDAO;
-import com.chlorocode.tendertracker.dao.TenderDataClarificationDAO;
-import com.chlorocode.tendertracker.dao.dto.ProcurementReportDTO;
-import com.chlorocode.tendertracker.dao.entity.*;
-import com.fasterxml.jackson.annotation.JsonView;
+import com.chlorocode.tendertracker.dao.entity.Tender;
+import com.chlorocode.tendertracker.dao.entity.TenderVisit;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
-import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 
 /**
  * Created by andy on 8/8/2017.

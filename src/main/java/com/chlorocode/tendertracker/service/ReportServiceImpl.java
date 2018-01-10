@@ -2,7 +2,6 @@ package com.chlorocode.tendertracker.service;
 
 import com.chlorocode.tendertracker.dao.TenderDAO;
 import com.chlorocode.tendertracker.dao.dto.ProcurementReportDTO;
-import com.chlorocode.tendertracker.service.notification.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;

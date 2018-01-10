@@ -1,4 +1,4 @@
-package com.chlorocode.tendertracker.service.notification;
+package com.chlorocode.tendertracker.service;
 
 import com.chlorocode.tendertracker.dao.dto.ProcurementReportDTO;
 
