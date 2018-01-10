@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -49,6 +50,16 @@ public class TenderClarificationController {
         if(clarfi == null){
             AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
                     "unable to find the clarification based on this id " + id);
+            model.addAttribute("alert", alert);
+            return "admin/clarification/tenderClarificationList";
+        }
+
+        //perform validation check, if the tender is not created by this company, stop to view it
+        CurrentUser usr1 = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(clarfi.getTender().getCompany().getId() != usr1.getSelectedCompany().getId())
+        {
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
+                    "You are not auhtorized to view the tender clarification details");
             model.addAttribute("alert", alert);
             return "admin/clarification/tenderClarificationList";
         }

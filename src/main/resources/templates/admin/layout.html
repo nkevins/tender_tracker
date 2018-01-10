@@ -36,6 +36,8 @@
     <link rel="stylesheet" th:href="@{/assets/admin/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css}" />
     <!-- Dropzone -->
     <link rel="stylesheet" th:href="@{/assets/admin/plugins/dropzone/dropzone.css}" />
+    <!-- Tag Input -->
+    <link rel="stylesheet" th:href="@{/assets/admin/plugins/bootstrap-tagsinput/bootstrap-tagsinput.css}" />
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -145,6 +147,7 @@
                             <li><a th:href="@{/admin/tender}"><i class="fa fa-circle-o"></i> Tender</a></li>
                             <li><a th:href="@{/admin/tender/clarification}"><i class="fa fa-circle-o"></i> Response Clarification</a></li>
                             <li><a th:href="@{/admin/tender/evaluation}"><i class="fa fa-circle-o"></i> Evaluation</a></li>
+                            <li><a th:href="@{/admin/tender/award}"><i class="fa fa-circle-o"></i> Award Tender</a></li>
                         </ul>
                     </li>
                     <li sec:authorize="hasRole('ADMIN')">
@@ -164,6 +167,7 @@
                     </a>
                     <ul class="treeview-menu">
                         <li><a th:href="@{/sysadm/companyRegistration}"><i class="fa fa-pencil-square-o"></i> Company Registration</a></li>
+                        <li><a th:href="@{/sysadm/companyRegistrationList}"><i class="fa fa-pencil-square-o"></i> Approved/Rejected Company</a></li>
                     </ul>
                 </li>
             </ul>

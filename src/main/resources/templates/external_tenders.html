@@ -1,0 +1,246 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout">
+<head>
+    <title>Tender Tracker</title>
+</head>
+<body>
+
+<div layout:fragment="headerContainer">
+    <!-- form search area-->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <!-- logo -->
+                <div class="logo text-center-sm"> <a th:href="@{/}"><img th:src="@{/assets/theme/images/logo.png}" alt="logo" /></a></div>
+            </div>
+
+            <div class="col-md-8">
+                <!-- form search -->
+                <form class="form-search-list" th:action="@{/external_tenders}" method="get" enctype="multipart/form-data" th:object="${searchCriteria}">
+                    <div class="row">
+                        <div class="col-sm-10 col-xs-6 ">
+                            <div class="form-group">
+                                <label class="color-white"></label>
+                                <input class="form-control" placeholder="Search..." th:field="*{searchText}" />
+                            </div>
+                        </div>
+                        <!--<div class="col-sm-5 col-xs-6 ">-->
+                            <!--<div class="form-group">-->
+                                <!--<label class="color-white"></label>-->
+                                <!--<input class="form-control" placeholder="company name" th:field="*{companyName}" />-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <div class="col-sm-2 col-xs-12 ">
+                            <div class="form-group">
+                                <label class="hidden-xs">&nbsp;</label>
+                                <!--<button class="btn btn-block btn-theme  btn-success">Search</button>-->
+                                <input type="submit" id="mainSubmitBtn" value="Search" class="btn btn-block btn-theme  btn-success" />
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-right"><a href="#modal-advanced" data-toggle="modal" class="link-white">Advanced Search</a></p>
+                </form>  <!-- form search -->
+            </div>
+
+
+        </div>
+
+
+        <!-- modal Advanced search -->
+        <div class="modal fade" id="modal-advanced" >
+            <div class="modal-dialog ">
+                <div class="modal-content">
+                    <form class="form-search-list" th:action="@{/external_tenders}" method="get" enctype="multipart/form-data" th:object="${searchCriteria}">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Advanced Tender Search</h4>
+                        </div>
+                        <div class="modal-body">
+                            <h5>Find Tenders</h5>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Tender Title</label>
+                                        <input type="text" class="form-control " name="text" th:field="*{title}" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Tender Ref No</label>
+                                        <input type="text" class="form-control " name="text" th:field="*{refNo}" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Company Name</label>
+                                        <input type="text" class="form-control " name="text" th:field="*{companyName}" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Tender Source</label>
+                                <select class="form-control" th:field="*{tenderSource}">
+                                    <option value="-1">All source</option>
+                                    <option th:each="s : ${codeValueSvc.getByType('external_tender_source')}" th:value="${s.code}" th:text="${s.description}">GeBiz</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Status</label>
+                                <select class="form-control" th:field="*{status}">
+                                    <option value="-1">All status</option>
+                                    <option th:each="s : ${codeValueSvc.getByType('external_tender_status')}" th:value="${s.code}" th:text="${s.description}">Open</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default btn-theme" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success btn-theme">Find Tender</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div><!-- end modal -->
+    </div><!-- end form search area-->
+</div>
+
+<div layout:fragment="content">
+    <div class="row">
+        <div class="col-md-12">
+
+            <br />
+            <div th:if="${noTenderFound}" class="alert alert-info">
+                <strong>No tender found.</strong>
+            </div>
+
+            <!-- box listing -->
+            <th:block th:if="${external_tenders.totalPages} &gt; 0">
+
+                <div class="block-section-sm">
+                    <div>
+                        <form class="form-search-list" th:action="@{/external_tenders}" method="get" enctype="multipart/form-data" th:object="${searchCriteria}">
+
+                            <input type="hidden" class="form-control" th:field="*{searchText}" th:if="*{searchText != null and !searchText.isEmpty()}"/>
+                            <input type="hidden" class="form-control" th:field="*{title}" th:if="*{title != null and !title.isEmpty()}"/>
+                            <input type="hidden" class="form-control" th:field="*{companyName}" th:if="*{companyName != null and !companyName.isEmpty()}"/>
+                            <input type="hidden" class="form-control" th:field="*{status}" th:if="*{status gt 0}"/>
+                            <input type="hidden" class="form-control" th:field="*{tenderSource}" th:if="*{tenderSource gt 0}"/>
+                            <input type="hidden" class="form-control" th:field="*{refNo}" th:if="*{refNo != null and !refNo.isEmpty()}"/>
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <label class="control-label">Sort By&nbsp;:&nbsp;</label>
+                                    <select class="form-control" name="orderBy" th:field="*{orderBy}" onchange="this.form.submit()">
+                                        <option th:each="entry : ${codeValueSvc.getTenderOrderBy().entrySet()}"
+                                                th:value="${entry.key}" th:text="${entry.value}">Order By</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">&nbsp;</label>
+                                    <select class="form-control" name="orderMode" th:field="*{orderMode}" onchange="this.form.submit()">
+                                        <option th:each="entry : ${codeValueSvc.getTenderOrderMode().entrySet()}"
+                                                th:value="${entry.key}" th:text="${entry.value}">Order Mode</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- item list -->
+                    <div class="box-list">
+                        <div class="item" th:each="t : ${external_tenders}">
+                            <div class="row">
+                                <div class="col-md-11">
+                                    <h3 class="no-margin-top">
+                                        <a th:href="${t.tenderURL}" class="" th:text="${t.title}" target="_blank">Lorem ipsum dolor sit amet</a>
+                                    </h3>
+                                    <h5>
+                                        <span class="color-black" th:text="${t.companyName}">Ngee Ann Polytechnic</span>
+                                    </h5>
+                                    <div>
+                                        <!--<span class="color-black">Open: <span th:text="${#dates.format(t.publishedDate, 'dd MMM yyyy HH:mm')}"></span></span>-->
+                                        <span class="color-black" th:if="*{t.publishedDate != null}">Open: <span th:text="${#dates.format(t.publishedDate, 'dd MMM yyyy HH:mm')}"></span></span>
+                                        <span class="color-black" th:if="*{t.publishedDate == null}">Open: </span>
+                                        <br />
+                                        <span class="color-black" th:if="*{t.closingDate != null}">Closing: <span th:text="${#dates.format(t.closingDate, 'dd MMM yyyy HH:mm')}"></span></span>
+                                        <span class="color-black" th:if="*{t.closingDate == null}">Closing: </span>
+                                        <br />
+                                        <h4>
+                                            <span class="label label-default" th:text="${t.status}">OPEN</span>
+                                        </h4>
+                                        <h4>
+                                            <span class="label label-default" th:if="${t.tenderSource == '1'}">GeBiz</span>
+                                            <span class="label label-danger" th:if="${t.tenderSource == '2'}">Sesami - NHG</span>
+                                            <span class="label label-primary" th:if="${t.tenderSource == '3'}">Sesami - CAG</span>
+                                            <span class="label label-warning" th:if="${t.tenderSource == '4'}">Sesami - SP</span>
+                                            <span class="label label-info" th:if="${t.tenderSource == '5'}">Sesami - STE</span>
+                                            <span class="label label-success" th:if="${t.tenderSource == '6'}">Singtel</span>
+                                            <span class="label label-default" th:if="${t.tenderSource == '7'}">SATS</span>
+                                            <span class="label label-danger" th:if="${t.tenderSource == '8'}">Singapore Pools - Tender</span>
+                                            <span class="label label-primary" th:if="${t.tenderSource == '9'}">Singapore Pools - Quotation</span>
+                                        </h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end item list -->
+                    </div>
+                </div>
+                <!-- end box listing -->
+                <!-- Pagination Bar -->
+                <div class="row">
+                    <!--<div class="form-group col-md-1">-->
+                        <!--<select class="form-control pagination" id="pageSizeSelect">-->
+                            <!--<option th:each="pageSize : ${pageSizes}" th:text="${pageSize}" th:value="${pageSize}" th:selected="${pageSize} == ${selectedPageSize}"></option>-->
+                        <!--</select>-->
+                    <!--</div>-->
+                    <div th:if="${!searchCriteria.advance}">
+                        <div th:if="${external_tenders.totalPages != 1}" class="form-group col-md-11 pagination-centered">
+                            <ul class="pagination">
+                                <li th:class="${external_tenders.number == 0} ? disabled">
+                                    <a class="pageLink" th:href="@{/external_tenders/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=1)}">&laquo;&nbsp;Prev</a>
+                                </li>
+                                <li th:class="${external_tenders.number == (page - 1)} ? 'active pointer-disabled'"
+                                    th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
+                                    <a class="pageLink" th:href="@{/external_tenders/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=${page})}" th:text="${page}"></a>
+                                </li>
+                                <li th:class="${external_tenders.number + 1 == external_tenders.totalPages} ? disabled">
+                                    <a class="pageLink" th:href="@{/external_tenders/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=${external_tenders.totalPages})}">Next&nbsp;&raquo;</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div th:if="${searchCriteria.advance}">
+                        <div th:if="${external_tenders.totalPages != 1}" class="form-group col-md-11 pagination-centered">
+                            <ul class="pagination">
+                                <li th:class="${external_tenders.number == 0} ? disabled">
+                                    <a class="pageLink" th:href="@{/external_tenders/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=1
+                                    , searchText=${searchCriteria.searchText}, title=${searchCriteria.title}, companyName=${searchCriteria.companyName}
+                                    , refNo=${searchCriteria.refNo}, status=${searchCriteria.status}, tenderSource=${searchCriteria.tenderSource})}">&laquo;&nbsp;Prev</a>
+                                </li>
+                                <li th:class="${external_tenders.number == (page - 1)} ? 'active pointer-disabled'"
+                                    th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
+                                    <a class="pageLink" th:href="@{/external_tenders/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=${page}
+                                    , searchText=${searchCriteria.searchText}, title=${searchCriteria.title}, companyName=${searchCriteria.companyName}
+                                    , refNo=${searchCriteria.refNo}, status=${searchCriteria.status}, tenderSource=${searchCriteria.tenderSource})}" th:text="${page}"></a>
+                                </li>
+                                <li th:class="${external_tenders.number + 1 == external_tenders.totalPages} ? disabled">
+                                    <a class="pageLink" th:href="@{/external_tenders/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=${external_tenders.totalPages}
+                                    , searchText=${searchCriteria.searchText}, title=${searchCriteria.title}, companyName=${searchCriteria.companyName}
+                                    , refNo=${searchCriteria.refNo}, status=${searchCriteria.status}, tenderSource=${searchCriteria.tenderSource})}">Next&nbsp;&raquo;</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Pagination Bar -->
+            </th:block>
+        </div>
+    </div>
+</div>
+</body>
+</html>

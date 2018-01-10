@@ -29,6 +29,8 @@ public class TenderCreateDTO {
     @NotNull(message = "Tender Type is required")
     private int tenderType;
 
+    private String invitedCompany;
+
     @NotNull(message = "EPV is required")
     private float estimatePurchaseValue;
     private Date deliveryDate;
@@ -107,6 +109,14 @@ public class TenderCreateDTO {
 
     public void setTenderType(int tenderType) {
         this.tenderType = tenderType;
+    }
+
+    public String getInvitedCompany() {
+        return invitedCompany;
+    }
+
+    public void setInvitedCompany(String invitedCompany) {
+        this.invitedCompany = invitedCompany;
     }
 
     public float getEstimatePurchaseValue() {

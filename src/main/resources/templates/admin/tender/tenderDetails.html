@@ -194,7 +194,7 @@
                     <!-- /.box-header -->
                     <div class="box-body">
                         <ul>
-                            <li th:each="doc : ${tender.documents}"><a th:text="${doc.document.name}" th:href="${s3Service.getPreSignedURL(doc.document.location)}" /></li>
+                            <li th:each="doc : ${tender.documents}"><a th:text="${doc.name}" th:href="${s3Service.getPreSignedURL(doc.location)}" /></li>
                         </ul>
                     </div>
                 </div>

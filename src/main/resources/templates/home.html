@@ -166,6 +166,7 @@
                                         <br />
                                         <span class="color-black">Closing: <span th:text="${#dates.format(t.closedDate, 'dd MMM yyyy HH:mm')}"></span></span>
                                         <br />
+                                        <h5 th:if="${t.status == 3}"><b>Awarded To: <span th:text="${t.tenderAward.company.name}"></span></b></h5>
                                         <h4>
                                             <span class="label label-default" th:if="${t.status == 1}">OPEN</span>
                                             <span class="label label-danger" th:if="${t.status == 2}">CLOSED</span>

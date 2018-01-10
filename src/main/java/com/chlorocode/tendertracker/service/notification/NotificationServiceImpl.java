@@ -30,6 +30,7 @@ public class NotificationServiceImpl implements NotificationService {
         reset_otp,
         decision_noti,
         company_reg_noti,
+        tender_closed_noti,
         // TODO add other mode such as tender_noti, etc...
         other;
     }
@@ -54,6 +55,8 @@ public class NotificationServiceImpl implements NotificationService {
             sendCompanyReviewedNotiMsg(params);
         } else if (mode == NOTI_MODE.company_reg_noti) {
             sendCompanyRegisteredNotiMsg(params);
+        } else if (mode == NOTI_MODE.tender_closed_noti) {
+            sendTenderClosedNotiMsg(params);
         } else {
             //sendEmail("Email Subject","Email body", (String)params.get(TTConstants.PARAM_EMAIL));
         }
@@ -88,7 +91,15 @@ public class NotificationServiceImpl implements NotificationService {
         String id = String.valueOf(params.get(TTConstants.PARAM_TENDER_ID));
         String title = (String) params.get(TTConstants.PARAM_TENDER_TITLE);
         String[] emails = (String[]) params.get(TTConstants.PARAM_EMAILS);
-        return sendEmail(mailProperties.getSubCreateTender(), mailProperties.getTemplateCreateTender(), emails, title, id, (String)id);
+        return sendEmail(mailProperties.getSubCreateTender(), mailProperties.getTemplateCreateTender(), emails, title, id, id);
+    }
+
+    public boolean  sendTenderClosedNotiMsg(Map<String, Object> params) {
+        String id = String.valueOf(params.get(TTConstants.PARAM_TENDER_ID));
+        String title = (String) params.get(TTConstants.PARAM_TENDER_TITLE);
+        String email = (String) params.get(TTConstants.PARAM_EMAIL);
+        return sendEmail(mailProperties.getSubClosedTender(), mailProperties.getTemplateClosedTender()
+                , new String[]{email}, title, id, id);
     }
 
     public boolean  sendCompanyReviewedNotiMsg(Map<String, Object> params) {

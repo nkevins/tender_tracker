@@ -32,6 +32,8 @@
                         <th>Reference No</th>
                         <th>Open Date</th>
                         <th>Closed Date</th>
+                        <th>Status</th>
+                        <th></th>
                     </tr>
                     </thead>
                 </table>
@@ -48,7 +50,7 @@
     <script type="text/javascript">
         $(document).ready(function() {
             var table = $('table#tenderList').DataTable({
-                'ajax' : '/admin/data/tenders',
+                'ajax' : '/admin/data/evaluatetenders',
                 'serverSide' : true,
                 'order' : [[ 1, "asc" ]],
                 'columns' : [{
@@ -63,7 +65,9 @@
                     'data' : 'openDate'
                 }, {
                     'data' : 'closedDate'
-                }],
+                },{
+                        'data' : 'status'
+                    }],
                 'columnDefs' : [{
                     'targets' : 3,
                     'render' : function (data, type, full, meta) {
@@ -73,6 +77,23 @@
                     'targets' : 4,
                     'render' : function (data, type, full, meta) {
                         return moment(data).format('DD MMM YY HH:mm');
+                    }
+                },{
+                    'targets' : 5,
+                    'render' : function (data, type, full, meta) {
+                        if(data == 1){
+                            return 'Open';
+                        }else if(data == 2){
+                            return 'Closed';
+                        }else{
+                            return 'Awarded';
+                        };
+                    }
+                },{
+                    'targets' : 6,
+                    'data' : null,
+                    'render' : function (data, type, full, meta) {
+                        return '<button type="button" class="btn btn-primary" onclick="location.href = \'/admin/tender/evaluation/' + data['id'] + '/bid\';">Evaluate</button>';
                     }
                 }]
             });

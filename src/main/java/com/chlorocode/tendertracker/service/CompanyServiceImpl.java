@@ -85,6 +85,11 @@ public class CompanyServiceImpl implements CompanyService {
         reg.setApplicationDate(company.getCreatedDate());
         reg.setPrincipleActivity(company.getPrincpleBusinessActivity());
 
+        if(company.getStatus() == 1){
+            reg.setStatus("Approved");
+        }else if(company.getStatus() == 2){
+            reg.setStatus("Rejected");
+        }
         return reg;
     }
 

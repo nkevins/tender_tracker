@@ -35,6 +35,31 @@ public class CompanySysAdmController {
         return "admin/sysadm/companyRegistrationView";
     }
 
+    @GetMapping("/sysadm/companyRegistrationList")
+    public String showCompanyRegistrationList() {
+        return "admin/sysadm/companyInfoView";
+    }
+
+    @GetMapping("/sysadm/companyInfo/{id}")
+    public String showcompanyInfo(@PathVariable(value="id") Integer id, Model model) {
+        CompanyRegistrationDetailsDTO companyRegistration = companyService.findCompanyRegistrationById(id);
+
+        if (companyRegistration == null) {
+            throw new ResourceNotFoundException();
+        }
+
+        model.addAttribute("reg", companyRegistration);
+
+        UenEntity uenEnt = uenEntService.findByUen(companyRegistration.getUen());
+        if(uenEnt == null){
+            model.addAttribute("uenInvalidLabel","Unverified UEN");
+        }else{
+            model.addAttribute("uenValidLabel", "UEN Verified");
+        }
+
+        return "admin/sysadm/companyDetail";
+    }
+
     @GetMapping("/sysadm/companyRegistration/{id}")
     public String showCompanyRegistrationDetail(@PathVariable(value="id") Integer id, Model model) {
         CompanyRegistrationDetailsDTO companyRegistration = companyService.findCompanyRegistrationById(id);

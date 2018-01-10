@@ -44,6 +44,14 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="form-group" id="invitedCompanyForm" style="display:none;">
+                                <label for="title" class="col-sm-2 control-label">Invited Company<span style="color:red">*</span></label>
+                                <div class="col-sm-10">
+                                    <div id="remote">
+                                        <input type="text" class="form-control" id="invitedCompany" name="invitedCompany" />
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label for="refNo" class="col-sm-2 control-label">Reference No</label>
                                 <div class="col-sm-10">
@@ -173,25 +181,30 @@
                                     <th>Quantity</th>
                                     <th>Description</th>
                                     <th></th>
+                                    <th></th>
                                 </tr>
                                 </thead>
                                 <tr th:each="i, iterator : ${tender.items}">
                                     <td>
-                                        <select required="required" name="uom" th:form="tenderItemUpdate + ${iterator.index}">
+                                        <select required="required" name="uom" th:form="tenderItemUpdate + ${iterator.index}" th:id="uom + ${iterator.index}">
                                             <option th:each="u : ${uom}" th:value="${u.code}" th:text="${u.description}" th:selected="${u.code == i.uom}"></option>
                                         </select>
                                     </td>
                                     <td>
-                                        <input type="text" name="quantity" th:value="${i.quantity}" required="required" th:form="tenderItemUpdate + ${iterator.index}" />
+                                        <input type="text" name="quantity" th:id="quantity + ${iterator.index}" th:value="${i.quantity}" required="required" th:form="tenderItemUpdate + ${iterator.index}" />
                                     </td>
                                     <td>
-                                        <input type="text" name="description" th:value="${i.description}" required="required" th:form="tenderItemUpdate + ${iterator.index}" />
+                                        <input type="text" name="description" th:id="description + ${iterator.index}" th:value="${i.description}" required="required" th:form="tenderItemUpdate + ${iterator.index}" />
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary" style="display: inline;" th:onclick="${'moveTenderItemUp(' + i.id + ', ' + tender.tenderId + ')'}" th:disabled="${iterator.index} == 0"><i class="fa fa-arrow-up"></i></button>
+                                        <button type="button" class="btn btn-primary" style="display: inline;" th:onclick="${'moveTenderItemDown(' + i.id + ', ' + tender.tenderId + ')'}" th:disabled="${iterator.index} == ${maxTenderItemIndex - 1}"><i class="fa fa-arrow-down"></i></button>
                                     </td>
                                     <td>
                                         <form th:action="@{/admin/tender/updateTenderItem}" method="POST" th:id="tenderItemUpdate + ${iterator.index}" style="display: inline">
-                                            <input type="hidden" name="tenderId" th:value="${tender.tenderId}" />
-                                            <input type="hidden" name="tenderItemId" th:value="${i.id}" />
-                                            <button type="submit" class="btn btn-primary"><i class="fa fa-pencil"></i></button>
+                                            <input type="hidden" name="tenderId" th:value="${tender.tenderId}" th:id="tenderId + ${iterator.index}" />
+                                            <input type="hidden" name="tenderItemId" th:value="${i.id}" th:id="tenderItemId + ${iterator.index}" />
+                                            <button type="button" class="btn btn-primary" th:onclick="${'updateTenderItem(' + iterator.index + ')'}"><i class="fa fa-pencil"></i></button>
                                         </form>
                                         <form th:action="@{/admin/tender/removeTenderItem}" method="POST" style="display: inline">
                                             <input type="hidden" name="tenderId" th:value="${tender.tenderId}" />
@@ -237,7 +250,7 @@
                                 </thead>
                                 <tr th:each="d : ${tender.documents}">
                                     <td>
-                                        <a th:href="${s3Service.getPreSignedURL(d.document.location)}" th:text="${d.document.name}"></a>
+                                        <a th:href="${s3Service.getPreSignedURL(d.location)}" th:text="${d.name}"></a>
                                     </td>
                                     <td>
                                         <form th:action="@{/admin/tender/removeTenderDocument}" method="POST">
@@ -276,7 +289,11 @@
 </div>
 </body>
 <th:block layout:fragment="scripts">
-    <script type="text/javascript">
+    <script th:src="@{/assets/admin/plugins/typeahead/typeahead.js}"></script>
+    <script th:src="@{/assets/admin/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js}"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+
         $('#openDate').datetimepicker({
             format: 'DD/MM/YYYY HH:mm'
         }).on('dp.change', function(e){
@@ -292,7 +309,15 @@
         $('#deliveryDate').datepicker({
             autoclose: true,
             format: 'dd/mm/yyyy'
+        }).on('changeDate', function(ev) {
+            $('#deliveryDate').attr("value", ev.target.value);
         });
+        // Reformat delivery date to remove time component
+        if ($('#deliveryDate').val()) {
+            var originalDate = $('#deliveryDate').val();
+            var formatted = moment(originalDate, 'DD/MM/YYYY HH:mm').format('DD/MM/YYYY');
+            $('#deliveryDate').attr("value", formatted);
+        }
 
         $(function () {
             CKEDITOR.replace('description');
@@ -311,9 +336,137 @@
                 window.location.reload();
             },
             maxfilesexceeded: function(file) {
-                alert('aaa');
+                alert('Maximum file size exceeded');
             }
         };
+
+        function updateTenderItem(index) {
+            var tenderId = $('#tenderId' + index).val();
+            var tenderItemId = $('#tenderItemId' + index).val();
+            var csrf = $("meta[name='_csrf']").attr("content");
+            var uom = $('#uom' + index).val();
+            var quantity = $('#quantity' + index).val();
+            var description = $('#description' + index).val();
+
+            var url = '/admin/tender/updateTenderItem';
+            var form = $('<form action="' + url + '" method="post">' +
+                '<input type="text" name="tenderId" value="' + tenderId + '" />' +
+                '<input type="text" name="tenderItemId" value="' + tenderItemId + '" />' +
+                '<input type="text" name="uom" value="' + uom + '" />' +
+                '<input type="text" name="quantity" value="' + quantity + '" />' +
+                '<input type="text" name="description" value="' + description + '" />' +
+                '<input type="text" name="_csrf" value="' + csrf + '" />' +
+                '</form>');
+            $('body').append(form);
+            form.submit();
+        }
+
+        function moveTenderItemUp(tenderItemId, tenderId) {
+            var csrf = $("meta[name='_csrf']").attr("content");
+            var url = '/admin/tender/moveUpTenderItem';
+            var form = $('<form action="' + url + '" method="post">' +
+                '<input type="text" name="tenderId" value="' + tenderId + '" />' +
+                '<input type="text" name="tenderItemId" value="' + tenderItemId + '" />' +
+                '<input type="text" name="_csrf" value="' + csrf + '" />' +
+                '</form>');
+            $('body').append(form);
+            form.submit();
+        }
+
+        function moveTenderItemDown(tenderItemId, tenderId) {
+            var csrf = $("meta[name='_csrf']").attr("content");
+            var url = '/admin/tender/moveDownTenderItem';
+            var form = $('<form action="' + url + '" method="post">' +
+                '<input type="text" name="tenderId" value="' + tenderId + '" />' +
+                '<input type="text" name="tenderItemId" value="' + tenderItemId + '" />' +
+                '<input type="text" name="_csrf" value="' + csrf + '" />' +
+                '</form>');
+            $('body').append(form);
+            form.submit();
+        }
+
+        $(document).ready(function() {
+            var companies = new Bloodhound({
+                datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                prefetch: '/admin/data/company',
+                remote: {
+                    url: '/admin/data/company?name=%QUERY',
+                    wildcard: '%QUERY'
+                }
+            });
+            companies.initialize();
+
+            $('#invitedCompany').tagsinput({
+                itemValue: 'id',
+                itemText: 'name',
+                typeaheadjs: [{
+                    minLength: 2,
+                    highlight: true
+                }, {
+                    name: 'companies',
+                    displayKey: 'name',
+                    source: companies.ttAdapter()
+                }]
+            });
+
+            if ($("#tenderType").val() == 2) {
+                $.ajax({
+                    type: 'GET',
+                    url: '/admin/data/invitedCompany/[[${tender.tenderId}]]',
+                    dataType: 'json',
+                    success: function (data) {
+                        $.each(data, function(i, item) {
+                            $('#invitedCompany').tagsinput('add', item);
+                        })
+                    }
+                });
+
+                $("#invitedCompanyForm").show();
+            } else {
+                $("#invitedCompanyForm").hide();
+            }
+
+            $('#invitedCompany').on('beforeItemRemove', function(event) {
+                var tag = event.item;
+                var csrf = $("meta[name='_csrf']").attr("content");
+
+                if (!event.options || !event.options.preventPost) {
+                    $.ajax({
+                        type: 'DELETE',
+                        url: '/admin/data/invitedCompany/[[${tender.tenderId}]]',
+                        headers: {"X-CSRF-TOKEN": csrf},
+                        contentType: 'application/json',
+                        data: JSON.stringify( { "companyId": tag.id } ),
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            alert(xhr);
+                            $('#invitedCompany').tagsinput('add', tag);
+                        }
+                    });
+                }
+            });
+
+            $('#invitedCompany').on('beforeItemAdd', function(event) {
+                var tag = event.item;
+                var csrf = $("meta[name='_csrf']").attr("content");
+
+                if (!event.options || !event.options.preventPost) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/admin/data/invitedCompany/[[${tender.tenderId}]]',
+                        headers: {"X-CSRF-TOKEN": csrf},
+                        contentType: 'application/json',
+                        data: JSON.stringify( { "companyId": tag.id } ),
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            alert(xhr);
+                            $('#invitedCompany').tagsinput('remove', tag);
+                        }
+                    });
+                }
+            });
+        });
+
+        /*]]>*/
     </script>
 </th:block>
 </html>

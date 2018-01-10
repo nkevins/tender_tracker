@@ -1,15 +1,9 @@
 package com.chlorocode.tendertracker.web.admin;
 
 import com.chlorocode.tendertracker.dao.dto.*;
-import com.chlorocode.tendertracker.dao.entity.CurrentUser;
-import com.chlorocode.tendertracker.dao.entity.Tender;
-import com.chlorocode.tendertracker.dao.entity.TenderItem;
-import com.chlorocode.tendertracker.dao.entity.User;
+import com.chlorocode.tendertracker.dao.entity.*;
 import com.chlorocode.tendertracker.exception.ApplicationException;
-import com.chlorocode.tendertracker.service.CodeValueService;
-import com.chlorocode.tendertracker.service.S3Wrapper;
-import com.chlorocode.tendertracker.service.TenderService;
-import com.chlorocode.tendertracker.service.UserService;
+import com.chlorocode.tendertracker.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,13 +31,16 @@ public class TenderController {
     private TenderService tenderService;
     private S3Wrapper s3Service;
     private UserService userService;
+    private CompanyService companyService;
 
     @Autowired
-    public TenderController(CodeValueService codeValueService, TenderService tenderService, S3Wrapper s3Service,UserService userService) {
+    public TenderController(CodeValueService codeValueService, TenderService tenderService, S3Wrapper s3Service,
+                            UserService userService, CompanyService companyService) {
         this.codeValueService = codeValueService;
         this.tenderService = tenderService;
         this.s3Service = s3Service;
         this.userService = userService;
+        this.companyService = companyService;
     }
 
     @GetMapping("/admin/tender")
@@ -130,6 +127,18 @@ public class TenderController {
         }
 
         try {
+            if (t.getTenderType() == 2) {
+                if (form.getInvitedCompany() == null || form.getInvitedCompany().trim().equals("")) {
+                    throw new ApplicationException("For Closed Tender, please provide at least one company to be invited");
+                }
+
+                String[] companyId = form.getInvitedCompany().split(",");
+                for (String c : companyId) {
+                    Company company = companyService.findById(Integer.parseInt(c));
+                    t.addInvitedCompany(company);
+                }
+            }
+
             tenderService.createTender(t, form.getAttachments());
 
             AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
@@ -168,7 +177,11 @@ public class TenderController {
                 try {
                     setValue(new SimpleDateFormat("dd/MM/yyyy HH:mm").parse(value));
                 } catch(ParseException e) {
-                    setValue(null);
+                    try {
+                        setValue(new SimpleDateFormat("dd/MM/yyyy").parse(value));
+                    } catch(ParseException e2) {
+                        setValue(null);
+                    }
                 }
             }
 
@@ -248,6 +261,7 @@ public class TenderController {
         model.addAttribute("tenderCategories", codeValueService.getAllTenderCategories());
         model.addAttribute("uom", codeValueService.getByType("uom"));
         model.addAttribute("s3Service", s3Service);
+        model.addAttribute("maxTenderItemIndex", tender.getItems().size() - 1);
         return "admin/tender/tenderUpdate";
     }
 
@@ -364,6 +378,26 @@ public class TenderController {
         tenderService.removeTenderItem(tenderItemId);
 
         AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS, "Tender Item Removed");
+        redirectAttrs.addFlashAttribute("alert", alert);
+        return "redirect:/admin/tender/" + tenderId + "/update";
+    }
+
+    @PostMapping("/admin/tender/moveUpTenderItem")
+    public String moveUpTenderItem(@RequestParam(name = "tenderItemId") int tenderItemId, @RequestParam(name = "tenderId") int tenderId,
+            RedirectAttributes redirectAttrs) {
+        tenderService.moveUpTenderItem(tenderItemId, tenderId);
+
+        AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS, "Tender Item Order Updated");
+        redirectAttrs.addFlashAttribute("alert", alert);
+        return "redirect:/admin/tender/" + tenderId + "/update";
+    }
+
+    @PostMapping("/admin/tender/moveDownTenderItem")
+    public String moveDownTenderItem(@RequestParam(name = "tenderItemId") int tenderItemId, @RequestParam(name = "tenderId") int tenderId,
+                                   RedirectAttributes redirectAttrs) {
+        tenderService.moveDownTenderItem(tenderItemId, tenderId);
+
+        AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS, "Tender Item Order Updated");
         redirectAttrs.addFlashAttribute("alert", alert);
         return "redirect:/admin/tender/" + tenderId + "/update";
     }

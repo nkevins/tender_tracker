@@ -8,6 +8,7 @@ import com.chlorocode.tendertracker.dao.specs.TenderSpecs;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.service.notification.NotificationService;
 import com.chlorocode.tendertracker.service.notification.NotificationServiceImpl;
+import com.chlorocode.tendertracker.utils.DateUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,26 +27,33 @@ public class TenderServiceImpl implements TenderService {
     private TenderItemDAO tenderItemDAO;
     private TenderDocumentDAO tenderDocumentDAO;
     private TenderCategorySubscriptionDAO tenderCategorySubscriptionDAO;
-    private DocumentDAO documentDAO;
     private S3Wrapper s3Wrapper;
     private TenderBookmarkDAO tenderBookmarkDAO;
     private TenderPagingDAO tenderPagingDAO;
     private NotificationService notificationService;
+    private IPGeoLocationService ipGeoLocationService;
+    private TenderVisitDAO tenderVisitDAO;
+    private TenderAwardDAO tenderAwardDAO;
+    private UserService userService;
 
     @Autowired
-    public TenderServiceImpl(TenderDAO tenderDAO, DocumentDAO documentDAO, S3Wrapper s3Wrapper, TenderBookmarkDAO tenderBookmarkDAO
+    public TenderServiceImpl(TenderDAO tenderDAO, S3Wrapper s3Wrapper, TenderBookmarkDAO tenderBookmarkDAO
                             , TenderItemDAO tenderItemDAO, TenderDocumentDAO tenderDocumentDAO
                             , TenderCategorySubscriptionDAO tenderCategorySubscriptionDAO, TenderPagingDAO tenderPagingDAO
-                            , NotificationService notificationService) {
+                            , NotificationService notificationService, IPGeoLocationService ipGeoLocationService
+                            , TenderVisitDAO tenderVisitDAO, TenderAwardDAO tenderAwardDAO, UserService userService) {
         this.tenderDAO = tenderDAO;
         this.tenderItemDAO = tenderItemDAO;
         this.tenderDocumentDAO = tenderDocumentDAO;
         this.tenderCategorySubscriptionDAO = tenderCategorySubscriptionDAO;
-        this.documentDAO = documentDAO;
         this.s3Wrapper = s3Wrapper;
         this.tenderBookmarkDAO = tenderBookmarkDAO;
         this.tenderPagingDAO = tenderPagingDAO;
         this.notificationService = notificationService;
+        this.ipGeoLocationService = ipGeoLocationService;
+        this.tenderVisitDAO = tenderVisitDAO;
+        this.tenderAwardDAO = tenderAwardDAO;
+        this.userService = userService;
     }
 
     @Override
@@ -77,6 +85,10 @@ public class TenderServiceImpl implements TenderService {
             throw new ApplicationException("At least one Tender Item must be provided");
         }
 
+        if (t.getTenderType() == 2 && t.getInvitedCompanies().size() == 0) {
+            throw new ApplicationException("For Closed Tender, please provide at least one company to be invited");
+        }
+
         // Set tender status to OPEN
         t.setStatus(1);
 
@@ -92,19 +104,15 @@ public class TenderServiceImpl implements TenderService {
             }
 
             // Save to DB
-            Document doc = new Document();
+            TenderDocument doc = new TenderDocument();
             doc.setName(f.getOriginalFilename());
             doc.setLocation(bucketPath);
-            doc.setType(1);
             doc.setCreatedBy(t.getCreatedBy());
             doc.setCreatedDate(new Date());
             doc.setLastUpdatedBy(t.getLastUpdatedBy());
             doc.setLastUpdatedDate(new Date());
-            documentDAO.save(doc);
-
-            TenderDocument tenderDocument = new TenderDocument();
-            tenderDocument.setDocument(doc);
-            t.addTenderDocument(tenderDocument);
+            t.addTenderDocument(doc);
+            tenderDocumentDAO.save(doc);
         }
 
         if (result != null) {
@@ -177,6 +185,36 @@ public class TenderServiceImpl implements TenderService {
 
     @Override
     @Transactional
+    public void moveUpTenderItem(int tenderItemId, int tenderId) {
+        TenderItem tenderItem = tenderItemDAO.findOne(tenderItemId);
+        int currentOrder = tenderItem.getSort();
+
+        TenderItem tenderItemReplaced = tenderItemDAO.getTenderItemBySort(tenderId, currentOrder - 1);
+
+        tenderItem.setSort(currentOrder - 1);
+        tenderItemReplaced.setSort(currentOrder);
+
+        tenderItemDAO.save(tenderItem);
+        tenderItemDAO.save(tenderItemReplaced);
+    }
+
+    @Override
+    @Transactional
+    public void moveDownTenderItem(int tenderItemId, int tenderId) {
+        TenderItem tenderItem = tenderItemDAO.findOne(tenderItemId);
+        int currentOrder = tenderItem.getSort();
+
+        TenderItem tenderItemReplaced = tenderItemDAO.getTenderItemBySort(tenderId, currentOrder + 1);
+
+        tenderItem.setSort(currentOrder + 1);
+        tenderItemReplaced.setSort(currentOrder);
+
+        tenderItemDAO.save(tenderItem);
+        tenderItemDAO.save(tenderItemReplaced);
+    }
+
+    @Override
+    @Transactional
     public TenderDocument addTenderDocument(MultipartFile attachment, Tender tender, int createdBy) {
         // Upload to AWS S3
         String bucketPath = "tender_documents/" + tender.getId() + "/" + attachment.getOriginalFilename();
@@ -187,37 +225,28 @@ public class TenderServiceImpl implements TenderService {
         }
 
         // Save to DB
-        Document doc = new Document();
+        TenderDocument doc = new TenderDocument();
         doc.setName(attachment.getOriginalFilename());
         doc.setLocation(bucketPath);
-        doc.setType(1);
         doc.setCreatedBy(createdBy);
         doc.setCreatedDate(new Date());
         doc.setLastUpdatedBy(createdBy);
         doc.setLastUpdatedDate(new Date());
-        documentDAO.save(doc);
-
-        TenderDocument tenderDocument = new TenderDocument();
-        tenderDocument.setDocument(doc);
-        tenderDocument.setTender(tender);
-
-        return tenderDocumentDAO.save(tenderDocument);
+        doc.setTender(tender);
+        return tenderDocumentDAO.save(doc);
     }
 
     @Override
     @Transactional
     public void removeTenderDocument(int id) {
         TenderDocument tenderDocument = tenderDocumentDAO.findOne(id);
-        Document document = tenderDocument.getDocument();
 
         // Remove from S3
-        String bucketPath = "tender_documents/" + tenderDocument.getTender().getId() + "/" + document.getName();
+        String bucketPath = "tender_documents/" + tenderDocument.getTender().getId() + "/" + tenderDocument.getName();
         s3Wrapper.deleteObject(bucketPath);
 
         tenderDocument.setTender(null);
-        tenderDocument.setDocument(null);
         tenderDocumentDAO.delete(tenderDocument);
-        documentDAO.delete(document);
     }
 
     @Override
@@ -320,6 +349,43 @@ public class TenderServiceImpl implements TenderService {
                     params.put(TTConstants.PARAM_CHANGE_TYPE, changeType);
                     notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.tender_bookmark_noti, params);
                 }
+            }
+        }
+    }
+
+    @Override
+    public void logVisit(Tender tender, String ipAddress) {
+        TenderVisit visit = ipGeoLocationService.getIPDetails(ipAddress);
+        if (visit != null) {
+            visit.setTender(tender);
+            tenderVisitDAO.save(visit);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void awardTender(TenderAward tenderAward) {
+        tenderAwardDAO.save(tenderAward);
+        Tender tender = tenderAward.getTender();
+        tender.setStatus(3);
+        tenderDAO.save(tender);
+    }
+
+    @Override
+    public void autoCloseTenderAndNotify() {
+        //Date currentDateTime = DateUtility.getCurrentDateTime();
+        List<Tender> closingTenders = tenderDAO.findClosingTender();
+        if (closingTenders != null && !closingTenders.isEmpty()) {
+            for (Tender t : closingTenders) {
+                User user = userService.findById(t.getCompany().getCreatedBy());
+                if (user != null) {
+                    Map<String, Object> params = new HashMap<>();
+                    params.put(TTConstants.PARAM_TENDER_ID, t.getId());
+                    params.put(TTConstants.PARAM_TENDER_TITLE, t.getTitle());
+                    params.put(TTConstants.PARAM_EMAIL, user.getEmail());
+                    notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.tender_closed_noti, params);
+                }
+                tenderDAO.closeTender(t.getId());
             }
         }
     }

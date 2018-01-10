@@ -1,11 +1,8 @@
 package com.chlorocode.tendertracker.service;
 
 import com.chlorocode.tendertracker.dao.BidDAO;
-import com.chlorocode.tendertracker.dao.DocumentDAO;
-import com.chlorocode.tendertracker.dao.entity.Bid;
-import com.chlorocode.tendertracker.dao.entity.Company;
-import com.chlorocode.tendertracker.dao.entity.Document;
-import com.chlorocode.tendertracker.dao.entity.Tender;
+import com.chlorocode.tendertracker.dao.BidDocumentDAO;
+import com.chlorocode.tendertracker.dao.entity.*;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +29,7 @@ public class BidServiceImplTest {
     private BidDAO bidDAO;
 
     @Mock
-    private DocumentDAO documentDAO;
+    private BidDocumentDAO bidDocumentDAO;
 
     @Mock
     private S3Wrapper s3Wrapper;
@@ -63,11 +60,8 @@ public class BidServiceImplTest {
 
         verify(bidDAO, times(1)).save(bid);
         verify(s3Wrapper, times(1)).upload(any(), eq("bid_documents/2/filename.txt"));
-        verify(documentDAO, times(1)).save(any(Document.class));
+        verify(bidDocumentDAO, times(1)).save(any(BidDocument.class));
         assertEquals(1, result.getDocuments().size());
-
-        // Verify document type is bid document
-        assertEquals(2, result.getDocuments().get(0).getDocument().getType());
     }
 
     @Test

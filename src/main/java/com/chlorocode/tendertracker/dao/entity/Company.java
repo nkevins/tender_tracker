@@ -6,6 +6,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 @Entity
@@ -43,6 +44,9 @@ public class Company {
     @Column(name = "principle_business_activity")
     private String princpleBusinessActivity;
 
+    @ManyToMany(mappedBy = "invitedCompanies")
+    private List<Tender> invitedTenders;
+
     public String getPrincpleBusinessActivity() {
         return princpleBusinessActivity;
     }
@@ -52,7 +56,7 @@ public class Company {
     }
 
     public Company(){
-
+        invitedTenders = new LinkedList<>();
     }
     public Company(String name, String uen, String gstRegNo, int type, String address1, String address2, String postalCode,
                    String city, String state, String province, Country country, int areaOfBusiness, int createdBy,
@@ -73,6 +77,8 @@ public class Company {
         this.createdDate = createdDate;
         this.lastUpdatedBy = lastUpdatedBy;
         this.lastUpdatedDate = lastUpdatedDate;
+
+        invitedTenders = new LinkedList<>();
     }
 
     @JsonView(DataTablesOutput.View.class)
@@ -254,5 +260,9 @@ public class Company {
             }
         }
         return true;
+    }
+
+    public List<Tender> getInvitedTenders() {
+        return invitedTenders;
     }
 }
