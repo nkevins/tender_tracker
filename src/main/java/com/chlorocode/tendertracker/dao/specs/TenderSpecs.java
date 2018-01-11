@@ -17,13 +17,13 @@ public class TenderSpecs {
 
     public static Specification<Tender> getAllOpenTender() {
         return (root, query, cb) -> {
-            return cb.lessThanOrEqualTo(root.get(Tender_.openDate), DateUtility.getCurrentDate());
+            return cb.greaterThanOrEqualTo(root.get(Tender_.openDate), DateUtility.getCurrentDate());
         };
     }
 
     public static Specification<Tender> byTenderSearchString(String searchString) {
         return (root, query, cb) -> {
-            Predicate openDateFilter = cb.lessThanOrEqualTo(root.get(Tender_.openDate), DateUtility.getCurrentDate());
+            Predicate openDateFilter = cb.greaterThanOrEqualTo(root.get(Tender_.openDate), DateUtility.getCurrentDate());
             List<Predicate> predicates = new ArrayList<>();
             if (searchString != null && !searchString.isEmpty()) {
                 predicates.add(cb.like(cb.lower(root.<String>get(Tender_.title)), getContainsLikePattern(searchString)));
@@ -39,7 +39,7 @@ public class TenderSpecs {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            predicates.add(cb.lessThanOrEqualTo(root.get(Tender_.openDate), DateUtility.getCurrentDate()));
+            predicates.add(cb.greaterThanOrEqualTo(root.get(Tender_.openDate), DateUtility.getCurrentDate()));
             if (title != null && !title.isEmpty()) {
                 predicates.add(cb.like(cb.lower(root.<String>get(Tender_.title)), getContainsLikePattern(title)));
             }
@@ -62,31 +62,31 @@ public class TenderSpecs {
         };
     }
 
-    public static Specification<Tender> isTitleLike(String title) {
-        return (root, query, cb) -> {
-            String containsLikePattern = getContainsLikePattern(title);
-            return cb.like(cb.lower(root.<String>get(Tender_.title)), containsLikePattern);
-        };
-    }
-
-    public static Specification<Tender> isCompanyLike(String company) {
-        return (root, query, cb) -> {
-            String containsLikePattern = getContainsLikePattern(company);
-            return cb.like(cb.lower(root.get(Tender_.company).get(Company_.name)), containsLikePattern);
-        };
-    }
-
-    public static Specification<Tender> isEqualTenderCategory(int tcId) {
-        return (root, query, cb) -> {
-            return cb.equal(root.get(Tender_.tenderCategory).get(TenderCategory_.id), tcId);
-        };
-    }
-
-    public static Specification<Tender> isEqualStatus(int status) {
-        return (root, query, cb) -> {
-            return cb.equal(root.<Integer>get(Tender_.status), status);
-        };
-    }
+//    public static Specification<Tender> isTitleLike(String title) {
+//        return (root, query, cb) -> {
+//            String containsLikePattern = getContainsLikePattern(title);
+//            return cb.like(cb.lower(root.<String>get(Tender_.title)), containsLikePattern);
+//        };
+//    }
+//
+//    public static Specification<Tender> isCompanyLike(String company) {
+//        return (root, query, cb) -> {
+//            String containsLikePattern = getContainsLikePattern(company);
+//            return cb.like(cb.lower(root.get(Tender_.company).get(Company_.name)), containsLikePattern);
+//        };
+//    }
+//
+//    public static Specification<Tender> isEqualTenderCategory(int tcId) {
+//        return (root, query, cb) -> {
+//            return cb.equal(root.get(Tender_.tenderCategory).get(TenderCategory_.id), tcId);
+//        };
+//    }
+//
+//    public static Specification<Tender> isEqualStatus(int status) {
+//        return (root, query, cb) -> {
+//            return cb.equal(root.<Integer>get(Tender_.status), status);
+//        };
+//    }
 
     private static String getContainsLikePattern(String searchTerm) {
         if (searchTerm == null || searchTerm.isEmpty()) {
