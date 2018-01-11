@@ -366,6 +366,7 @@ public class TenderServiceImpl implements TenderService {
         List<Tender> closingTenders = tenderDAO.findClosingTender();
         if (closingTenders != null && !closingTenders.isEmpty()) {
             for (Tender t : closingTenders) {
+                // Notify to company administrator.
                 User user = userService.findById(t.getCompany().getCreatedBy());
                 if (user != null) {
                     Map<String, Object> params = new HashMap<>();
@@ -374,6 +375,7 @@ public class TenderServiceImpl implements TenderService {
                     params.put(TTConstants.PARAM_EMAIL, user.getEmail());
                     notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.tender_closed_noti, params);
                 }
+                // Change the status of tender to close tender.
                 tenderDAO.closeTender(t.getId());
             }
         }

@@ -13,4 +13,5 @@ public interface MilestoneService {
     Milestone findMilestoneById(int id);
     Milestone update(Milestone milestone);
     void removeMilestone(int id);
+    void notifyApproachMilestone();
 }
