@@ -68,4 +68,9 @@ public class BidServiceImpl implements BidService {
     public Bid findBidByCompanyAndTender(int companyId, int tenderId) {
         return bidDAO.findBidByCompanyAndTender(companyId,tenderId);
     }
+
+    @Override
+    public List<Bid> findBidByCompany(int companyId) {
+        return bidDAO.findBidByCompany(companyId);
+    }
 }
