@@ -168,7 +168,13 @@ public class CompanyServiceImpl implements CompanyService {
 
             companyDAO.save(company);
 
-            //TODO: Send email notification to blacklisted company
+            // Send email notification to blacklisted company
+            Map<String, Object> params = new HashMap<>();
+            params.put(TTConstants.PARAM_COMPANY, company);
+            User user = userService.findById(company.getCreatedBy());
+            params.put(TTConstants.PARAM_EMAIL, user.getEmail());
+            notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.company_blacklisted_noti, params);
+
             return true;
         }
     }

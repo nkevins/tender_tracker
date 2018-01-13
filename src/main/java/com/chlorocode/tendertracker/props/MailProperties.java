@@ -13,6 +13,7 @@ public class MailProperties {
     private String subClosedTender;
     private String subCompanyReview;
     private String subCompanyRegistered;
+    private String subCompanyBlacklisted;
     private String templateOTP;
     private String templateWelcome;
     private String templateUpdateTender;
@@ -22,6 +23,7 @@ public class MailProperties {
     private String templateCompanyApproved;
     private String templateCompanyRejected;
     private String templateCompanyRegistered;
+    private String templateCompanyBlacklisted;
 
     public String getSubOTP() {
         return subOTP;
@@ -157,6 +159,22 @@ public class MailProperties {
 
     public void setTemplateClosedTender(String templateClosedTender) {
         this.templateClosedTender = templateClosedTender;
+    }
+
+    public String getSubCompanyBlacklisted() {
+        return subCompanyBlacklisted;
+    }
+
+    public void setSubCompanyBlacklisted(String subCompanyBlacklisted) {
+        this.subCompanyBlacklisted = subCompanyBlacklisted;
+    }
+
+    public String getTemplateCompanyBlacklisted() {
+        return templateCompanyBlacklisted;
+    }
+
+    public void setTemplateCompanyBlacklisted(String templateCompanyBlacklisted) {
+        this.templateCompanyBlacklisted = templateCompanyBlacklisted;
     }
     //    private String subjectOTP;
 //    public static final String OTP_TEMPLATE = "<html><body>"

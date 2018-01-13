@@ -31,6 +31,7 @@ public class NotificationServiceImpl implements NotificationService {
         decision_noti,
         company_reg_noti,
         tender_closed_noti,
+        company_blacklisted_noti,
         // TODO add other mode such as tender_noti, etc...
         other;
     }
@@ -57,6 +58,8 @@ public class NotificationServiceImpl implements NotificationService {
             sendCompanyRegisteredNotiMsg(params);
         } else if (mode == NOTI_MODE.tender_closed_noti) {
             sendTenderClosedNotiMsg(params);
+        } else if (mode == NOTI_MODE.company_blacklisted_noti) {
+            sendCompanyBlackListedNotiMsg(params);
         } else {
             //sendEmail("Email Subject","Email body", (String)params.get(TTConstants.PARAM_EMAIL));
         }
@@ -117,6 +120,13 @@ public class NotificationServiceImpl implements NotificationService {
         Company company = (Company) params.get(TTConstants.PARAM_COMPANY);
         String email = (String) params.get(TTConstants.PARAM_EMAIL);
         return sendEmail(mailProperties.getSubCompanyRegistered(), mailProperties.getTemplateCompanyRegistered(),
+                new String[]{email}, company.getName());
+    }
+
+    public boolean sendCompanyBlackListedNotiMsg(Map<String, Object> params) {
+        Company company = (Company) params.get(TTConstants.PARAM_COMPANY);
+        String email = (String) params.get(TTConstants.PARAM_EMAIL);
+        return sendEmail(mailProperties.getSubCompanyBlacklisted(), mailProperties.getTemplateCompanyBlacklisted(),
                 new String[]{email}, company.getName());
     }
 
