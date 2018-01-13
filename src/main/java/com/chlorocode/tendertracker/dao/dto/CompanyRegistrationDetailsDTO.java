@@ -23,6 +23,15 @@ public class CompanyRegistrationDetailsDTO {
     private String mailingAddress;
     private String principleActivity;
     private String status;
+    private boolean active;
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
     public String getStatus() {
         return status;

@@ -84,6 +84,7 @@ public class CompanyServiceImpl implements CompanyService {
         reg.setApplicant(userService.findById(company.getCreatedBy()));
         reg.setApplicationDate(company.getCreatedDate());
         reg.setPrincipleActivity(company.getPrincpleBusinessActivity());
+        reg.setActive(company.isActive());
 
         if(company.getStatus() == 1){
             reg.setStatus("Approved");
