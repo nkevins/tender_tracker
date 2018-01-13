@@ -57,6 +57,17 @@ public class CompanySysAdmController {
             model.addAttribute("uenValidLabel", "UEN Verified");
         }
 
+        if(companyRegistration.getStatus().equalsIgnoreCase("Approved")){
+            model.addAttribute("approved","Approved");
+        }else if(companyRegistration.getStatus().equalsIgnoreCase("Rejected")){
+            model.addAttribute("rejected","Rejected");
+        }
+
+        if(companyRegistration.isActive()){
+            model.addAttribute("active","Active");
+        }else if(!companyRegistration.isActive()){
+            model.addAttribute("blacklisted","Blacklisted");
+        }
         return "admin/sysadm/companyDetail";
     }
 
@@ -78,6 +89,47 @@ public class CompanySysAdmController {
         }
 
         return "admin/sysadm/companyRegistrationDetail";
+    }
+
+    @PostMapping("/sysadm/blacklistCompany")
+    public String blacklistCompany(@RequestParam("id") int id, @RequestParam("action") String action,
+                                                   RedirectAttributes redirectAttrs) {
+        CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        try{
+            if (action.equals("reject")) {
+                boolean result = companyService.blacklistCompany(id,  usr.getId());
+                if(result){
+                    AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
+                            "Company blacklisted Successful");
+                    redirectAttrs.addFlashAttribute("alert", alert);
+                }else{
+                    AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
+                            "Something went wrong. Cannot blacklisted the company");
+                    redirectAttrs.addFlashAttribute("alert", alert);
+                }
+            }else{
+                boolean result = companyService.unblacklistCompany(id,  usr.getId());
+                if(result){
+                    AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
+                            "Company unblacklisted Successful");
+                    redirectAttrs.addFlashAttribute("alert", alert);
+                }else{
+                    AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
+                            "Something went wrong. Cannot blacklisted the company");
+                    redirectAttrs.addFlashAttribute("alert", alert);
+                }
+            }
+
+
+        }catch (ApplicationException ex){
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
+                    "Error encountered: " + ex.getMessage());
+            redirectAttrs.addFlashAttribute("alert", alert);
+        }
+
+
+        return "redirect:/sysadm/companyRegistrationList";
     }
 
     @PostMapping("/sysadm/companyRegistration")

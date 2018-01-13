@@ -41,7 +41,23 @@
                             </tr>
                             <tr>
                                 <th>Registration Status:</th>
-                                <td th:text="${reg.status}"></td>
+                               <!-- <td th:text="${reg.status}"></td>-->
+                                <td>
+                                <span th:text="${reg.status}"></span>
+                                <br />
+                                <span class="label label-success" th:if="${approved}" th:text="${approved}"></span>
+                                <span class="label label-danger" th:if="${rejected}" th:text="${rejected}"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Company Status:</th>
+                                <!-- <td th:text="${reg.status}"></td>-->
+                                <td>
+                                    <span th:text="${reg.companyStatus}"></span>
+                                    <br />
+                                    <span class="label label-success" th:if="${active}" th:text="${active}"></span>
+                                    <span class="label label-danger" th:if="${blacklisted}" th:text="${blacklisted}"></span>
+                                </td>
                             </tr>
                             <tr>
                                 <th>GST Registration No:</th>
@@ -124,7 +140,7 @@
                 </div>
             </div>
         </div>
-        <!--
+
         <div class="row">
             <div class="col-md-12">
                 <div class="box box-primary">
@@ -132,15 +148,17 @@
                         <h3 class="box-title">Action</h3>
                     </div>
                     <div class="box-body">
-                        <form th:action="@{/sysadm/companyRegistration}" method="POST">
+                        <form th:action="@{/sysadm/blacklistCompany}" method="POST">
                             <input type="hidden" name="id" th:value="${reg.id}" />
-                            <button type="submit" name="action" value="approve" class="btn btn-success"><i class="fa fa-check"></i> Approve</button>
-                            <button type="submit" name="action" value="reject" class="btn btn-danger"><i class="fa fa-times"></i> Reject</button>
+
+                           <button type="submit" name="action" value="reject" class="btn btn-danger"><i class="fa fa-times"></i>Blacklist Company</button>
+                            <button type="submit" name="action" value="approve" class="btn btn-success"><i class="fa fa-times"></i>Unblacklist Company</button>
+
                         </form>
                     </div>
                 </div>
             </div>
-        </div>-->
+        </div>
     </section>
     <!-- /.content -->
 </div>

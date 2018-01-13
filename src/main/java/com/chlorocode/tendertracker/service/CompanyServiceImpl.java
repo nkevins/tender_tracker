@@ -84,11 +84,18 @@ public class CompanyServiceImpl implements CompanyService {
         reg.setApplicant(userService.findById(company.getCreatedBy()));
         reg.setApplicationDate(company.getCreatedDate());
         reg.setPrincipleActivity(company.getPrincpleBusinessActivity());
+        reg.setActive(company.isActive());
 
         if(company.getStatus() == 1){
             reg.setStatus("Approved");
         }else if(company.getStatus() == 2){
             reg.setStatus("Rejected");
+        }
+
+        if(company.isActive()){
+            reg.setCompanyStatus("Active");
+        }else{
+            reg.setCompanyStatus("Blacklisted");
         }
         return reg;
     }
@@ -145,6 +152,38 @@ public class CompanyServiceImpl implements CompanyService {
                 params.put(TTConstants.PARAM_EMAIL, user.getEmail());
                 notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.company_reviewed_noti, params);
             }
+        }
+    }
+
+    @Override
+    public boolean blacklistCompany(int id, int rejectedBy) {
+        Company company = companyDAO.findOne(id);
+
+        if (company == null) {
+            throw new ApplicationException("Company Registration not found");
+        }else{
+            company.setActive(false);
+            company.setLastUpdatedBy(rejectedBy);
+            company.setLastUpdatedDate(new Date());
+
+            companyDAO.save(company);
+            return true;
+        }
+    }
+
+    @Override
+    public boolean unblacklistCompany(int id, int rejectedBy) {
+        Company company = companyDAO.findOne(id);
+
+        if (company == null) {
+            throw new ApplicationException("Company Registration not found");
+        }else{
+            company.setActive(true);
+            company.setLastUpdatedBy(rejectedBy);
+            company.setLastUpdatedDate(new Date());
+
+            companyDAO.save(company);
+            return true;
         }
     }
 
