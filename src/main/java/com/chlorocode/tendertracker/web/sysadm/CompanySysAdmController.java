@@ -63,6 +63,11 @@ public class CompanySysAdmController {
             model.addAttribute("rejected","Rejected");
         }
 
+        if(companyRegistration.isActive()){
+            model.addAttribute("active","Active");
+        }else if(!companyRegistration.isActive()){
+            model.addAttribute("blacklisted","Blacklisted");
+        }
         return "admin/sysadm/companyDetail";
     }
 
@@ -92,16 +97,30 @@ public class CompanySysAdmController {
         CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         try{
-            boolean result = companyService.blacklistCompany(id,  usr.getId());
-            if(result){
-                AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
-                        "Company blacklisted Successful");
-                redirectAttrs.addFlashAttribute("alert", alert);
+            if (action.equals("reject")) {
+                boolean result = companyService.blacklistCompany(id,  usr.getId());
+                if(result){
+                    AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
+                            "Company blacklisted Successful");
+                    redirectAttrs.addFlashAttribute("alert", alert);
+                }else{
+                    AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
+                            "Something went wrong. Cannot blacklisted the company");
+                    redirectAttrs.addFlashAttribute("alert", alert);
+                }
             }else{
-                AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
-                        "Something went wrong. Cannot blacklisted the company");
-                redirectAttrs.addFlashAttribute("alert", alert);
+                boolean result = companyService.unblacklistCompany(id,  usr.getId());
+                if(result){
+                    AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
+                            "Company unblacklisted Successful");
+                    redirectAttrs.addFlashAttribute("alert", alert);
+                }else{
+                    AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
+                            "Something went wrong. Cannot blacklisted the company");
+                    redirectAttrs.addFlashAttribute("alert", alert);
+                }
             }
+
 
         }catch (ApplicationException ex){
             AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,

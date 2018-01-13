@@ -24,6 +24,15 @@ public class CompanyRegistrationDetailsDTO {
     private String principleActivity;
     private String status;
     private boolean active;
+    private String companyStatus;
+
+    public String getCompanyStatus() {
+        return companyStatus;
+    }
+
+    public void setCompanyStatus(String companyStatus) {
+        this.companyStatus = companyStatus;
+    }
 
     public boolean isActive() {
         return active;

@@ -91,6 +91,12 @@ public class CompanyServiceImpl implements CompanyService {
         }else if(company.getStatus() == 2){
             reg.setStatus("Rejected");
         }
+
+        if(company.isActive()){
+            reg.setCompanyStatus("Active");
+        }else{
+            reg.setCompanyStatus("Blacklisted");
+        }
         return reg;
     }
 
@@ -157,6 +163,22 @@ public class CompanyServiceImpl implements CompanyService {
             throw new ApplicationException("Company Registration not found");
         }else{
             company.setActive(false);
+            company.setLastUpdatedBy(rejectedBy);
+            company.setLastUpdatedDate(new Date());
+
+            companyDAO.save(company);
+            return true;
+        }
+    }
+
+    @Override
+    public boolean unblacklistCompany(int id, int rejectedBy) {
+        Company company = companyDAO.findOne(id);
+
+        if (company == null) {
+            throw new ApplicationException("Company Registration not found");
+        }else{
+            company.setActive(true);
             company.setLastUpdatedBy(rejectedBy);
             company.setLastUpdatedDate(new Date());
 
