@@ -13,4 +13,6 @@ public interface BidService {
 
     Bid findBidByCompanyAndTender(int companyId, int tenderId);
 
+    List<Bid> findBidByCompany(int companyId);
+
 }
