@@ -191,7 +191,7 @@ public class TenderReportsController {
             model.addAttribute("alert", alert);
         }
 
-        return "admin/reports/statisticsreport";
+        return "admin/reports/statisticsReport";
 
         /*
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
