@@ -54,12 +54,38 @@
                         <div class="row" style="padding-top: 10px;">
                             <div class="col-md-12">
                                 <hr />
-                                <input type="submit" id="mainSubmitBtn" value="Download" class="btn btn-primary" />
+                                <input type="submit" id="mainSubmitBtn" value="Display" class="btn btn-primary" />
                             </div>
                         </div>
 
 
                 </form>
+                <div th:if="${not #lists.isEmpty(tenderSummary)}">
+                    <h2>Tender Summary</h2>
+                    <table border="1px" cellspacing="5px">
+                        <tr>
+                            <th>Tender Status</th>
+                            <th>Number of Tenders</th>
+                        </tr>
+                        <tr th:each="tenderSummaryEntry : ${tenderSummary}">
+                            <td th:text="${tenderSummaryEntry.status}"></td>
+                            <td th:text="${tenderSummaryEntry.count}"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div th:if="${not #lists.isEmpty(companySummary)}">
+                    <h2>Registered Company Summary</h2>
+                    <table border="1px" cellspacing="5px">
+                        <tr>
+                            <th>Registration Status</th>
+                            <th>Number of Companies</th>
+                        </tr>
+                        <tr th:each="companySummaryEntry : ${companySummary}">
+                            <td th:text="${companySummaryEntry.status}"></td>
+                            <td th:text="${companySummaryEntry.count}"></td>
+                        </tr>
+                    </table>
+                </div>
 
                 <br/>
             </div>

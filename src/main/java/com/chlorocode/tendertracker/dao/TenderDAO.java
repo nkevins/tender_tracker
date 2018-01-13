@@ -45,4 +45,10 @@ public interface TenderDAO extends DataTablesRepository<Tender, Integer> {
 
     @Query("select v.country, count(v) from Tender t join t.tenderVisits v where t.id = ?1 group by v.country order by count(v) desc")
     List<Object[]> getTopCountryVisitor(int tenderId, Pageable pageable);
+
+    @Query(value = "select case when status=1 then 'Open' when status=2 then 'Closed' else 'Others' end as Status, " +
+            "count(*) as Count from tender where open_date >= ?1 and open_date <= ?2 group by status",
+            nativeQuery = true)
+    List<Object[]> getTenderSummary(Date startDate, Date endDate);
+
 }
