@@ -167,6 +167,8 @@ public class CompanyServiceImpl implements CompanyService {
             company.setLastUpdatedDate(new Date());
 
             companyDAO.save(company);
+
+            //TODO: Send email notification to blacklisted company
             return true;
         }
     }
