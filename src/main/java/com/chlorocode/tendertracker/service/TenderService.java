@@ -42,4 +42,6 @@ public interface TenderService {
     void logVisit(Tender tender, String ipAddress);
 
     void awardTender(TenderAward tenderAward);
+
+    void autoCloseTenderAndNotify();
 }

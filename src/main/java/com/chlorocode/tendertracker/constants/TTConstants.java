@@ -43,6 +43,9 @@ public class TTConstants {
     public static final String ASC = "asc";
     public static final String DESC = "desc";
 
+    public static final String PUBLISHED_DATE = "publishedDate";
+    public static final String CLOSING_DATE = "closingDate";
+
     public static final String DEFAULT_SORT = OPEN_DATE;
     public static final String DEFAULT_SORT_DIRECTION = ASC;
 
@@ -55,4 +58,11 @@ public class TTConstants {
 
     public static int UPDATE_TENDER = 1;
     public static int ADD_CORRIGENDUM = 2;
+
+    // External tender status.
+    public static final String ET_STATUS_OPEN = "OPEN";
+    public static final String ET_STATUS_CLOSED = "CLOSED";
+    public static final String ET_STATUS_AWARDED = "AWARDED";
+    public static final String ET_STATUS_NO_AWARD = "NO_AWARD";
+    public static final String ET_STATUS_OTHERS = "OTHERS";
 }

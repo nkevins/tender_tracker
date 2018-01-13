@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -20,4 +21,11 @@ public interface TenderDAO extends DataTablesRepository<Tender, Integer> {
     @Modifying
     @Query("update Tender t set t.status = 2, t.lastUpdatedBy = -1, t.lastUpdatedDate = CURRENT_TIMESTAMP where t.closedDate < CURRENT_TIMESTAMP and t.status = 1")
     void autoCloseTender();
+
+    @Query(value = "select t from Tender t where t.closedDate < CURRENT_TIMESTAMP and t.status = 1")
+    List<Tender> findClosingTender();
+
+    @Modifying
+    @Query("update Tender t set t.status = 2, t.lastUpdatedBy = -1, t.lastUpdatedDate = CURRENT_TIMESTAMP where t.id = ?1")
+    void closeTender(int id);
 }
