@@ -52,7 +52,7 @@ public class TenderReportsController {
     public String viewReportsPage(ModelMap model){
         model.addAttribute("tenderType", codeValueService.getByType("tender_type"));
         model.addAttribute("tenderCategories", codeValueService.getAllTenderCategories());
-        return "admin/reports/procurementreport";
+        return "admin/reports/procurementReport";
     }
 
     @PostMapping("/admin/report/procurementreport")
@@ -166,7 +166,7 @@ public class TenderReportsController {
     public String viewStatisticsReportsPage(ModelMap model){
         model.addAttribute("tenderType", codeValueService.getByType("tender_type"));
         model.addAttribute("tenderCategories", codeValueService.getAllTenderCategories());
-        return "admin/reports/statisticsreport";
+        return "admin/reports/statisticsReport";
     }
 
     @PostMapping("/admin/report/statisticsreport")
