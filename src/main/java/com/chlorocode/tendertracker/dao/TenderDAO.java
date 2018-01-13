@@ -22,9 +22,13 @@ public interface TenderDAO extends DataTablesRepository<Tender, Integer> {
     @Query(value = "select t.ref_no, t.title, c1.description as tender_type, tc.name, open_date, closed_date, c2.description as status " +
             "from tender t, tender_category tc, code_value c1, code_value c2 " +
             "where tc.id = t.tender_category_id and t.tender_type = c1.code and c1.type = 'tender_type' " +
-            "and t.status = c2.code and c2.type = 'tender_status' and t.open_date >= ?1 and t.open_date <= ?2",
+            "and t.status = c2.code and c2.type = 'tender_status' and t.open_date >= ?1 and t.open_date <= ?2 " +
+            "and t.closed_date >= ?3 and t.closed_date <= ?4 " +
+            "and t.tender_category_id = ?5 and t.status = ?6 ",
             nativeQuery = true)
-    List<Object[]> findAllByDateRange(Date startDate, Date endDate);
+    List<Object[]> findAllByDateRange(Date openDateFrom, Date openDateTo,
+                                      Date closeDateFrom, Date closeDateTo,
+                                      String category, String status);
 
     @Modifying
     @Query("update Tender t set t.status = 2, t.lastUpdatedBy = -1, t.lastUpdatedDate = CURRENT_TIMESTAMP where t.closedDate < CURRENT_TIMESTAMP and t.status = 1")

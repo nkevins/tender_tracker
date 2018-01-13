@@ -29,11 +29,14 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public List<ProcurementReportDTO> findAllByDateRange(Date startDate, Date endDate) {
+    public List<ProcurementReportDTO> findAllByDateRange(Date openDateFrom, Date openDateTo,
+                                                         Date closeDateFrom, Date closeDateTo,
+                                                         String category, String status) {
 
         List<ProcurementReportDTO> results = new LinkedList<ProcurementReportDTO>();
 
-        List<Object[]> rawResult = tenderDAO.findAllByDateRange(startDate, endDate);
+        List<Object[]> rawResult = tenderDAO.findAllByDateRange(openDateFrom, openDateTo, closeDateFrom, closeDateTo,
+                category, status);
         for (Object[] rows : rawResult) {
             ProcurementReportDTO row = new ProcurementReportDTO((String)rows[0], (String)rows[1], (String)rows[2],
                     (String)rows[3], (Date)rows[4], (Date)rows[5], (String)rows[6]);

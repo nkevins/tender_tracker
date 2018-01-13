@@ -66,11 +66,21 @@ public class TenderReportsController {
         String category = request.getParameter("category");
         String status = request.getParameter("status");
         String fileType = request.getParameter("fileType");
-
-
+        //if(status.isEmpty()){
+        //    status="%";
+       // }
+        System.out.println(openingDateFrom);
+        System.out.println(openingDateTo);
+        System.out.println(closingDateFrom);
+        System.out.println(closingDateTo);
+        System.out.println(category);
+        System.out.println(status);
         try {
             List<ProcurementReportDTO> procurementReportList = null;
-            procurementReportList = reportService.findAllByDateRange(DATEFORMAT.parse(openingDateFrom), DATEFORMAT.parse(openingDateTo));
+            procurementReportList = reportService.findAllByDateRange(
+                    DATEFORMAT.parse(openingDateFrom), DATEFORMAT.parse(openingDateTo),
+                    DATEFORMAT.parse(closingDateFrom), DATEFORMAT.parse(closingDateTo),
+                    category, status);
             if(fileType.equals("pdf")) {
                 downloadProcurementReportPdf(response, procurementReportList);
             }

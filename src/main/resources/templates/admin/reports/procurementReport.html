@@ -27,15 +27,15 @@
                 <form th:method="POST" th:action="@{/admin/report/procurementreport}">
 
                     <div class="form-group">
-                        <label for="reportType" class="col-sm-4 control-label">Report Type<span style="color:red">*</span></label>
+                        <label for="reportType" class="col-sm-4 control-label">Report Type</label>
                         <span>Procurement Report</span>
                         <input type="hidden" id="reportType" name="reportType" value="procurementReport"/>
                     </div>
                         <div class="form-group">
                             <label for="category" class="col-sm-4 control-label">Category<span style="color:red">*</span></label>
                             <div class="input-group date col-sm-4">
-                                <select class="form-control" id="category" required="required">
-                                    <option th:each="c : ${tenderCategories}" th:text="${c.name}" th:value="${c.id}">IT</option>
+                                <select class="form-control" id="category" name="category">
+                                    <option th:each="c : ${tenderCategories}" th:text="${c.name}" th:value="${c.id}"></option>
                                 </select>
                             </div>
                         </div>
@@ -43,8 +43,8 @@
                             <label for="status" class="col-sm-4 control-label">Status<span style="color:red">*</span></label>
                             <div class="input-group date col-sm-4">
                                 <select class="form-control pull-right" id="status" name="status">
-                                    <option value="Open">Open</option>
-                                    <option value="Closed">Closed</option>
+                                    <option value="1">Open</option>
+                                    <option value="2">Closed</option>
                                 </select>
                             </div>
                         </div>

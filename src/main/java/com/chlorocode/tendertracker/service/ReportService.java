@@ -10,7 +10,9 @@ import java.util.List;
  * Created by fistg on 17-Dec-17.
  */
 public interface ReportService {
-    List<ProcurementReportDTO> findAllByDateRange(Date startDate, Date endDate);
+    List<ProcurementReportDTO> findAllByDateRange(Date openDateFrom, Date openDateTo,
+                                                  Date closeDateFrom, Date closeDateTo,
+                                                  String category, String status);
     List<ReportSummaryDTO> findTenderSummary(Date startDate, Date endDate);
     List<ReportSummaryDTO> findCompanySummary(Date startDate, Date endDate);
 
