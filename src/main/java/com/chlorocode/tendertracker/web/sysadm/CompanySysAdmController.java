@@ -57,6 +57,12 @@ public class CompanySysAdmController {
             model.addAttribute("uenValidLabel", "UEN Verified");
         }
 
+        if(companyRegistration.getStatus().equalsIgnoreCase("Approved")){
+            model.addAttribute("approved","Approved");
+        }else if(companyRegistration.getStatus().equalsIgnoreCase("Rejected")){
+            model.addAttribute("rejected","Rejected");
+        }
+
         return "admin/sysadm/companyDetail";
     }
 
@@ -78,6 +84,33 @@ public class CompanySysAdmController {
         }
 
         return "admin/sysadm/companyRegistrationDetail";
+    }
+
+    @PostMapping("/sysadm/blacklistCompany")
+    public String blacklistCompany(@RequestParam("id") int id, @RequestParam("action") String action,
+                                                   RedirectAttributes redirectAttrs) {
+        CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        try{
+            boolean result = companyService.blacklistCompany(id,  usr.getId());
+            if(result){
+                AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
+                        "Company blacklisted Successful");
+                redirectAttrs.addFlashAttribute("alert", alert);
+            }else{
+                AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
+                        "Something went wrong. Cannot blacklisted the company");
+                redirectAttrs.addFlashAttribute("alert", alert);
+            }
+
+        }catch (ApplicationException ex){
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
+                    "Error encountered: " + ex.getMessage());
+            redirectAttrs.addFlashAttribute("alert", alert);
+        }
+
+
+        return "redirect:/sysadm/companyRegistrationList";
     }
 
     @PostMapping("/sysadm/companyRegistration")

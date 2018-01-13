@@ -12,7 +12,7 @@ public interface CompanyService {
     CompanyRegistrationDetailsDTO findCompanyRegistrationById(int id);
     void approveCompanyRegistration(int id, int approvedBy);
     void rejectCompanyRegistration(int id, int rejectedBy);
-
+    boolean blacklistCompany(int id, int rejectedBy);
     Company findById(int id);
     Company updateCompany(Company company);
     List<Company> findCompanyByUen(String uen);

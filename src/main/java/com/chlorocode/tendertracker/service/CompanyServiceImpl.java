@@ -149,6 +149,22 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
+    public boolean blacklistCompany(int id, int rejectedBy) {
+        Company company = companyDAO.findOne(id);
+
+        if (company == null) {
+            throw new ApplicationException("Company Registration not found");
+        }else{
+            company.setActive(false);
+            company.setLastUpdatedBy(rejectedBy);
+            company.setLastUpdatedDate(new Date());
+
+            companyDAO.save(company);
+            return true;
+        }
+    }
+
+    @Override
     public Company findById(int id) {
         return companyDAO.findOne(id);
     }
