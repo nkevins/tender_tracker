@@ -54,7 +54,18 @@ public class TenderController {
     }
 
     @GetMapping("/admin/tender/create")
-    public String showCreateTenderPage(ModelMap model) {
+    public String showCreateTenderPage(ModelMap model, RedirectAttributes redirectAttrs) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        CurrentUser usr = (CurrentUser) auth.getPrincipal();
+        Company comp = usr.getSelectedCompany();
+        Company selectedComp = companyService.findById(comp.getId());
+        if(!selectedComp.isActive()){
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
+                    "This company had been blacklisted by Administrator. Kindly please contact Administrator for more details");
+            redirectAttrs.addFlashAttribute("alert", alert);
+            return "redirect:/admin/tender";
+        }
+
         model.addAttribute("tender", new TenderCreateDTO());
         model.addAttribute("tenderType", codeValueService.getByType("tender_type"));
         model.addAttribute("tenderCategories", codeValueService.getAllTenderCategories());
