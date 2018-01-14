@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,13 +37,14 @@ public class TenderServiceImpl implements TenderService {
     private TenderVisitDAO tenderVisitDAO;
     private TenderAwardDAO tenderAwardDAO;
     private UserService userService;
+    private BidService bidService;
 
     @Autowired
     public TenderServiceImpl(TenderDAO tenderDAO, S3Wrapper s3Wrapper, TenderBookmarkDAO tenderBookmarkDAO
                             , TenderItemDAO tenderItemDAO, TenderDocumentDAO tenderDocumentDAO
                             , TenderCategorySubscriptionDAO tenderCategorySubscriptionDAO, TenderPagingDAO tenderPagingDAO
                             , NotificationService notificationService, IPGeoLocationService ipGeoLocationService
-                            , TenderVisitDAO tenderVisitDAO, TenderAwardDAO tenderAwardDAO, UserService userService) {
+                            , TenderVisitDAO tenderVisitDAO, TenderAwardDAO tenderAwardDAO, UserService userService, BidService bidService) {
         this.tenderDAO = tenderDAO;
         this.tenderItemDAO = tenderItemDAO;
         this.tenderDocumentDAO = tenderDocumentDAO;
@@ -54,6 +57,7 @@ public class TenderServiceImpl implements TenderService {
         this.tenderVisitDAO = tenderVisitDAO;
         this.tenderAwardDAO = tenderAwardDAO;
         this.userService = userService;
+        this.bidService = bidService;
     }
 
     @Override
@@ -307,15 +311,17 @@ public class TenderServiceImpl implements TenderService {
 
     @Override
     public Page<Tender> listAllByPage(Pageable pageable) {
-        Specification<Tender> searchSpec = TenderSpecs.getAllOpenTender();
+        int companyId = getCompanyId();
+        Specification<Tender> searchSpec = TenderSpecs.getAllOpenTender(companyId, getBidTenderIds(companyId));
         return tenderPagingDAO.findAll(searchSpec, pageable);
     }
 
     @Override
     public Page<Tender> searchTender(TenderSearchDTO searchDTO, Pageable pageable) {
+        int companyId = getCompanyId();
         Specification<Tender> searchSpec = null;
         if (searchDTO.getSearchText() != null && !searchDTO.getSearchText().trim().isEmpty()) {
-            searchSpec = TenderSpecs.byTenderSearchString(searchDTO.getSearchText().trim());
+            searchSpec = TenderSpecs.byTenderSearchString(searchDTO.getSearchText().trim(), companyId, getBidTenderIds(companyId));
             searchDTO.setCompanyName(null);
             searchDTO.setTitle(null);
             searchDTO.setRefNo(null);
@@ -326,7 +332,8 @@ public class TenderServiceImpl implements TenderService {
                     searchDTO.getTitle() == null ? null : searchDTO.getTitle().trim()
                     , searchDTO.getCompanyName() == null ? null : searchDTO.getCompanyName().trim()
                     , searchDTO.getTenderCategory()
-                    , searchDTO.getStatus(), searchDTO.getRefNo());
+                    , searchDTO.getStatus(), searchDTO.getRefNo()
+                    , companyId, getBidTenderIds(companyId));
             searchDTO.setSearchText(null);
         }
         return tenderPagingDAO.findAll(searchSpec, pageable);
@@ -377,6 +384,7 @@ public class TenderServiceImpl implements TenderService {
         List<Tender> closingTenders = tenderDAO.findClosingTender();
         if (closingTenders != null && !closingTenders.isEmpty()) {
             for (Tender t : closingTenders) {
+                // Notify to company administrator.
                 User user = userService.findById(t.getCompany().getCreatedBy());
                 if (user != null) {
                     Map<String, Object> params = new HashMap<>();
@@ -385,8 +393,36 @@ public class TenderServiceImpl implements TenderService {
                     params.put(TTConstants.PARAM_EMAIL, user.getEmail());
                     notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.tender_closed_noti, params);
                 }
+                // Change the status of tender to close tender.
                 tenderDAO.closeTender(t.getId());
             }
         }
+    }
+
+    private List<Integer> getBidTenderIds(int companyId) {
+        if (companyId > 0) {
+            List<Bid> bids = bidService.findBidByCompany(companyId);
+            if (bids != null && bids.size() > 0) {
+                List<Integer> tenderIds = new ArrayList<>();
+                for (Bid bid : bids) {
+                    if (bid != null && bid.getTender() != null) {
+                        tenderIds.add(bid.getTender().getId());
+                    }
+                }
+                return tenderIds;
+            }
+        }
+        return null;
+    }
+
+    private int getCompanyId() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal != null && principal instanceof CurrentUser) {
+            CurrentUser usr = (CurrentUser) principal;
+            if (usr != null && usr.getSelectedCompany() != null) {
+                return usr.getSelectedCompany().getId();
+            }
+        }
+        return 0;
     }
 }

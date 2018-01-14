@@ -31,6 +31,9 @@ public class NotificationServiceImpl implements NotificationService {
         decision_noti,
         company_reg_noti,
         tender_closed_noti,
+        milestone_approach_noti,
+        appeal_create_noti,
+        appeal_update_noti,
         // TODO add other mode such as tender_noti, etc...
         other;
     }
@@ -57,6 +60,12 @@ public class NotificationServiceImpl implements NotificationService {
             sendCompanyRegisteredNotiMsg(params);
         } else if (mode == NOTI_MODE.tender_closed_noti) {
             sendTenderClosedNotiMsg(params);
+        } else if (mode == NOTI_MODE.milestone_approach_noti) {
+            sendMilestoneApproachNotiMsg(params);
+        } else if (mode == NOTI_MODE.appeal_create_noti) {
+            sendAppealCreateNotiMsg(params);
+        } else if (mode == NOTI_MODE.appeal_update_noti) {
+            sendAppealUpdateNotiMsg(params);
         } else {
             //sendEmail("Email Subject","Email body", (String)params.get(TTConstants.PARAM_EMAIL));
         }
@@ -118,6 +127,34 @@ public class NotificationServiceImpl implements NotificationService {
         String email = (String) params.get(TTConstants.PARAM_EMAIL);
         return sendEmail(mailProperties.getSubCompanyRegistered(), mailProperties.getTemplateCompanyRegistered(),
                 new String[]{email}, company.getName());
+    }
+
+    public boolean  sendMilestoneApproachNotiMsg(Map<String, Object> params) {
+        String id = String.valueOf(params.get(TTConstants.PARAM_TENDER_ID));
+        String title = (String) params.get(TTConstants.PARAM_TENDER_TITLE);
+        String description = (String) params.get(TTConstants.PARAM_MILESTONE_DESCRIPTION);
+        String dueDate = (String) params.get(TTConstants.PARAM_MILESTONE_DUE_DATE);
+        String status = (String) params.get(TTConstants.PARAM_MILESTONE_STATUS);
+        String email = (String) params.get(TTConstants.PARAM_EMAIL);
+        return sendEmail(mailProperties.getSubMilestoneApproach()
+                , mailProperties.getTemplateMilestoneApproach()
+                , new String[]{email}, description, title, dueDate, status, id, id);
+    }
+
+    public boolean  sendAppealCreateNotiMsg(Map<String, Object> params) {
+        String id = String.valueOf(params.get(TTConstants.PARAM_TENDER_ID));
+        String title = (String) params.get(TTConstants.PARAM_TENDER_TITLE);
+        String appealCompany = (String) params.get(TTConstants.PARAM_APPEAL_COMPANY);
+        String[] emails = (String[]) params.get(TTConstants.PARAM_EMAILS);
+        return sendEmail(mailProperties.getSubAppealCreate(), mailProperties.getTemplateAppealCreate(), emails, appealCompany, title, id, id);
+    }
+
+    public boolean  sendAppealUpdateNotiMsg(Map<String, Object> params) {
+        String id = String.valueOf(params.get(TTConstants.PARAM_TENDER_ID));
+        String title = (String) params.get(TTConstants.PARAM_TENDER_TITLE);
+        String appealCompany = (String) params.get(TTConstants.PARAM_APPEAL_COMPANY);
+        String[] emails = (String[]) params.get(TTConstants.PARAM_EMAILS);
+        return sendEmail(mailProperties.getSubAppealUpdate(), mailProperties.getSubAppealUpdate(), emails, appealCompany, title, id, id);
     }
 
     private boolean sendEmail(String emailSubject, String path, String[] to, String... params) {

@@ -36,6 +36,10 @@ public class TTConstants {
     public static final String PARAM_COMPANY_NAME = "company_name";
     public static final String PARAM_TENDER = "tender";
     public static final String PARAM_APPROVAL_ACTION = "approval_action";
+    public static final String PARAM_MILESTONE_DESCRIPTION = "milestone_description";
+    public static final String PARAM_MILESTONE_DUE_DATE = "milestone_due_date";
+    public static final String PARAM_MILESTONE_STATUS = "milestone_status";
+    public static final String PARAM_APPEAL_COMPANY = "appeal_company";
 
     public static final String OPEN_DATE = "openDate";
     public static final String CLOSED_DATE = "closedDate";
@@ -65,4 +69,6 @@ public class TTConstants {
     public static final String ET_STATUS_AWARDED = "AWARDED";
     public static final String ET_STATUS_NO_AWARD = "NO_AWARD";
     public static final String ET_STATUS_OTHERS = "OTHERS";
+
+    public static final int MILESTONE_APPROACH_DAY=3;
 }
