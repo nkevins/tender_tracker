@@ -34,7 +34,7 @@
         </div>
 
         <!-- Main row -->
-        <div class="row" sec:authorize="hasAnyRole('ADMIN,PREPARER')">
+        <div class="row" sec:authorize="hasAnyRole('ADMIN,PREPARER,SUBMITTER')">
             <!-- Left col -->
             <section class="col-lg-6 connectedSortable">
                 <!-- Custom tabs (Charts with tabs)-->
@@ -42,7 +42,7 @@
                     <div class="box-header">
                         <i class="fa fa-pie-chart"></i>
 
-                        <h3 class="box-title">Current Tender Overview</h3>
+                        <h3 class="box-title">Company Tender Overview</h3>
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body">
