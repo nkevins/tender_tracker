@@ -46,7 +46,9 @@ public class TenderAwardController {
         for (EvaluationCriteria c : criteria) {
             criteriaList += c.getId() + ",";
         }
-        criteriaList = criteriaList.substring(0, criteriaList.length() - 1);
+        if (criteriaList.length() > 0) {
+            criteriaList = criteriaList.substring(0, criteriaList.length() - 1);
+        }
 
         model.addAttribute("tender", tender);
         model.addAttribute("evaluationCriteria", criteria);

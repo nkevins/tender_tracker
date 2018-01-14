@@ -13,6 +13,7 @@ import java.util.Date;
 @Generated(value = "org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor")
 @StaticMetamodel(Tender.class)
 public abstract class Tender_ {
+    public static volatile SingularAttribute<Tender, Integer> id;
     public static volatile SingularAttribute<Tender, String> title;
     public static volatile SingularAttribute<Tender, String> refNo;
     public static volatile SingularAttribute<Tender, Integer> status;
