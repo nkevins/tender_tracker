@@ -315,6 +315,11 @@ public class TenderController {
         tender.setLastUpdatedBy(usr.getId());
         tender.setLastUpdatedDate(new Date());
 
+        Date current = new Date();
+        if(current.after(tender.getClosedDate())){
+            tender.setStatus(2);
+        }
+
         try {
             tenderService.updateTender(tender);
         } catch (ApplicationException ex) {
