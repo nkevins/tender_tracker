@@ -69,10 +69,15 @@
                                     <h3 class="no-margin-top">
                                         <a class="" th:text="${p.title}" target="_blank">Lorem ipsum dolor sit amet </a>
                                     </h3>
+                                    <h5>
+                                        <a class="color-black" th:text="${p.company.name}" th:href="@{/company/} + ${p.company.id}">Ngee Ann Polytechnic</a>
+                                    </h5>
                                     <div>
                                         <span class="color-black" th:text="${p.description}"></span>
                                         <br/>
-                                        <span class="color-black" th:text="${p.price}"></span>
+                                        <span class="color-black">
+                                            Price: <span th:text="${p.price}"></span>
+                                        </span>
                                         <br/>
                                     </div>
                                 </div>
