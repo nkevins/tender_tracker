@@ -6,11 +6,14 @@ import com.chlorocode.tendertracker.dao.dto.ReportSummaryDTO;
 import com.chlorocode.tendertracker.service.CodeValueService;
 import com.chlorocode.tendertracker.service.TenderService;
 import com.chlorocode.tendertracker.service.ReportService;
+import com.itextpdf.kernel.color.Color;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.property.TextAlignment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -36,6 +39,7 @@ public class TenderReportsController {
     public static final String PROCUREMENTREPORT_HEADER = "Ref. No,Tender Name,Category,Tender Type,Start Date,End Date,Status\n";
     public static final DateFormat DATEFORMAT = new SimpleDateFormat("dd/MM/yyyy");
     public static final String CSV_DELIMITER = ",";
+    public static final String NO_RESULTS = "No results are found for the selected criteria";
 
     private ReportService reportService;
     private CodeValueService codeValueService;
@@ -66,15 +70,6 @@ public class TenderReportsController {
         String category = request.getParameter("category");
         String status = request.getParameter("status");
         String fileType = request.getParameter("fileType");
-        //if(status.isEmpty()){
-        //    status="%";
-       // }
-        System.out.println(openingDateFrom);
-        System.out.println(openingDateTo);
-        System.out.println(closingDateFrom);
-        System.out.println(closingDateTo);
-        System.out.println(category);
-        System.out.println(status);
         try {
             List<ProcurementReportDTO> procurementReportList = null;
             procurementReportList = reportService.findAllByDateRange(
@@ -104,6 +99,10 @@ public class TenderReportsController {
         response.setHeader("Content-Disposition", "attachment; filename=procurementreport.csv");
         OutputStream out = response.getOutputStream();
         out.write(PROCUREMENTREPORT_HEADER.getBytes());
+        if(procurementReportList.isEmpty()) {
+            out.write(NO_RESULTS.getBytes());
+        }
+
         for (ProcurementReportDTO procurementReportDTO : procurementReportList) {
             String line=new String(procurementReportDTO.getRefNum()
                     + CSV_DELIMITER +procurementReportDTO.getTenderName()
@@ -133,6 +132,7 @@ public class TenderReportsController {
         Document document = new Document(pdfDocument);
 
         document.add(new Paragraph("Tender Procurement Report"));
+
         Table table = new Table(8);
         table.addHeaderCell("Sl. No");
         table.addHeaderCell("Ref. No");
@@ -142,6 +142,16 @@ public class TenderReportsController {
         table.addHeaderCell("Start Date");
         table.addHeaderCell("End Date");
         table.addHeaderCell("Status");
+        table.getHeader().setBackgroundColor(Color.LIGHT_GRAY);
+        table.getHeader().setBold();
+        table.setFontSize(8.0f);
+        System.out.println();
+        if(procurementReportList.isEmpty()) {
+            Cell cell = new Cell(1, 8)
+                    .setTextAlignment(TextAlignment.CENTER)
+                    .add(NO_RESULTS);
+            table.addCell(cell);
+        }
         int slNo = 1;
         for (ProcurementReportDTO procurementReportDTO : procurementReportList) {
             table.addCell(String.valueOf(slNo++));
@@ -183,8 +193,7 @@ public class TenderReportsController {
                     DATEFORMAT.parse(fromDate),DATEFORMAT.parse(toDate)));
             model.addAttribute("companySummary", reportService.findCompanySummary(
                     DATEFORMAT.parse(fromDate),DATEFORMAT.parse(toDate)));
-            System.out.println(reportService.findTenderSummary(
-                    DATEFORMAT.parse(fromDate),DATEFORMAT.parse(toDate)));
+
         } catch (ParseException ex) {
             AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
                     ex.getMessage());
@@ -192,35 +201,6 @@ public class TenderReportsController {
         }
 
         return "admin/reports/statisticsReport";
-
-        /*
-        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-        try {
-            List<ReportSummaryDTO> reportSummaryDTOList = null;
-            response.setContentType("application/ms-excel"); // or you can use text/csv
-            response.setHeader("Content-Disposition", "attachment; filename=statisticsreport.csv");
-            OutputStream out = response.getOutputStream();
-            out.write(PROCUREMENTREPORT_HEADER.getBytes());
-            reportSummaryDTOList = reportService.findTenderAndCompanySummary(df.parse(fromDate), df.parse(toDate));
-
-            for (ReportSummaryDTO reportSummaryDTOList : reportSummaryDTOList) {
-
-
-                //out.write(line.toString().getBytes());
-            }
-            out.flush();
-            out.close();
-
-        } catch (ParseException ex) {
-            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
-                    ex.getMessage());
-            model.addAttribute("alert", alert);
-        } catch (IOException e) {
-            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
-                    e.getMessage());
-        }
-        */
-
     }
 
     @GetMapping("/admin/report/analyticreport")
