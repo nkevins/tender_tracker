@@ -1,0 +1,127 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="admin/layout">
+<head>
+    <title>Tender Tracker</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            Tender Analytic
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <!-- /.row -->
+        <div class="row">
+            <div class="box box-info">
+                <div class="box-body">
+                    <h1 th:text="${tender.title}"></h1>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p><b>Ref No:</b> <span th:text="${tender.refNo}">MOESCHETQ17003249</span></p>
+                        </div>
+                        <div class="col-md-4">
+                            <p><b>Opening Date:</b> <span th:text="${#dates.format(tender.openDate, 'dd-MM-yyyy HH:mm')}"></span></p>
+                        </div>
+                        <div class="col-md-4">
+                            <p><b>Closing Date:</b> <span th:text="${#dates.format(tender.closedDate, 'dd-MM-yyyy HH:mm')}"></span></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-xs-6">
+                            <div class="small-box bg-aqua">
+                                <div class="inner">
+                                    <h3 th:text="${uniqueVisit}">150</h3>
+
+                                    <p>Unique Visitor</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="fa fa-users"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-xs-6">
+                            <!-- small box -->
+                            <div class="small-box bg-green">
+                                <div class="inner">
+                                    <h3 th:text="${visit}">150</h3>
+
+                                    <p>Total Visitor</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="fa fa-search"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h3>Top Country Visitor</h3>
+                            <table class="table">
+                                <tr>
+                                    <th>Country</th>
+                                    <th>Visit</th>
+                                </tr>
+                                <tr th:each="v : ${topCountryVisit}">
+                                    <td th:text="${v[0]}"></td>
+                                    <td th:text="${v[1]}"></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h3>Visitor Heat Map</h3>
+                            <div id="heatmap" style="width: 100%; height: 300px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+</body>
+<th:block layout:fragment="scripts">
+    <script type="text/javascript" th:inline="javascript">
+        var map, heatmap;
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('heatmap'), {
+                zoom: 1,
+                center: {lat: 33.1895, lng: 67.4815},
+                mapTypeId: 'terrain'
+            });
+
+            heatmap = new google.maps.visualization.HeatmapLayer({
+                data: getPoints(),
+                map: map
+            });
+        }
+
+        function getPoints() {
+            var coordinates = [];
+            /*<![CDATA[*/
+            $.ajax({
+                url: "/admin/data/report/countryVisitorList/[[${tender.id}]]",
+                type: "GET",
+                async: false,
+                statusCode: {
+                    200: function (msg) {
+                        for(var i = 0; i < msg.length; i++) {
+                            var obj = msg[i];
+                            coordinates.push(new google.maps.LatLng(obj.lat, obj.lon));
+                        }
+                    }
+                }
+            });
+            /*]]>*/
+            return coordinates;
+        }
+    </script>
+    <script async="async" defer="defer" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDUIvTTFU6gvd9RZOELUdD065aOKAlWgXM&amp;libraries=visualization&amp;callback=initMap"></script>
+</th:block>
+</html>
