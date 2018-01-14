@@ -36,6 +36,9 @@ public class Tender {
     @ManyToOne
     private TenderCategory tenderCategory;
 
+    @OneToOne(mappedBy = "tender")
+    private TenderAward tenderAward;
+
     private String description;
     private int tenderType;
     private float estimatePurchaseValue;
@@ -46,6 +49,7 @@ public class Tender {
     private String contactPersonName;
     private String contactPersonEmail;
     private String contactPersonPhone;
+    @JsonView(DataTablesOutput.View.class)
     private int status;
     private int createdBy;
 
@@ -80,12 +84,16 @@ public class Tender {
     )
     private List<Company> invitedCompanies;
 
+    @OneToMany(mappedBy = "tender", cascade = CascadeType.PERSIST)
+    private List<TenderVisit> tenderVisits;
+
     public Tender() {
         items = new LinkedList<>();
         documents = new LinkedList<>();
         tenderBookmarks = new LinkedList<>();
         corrigendums = new LinkedList<>();
         invitedCompanies = new LinkedList<>();
+        tenderVisits = new LinkedList<>();
     }
 
     public int getId() {
@@ -305,5 +313,22 @@ public class Tender {
 
     public void addInvitedCompany(Company company) {
         invitedCompanies.add(company);
+    }
+
+    public List<TenderVisit> getTenderVisits() {
+        return tenderVisits;
+    }
+
+    public void addTenderVisit(TenderVisit visit) {
+        tenderVisits.add(visit);
+        visit.setTender(this);
+    }
+
+    public TenderAward getTenderAward() {
+        return tenderAward;
+    }
+
+    public void setTenderAward(TenderAward tenderAward) {
+        this.tenderAward = tenderAward;
     }
 }

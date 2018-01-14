@@ -1,0 +1,120 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="admin/layout">
+<head>
+    <title>Tender Tracker</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <th:block th:if="${alert != null}">
+        <div th:replace="fragments/alert :: alert (type=${alert.getType()}, messages=${alert.messages})">Alert</div>
+    </th:block>
+    <div class="alert alert-danger" style="display:none;" id="milestoneError"></div>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            Tender Milestones
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+        <div class="row">
+            <!-- Horizontal Form -->
+            <div class="box box-info">
+                <div class="box-body">
+                    <div class="row" th:each="mil, stat : *{milestones}">
+                        <div class="col-md-1">
+                            <p th:text="${stat.index + 1}">1</p>
+                        </div>
+                        <div class="col-md-11">
+                            <form th:method="POST" th:action="@{/admin/tender/milestone/update}" th:object="${mil}" >
+                                <div class="form-group">
+                                    <label>Description:</label>
+                                    <input type="text" class="form-control" required="required" th:value="${mil.description}" name="description" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Due Date:</label>
+                                    <div class="input-group date col-sm-4">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <!--<input type="text" class="form-control pull-right innerDueDate" th:value="${mil.dueDate}" required="required" name="dueDate"/>-->
+                                        <!--<input type="text" class="form-control pull-right dueDate" th:value="${#dates.format(mil.dueDate, 'DD/MM/YYYY HH:mm')}" required="required" name="dueDate"/>-->
+                                        <input type="text" class="form-control pull-left innerDueDate" th:value="${#dates.format(mil.dueDate, 'dd/MM/YYYY HH:mm')}" required="required" name="dueDate"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Status:</label>
+                                    <select class="form-control" name="status">
+                                        <option th:each="s : ${statusList}" th:value="${s.code}" th:text="${s.description}" th:selected="${s.code == mil.status}"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <input type="hidden" th:value="${mil.id}" name="id" />
+                                    <input type="hidden" name="tenderId" th:value="${tenderId}" />
+                                    <button type="submit" class="btn btn-primary" value="update" name="action">Update</button>
+                                    <button type="submit" class="btn btn-danger" value="delete" name="action">Delete</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-1">
+                            <p th:text="${milestones.size() + 1}">1</p>
+                        </div>
+                        <div class="col-md-11">
+                            <form th:method="POST" th:action="@{/admin/tender/milestone/save}" th:object="${newMilestone}">
+                                <div class="form-group">
+                                    <label>Description:</label>
+                                    <input type="text" class="form-control" required="required" th:value="*{description}" name="description" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Due Date:</label>
+                                    <div class="input-group date col-sm-4">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" class="form-control pull-left" id="dueDate" th:field="*{dueDate}" required="required" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Status:</label>
+                                    <select class="form-control" th:field="*{status}">
+                                        <option th:each="s : ${statusList}" th:value="${s.code}" th:text="${s.description}"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <input type="hidden" name="tenderId" th:value="${tenderId}" />
+                                    <button type="submit" class="btn btn-primary" value="">Add</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+</body>
+
+<th:block layout:fragment="scripts">
+    <script th:src="@{/assets/admin/plugins/typeahead/typeahead.js}"></script>
+    <script th:src="@{/assets/admin/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js}"></script>
+    <script type="text/javascript">
+        $('#dueDate').datetimepicker({
+            format: 'DD/MM/YYYY HH:mm'
+        }).on('dp.change', function(e){
+            $('#dueDate').attr("value", e.date.format('DD/MM/YYYY HH:mm'));
+        });
+        $('.innerDueDate').datetimepicker({
+            format: 'DD/MM/YYYY HH:mm'
+        }).on('dp.change', function(e){
+            $('.innerDueDate').attr("value", e.date.format('DD/MM/YYYY HH:mm'));
+        });
+    </script>
+</th:block>
+</html>

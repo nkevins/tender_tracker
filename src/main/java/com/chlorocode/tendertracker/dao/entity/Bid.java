@@ -35,6 +35,9 @@ public class Bid {
     @OneToMany(mappedBy = "bid", cascade = CascadeType.PERSIST)
     private List<BidDocument> documents;
 
+    @OneToMany(mappedBy = "bid", cascade = CascadeType.PERSIST)
+    private List<EvaluationResult> evaluationResults;
+
     public Bid() {
         this.bidItems = new LinkedList<>();
         this.documents = new LinkedList<>();

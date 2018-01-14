@@ -5,10 +5,15 @@ import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface BidDAO extends DataTablesRepository<Bid, Integer> {
 
     @Query("select b from Bid b where b.company.id = ?1 and b.tender.id = ?2")
     Bid findBidByCompanyAndTender(int companyId, int tenderId);
+
+    @Query("select b from Bid b where b.company.id = ?1")
+    List<Bid> findBidByCompany(int companyId);
 
 }

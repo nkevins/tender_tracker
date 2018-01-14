@@ -1,0 +1,239 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="admin/layout">
+<head>
+    <title>Tender Tracker</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <th:block th:if="${alert != null}">
+        <div th:replace="fragments/alert :: alert (type=${alert.getType()}, messages=${alert.messages})">Alert</div>
+    </th:block>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            Award Tender
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <!-- /.row -->
+        <div class="row">
+            <!-- Horizontal Form -->
+            <div class="box box-info">
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h3>Tender</h3>
+                            <p><b>Title:</b> <span th:text="${tender.title}">Quotation for Supply of Instructors for P6 Mural Art</span></p>
+                            <p><b>Ref No:</b> <span th:text="${tender.refNo}">MOESCHETQ17003249</span></p>
+                            <p><b>EPV:</b> $<span th:text="${#numbers.formatDecimal(tender.estimatePurchaseValue, 0, 'COMMA', 2, 'POINT')}">10,000.00</span></p>
+                        </div>
+                        <div class="col-md-4">
+                            <h3>Participating Tenderer</h3>
+                            <ol>
+                                <li th:each="b : ${tender.bids}" th:text="${b.company.name}">Arck Pte. Ltd.</li>
+                            </ol>
+                            <p th:if="${#lists.isEmpty(tender.bids)}">No one bid for this tender</p>
+                        </div>
+                    </div>
+                    <div th:if="${not #lists.isEmpty(tender.bids)}">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h3>Overall Price Comparison</h3>
+                                <div id="overall-price" style="height: 300px;"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <h3>Item Price Comparison</h3>
+                                <div id="item-price" style="height: 300px;"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h3>Evaluation Result</h3>
+                                <h4>Overall</h4>
+                                <div id="overall-score" style="height: 200px; width: 600px;"></div>
+
+                                <h4>Detail</h4>
+                                <table class="table">
+                                    <tr>
+                                        <th>S/N</th>
+                                        <th>Criteria</th>
+                                        <th>Result</th>
+                                    </tr>
+                                    <tr th:each="c, iterator : ${evaluationCriteria}">
+                                        <td th:text="${iterator.index + 1}"></td>
+                                        <td th:text="${c.description}"></td>
+                                        <td th:if="${c.type == 1}">
+                                            <div th:id="criteria + ${c.id}" style="height: 200px; width: 400px;"></div>
+                                        </td>
+                                        <td th:if="${c.type == 2}">
+                                            <div th:id="dualcriteria + ${c.id}" style="height: 200px; width: 400px;"></div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4>Award</h4>
+                                <form method="POST" th:action="@{/admin/tender/award/} + ${tender.id}">
+                                    <div class="form-group">
+                                        <label>Award to</label>
+                                        <select class="form-control" name="awardTo">
+                                            <option th:each="b : ${tender.bids}" th:text="${b.company.name}" th:value="${b.id}">Chlorocode</option>
+                                        </select>
+                                    </div>
+                                    <input type="hidden" id="tenderId" th:value="${tender.id}" />
+                                    <button type="submit" class="btn btn-primary">Submit Award</button>
+                                </form>
+                            </div>
+                        </div>
+                        <br />
+                    </div>
+                    <a class="btn btn-primary" th:href="@{/admin/tender/award/}">Back</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+</div>
+</body>
+<th:block layout:fragment="scripts">
+    <script type="text/javascript" th:inline="javascript">
+        /*
+         * OVERALL PRICE COMPARISON
+         * ---------
+         */
+        var overallPriceChart = new Morris.Bar({
+            element: 'overall-price',
+            resize: true,
+            data: [],
+            barColors: ['#00a65a', '#f56954'],
+            xkey: 'y',
+            ykeys: ['a'],
+            labels: ['Price'],
+            hideHover: 'auto'
+        });
+
+        $.ajax({
+            type: "GET",
+            dataType: 'json',
+            url: "/admin/data/awardtenders/overallprice/" + document.getElementById("tenderId").value
+        })
+        .done(function(data) {
+            overallPriceChart.setData(data);
+        })
+        .fail(function() {
+            alert( "error occured" );
+        });
+        /* END OVERALL PRICE COMPARISON */
+
+        /*
+         * ITEM PRICE COMPARISON
+         * ---------
+         */
+        $.ajax({
+            url: "/admin/data/awardtenders/itemPriceComparison/" + document.getElementById("tenderId").value,
+            type: "GET",
+            statusCode: {
+                200: function (msg) {
+                    Morris.Bar({
+                        element: 'item-price',
+                        data: msg.data,
+                        xkey: 'y',
+                        ykeys: msg.yAxis,
+                        labels: msg.label,
+                        hideHover: 'auto'
+                    });
+                }
+            }
+        });
+        /* END ITEM PRICE COMPARISON */
+
+        /*
+         * OVERALL SCORE COMPARISON
+         * ---------
+         */
+        var overallScoreComparisonChart = new Morris.Bar({
+            element: 'overall-score',
+            resize: true,
+            data: [],
+            barColors: ['#00a65a', '#f56954'],
+            xkey: 'y',
+            ykeys: ['a'],
+            labels: ['Result'],
+            hideHover: 'auto'
+        });
+        $.ajax({
+            type: "GET",
+            dataType: 'json',
+            url: "/admin/data/awardtenders/overallScore/" + document.getElementById("tenderId").value
+        })
+        .done(function(data) {
+            overallScoreComparisonChart.setData(data);
+        })
+        .fail(function() {
+            alert( "error occured" );
+        });
+        /* END OVERALL SCORE COMPARISON */
+
+        function renderCriteriaComparisonChart(tenderId, criteriaId) {
+            $.ajax({
+                url: "/admin/data/awardtenders/criteriaScore/" + tenderId + '/' + criteriaId,
+                type: "GET",
+                statusCode: {
+                    200: function (msg) {
+                        Morris.Bar({
+                            element: 'criteria' + criteriaId,
+                            data: msg,
+                            barColors: ['#00a65a', '#f56954'],
+                            xkey: 'y',
+                            ykeys: ['a'],
+                            labels: ['Result'],
+                            hideHover: 'auto'
+                        });
+                    }
+                }
+            });
+        }
+
+        function renderDualCriteriaComparisonChart(tenderId, criteriaId) {
+            $.ajax({
+                url: "/admin/data/awardtenders/dualCriteriaScore/" + tenderId + '/' + criteriaId,
+                type: "GET",
+                statusCode: {
+                    200: function (msg) {
+                        Morris.Bar({
+                            element: 'dualcriteria' + criteriaId,
+                            data: msg,
+                            barColors: ['#00a65a', '#f56954'],
+                            xkey: 'y',
+                            ykeys: ['yes', 'no'],
+                            labels: ['Yes', 'No'],
+                            hideHover: 'auto',
+                            yLabelFormat: function(y){return y != Math.round(y)?'':y;}
+                        });
+                    }
+                }
+            });
+        }
+
+        // Render criteria comparison chart
+        /*<![CDATA[*/
+        var tenderId = /*[[${tender.id}]]*/;
+        var criteriaId = /*[[${evaluationCriteraList}]]*/;
+        var criteriaIdArray = criteriaId.split(',');
+        for(var i = 0; i < criteriaIdArray.length; i++) {
+            if (document.getElementById("criteria" + criteriaIdArray[i])) {
+                renderCriteriaComparisonChart(tenderId, criteriaIdArray[i]);
+            } else if (document.getElementById("dualcriteria" + criteriaIdArray[i])) {
+                renderDualCriteriaComparisonChart(tenderId, criteriaIdArray[i]);
+            }
+        }
+        /*]]>*/
+    </script>
+</th:block>
+</html>

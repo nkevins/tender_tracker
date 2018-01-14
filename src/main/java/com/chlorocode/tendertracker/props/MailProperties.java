@@ -10,16 +10,32 @@ public class MailProperties {
     private String subUpdateTender;
     private String subAddCorrigendum;
     private String subCreateTender;
+    private String subClosedTender;
     private String subCompanyReview;
     private String subCompanyRegistered;
+
+    private String subCompanyBlacklisted;
+
+    private String subMilestoneApproach;
+    private String subAppealCreate;
+    private String subAppealUpdate;
+
     private String templateOTP;
     private String templateWelcome;
     private String templateUpdateTender;
     private String templateAddCorrigendum;
     private String templateCreateTender;
+    private String templateClosedTender;
     private String templateCompanyApproved;
     private String templateCompanyRejected;
     private String templateCompanyRegistered;
+
+    private String templateCompanyBlacklisted;
+
+    private String templateMilestoneApproach;
+    private String templateAppealCreate;
+    private String templateAppealUpdate;
+
 
     public String getSubOTP() {
         return subOTP;
@@ -139,6 +155,88 @@ public class MailProperties {
 
     public void setTemplateCompanyRegistered(String templateCompanyRegistered) {
         this.templateCompanyRegistered = templateCompanyRegistered;
+    }
+
+    public String getSubClosedTender() {
+        return subClosedTender;
+    }
+
+    public void setSubClosedTender(String subClosedTender) {
+        this.subClosedTender = subClosedTender;
+    }
+
+    public String getTemplateClosedTender() {
+        return templateClosedTender;
+    }
+
+    public void setTemplateClosedTender(String templateClosedTender) {
+        this.templateClosedTender = templateClosedTender;
+    }
+
+
+    public String getSubCompanyBlacklisted() {
+        return subCompanyBlacklisted;
+    }
+
+    public void setSubCompanyBlacklisted(String subCompanyBlacklisted) {
+        this.subCompanyBlacklisted = subCompanyBlacklisted;
+    }
+
+    public String getTemplateCompanyBlacklisted() {
+        return templateCompanyBlacklisted;
+    }
+
+    public void setTemplateCompanyBlacklisted(String templateCompanyBlacklisted) {
+        this.templateCompanyBlacklisted = templateCompanyBlacklisted;
+    }
+
+    public String getSubMilestoneApproach() {
+        return subMilestoneApproach;
+    }
+
+    public void setSubMilestoneApproach(String subMilestoneApproach) {
+        this.subMilestoneApproach = subMilestoneApproach;
+    }
+
+    public String getSubAppealCreate() {
+        return subAppealCreate;
+    }
+
+    public void setSubAppealCreate(String subAppealCreate) {
+        this.subAppealCreate = subAppealCreate;
+    }
+
+    public String getSubAppealUpdate() {
+        return subAppealUpdate;
+    }
+
+    public void setSubAppealUpdate(String subAppealUpdate) {
+        this.subAppealUpdate = subAppealUpdate;
+    }
+
+    public String getTemplateMilestoneApproach() {
+        return templateMilestoneApproach;
+    }
+
+    public void setTemplateMilestoneApproach(String templateMilestoneApproach) {
+        this.templateMilestoneApproach = templateMilestoneApproach;
+    }
+
+    public String getTemplateAppealCreate() {
+        return templateAppealCreate;
+    }
+
+    public void setTemplateAppealCreate(String templateAppealCreate) {
+        this.templateAppealCreate = templateAppealCreate;
+    }
+
+    public String getTemplateAppealUpdate() {
+        return templateAppealUpdate;
+    }
+
+    public void setTemplateAppealUpdate(String templateAppealUpdate) {
+        this.templateAppealUpdate = templateAppealUpdate;
+
     }
     //    private String subjectOTP;
 //    public static final String OTP_TEMPLATE = "<html><body>"

@@ -33,6 +33,17 @@ public class Company {
     private String state;
     private String province;
 
+    @Column(name = "is_active")
+    private boolean isActive;
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
     @ManyToOne
     @JoinColumn(name = "country")
     private Country country;

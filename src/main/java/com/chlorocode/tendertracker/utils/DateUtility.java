@@ -7,7 +7,8 @@ import java.util.Date;
 
 public class DateUtility {
     public static final Date getCurrentDate() {
-        return Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date date = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        return date;
     }
 
     public static final Date getCurrentDateTime() {

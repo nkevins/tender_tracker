@@ -53,7 +53,7 @@
 
                     <ul class="nav navbar-nav">
                         <li class=""><a th:href="@{/}"><strong>Home</strong></a></li>
-                        <li class="" sec:authorize="isAuthenticated()"><a th:href="@{/tenderNotification}"><strong>Notification</strong></a></li>
+                        <li><a th:href="@{/external_tender}"><strong>External Tender</strong></a></li>
                         <li class="" sec:authorize="isAuthenticated()"><a th:href="@{/registerCompany}"><strong>Register a Company</strong></a></li>
                         <li class="" sec:authorize="hasAnyRole('SYS_ADMIN','ADMIN','PREPARER')"><a th:href="@{/admin}"><strong>Admin Panel</strong></a></li>
                         <li class=""><a th:href="@{/marketplace}"><strong>Marketplace</strong></a> </li>
@@ -67,6 +67,7 @@
                             </a>
                             <ul class="dropdown-menu" role="menu">
                                 <li><a th:href="@{/user/profile}">Profile</a></li>
+                                <li sec:authorize="isAuthenticated()"><a th:href="@{/tenderNotification}">Notification</a></li>
                                 <li th:if="${#lists.size(#authentication.getPrincipal().getCompanyAdministered()) > 1}"><a th:href="@{/selectCompany}">Switch Company</a></li>
                             </ul>
                         </li>
@@ -97,6 +98,7 @@
 
                     <ul class="nav navbar-nav">
                         <li><a th:href="@{/}"><strong>Home</strong></a></li>
+                        <li><a th:href="@{/external_tender}"><strong>External Tender</strong></a></li>
                         <li sec:authorize="isAuthenticated()"><a th:href="@{/tenderNotification}"><strong>Notification</strong></a></li>
                         <li sec:authorize="isAuthenticated()"><a th:href="@{/registerCompany}"><strong>Register a Company</strong></a></li>
                         <li sec:authorize="hasAnyRole('SYS_ADMIN','ADMIN','PREPARER')"><a th:href="@{/admin}"><strong>Admin Panel</strong></a></li>
@@ -141,6 +143,7 @@
                 <div class="col-sm-6">
                     <ul class="list-inline link-footer text-center-xs">
                         <li><a th:href="@{/}">Home</a></li>
+                        <li><a th:href="@{/external_tender}"><strong>External Tender</strong></a></li>
                         <li><a th:href="@{/about}">About Us</a></li>
                     </ul>
                     <p><strong>Copyright &copy; <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}">2017</span>  ChloroCode. All rights reserved.</strong></p>

@@ -38,4 +38,10 @@ public interface TenderService {
     Page<Tender> searchTender(TenderSearchDTO searchDTO, Pageable pageable);
 
     void sendBookmarkNoti(Tender tender, int changeType);
+
+    void logVisit(Tender tender, String ipAddress);
+
+    void awardTender(TenderAward tenderAward);
+
+    void autoCloseTenderAndNotify();
 }

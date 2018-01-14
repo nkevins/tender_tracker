@@ -36,12 +36,19 @@ public class TTConstants {
     public static final String PARAM_COMPANY_NAME = "company_name";
     public static final String PARAM_TENDER = "tender";
     public static final String PARAM_APPROVAL_ACTION = "approval_action";
+    public static final String PARAM_MILESTONE_DESCRIPTION = "milestone_description";
+    public static final String PARAM_MILESTONE_DUE_DATE = "milestone_due_date";
+    public static final String PARAM_MILESTONE_STATUS = "milestone_status";
+    public static final String PARAM_APPEAL_COMPANY = "appeal_company";
 
     public static final String OPEN_DATE = "openDate";
     public static final String CLOSED_DATE = "closedDate";
     public static final String TITLE = "title";
     public static final String ASC = "asc";
     public static final String DESC = "desc";
+
+    public static final String PUBLISHED_DATE = "publishedDate";
+    public static final String CLOSING_DATE = "closingDate";
 
     public static final String DEFAULT_SORT = OPEN_DATE;
     public static final String DEFAULT_SORT_DIRECTION = ASC;
@@ -55,4 +62,13 @@ public class TTConstants {
 
     public static int UPDATE_TENDER = 1;
     public static int ADD_CORRIGENDUM = 2;
+
+    // External tender status.
+    public static final String ET_STATUS_OPEN = "OPEN";
+    public static final String ET_STATUS_CLOSED = "CLOSED";
+    public static final String ET_STATUS_AWARDED = "AWARDED";
+    public static final String ET_STATUS_NO_AWARD = "NO_AWARD";
+    public static final String ET_STATUS_OTHERS = "OTHERS";
+
+    public static final int MILESTONE_APPROACH_DAY=3;
 }
