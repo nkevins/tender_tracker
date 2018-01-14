@@ -7,6 +7,8 @@ import com.chlorocode.tendertracker.logging.TTLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by andy on 14/1/2018.
  */
@@ -32,5 +34,10 @@ public class TenderAppealServiceImpl implements TenderAppealService {
         }
 
         return null;
+    }
+
+    @Override
+    public List<TenderAppeal> findTenderAppealsBy(int tenderId, int companyId) {
+        return dao.findTenderAppealsBy(tenderId,companyId);
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Date;
+import java.util.List;
 
 @Controller
 public class BidController {
@@ -43,11 +44,21 @@ public class BidController {
 
     @PostMapping("/admin/bid/appeal/submit")
     public String submitAppeal (@RequestParam("id") int tenderId, @RequestParam("reason") String reason,ModelMap model){
+        CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Company company = usr.getSelectedCompany();
+        List<TenderAppeal> appeal = tdSvc.findTenderAppealsBy(tenderId,company.getId());
+
+        if(appeal != null && appeal.size() > 0){
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
+                    "Not allow to submit duplicate appeal.");
+            model.addAttribute("alert", alert);
+            return "redirect:/admin/bid" ;
+        }
+
         TenderAppeal tender = new TenderAppeal();
         Tender td = new Tender();
         td.setId(tenderId);
-        CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Company company = usr.getSelectedCompany();
+
         tender.setTender(td);
         tender.setCompany(company);
         tender.setReasons(reason);
