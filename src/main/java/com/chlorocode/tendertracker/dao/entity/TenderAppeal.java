@@ -42,6 +42,7 @@ public class TenderAppeal {
     @Column(name = "last_updated_date")
     private Date lastUpdatedDate;
 
+    @JsonView(DataTablesOutput.View.class)
     private String reasons;
 
     private int status;

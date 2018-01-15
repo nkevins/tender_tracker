@@ -33,6 +33,11 @@ public class BidController {
         return "admin/bid/bidView";
     }
 
+    @GetMapping("/admin/tender/appeal")
+    public String showTenderAppealPage() {
+        return "admin/bid/tenderAppealList";
+    }
+
     @GetMapping("/admin/bid/appeal/{id}")
     public String appealTender(@PathVariable(value="id") Integer id, ModelMap model) {
         Bid bid = bidService.findById(id);
