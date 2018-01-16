@@ -55,6 +55,7 @@
                         <li class=""><a th:href="@{/}"><strong>Home</strong></a></li>
                         <li><a th:href="@{/external_tender}"><strong>External Tender</strong></a></li>
                         <li class="" sec:authorize="isAuthenticated()"><a th:href="@{/registerCompany}"><strong>Register a Company</strong></a></li>
+                        <li class=""><a th:href="@{/marketplace}"><strong>Marketplace</strong></a> </li>
                         <li class="" sec:authorize="hasAnyRole('SYS_ADMIN','ADMIN','PREPARER','SUBMITTER')"><a th:href="@{/admin}"><strong>Admin Panel</strong></a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">

@@ -96,17 +96,28 @@
                     'data' : 'id',
                     'orderable' : false,
                     'render' : function(data,type,full,meta) {
-                        return '<div class="btn-group">\n' +
-                            '<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">\n' +
-                            'Action <span class="caret"></span>\n' +
-                            '</button>\n' +
-                            '<ul class="dropdown-menu">\n' +
-                            '    <li><a href="/admin/tender/' + data + '/update">Update</a></li>\n' +
-                            '    <li><a href="/admin/tender/' + data + '/setcriteria">Evaluation Criteria</a></li>\n' +
-                            '    <li><a href="/admin/tender/' + data + '/corrigendum">Corrigendum</a></li>\n' +
-                            '    <li><a href="/admin/tender/' + data + '/setmilestone">Milestone</a></li>\n' +
-                            '</ul>\n' +
-                            '</div>';
+                        if (full.status == 3) {
+                            return '<div class="btn-group">\n' +
+                                '<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">\n' +
+                                'Action <span class="caret"></span>\n' +
+                                '</button>\n' +
+                                '<ul class="dropdown-menu">\n' +
+                                '    <li><a href="/admin/tender/' + data + '/setmilestone">Milestone</a></li>\n' +
+                                '</ul>\n' +
+                                '</div>';
+                        } else {
+                            return '<div class="btn-group">\n' +
+                                '<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">\n' +
+                                'Action <span class="caret"></span>\n' +
+                                '</button>\n' +
+                                '<ul class="dropdown-menu">\n' +
+                                '    <li><a href="/admin/tender/' + data + '/update">Update</a></li>\n' +
+                                '    <li><a href="/admin/tender/' + data + '/setcriteria">Evaluation Criteria</a></li>\n' +
+                                '    <li><a href="/admin/tender/' + data + '/corrigendum">Corrigendum</a></li>\n' +
+                                '    <li><a href="/admin/tender/' + data + '/setmilestone">Milestone</a></li>\n' +
+                                '</ul>\n' +
+                                '</div>';
+                        }
                     }
                 }]
             });

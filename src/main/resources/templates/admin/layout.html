@@ -184,6 +184,20 @@
                             </ul>
                         </li>
                     </th:block>
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-file-text"></i>
+                            <span>Product</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a th:href="@{/admin/product}"><i class="fa fa-circle-o"></i> Product</a></li>
+                            <li><a th:href="@{/admin/tender/clarification}"><i class="fa fa-circle-o"></i> Product Clarification</a></li>
+                            <li><a th:href="@{/admin/tender/evaluation}"><i class="fa fa-circle-o"></i> Evaluation</a></li>
+                        </ul>
+                    </li>
                     <li sec:authorize="hasRole('ADMIN')">
                         <a th:href="@{/admin/company}"><i class="fa fa-building-o"></i> <span>Company Profile</span></a>
                     </li>

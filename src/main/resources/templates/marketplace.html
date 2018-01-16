@@ -1,0 +1,117 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout">
+<head>
+    <title>Tender Tracker</title>
+</head>
+<body>
+<div layout:fragment="headerContainer">
+    <!--form search area-->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <!--logo-->
+                <div class="logo text-center-sm"><a th:href="@{/}"><img th:src="@{/assets/theme/images/logo.png}"
+                                                                        alt="logo"/> </a></div>
+            </div>
+            <div class="col-md-8">
+                <!--form search-->
+                <form class="form-search-list">
+                    <div class="row">
+                        <div class="col-sm-10 col-xs-6">
+                            <div class="form-group">
+                                <label class="color-white"></label>
+                                <input class="form-control" placeholder="Search product ..."/>
+                            </div>
+                        </div>
+                        <div class="col-sm-2 col-xs-12">
+                            <div class="form-group">
+                                <label class="hidden-xs">&nbsp;</label>
+                                <input type="submit" value="Search" class="btn btn-block btn-theme btn-success"/>
+                            </div>
+                        </div>
+                        <p class="text-right"><a href="" class="link-white">Advanced Search</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div layout:fragment="content">
+    <div class="row">
+        <div class="col-md-12">
+            <br/>
+            <div th:if="${noProductFound}" class="alert alert-info">
+                <strong> No product found.</strong>
+            </div>
+
+            <!-- Box listing -->
+            <th:block th:if="${products.totalPages} &gt; 0">
+                <div class="block-section-sm">
+                    <div>
+                        <form class="form-search-list" th:action="@{/products}" method="get"
+                              enctype="mutipart/form-data" th:object="${searchCriteria}">
+                            <input type="hidden" class="form-control" th:field="*{searchText}"
+                                   th:if="*{searchText != null and !searchText.isEmpty()}"/>
+                            <input type="hidden" class="form-control" th:field="*{title}"
+                                   th:if="*{title != null and !title.isEmpty()}"/>
+                            <input type="hidden" class="form-control" th:field="*{companyName}"
+                                   th:if="*{companyName != null and !companyName.isEmpty()}"/>
+                        </form>
+                    </div>
+
+                    <!-- Items list -->
+                    <div class="box-list">
+                        <div class="item" th:each="p : ${products}">
+                            <div class="row">
+                                <div class="col-md-11">
+                                    <h3 class="no-margin-top">
+                                        <a class="" th:text="${p.title}" target="_blank">Lorem ipsum dolor sit amet </a>
+                                    </h3>
+                                    <h5>
+                                        <a class="color-black" th:text="${p.company.name}" th:href="@{/company/} + ${p.company.id}">Ngee Ann Polytechnic</a>
+                                    </h5>
+                                    <div>
+                                        <span class="color-black" th:text="${p.description}"></span>
+                                        <br/>
+                                        <span class="color-black">
+                                            Price: <span th:text="${p.price}"></span>
+                                        </span>
+                                        <br/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div th:if="${!searchCriteria.advance}">
+                        <div th:if="${products.totalPages != 1}" class="form-group col-md-11 pagination-centered">
+                            <ul class="pagination">
+                                <li th:class="${products.number == 0} ? disabled">
+                                    <a class="pageLink"
+                                       th:href="@{/marketplace/products/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=1)}">&nbsp;Prev</a>
+                                </li>
+                                <li th:class="${products.number == (page - 1)} ? 'active pointer-disabled'"
+                                    th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
+                                    <a class="pageLink"
+                                       th:href="@{/marketplace/products/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=${page})}"
+                                       th:text="${page}"></a>
+                                </li>
+                                <li th:class="${products.number + 1 == products.totalPages} ? disabled">
+                                    <a class="pageLink"
+                                       th:href="@{/marketplace/products/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=${products.totalPages})}">Next&nbsp;&raquo;</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </th:block>
+        </div>
+    </div>
+</div>
+</body>
+</html>
