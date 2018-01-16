@@ -7,6 +7,7 @@ import com.chlorocode.tendertracker.logging.TTLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,5 +40,26 @@ public class TenderAppealServiceImpl implements TenderAppealService {
     @Override
     public List<TenderAppeal> findTenderAppealsBy(int tenderId, int companyId) {
         return dao.findTenderAppealsBy(tenderId,companyId);
+    }
+
+    @Override
+    public TenderAppeal findById(int id) {
+        return dao.findOne(id);
+    }
+
+    @Override
+    public boolean processTender(int id, int rejectedBy, int status) {
+        TenderAppeal tender = dao.findOne(id);
+        try{
+            tender.setStatus(status);
+            tender.setLastUpdatedBy(rejectedBy);
+            tender.setLastUpdatedDate(new Date());
+            dao.saveAndFlush(tender);
+            return true;
+        }catch (Exception ex){
+            TTLogger.error(className, "error: " , ex);
+        }
+
+        return false;
     }
 }
