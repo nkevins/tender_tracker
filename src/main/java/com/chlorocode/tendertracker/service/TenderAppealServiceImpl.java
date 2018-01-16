@@ -29,6 +29,7 @@ public class TenderAppealServiceImpl implements TenderAppealService {
     public TenderAppeal Create(TenderAppeal appeal) {
         try{
 
+            //ToDo: Send the email notification to party who submit the tender appeal
             return dao.saveAndFlush(appeal);
         }catch (Exception ex){
             TTLogger.error(className, "error: " , ex);
@@ -55,6 +56,7 @@ public class TenderAppealServiceImpl implements TenderAppealService {
             tender.setLastUpdatedBy(rejectedBy);
             tender.setLastUpdatedDate(new Date());
             dao.saveAndFlush(tender);
+            //Todo: Send email notification to appealer. if status is 1, means the tender appeal accepted and process by tenderer preparer, if it is 2, means it is rejected by preparer
             return true;
         }catch (Exception ex){
             TTLogger.error(className, "error: " , ex);
