@@ -21,4 +21,5 @@ public abstract class Tender_ {
     public static volatile SingularAttribute<Tender, String> description;
     public static volatile SingularAttribute<Tender, TenderCategory> tenderCategory;
     public static volatile SingularAttribute<Tender, Date> openDate;
+    public static volatile SingularAttribute<Tender, Integer> tenderType;
 }

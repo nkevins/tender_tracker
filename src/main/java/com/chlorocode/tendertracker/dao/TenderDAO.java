@@ -55,4 +55,7 @@ public interface TenderDAO extends DataTablesRepository<Tender, Integer> {
             nativeQuery = true)
     List<Object[]> getTenderSummary(Date startDate, Date endDate);
 
+    @Query(value = "select distinct t from Tender t join t.invitedCompanies c where c.id = ?1")
+    List<Tender> findTenderByInvitedCompany(int companyId);
+
 }
