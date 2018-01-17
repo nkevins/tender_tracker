@@ -312,7 +312,7 @@ public class TenderServiceImpl implements TenderService {
     @Override
     public Page<Tender> listAllByPage(Pageable pageable) {
         int companyId = getCompanyId();
-        Specification<Tender> searchSpec = TenderSpecs.getAllOpenTender(companyId, getBidTenderIds(companyId));
+        Specification<Tender> searchSpec = TenderSpecs.getAllOpenTender(companyId, getInviteTenderIds(companyId));
         return tenderPagingDAO.findAll(searchSpec, pageable);
     }
 
@@ -321,7 +321,7 @@ public class TenderServiceImpl implements TenderService {
         int companyId = getCompanyId();
         Specification<Tender> searchSpec = null;
         if (searchDTO.getSearchText() != null && !searchDTO.getSearchText().trim().isEmpty()) {
-            searchSpec = TenderSpecs.byTenderSearchString(searchDTO.getSearchText().trim(), companyId, getBidTenderIds(companyId));
+            searchSpec = TenderSpecs.byTenderSearchString(searchDTO.getSearchText().trim(), companyId, getInviteTenderIds(companyId));
             searchDTO.setCompanyName(null);
             searchDTO.setTitle(null);
             searchDTO.setRefNo(null);
@@ -333,7 +333,7 @@ public class TenderServiceImpl implements TenderService {
                     , searchDTO.getCompanyName() == null ? null : searchDTO.getCompanyName().trim()
                     , searchDTO.getTenderCategory()
                     , searchDTO.getStatus(), searchDTO.getRefNo()
-                    , companyId, getBidTenderIds(companyId));
+                    , companyId, getInviteTenderIds(companyId));
             searchDTO.setSearchText(null);
         }
         return tenderPagingDAO.findAll(searchSpec, pageable);
@@ -399,14 +399,14 @@ public class TenderServiceImpl implements TenderService {
         }
     }
 
-    private List<Integer> getBidTenderIds(int companyId) {
+    private List<Integer> getInviteTenderIds(int companyId) {
         if (companyId > 0) {
-            List<Bid> bids = bidService.findBidByCompany(companyId);
-            if (bids != null && bids.size() > 0) {
+            List<Tender> tenders = tenderDAO.findTenderByInvitedCompany(companyId);
+            if (tenders != null && tenders.size() > 0) {
                 List<Integer> tenderIds = new ArrayList<>();
-                for (Bid bid : bids) {
-                    if (bid != null && bid.getTender() != null) {
-                        tenderIds.add(bid.getTender().getId());
+                for (Tender tender : tenders) {
+                    if (tender != null) {
+                        tenderIds.add(tender.getId());
                     }
                 }
                 return tenderIds;
