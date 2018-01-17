@@ -39,7 +39,7 @@ public class TenderAppealServiceImpl implements TenderAppealService {
     public TenderAppeal Create(TenderAppeal appeal) {
         try{
             appeal = dao.saveAndFlush(appeal);
-            //ToDo: Send the email notification to party who submit the tender appeal
+            // Send the email notification to party who submit the tender appeal
             if (appeal != null) {
                 Map<String, Object> params = new HashMap<>();
                 params.put(TTConstants.PARAM_TENDER_ID, appeal.getTender().getId());
@@ -75,7 +75,15 @@ public class TenderAppealServiceImpl implements TenderAppealService {
             tender.setLastUpdatedBy(rejectedBy);
             tender.setLastUpdatedDate(new Date());
             dao.saveAndFlush(tender);
-            //Todo: Send email notification to appealer. if status is 1, means the tender appeal accepted and process by tenderer preparer, if it is 2, means it is rejected by preparer
+            //Send email notification to appealer. if status is 1, means the tender appeal accepted and process by tenderer preparer, if it is 2, means it is rejected by preparer
+            Map<String, Object> params = new HashMap<>();
+            params.put(TTConstants.PARAM_TENDER_ID, tender.getTender().getId());
+            params.put(TTConstants.PARAM_TENDER_TITLE, tender.getTender().getTitle());
+            params.put(TTConstants.PARAM_APPEAL_COMPANY, tender.getCompany().getName());
+            params.put(TTConstants.PARAM_APPEAL_ACTION, tender.getStatus());
+            User user = userService.findById(tender.getCompany().getCreatedBy());
+            params.put(TTConstants.PARAM_EMAIL, user.getEmail());
+            notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.appeal_update_noti, params);
             return true;
         }catch (Exception ex){
             TTLogger.error(className, "error: " , ex);

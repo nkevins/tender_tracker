@@ -167,9 +167,13 @@ public class NotificationServiceImpl implements NotificationService {
         String id = String.valueOf(params.get(TTConstants.PARAM_TENDER_ID));
         String title = (String) params.get(TTConstants.PARAM_TENDER_TITLE);
         String appealCompany = (String) params.get(TTConstants.PARAM_APPEAL_COMPANY);
+        int action = (int) params.get(TTConstants.PARAM_APPEAL_ACTION);
         String email = (String) params.get(TTConstants.PARAM_EMAIL);
-        return sendEmail(mailProperties.getSubAppealUpdate(), mailProperties.getTemplateAppealUpdate(), new String[]{email}, appealCompany, title, id, id);
-
+        if (action == TTConstants.APPEAL_ACCEPT) {
+            return sendEmail(mailProperties.getSubAppealAccepted(), mailProperties.getTemplateAppealAccepted(), new String[]{email}, appealCompany, title, id, id);
+        } else {
+            return sendEmail(mailProperties.getSubAppealRejected(), mailProperties.getTemplateAppealRejected(), new String[]{email}, appealCompany, title, id, id);
+        }
     }
 
     private boolean sendEmail(String emailSubject, String path, String[] to, String... params) {
