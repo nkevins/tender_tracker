@@ -61,6 +61,11 @@ public class ProductServiceImpl implements ProductService {
         return productPagingDAO.findAll(specification, pageable);
     }
 
+    @Override
+    public Product findById(int id) {
+        return productDAO.findOne(id);
+    }
+
     public ProductDAO getProductDAO() {
         return productDAO;
     }

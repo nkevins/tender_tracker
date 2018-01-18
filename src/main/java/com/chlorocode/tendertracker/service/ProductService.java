@@ -10,4 +10,5 @@ import java.util.List;
 public interface ProductService {
     Product createProduct(Product product, List<MultipartFile> attachments);
     Page<Product> listAllByPage(Pageable pageable);
+    Product findById(int id);
 }

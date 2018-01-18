@@ -67,7 +67,7 @@
                             <div class="row">
                                 <div class="col-md-11">
                                     <h3 class="no-margin-top">
-                                        <a class="" th:text="${p.title}" target="_blank">Lorem ipsum dolor sit amet </a>
+                                        <a class="" th:text="${p.title}" target="_blank"  th:href="@{/product/clarification/} + ${p.productcode}">Lorem ipsum dolor sit amet </a>
                                     </h3>
                                     <h5>
                                         <a class="color-black" th:text="${p.company.name}" th:href="@{/company/} + ${p.company.id}">Ngee Ann Polytechnic</a>

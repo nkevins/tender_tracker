@@ -4,6 +4,7 @@ import com.chlorocode.tendertracker.dao.dto.AlertDTO;
 import com.chlorocode.tendertracker.dao.dto.ProductCreateDTO;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
 import com.chlorocode.tendertracker.dao.entity.Product;
+import com.chlorocode.tendertracker.dao.entity.ProductClarification;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -27,17 +29,20 @@ public class ProductController {
 
     private ProductService productService;
     private CodeValueService codeValueService;
+    private ProductClarificationService prodClarSvc;
     private S3Wrapper s3Wrapper;
     private UserService userService;
     private CompanyService companyService;
 
     @Autowired
-    public ProductController(ProductService productService, CodeValueService codeValueService, S3Wrapper s3Wrapper, UserService userService, CompanyService companyService) {
+    public ProductController(ProductService productService, CodeValueService codeValueService, S3Wrapper s3Wrapper,
+                             UserService userService, CompanyService companyService,ProductClarificationService prodClarSvc) {
         this.productService = productService;
         this.codeValueService = codeValueService;
         this.s3Wrapper = s3Wrapper;
         this.userService = userService;
         this.companyService = companyService;
+        this.prodClarSvc = prodClarSvc;
     }
 
     @GetMapping("/admin/product")
@@ -50,6 +55,17 @@ public class ProductController {
         model.addAttribute("product", new ProductCreateDTO());
         return "admin/product/productCreate";
     }
+
+    @GetMapping("/product/clarification/{id}")
+    public String showProductClarification(@PathVariable(value = "productid") Integer id, ModelMap model){
+        Product prod = productService.findById(id);
+        ProductClarification prodCla = prodClarSvc.findById(id);
+        model.addAttribute("product", prod);
+        model.addAttribute("productclarification", prodCla);
+
+        return "marketplaceClarification";
+    }
+
 
     @PostMapping("/admin/product/create")
     public String saveCreatedProduct(@Valid @ModelAttribute("product") ProductCreateDTO form, BindingResult result,
