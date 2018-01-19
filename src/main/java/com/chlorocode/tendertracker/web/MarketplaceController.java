@@ -5,10 +5,12 @@ import com.chlorocode.tendertracker.dao.dto.AlertDTO;
 import com.chlorocode.tendertracker.dao.dto.Pager;
 import com.chlorocode.tendertracker.dao.dto.ProductSearchDTO;
 import com.chlorocode.tendertracker.dao.entity.Product;
+import com.chlorocode.tendertracker.service.CodeValueService;
 import com.chlorocode.tendertracker.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,10 +22,12 @@ import java.util.Optional;
 public class MarketplaceController {
 
     private ProductService productService;
+    private CodeValueService codeValueService;
 
     @Autowired
-    public MarketplaceController(ProductService productService) {
+    public MarketplaceController(ProductService productService, CodeValueService codeValueService) {
         this.productService = productService;
+        this.codeValueService = codeValueService;
     }
 
     @GetMapping("/marketplace")
@@ -35,8 +39,9 @@ public class MarketplaceController {
         int evalPage = (page.orElse(0) < 1) ? TTConstants.INITIAL_PAGE : page.get() - 1;
 
         Page<Product> products = productService.listAllByPage(
-                new PageRequest(evalPage, evalPageSize)
-        );
+                new PageRequest(
+                        evalPage, evalPageSize, new Sort(new Sort.Order(Sort.Direction.DESC, TTConstants.TITLE))
+                ));
 
         Pager pager = new Pager(products.getTotalPages(), products.getNumber(), TTConstants.BUTTONS_TO_SHOW);
 
@@ -44,6 +49,7 @@ public class MarketplaceController {
         productSearchDTO.setOrderBy(TTConstants.TITLE);
         modelMap.addAttribute("searchCriteria", productSearchDTO);
         modelMap.addAttribute("products", products);
+        modelMap.addAttribute("codeValueSvc", codeValueService);
         modelMap.addAttribute("selectedPageSizse", evalPageSize);
         modelMap.addAttribute("pager", pager);
 
@@ -85,6 +91,7 @@ public class MarketplaceController {
 
         modelMap.addAttribute("searchCriteria", productSearchDTO);
         modelMap.addAttribute("products", products);
+        modelMap.addAttribute("codeValueSvc", codeValueService);
         modelMap.addAttribute("selectedPageSizse", evalPageSize);
         modelMap.addAttribute("pager", pager);
 

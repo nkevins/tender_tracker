@@ -43,14 +43,7 @@ public class ProductServiceImpl implements ProductService {
         }
 
         Product result = productDAO.save(product);
-
-        if (attachments != null) {
-            for (MultipartFile multipartFile : attachments) {
-                // TODO: Write code to upload the files to AWS here
-                // TODO: Write code to save the product files to local DB
-            }
-        }
-
+        
         if (result != null) {
             // TODO: Write code here to send email notifications
         }

@@ -21,5 +21,9 @@ public interface CodeValueService {
 
     Map<String, String> getTenderOrderMode();
 
+    Map<String, String> getProductOrderBy();
+
+    Map<String, String> getProductOrderMode();
+
     List<Country> getAllCountries();
 }
