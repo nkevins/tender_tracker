@@ -129,7 +129,7 @@ public class ProductController {
 
 
     @GetMapping("/product/clarification/{id}")
-    public String showProductClarification(@PathVariable(value = "productid") Integer id, ModelMap model){
+    public String showProductClarification(@PathVariable(value = "id") Integer id, ModelMap model){
         Product prod = productService.findById(id);
         ProductClarification prodCla = prodClarSvc.findById(id);
         model.addAttribute("product", prod);
