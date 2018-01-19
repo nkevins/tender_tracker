@@ -90,7 +90,7 @@
             <th:block th:if="${products.totalPages} &gt; 0">
                 <div class="block-section-sm">
                     <div>
-                        <form class="form-search-list" th:action="@{/products}" method="get"
+                        <form class="form-search-list" th:action="@{/marketplace/products}" method="get"
                               enctype="mutipart/form-data" th:object="${searchCriteria}">
                             <input type="hidden" class="form-control" th:field="*{searchText}"
                                    th:if="*{searchText != null and !searchText.isEmpty()}"/>
@@ -98,6 +98,16 @@
                                    th:if="*{title != null and !title.isEmpty()}"/>
                             <input type="hidden" class="form-control" th:field="*{companyName}"
                                    th:if="*{companyName != null and !companyName.isEmpty()}"/>
+
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <label class="control-label">Sort By&nbsp;:&nbsp;</label>
+                                    <select class="form-control" name="orderMode" th:field="*{orderMode}" onchange="this.form.submit()">
+                                        <option th:each="entry : ${codeValueSvc.getProductOrderMode().entrySet()}"
+                                                th:value="${entry.key}" th:text="${entry.value}">Order Mode</option>
+                                    </select>
+                                </div>
+                            </div>
                         </form>
                     </div>
 
