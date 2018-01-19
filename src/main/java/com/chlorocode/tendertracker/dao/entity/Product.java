@@ -5,6 +5,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Product {
@@ -31,6 +32,9 @@ public class Product {
 
     @ManyToOne
     private Company company;
+
+    @OneToMany(mappedBy = "product")
+    private List<ProductClarification> clarifications;
 
     private int createdBy;
 
@@ -139,5 +143,9 @@ public class Product {
 
     public void setLastUpdatedDate(Date lastUpdatedDate) {
         this.lastUpdatedDate = lastUpdatedDate;
+    }
+
+    public List<ProductClarification> getClarifications() {
+        return clarifications;
     }
 }

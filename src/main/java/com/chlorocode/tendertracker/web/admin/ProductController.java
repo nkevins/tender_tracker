@@ -5,7 +5,6 @@ import com.chlorocode.tendertracker.dao.dto.ProductCreateDTO;
 import com.chlorocode.tendertracker.dao.dto.ProductUpdateDTO;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
 import com.chlorocode.tendertracker.dao.entity.Product;
-import com.chlorocode.tendertracker.dao.entity.ProductClarification;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.service.CodeValueService;
 import com.chlorocode.tendertracker.service.ProductClarificationService;
@@ -141,9 +140,8 @@ public class ProductController {
     @GetMapping("/product/clarification/{id}")
     public String showProductClarification(@PathVariable(value = "id") Integer id, ModelMap model){
         Product prod = productService.findById(id);
-        ProductClarification prodCla = prodClarSvc.findById(id);
         model.addAttribute("product", prod);
-        model.addAttribute("productclarification", prodCla);
+        model.addAttribute("productclarification", prod.getClarifications());
 
         return "marketplaceClarification";
     }

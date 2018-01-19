@@ -21,6 +21,7 @@ public class ProductClarification {
 
     @JsonView(DataTablesOutput.View.class)
     @ManyToOne
+    @JoinColumn(name = "product_code")
     private Product product;
 
     @JsonView(DataTablesOutput.View.class)
