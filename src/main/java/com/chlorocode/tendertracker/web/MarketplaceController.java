@@ -74,7 +74,7 @@ public class MarketplaceController {
         int evalPageSize = pageSize.orElse(TTConstants.INITIAL_PAGE_SIZE);
         int evalPage = (page.orElse(0) < 1) ? TTConstants.INITIAL_PAGE : page.get() - 1;
 
-        Page<Product> products = productService.listAllByPage(
+        Page<Product> products = productService.searchProduct(productSearchDTO,
                 new PageRequest(evalPage, evalPageSize)
         );
 
