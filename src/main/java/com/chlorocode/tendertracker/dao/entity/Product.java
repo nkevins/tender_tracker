@@ -25,14 +25,12 @@ public class Product {
     @JsonView(DataTablesOutput.View.class)
     private boolean publish;
 
+    private int type;
+
+    private int category;
+
     @ManyToOne
     private Company company;
-
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "tender_invite",
-            joinColumns = @JoinColumn(name = "product_code"),
-            inverseJoinColumns = @JoinColumn(name = "company_id")
-    )
 
     public long getProductCode() {
         return productCode;
@@ -83,5 +81,21 @@ public class Product {
 
     public void setPublish(boolean publish) {
         this.publish = publish;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public int getCategory() {
+        return category;
+    }
+
+    public void setCategory(int category) {
+        this.category = category;
     }
 }
