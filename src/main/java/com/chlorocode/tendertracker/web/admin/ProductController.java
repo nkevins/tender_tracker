@@ -2,6 +2,7 @@ package com.chlorocode.tendertracker.web.admin;
 
 import com.chlorocode.tendertracker.dao.dto.AlertDTO;
 import com.chlorocode.tendertracker.dao.dto.ProductCreateDTO;
+import com.chlorocode.tendertracker.dao.dto.ProductUpdateDTO;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
 import com.chlorocode.tendertracker.dao.entity.Product;
 import com.chlorocode.tendertracker.dao.entity.ProductClarification;
@@ -49,17 +50,6 @@ public class ProductController {
         return "admin/product/productCreate";
     }
 
-    @GetMapping("/product/clarification/{id}")
-    public String showProductClarification(@PathVariable(value = "productid") Integer id, ModelMap model){
-        Product prod = productService.findById(id);
-        ProductClarification prodCla = prodClarSvc.findById(id);
-        model.addAttribute("product", prod);
-        model.addAttribute("productclarification", prodCla);
-
-        return "marketplaceClarification";
-    }
-
-
     @PostMapping("/admin/product/create")
     public String saveCreatedProduct(@Valid @ModelAttribute("product") ProductCreateDTO form, RedirectAttributes redirectAttributes,
                                      ModelMap modelMap) {
@@ -88,5 +78,63 @@ public class ProductController {
         }
 
         return "redirect:/admin/product";
+    }
+
+    @GetMapping("/admin/product/{id}")
+    public String showProductEditPage(@PathVariable(value = "id") Integer id, ModelMap model) {
+        Product product = productService.findById(id);
+        if (product == null) {
+            return "redirect:/admin/product";
+        }
+
+        ProductUpdateDTO productDTO = new ProductUpdateDTO();
+        productDTO.setProductCode(product.getProductCode());
+        productDTO.setCategory(product.getCategory());
+        productDTO.setDescription(product.getDescription());
+        productDTO.setPrice(product.getPrice());
+        productDTO.setTitle(product.getTitle());
+        productDTO.setType(product.getType());
+        productDTO.setPublished(product.isPublish());
+
+        model.addAttribute("product", productDTO);
+        model.addAttribute("productCategory", codeValueService.getByType("product_category"));
+
+        return "admin/product/productUpdate";
+    }
+
+    @PostMapping("/admin/product/update")
+    public String updateTender(@Valid @ModelAttribute("product") ProductUpdateDTO form, RedirectAttributes redirectAttrs) {
+        Product product = productService.findById(form.getProductCode());
+
+        product.setType(form.getType());
+        product.setCategory(form.getCategory());
+        product.setTitle(form.getTitle());
+        product.setDescription(form.getDescription());
+        product.setPublish(form.isPublished());
+        product.setPrice(form.getPrice());
+
+        try {
+            productService.updateProduct(product);
+        } catch (ApplicationException ex) {
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
+                    ex.getMessage());
+            redirectAttrs.addFlashAttribute("alert", alert);
+            return "redirect:/admin/product/" + form.getProductCode();
+        }
+
+        AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS, "Product Updated");
+        redirectAttrs.addFlashAttribute("alert", alert);
+        return "redirect:/admin/product";
+    }
+
+
+    @GetMapping("/product/clarification/{id}")
+    public String showProductClarification(@PathVariable(value = "productid") Integer id, ModelMap model){
+        Product prod = productService.findById(id);
+        ProductClarification prodCla = prodClarSvc.findById(id);
+        model.addAttribute("product", prod);
+        model.addAttribute("productclarification", prodCla);
+
+        return "marketplaceClarification";
     }
 }

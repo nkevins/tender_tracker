@@ -1,36 +1,25 @@
-package com.chlorocode.tendertracker.dao.entity;
+package com.chlorocode.tendertracker.dao.dto;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.hibernate.validator.constraints.NotBlank;
 
-import javax.persistence.*;
+import javax.validation.Valid;
 
-@Entity
-public class Product {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonView(DataTablesOutput.View.class)
+public class ProductUpdateDTO {
     private int productCode;
 
-    @JsonView(DataTablesOutput.View.class)
+    @NotBlank(message = "Title is required")
     private String title;
 
-    @JsonView(DataTablesOutput.View.class)
+    @Valid
     private double price;
 
-    @JsonView(DataTablesOutput.View.class)
     private String description;
-
-    @JsonView(DataTablesOutput.View.class)
-    private boolean publish;
 
     private int type;
 
     private int category;
 
-    @ManyToOne
-    private Company company;
+    private boolean published;
 
     public int getProductCode() {
         return productCode;
@@ -40,7 +29,6 @@ public class Product {
         this.productCode = productCode;
     }
 
-
     public String getTitle() {
         return title;
     }
@@ -48,7 +36,6 @@ public class Product {
     public void setTitle(String title) {
         this.title = title;
     }
-
 
     public double getPrice() {
         return price;
@@ -58,29 +45,12 @@ public class Product {
         this.price = price;
     }
 
-
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Company getCompany() {
-        return company;
-    }
-
-    public void setCompany(Company company) {
-        this.company = company;
-    }
-
-    public boolean isPublish() {
-        return publish;
-    }
-
-    public void setPublish(boolean publish) {
-        this.publish = publish;
     }
 
     public int getType() {
@@ -97,5 +67,13 @@ public class Product {
 
     public void setCategory(int category) {
         this.category = category;
+    }
+
+    public boolean isPublished() {
+        return published;
+    }
+
+    public void setPublished(boolean published) {
+        this.published = published;
     }
 }

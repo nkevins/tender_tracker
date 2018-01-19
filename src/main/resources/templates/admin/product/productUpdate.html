@@ -13,17 +13,16 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1>
-            Create Product
+            Update Product
         </h1>
     </section>
 
     <!-- Main content -->
     <section class="content">
-
         <!-- Default box -->
         <div class="box">
             <div class="box-body">
-                <form class="form-horizontal" id="createProductForm" th:action="@{/admin/product/create}" method="POST"
+                <form class="form-horizontal" id="createProductForm" th:action="@{/admin/product/update}" method="POST"
                       th:object="${product}">
                     <h4>Product Information</h4>
                     <hr/>
@@ -61,6 +60,12 @@
                                            required="required"/>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label for="published" class="col-sm-2 control-label">Published</label>
+                                <div class="col-sm-10">
+                                    <input type="checkbox" th:field="*{published}" />
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -77,7 +82,8 @@
                     <div class="row" style="padding-top: 10px;">
                         <div class="col-md-12">
                             <hr/>
-                            <input type="submit" id="mainSubmitBtn" value="Save" class="btn btn-primary"/>
+                            <input type="hidden" th:field="*{productCode}" />
+                            <input type="submit" id="mainSubmitBtn" value="Update" class="btn btn-primary" />
                         </div>
                     </div>
                 </form>
