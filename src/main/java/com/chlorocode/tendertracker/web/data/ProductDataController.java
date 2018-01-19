@@ -27,9 +27,13 @@ public class ProductDataController {
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/admin/data/products", method = RequestMethod.GET)
     public DataTablesOutput<Product> getProducts(@Valid DataTablesInput input) {
-        CurrentUser user = (CurrentUser) SecurityContextHolder.getContext().getAuthentication();
+        CurrentUser user = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         int companyId = user.getSelectedCompany().getId();
 
-        return null;
+        DataTablesOutput<Product> products = productDAO.findAll(input, null, (root, criteriaQuery, criteriaBuilder) -> {
+            return criteriaBuilder.equal(root.join("company").get("id"), companyId);
+        });
+
+        return products;
     }
 }

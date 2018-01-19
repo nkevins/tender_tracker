@@ -27,7 +27,7 @@
                 <a class="btn btn-primary" th:href="@{/admin/product/create}"><i class="fa fa-plus-circle"></i> Create Product</a>
             </div>
             <div class="box-body">
-                <table id="tenderList" class="table table-bordered table-striped">
+                <table id="productList" class="table table-bordered table-striped">
                     <thead>
                     <tr>
                         <th>ID</th>
@@ -47,5 +47,45 @@
     <!-- /.content -->
 </div>
 </body>
-<!--TODO: Implement product list display here-->
+<th:block layout:fragment="scripts">
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var table = $('table#productList').DataTable({
+                'ajax' : '/admin/data/products',
+                'serverSide' : true,
+                'order' : [[ 1, "asc" ]],
+                'columns' : [
+                    {
+                        'data' : 'productCode',
+                        'visible' : false
+                    }, {
+                        'data' : 'title'
+                    }, {
+                        'data' : 'description'
+                    }, {
+                        'data' : 'price'
+                    }, {
+                        'data' : 'productCode'
+                    }
+                ],
+                'columnDefs' : [
+                    {
+                        'targets' : 3,
+                        'data' : 'price',
+                        'render' : function(data,type,full,meta) {
+                                return '$ ' + data.toFixed(2);
+                            }
+                    },
+                    {
+                        'targets' : 4,
+                        'data' : 'productCode',
+                        'render' : function (data, type, full, meta) {
+                            return '<a href="/admin/product/' + data + '" class="btn btn-primary">Edit</a>';
+                        }
+                    }
+                ]
+            });
+        });
+    </script>
+</th:block>
 </html>
