@@ -71,7 +71,7 @@ public class MarketplaceController {
         productSearchDTO.setOrderBy(orderBy.orElse(null) == null ? TTConstants.TITLE : orderBy.get());
         productSearchDTO.setOrderMode(orderMode.orElse(null) == null ? TTConstants.DEFAULT_SORT_DIRECTION : orderMode.get());
 
-        int evalPageSize = pageSize.orElse(2);
+        int evalPageSize = pageSize.orElse(TTConstants.INITIAL_PAGE_SIZE);
         int evalPage = (page.orElse(0) < 1) ? TTConstants.INITIAL_PAGE : page.get() - 1;
 
         Page<Product> products = productService.listAllByPage(
