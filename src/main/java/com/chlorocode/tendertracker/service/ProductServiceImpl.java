@@ -37,16 +37,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public Product createProduct(Product product, List<MultipartFile> attachments) {
-        if (product == null) {
-            throw new ApplicationException("Product is null");
-        }
-
+    public Product createProduct(Product product) {
         Product result = productDAO.save(product);
         
         if (result != null) {
             // TODO: Write code here to send email notifications
         }
+
 
         return result;
     }
