@@ -17,13 +17,15 @@ public class ProductCreateDTO {
 
     private String description;
 
+    private int type;
+
+    private int category;
+
     @Valid
     private List<ProductCreateDTO> products;
-    private List<MultipartFile> attachments;
 
     public ProductCreateDTO() {
         products = new LinkedList<>();
-        attachments = new LinkedList<>();
     }
 
     public String getTitle() {
@@ -58,11 +60,19 @@ public class ProductCreateDTO {
         this.products = products;
     }
 
-    public List<MultipartFile> getAttachments() {
-        return attachments;
+    public int getType() {
+        return type;
     }
 
-    public void setAttachments(List<MultipartFile> attachments) {
-        this.attachments = attachments;
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public int getCategory() {
+        return category;
+    }
+
+    public void setCategory(int category) {
+        this.category = category;
     }
 }
