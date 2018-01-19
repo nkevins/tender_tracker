@@ -14,6 +14,9 @@ public class TTConstants {
     public static final String APPROVED = "approved";
     public static final String REJECTED = "rejected";
 
+    public static final int APPEAL_ACCEPT = 1;
+    public static final int APPEAL_REJECT = 2;
+
     public static final int ACCOUNT_STATIC_ACTIVE = 1;
     public static final int ACCOUNT_STATIC_EXPIRE = 2;
     public static final int ACCOUNT_STATIC_LOCK = 3;
@@ -36,6 +39,7 @@ public class TTConstants {
     public static final String PARAM_COMPANY_NAME = "company_name";
     public static final String PARAM_TENDER = "tender";
     public static final String PARAM_APPROVAL_ACTION = "approval_action";
+    public static final String PARAM_APPEAL_ACTION = "appeal_action";
     public static final String PARAM_MILESTONE_DESCRIPTION = "milestone_description";
     public static final String PARAM_MILESTONE_DUE_DATE = "milestone_due_date";
     public static final String PARAM_MILESTONE_STATUS = "milestone_status";

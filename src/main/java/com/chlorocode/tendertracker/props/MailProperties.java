@@ -19,6 +19,8 @@ public class MailProperties {
     private String subMilestoneApproach;
     private String subAppealCreate;
     private String subAppealUpdate;
+    private String subAppealAccepted;
+    private String subAppealRejected;
 
     private String templateOTP;
     private String templateWelcome;
@@ -35,6 +37,8 @@ public class MailProperties {
     private String templateMilestoneApproach;
     private String templateAppealCreate;
     private String templateAppealUpdate;
+    private String templateAppealAccepted;
+    private String templateAppealRejected;
 
 
     public String getSubOTP() {
@@ -237,6 +241,38 @@ public class MailProperties {
     public void setTemplateAppealUpdate(String templateAppealUpdate) {
         this.templateAppealUpdate = templateAppealUpdate;
 
+    }
+
+    public String getSubAppealAccepted() {
+        return subAppealAccepted;
+    }
+
+    public void setSubAppealAccepted(String subAppealAccepted) {
+        this.subAppealAccepted = subAppealAccepted;
+    }
+
+    public String getSubAppealRejected() {
+        return subAppealRejected;
+    }
+
+    public void setSubAppealRejected(String subAppealRejected) {
+        this.subAppealRejected = subAppealRejected;
+    }
+
+    public String getTemplateAppealAccepted() {
+        return templateAppealAccepted;
+    }
+
+    public void setTemplateAppealAccepted(String templateAppealAccepted) {
+        this.templateAppealAccepted = templateAppealAccepted;
+    }
+
+    public String getTemplateAppealRejected() {
+        return templateAppealRejected;
+    }
+
+    public void setTemplateAppealRejected(String templateAppealRejected) {
+        this.templateAppealRejected = templateAppealRejected;
     }
     //    private String subjectOTP;
 //    public static final String OTP_TEMPLATE = "<html><body>"

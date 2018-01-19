@@ -94,7 +94,7 @@
                                 <label>Status</label>
                                 <select class="form-control" th:field="*{status}">
                                     <option value="-1">All status</option>
-                                    <option th:each="s : ${codeValueSvc.getByType('external_tender_status')}" th:value="${s.code}" th:text="${s.description}">Open</option>
+                                    <option th:each="s : ${codeValueSvc.getByType('external_tender_status')}" th:value="${s.code}" th:text="${s.description == 'NO_AWARD'}? 'NO AWARD' : ${s.description}">Open</option>
                                 </select>
                             </div>
                         </div>
@@ -168,20 +168,27 @@
                                         <br />
                                         <span class="color-black" th:if="*{t.closingDate != null}">Closing: <span th:text="${#dates.format(t.closingDate, 'dd MMM yyyy HH:mm')}"></span></span>
                                         <span class="color-black" th:if="*{t.closingDate == null}">Closing: </span>
-                                        <br />
-                                        <h4>
-                                            <span class="label label-default" th:text="${t.status}">OPEN</span>
-                                        </h4>
-                                        <h4>
-                                            <span class="label label-default" th:if="${t.tenderSource == '1'}">GeBiz</span>
-                                            <span class="label label-danger" th:if="${t.tenderSource == '2'}">Sesami - NHG</span>
-                                            <span class="label label-primary" th:if="${t.tenderSource == '3'}">Sesami - CAG</span>
-                                            <span class="label label-warning" th:if="${t.tenderSource == '4'}">Sesami - SP</span>
-                                            <span class="label label-info" th:if="${t.tenderSource == '5'}">Sesami - STE</span>
-                                            <span class="label label-success" th:if="${t.tenderSource == '6'}">Singtel</span>
-                                            <span class="label label-default" th:if="${t.tenderSource == '7'}">SATS</span>
-                                            <span class="label label-danger" th:if="${t.tenderSource == '8'}">Singapore Pools - Tender</span>
-                                            <span class="label label-primary" th:if="${t.tenderSource == '9'}">Singapore Pools - Quotation</span>
+                                        <h5>
+                                            <span th:switch="${t.tenderSource}">
+                                                <p th:case="'1'">Source: <span class="label label-default">GeBiz</span></p>
+                                                <p th:case="'2'">Source: <span class="label label-default">Sesami - NHG</span></p>
+                                                <p th:case="'3'">Source: <span class="label label-default">Sesami - CAG</span></p>
+                                                <p th:case="'4'">Source: <span class="label label-default">Sesami - SP</span></p>
+                                                <p th:case="'5'">Source: <span class="label label-default">Sesami - STE</span></p>
+                                                <p th:case="'6'">Source: <span class="label label-default">Singtel</span></p>
+                                                <p th:case="'7'">Source: <span class="label label-default">SATS</span></p>
+                                                <p th:case="'8'">Source: <span class="label label-default">Singapore Pools - Tender</span></p>
+                                                <p th:case="'9'">Source: <span class="label label-default">Singapore Pools - Quotation</span></p>
+                                            </span>
+                                        </h5>
+                                        <h4 style="margin-top: 30px;">
+                                            <span th:switch="${t.status}">
+                                                <span class="label label-success" th:case="'OPEN'" th:text="${t.status}">OPEN</span>
+                                                <span class="label label-danger" th:case="'CLOSED'" th:text="${t.status}">CLOSED</span>
+                                                <span class="label label-primary" th:case="'AWARDED'" th:text="${t.status}">AWARDED</span>
+                                                <span class="label label-warning" th:case="'NO_AWARD'">NO AWARD</span>
+                                                <span class="label label-default" th:case="*" th:text="${t.status}">OPEN</span>
+                                            </span>
                                         </h4>
                                     </div>
                                 </div>

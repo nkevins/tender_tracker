@@ -50,7 +50,11 @@ public class BidDataController {
         int companyId = usr.getSelectedCompany().getId();
 
         DataTablesOutput<TenderAppeal> bids = dao.findAll(input, null, (root, criteriaQuery, criteriaBuilder) -> {
-            return criteriaBuilder.equal(root.join("tender").join("company").get("id"), companyId);
+            return
+            criteriaBuilder.and(
+                    criteriaBuilder.equal(root.join("tender").join("company").get("id"), companyId),
+                    criteriaBuilder.equal(root.get("status"), 0)
+            );
         });
 
         return bids;

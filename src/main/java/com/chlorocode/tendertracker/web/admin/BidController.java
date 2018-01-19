@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Date;
 import java.util.List;
@@ -36,6 +37,38 @@ public class BidController {
     @GetMapping("/admin/tender/appeal")
     public String showTenderAppealPage() {
         return "admin/bid/tenderAppealList";
+    }
+
+    @PostMapping("/admin/bid/appeal/result")
+    public String ProcessAppeal(@RequestParam("id") int id, @RequestParam("action") String action,
+                                   RedirectAttributes redirectAttrs) {
+        CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        boolean result = false;
+
+        if (action.equals("reject")) {
+             result = tdSvc.processTender(id,usr.getId(),2);
+        }else if(action.equals("approve")){
+             result = tdSvc.processTender(id,usr.getId(),2);
+        }
+
+        if(result){
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
+                    "Tender appeal status updated successfully");
+            redirectAttrs.addFlashAttribute("alert", alert);
+        }else{
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
+                    "Something went wrong. Cannot update tender process");
+            redirectAttrs.addFlashAttribute("alert", alert);
+        }
+
+        return "redirect:/admin/tender/appeal";
+    }
+
+    @GetMapping("/admin/tender/appeal/view/{id}")
+    public String showTenderAppealUpdatePage(@PathVariable(value = "id") Integer id,ModelMap model) {
+        TenderAppeal tenderAppeal = tdSvc.findById(id);
+        model.addAttribute("bid", tenderAppeal);
+        return "admin/bid/processAppealView";
     }
 
     @GetMapping("/admin/bid/appeal/{id}")

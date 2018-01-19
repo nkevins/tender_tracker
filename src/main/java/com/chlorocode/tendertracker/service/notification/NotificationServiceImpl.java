@@ -64,10 +64,8 @@ public class NotificationServiceImpl implements NotificationService {
             sendCompanyRegisteredNotiMsg(params);
         } else if (mode == NOTI_MODE.tender_closed_noti) {
             sendTenderClosedNotiMsg(params);
-
         } else if (mode == NOTI_MODE.company_blacklisted_noti) {
             sendCompanyBlackListedNotiMsg(params);
-
         } else if (mode == NOTI_MODE.milestone_approach_noti) {
             sendMilestoneApproachNotiMsg(params);
         } else if (mode == NOTI_MODE.appeal_create_noti) {
@@ -161,17 +159,21 @@ public class NotificationServiceImpl implements NotificationService {
         String id = String.valueOf(params.get(TTConstants.PARAM_TENDER_ID));
         String title = (String) params.get(TTConstants.PARAM_TENDER_TITLE);
         String appealCompany = (String) params.get(TTConstants.PARAM_APPEAL_COMPANY);
-        String[] emails = (String[]) params.get(TTConstants.PARAM_EMAILS);
-        return sendEmail(mailProperties.getSubAppealCreate(), mailProperties.getTemplateAppealCreate(), emails, appealCompany, title, id, id);
+        String email = (String) params.get(TTConstants.PARAM_EMAIL);
+        return sendEmail(mailProperties.getSubAppealCreate(), mailProperties.getTemplateAppealCreate(), new String[]{email}, appealCompany, title, id, id);
     }
 
     public boolean  sendAppealUpdateNotiMsg(Map<String, Object> params) {
         String id = String.valueOf(params.get(TTConstants.PARAM_TENDER_ID));
         String title = (String) params.get(TTConstants.PARAM_TENDER_TITLE);
         String appealCompany = (String) params.get(TTConstants.PARAM_APPEAL_COMPANY);
-        String[] emails = (String[]) params.get(TTConstants.PARAM_EMAILS);
-        return sendEmail(mailProperties.getSubAppealUpdate(), mailProperties.getSubAppealUpdate(), emails, appealCompany, title, id, id);
-
+        int action = (int) params.get(TTConstants.PARAM_APPEAL_ACTION);
+        String email = (String) params.get(TTConstants.PARAM_EMAIL);
+        if (action == TTConstants.APPEAL_ACCEPT) {
+            return sendEmail(mailProperties.getSubAppealAccepted(), mailProperties.getTemplateAppealAccepted(), new String[]{email}, appealCompany, title, id, id);
+        } else {
+            return sendEmail(mailProperties.getSubAppealRejected(), mailProperties.getTemplateAppealRejected(), new String[]{email}, appealCompany, title, id, id);
+        }
     }
 
     private boolean sendEmail(String emailSubject, String path, String[] to, String... params) {

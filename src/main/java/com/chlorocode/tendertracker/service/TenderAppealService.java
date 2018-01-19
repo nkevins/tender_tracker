@@ -10,4 +10,8 @@ import java.util.List;
 public interface TenderAppealService {
     TenderAppeal Create(TenderAppeal appeal);
     List<TenderAppeal> findTenderAppealsBy(int tenderId, int companyId);
+
+    TenderAppeal findById(int id);
+
+    boolean processTender(int id, int rejectedBy, int status);
 }
