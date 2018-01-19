@@ -39,6 +39,11 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public Product createProduct(Product product) {
         Product result = productDAO.save(product);
+        
+        if (result != null) {
+            // TODO: Write code here to send email notifications
+        }
+
 
         return result;
     }

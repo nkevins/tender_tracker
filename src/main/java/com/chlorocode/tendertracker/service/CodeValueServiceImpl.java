@@ -62,6 +62,23 @@ public class CodeValueServiceImpl implements CodeValueService {
     }
 
     @Override
+    public Map<String, String> getProductOrderBy() {
+        Map<String, String> orderBy = new HashMap<>();
+        orderBy.put(TTConstants.TITLE, TTConstants.LBL_TITLE);
+
+        return orderBy;
+    }
+
+    @Override
+    public Map<String, String> getProductOrderMode() {
+        Map<String, String> orderMode = new HashMap<>();
+        orderMode.put(TTConstants.ASC, TTConstants.LBL_ASC);
+        orderMode.put(TTConstants.DESC, TTConstants.LBL_DESC);
+
+        return orderMode;
+    }
+
+    @Override
     public List<Country> getAllCountries() {
         return codeValueDAO.getAllCountries();
     }
