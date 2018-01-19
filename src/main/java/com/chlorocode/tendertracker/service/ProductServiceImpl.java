@@ -76,7 +76,9 @@ public class ProductServiceImpl implements ProductService {
             productSearchDTO.setCompanyName(null);
             productSearchDTO.setTitle(null);
         } else {
-            specification = ProductSpecs.getAll();
+            specification = ProductSpecs.byProductSearchCriteria(productSearchDTO.getTitle() == null ? null : productSearchDTO.getTitle().trim(),
+                    productSearchDTO.getCompanyName() == null ? null : productSearchDTO.getCompanyName().trim());
+            productSearchDTO.setSearchText(null);
         }
 
         return productPagingDAO.findAll(specification, pageable);
