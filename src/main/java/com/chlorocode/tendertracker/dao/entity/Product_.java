@@ -10,4 +10,5 @@ public abstract class Product_ {
     public static volatile SingularAttribute<Product, String> title;
     public static volatile SingularAttribute<Product, String> description;
     public static volatile SingularAttribute<Product, Company> company;
+    public static volatile SingularAttribute<Product, Boolean> publish;
 }
