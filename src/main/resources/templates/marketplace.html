@@ -73,7 +73,7 @@
                                         <a class="color-black" th:text="${p.company.name}" th:href="@{/company/} + ${p.company.id}">Ngee Ann Polytechnic</a>
                                     </h5>
                                     <div>
-                                        <span class="color-black" th:text="${p.description}"></span>
+                                        <span class="color-black" th:utext="${p.description}"></span>
                                         <br/>
                                         <span class="color-black">
                                             Price: <span th:text="${p.price}"></span>
