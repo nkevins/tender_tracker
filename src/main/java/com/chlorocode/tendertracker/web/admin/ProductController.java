@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.util.Date;
 
 @Controller
 public class ProductController {
@@ -64,6 +65,10 @@ public class ProductController {
         product.setType(form.getType());
         product.setCategory(form.getCategory());
         product.setPublish(true);
+        product.setCreatedBy(currentUser.getId());
+        product.setCreatedDate(new Date());
+        product.setLastUpdatedBy(currentUser.getId());
+        product.setLastUpdatedDate(new Date());
 
         try {
             productService.createProduct(product);
@@ -104,6 +109,9 @@ public class ProductController {
 
     @PostMapping("/admin/product/update")
     public String updateTender(@Valid @ModelAttribute("product") ProductUpdateDTO form, RedirectAttributes redirectAttrs) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CurrentUser currentUser = (CurrentUser) authentication.getPrincipal();
+
         Product product = productService.findById(form.getProductCode());
 
         product.setType(form.getType());
@@ -112,6 +120,8 @@ public class ProductController {
         product.setDescription(form.getDescription());
         product.setPublish(form.isPublished());
         product.setPrice(form.getPrice());
+        product.setLastUpdatedBy(currentUser.getId());
+        product.setLastUpdatedDate(new Date());
 
         try {
             productService.updateProduct(product);

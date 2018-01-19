@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 public class Product {
@@ -26,11 +27,20 @@ public class Product {
     private boolean publish;
 
     private int type;
-
     private int category;
 
     @ManyToOne
     private Company company;
+
+    private int createdBy;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdDate;
+
+    private int lastUpdatedBy;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastUpdatedDate;
 
     public int getProductCode() {
         return productCode;
@@ -97,5 +107,37 @@ public class Product {
 
     public void setCategory(int category) {
         this.category = category;
+    }
+
+    public int getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(int createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public int getLastUpdatedBy() {
+        return lastUpdatedBy;
+    }
+
+    public void setLastUpdatedBy(int lastUpdatedBy) {
+        this.lastUpdatedBy = lastUpdatedBy;
+    }
+
+    public Date getLastUpdatedDate() {
+        return lastUpdatedDate;
+    }
+
+    public void setLastUpdatedDate(Date lastUpdatedDate) {
+        this.lastUpdatedDate = lastUpdatedDate;
     }
 }

@@ -17,7 +17,7 @@ public class ProductSpecs {
 
     public static Specification<Product> getAll() {
         return ((Root<Product> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) -> {
-            return criteriaBuilder.greaterThanOrEqualTo(root.get(Product_.title), "");
+            return criteriaBuilder.equal(root.get(Product_.publish), true);
         });
     }
 
