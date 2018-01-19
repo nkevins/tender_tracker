@@ -70,11 +70,14 @@ public class MarketplaceController {
         productSearchDTO.setCompanyName(companyName.orElse(null));
         productSearchDTO.setOrderBy(orderBy.orElse(null) == null ? TTConstants.TITLE : orderBy.get());
         productSearchDTO.setOrderMode(orderMode.orElse(null) == null ? TTConstants.DEFAULT_SORT_DIRECTION : orderMode.get());
+        productSearchDTO.setAdvance(productSearchDTO.getSearchText() != null
+                || productSearchDTO.getTitle() != null
+                || productSearchDTO.getCompanyName() != null);
 
-        int evalPageSize = pageSize.orElse(2);
+        int evalPageSize = pageSize.orElse(TTConstants.INITIAL_PAGE_SIZE);
         int evalPage = (page.orElse(0) < 1) ? TTConstants.INITIAL_PAGE : page.get() - 1;
 
-        Page<Product> products = productService.listAllByPage(
+        Page<Product> products = productService.searchProduct(productSearchDTO,
                 new PageRequest(evalPage, evalPageSize)
         );
 

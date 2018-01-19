@@ -2,6 +2,8 @@ package com.chlorocode.tendertracker.service;
 
 import com.chlorocode.tendertracker.dao.ProductDAO;
 import com.chlorocode.tendertracker.dao.ProductPagingDAO;
+import com.chlorocode.tendertracker.dao.dto.ProductSearchDTO;
+import com.chlorocode.tendertracker.dao.entity.CurrentUser;
 import com.chlorocode.tendertracker.dao.entity.Product;
 import com.chlorocode.tendertracker.dao.specs.ProductSpecs;
 import com.chlorocode.tendertracker.exception.ApplicationException;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -62,6 +65,26 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Page<Product> searchProduct(ProductSearchDTO productSearchDTO, Pageable pageable) {
+        int companyID = getCompanyID();
+
+        Specification<Product> specification = null;
+
+        if (productSearchDTO.getSearchText() != null
+                && !productSearchDTO.getSearchText().trim().isEmpty()) {
+            specification = ProductSpecs.byProductSearchString(productSearchDTO.getSearchText().trim());
+            productSearchDTO.setCompanyName(null);
+            productSearchDTO.setTitle(null);
+        } else {
+            specification = ProductSpecs.byProductSearchCriteria(productSearchDTO.getTitle() == null ? null : productSearchDTO.getTitle().trim(),
+                    productSearchDTO.getCompanyName() == null ? null : productSearchDTO.getCompanyName().trim());
+            productSearchDTO.setSearchText(null);
+        }
+
+        return productPagingDAO.findAll(specification, pageable);
+    }
+
+    @Override
     public Product findById(int id) {
         return productDAO.findOne(id);
     }
@@ -88,5 +111,19 @@ public class ProductServiceImpl implements ProductService {
 
     public void setNotificationService(NotificationService notificationService) {
         this.notificationService = notificationService;
+    }
+
+    private int getCompanyID() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal != null && principal instanceof CurrentUser) {
+            CurrentUser currentUser = (CurrentUser) principal;
+
+            if (currentUser != null && currentUser.getSelectedCompany() != null) {
+                return currentUser.getSelectedCompany().getId();
+            }
+        }
+
+        return 0;
     }
 }

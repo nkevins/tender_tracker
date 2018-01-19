@@ -17,12 +17,13 @@
             </div>
             <div class="col-md-8">
                 <!--form search-->
-                <form class="form-search-list">
+                <form class="form-search-list" th:action="@{/marketplace/products}" method="get"
+                      enctype="mutipart/form-data" th:object="${searchCriteria}">
                     <div class="row">
                         <div class="col-sm-10 col-xs-6">
                             <div class="form-group">
                                 <label class="color-white"></label>
-                                <input class="form-control" placeholder="Search product ..."/>
+                                <input class="form-control" placeholder="Search product ..." th:field="*{searchText}"/>
                             </div>
                         </div>
                         <div class="col-sm-2 col-xs-12">
@@ -31,11 +32,50 @@
                                 <input type="submit" value="Search" class="btn btn-block btn-theme btn-success"/>
                             </div>
                         </div>
-                        <p class="text-right"><a href="" class="link-white">Advanced Search</a></p>
+                        <p class="text-right"><a href="#modal-advanced" data-toggle="modal" class="link-white">Advanced Search</a></p>
                     </div>
                 </form>
             </div>
         </div>
+
+        <div class="modal fade" id="modal-advanced">
+            <div class="modal-dialog ">
+                <div class="modal-content">
+                    <form class="form-search-list" th:action="@{/marketplace/products}" method="get" enctype="multipart/form-data"
+                          th:object="${searchCriteria}">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Advanced Product Search</h4>
+                        </div>
+                        <div class="modal-body">
+                            <h5>Find Products</h5>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Product Title</label>
+                                        <input type="text" class="form-control " name="text" th:field="*{title}"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Company Name</label>
+                                        <input type="text" class="form-control " name="text" th:field="*{companyName}"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- TODO: Add Product Category -->
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default btn-theme" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success btn-theme">Find Product</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div><!-- end modal -->
     </div>
 </div>
 <div layout:fragment="content">
@@ -70,10 +110,11 @@
                                         <a class="" th:text="${p.title}" target="_blank"  th:href="@{/product/clarification/} + ${p.productcode}">Lorem ipsum dolor sit amet </a>
                                     </h3>
                                     <h5>
-                                        <a class="color-black" th:text="${p.company.name}" th:href="@{/company/} + ${p.company.id}">Ngee Ann Polytechnic</a>
+                                        <a class="color-black" th:text="${p.company.name}"
+                                           th:href="@{/company/} + ${p.company.id}">Ngee Ann Polytechnic</a>
                                     </h5>
                                     <div>
-                                        <span class="color-black" th:text="${p.description}"></span>
+                                        <span class="color-black" th:utext="${p.description}"></span>
                                         <br/>
                                         <span class="color-black">
                                             Price: <span th:text="${p.price}"></span>

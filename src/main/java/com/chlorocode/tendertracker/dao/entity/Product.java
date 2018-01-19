@@ -22,6 +22,9 @@ public class Product {
     @JsonView(DataTablesOutput.View.class)
     private String description;
 
+    @JsonView(DataTablesOutput.View.class)
+    private boolean publish;
+
     @ManyToOne
     private Company company;
 
@@ -74,4 +77,11 @@ public class Product {
         this.company = company;
     }
 
+    public boolean isPublish() {
+        return publish;
+    }
+
+    public void setPublish(boolean publish) {
+        this.publish = publish;
+    }
 }
