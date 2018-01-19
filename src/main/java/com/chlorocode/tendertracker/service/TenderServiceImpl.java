@@ -38,13 +38,15 @@ public class TenderServiceImpl implements TenderService {
     private TenderAwardDAO tenderAwardDAO;
     private UserService userService;
     private BidService bidService;
+    private UserRoleService userRoleService;
 
     @Autowired
     public TenderServiceImpl(TenderDAO tenderDAO, S3Wrapper s3Wrapper, TenderBookmarkDAO tenderBookmarkDAO
                             , TenderItemDAO tenderItemDAO, TenderDocumentDAO tenderDocumentDAO
                             , TenderCategorySubscriptionDAO tenderCategorySubscriptionDAO, TenderPagingDAO tenderPagingDAO
                             , NotificationService notificationService, IPGeoLocationService ipGeoLocationService
-                            , TenderVisitDAO tenderVisitDAO, TenderAwardDAO tenderAwardDAO, UserService userService, BidService bidService) {
+                            , TenderVisitDAO tenderVisitDAO, TenderAwardDAO tenderAwardDAO, UserService userService
+                            , BidService bidService, UserRoleService userRoleService) {
         this.tenderDAO = tenderDAO;
         this.tenderItemDAO = tenderItemDAO;
         this.tenderDocumentDAO = tenderDocumentDAO;
@@ -58,6 +60,7 @@ public class TenderServiceImpl implements TenderService {
         this.tenderAwardDAO = tenderAwardDAO;
         this.userService = userService;
         this.bidService = bidService;
+        this.userRoleService=userRoleService;
     }
 
     @Override
@@ -345,14 +348,14 @@ public class TenderServiceImpl implements TenderService {
             // Send tender information to bookmark users.
             List<TenderBookmark>  tenderBookmarks = tenderBookmarkDAO.findTenderBookmarkByTender(tender.getId());
             if (tenderBookmarks != null) {
-                Set<User> users = new HashSet<>();
+                Set<String> emails = new HashSet<>();
                 for (TenderBookmark bookmark : tenderBookmarks) {
-                    if (bookmark.getUser() != null) users.add(bookmark.getUser());
+                    if (bookmark.getUser() != null) emails.add(bookmark.getUser().getEmail());
                 }
-                if (users != null && !users.isEmpty()) {
+                if (emails != null && !emails.isEmpty()) {
                     Map<String, Object> params = new HashMap<>();
                     params.put(TTConstants.PARAM_TENDER, tender);
-                    params.put(TTConstants.PARAM_EMAILS, users.toArray(new User[users.size()]));
+                    params.put(TTConstants.PARAM_EMAILS, emails.toArray(new User[emails.size()]));
                     params.put(TTConstants.PARAM_CHANGE_TYPE, changeType);
                     notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.tender_bookmark_noti, params);
                 }
@@ -376,6 +379,39 @@ public class TenderServiceImpl implements TenderService {
         Tender tender = tenderAward.getTender();
         tender.setStatus(3);
         tenderDAO.save(tender);
+
+        // TODO Send email to all bidder and bookmark user.
+        // Add awarded company user.
+        Set<String> emails = userRoleService.findCompanyUserEmails(tenderAward.getCompany().getId());
+        if (emails == null) {
+            emails = new HashSet<>();
+        }
+        // Add bid user.
+        List<Bid> bids = bidService.findBidByTender(tender.getId());
+        if (bids != null) {
+            for(Bid bid : bids) {
+                User user = userService.findById(bid.getCreatedBy());
+                if (user != null) {
+                    emails.add(user.getEmail());
+                }
+            }
+        }
+        // Add bookmark user.
+        List<TenderBookmark>  tenderBookmarks = tenderBookmarkDAO.findTenderBookmarkByTender(tender.getId());
+        if (tenderBookmarks != null) {
+            for (TenderBookmark bookmark : tenderBookmarks) {
+                if (bookmark.getUser() != null) emails.add(bookmark.getUser().getEmail());
+            }
+        }
+
+        if (emails != null && emails.size()> 0) {
+            Map<String, Object> params = new HashMap<>();
+            params.put(TTConstants.PARAM_TENDER_ID, tenderAward.getTender().getId());
+            params.put(TTConstants.PARAM_TENDER_TITLE, tenderAward.getTender().getTitle());
+            params.put(TTConstants.PARAM_COMPANY_NAME, tenderAward.getCompany().getName());
+            params.put(TTConstants.PARAM_EMAILS, emails.toArray(new User[emails.size()]));
+            notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.tender_award_noti, params);
+        }
     }
 
     @Override
@@ -385,12 +421,12 @@ public class TenderServiceImpl implements TenderService {
         if (closingTenders != null && !closingTenders.isEmpty()) {
             for (Tender t : closingTenders) {
                 // Notify to company administrator.
-                User user = userService.findById(t.getCompany().getCreatedBy());
-                if (user != null) {
+                Set<String> adminEmails = userRoleService.findCompanyAdminEmails(t.getCompany().getId());
+                if (adminEmails != null && adminEmails.size()> 0) {
                     Map<String, Object> params = new HashMap<>();
                     params.put(TTConstants.PARAM_TENDER_ID, t.getId());
                     params.put(TTConstants.PARAM_TENDER_TITLE, t.getTitle());
-                    params.put(TTConstants.PARAM_EMAIL, user.getEmail());
+                    params.put(TTConstants.PARAM_EMAILS, adminEmails.toArray(new User[adminEmails.size()]));
                     notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.tender_closed_noti, params);
                 }
                 // Change the status of tender to close tender.

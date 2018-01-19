@@ -6,6 +6,7 @@ import com.chlorocode.tendertracker.dao.entity.User;
 import com.chlorocode.tendertracker.dao.entity.UserRole;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by andy on 27/7/2017.
@@ -19,4 +20,7 @@ public interface UserRoleService {
     void addUserRole(User user, List<Role> roles, Company company, int createdBy);
     void updateUserRole(User user, List<Role> roles, Company company, int updatedBy);
     void removeUserFromCompany(User user, Company company);
+
+    Set<String> findCompanyAdminEmails(int companyId);
+    Set<String> findCompanyUserEmails(int companyId);
 }

@@ -11,10 +11,7 @@ import com.chlorocode.tendertracker.service.notification.NotificationServiceImpl
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by andy on 14/1/2018.
@@ -25,14 +22,16 @@ public class TenderAppealServiceImpl implements TenderAppealService {
     private TenderAppealDAO dao;
     private NotificationService notificationService;
     private UserService userService;
+    private UserRoleService userRoleService;
 
     private String className;
     @Autowired
-    public TenderAppealServiceImpl(TenderAppealDAO dao, NotificationService notificationService, UserService userService){
+    public TenderAppealServiceImpl(TenderAppealDAO dao, NotificationService notificationService, UserService userService, UserRoleService userRoleService){
         this.className = this.getClass().getName();
         this.dao = dao;
         this.notificationService = notificationService;
         this.userService = userService;
+        this.userRoleService = userRoleService;
     }
 
     @Override
@@ -41,13 +40,15 @@ public class TenderAppealServiceImpl implements TenderAppealService {
             appeal = dao.saveAndFlush(appeal);
             // Send the email notification to party who submit the tender appeal
             if (appeal != null) {
-                Map<String, Object> params = new HashMap<>();
-                params.put(TTConstants.PARAM_TENDER_ID, appeal.getTender().getId());
-                params.put(TTConstants.PARAM_TENDER_TITLE, appeal.getTender().getTitle());
-                params.put(TTConstants.PARAM_APPEAL_COMPANY, appeal.getCompany().getName());
-                User user = userService.findById(appeal.getCompany().getCreatedBy());
-                params.put(TTConstants.PARAM_EMAIL, user.getEmail());
-                notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.appeal_create_noti, params);
+                Set<String> adminEmails = userRoleService.findCompanyAdminEmails(appeal.getCompany().getId());
+                if (adminEmails != null && adminEmails.size()> 0) {
+                    Map<String, Object> params = new HashMap<>();
+                    params.put(TTConstants.PARAM_TENDER_ID, appeal.getTender().getId());
+                    params.put(TTConstants.PARAM_TENDER_TITLE, appeal.getTender().getTitle());
+                    params.put(TTConstants.PARAM_APPEAL_COMPANY, appeal.getCompany().getName());
+                    params.put(TTConstants.PARAM_EMAILS, adminEmails.toArray(new User[adminEmails.size()]));
+                    notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.appeal_create_noti, params);
+                }
             }
             return appeal;
         }catch (Exception ex){
@@ -76,14 +77,16 @@ public class TenderAppealServiceImpl implements TenderAppealService {
             tender.setLastUpdatedDate(new Date());
             dao.saveAndFlush(tender);
             //Send email notification to appealer. if status is 1, means the tender appeal accepted and process by tenderer preparer, if it is 2, means it is rejected by preparer
-            Map<String, Object> params = new HashMap<>();
-            params.put(TTConstants.PARAM_TENDER_ID, tender.getTender().getId());
-            params.put(TTConstants.PARAM_TENDER_TITLE, tender.getTender().getTitle());
-            params.put(TTConstants.PARAM_APPEAL_COMPANY, tender.getCompany().getName());
-            params.put(TTConstants.PARAM_APPEAL_ACTION, tender.getStatus());
-            User user = userService.findById(tender.getCompany().getCreatedBy());
-            params.put(TTConstants.PARAM_EMAIL, user.getEmail());
-            notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.appeal_update_noti, params);
+            Set<String> adminEmails = userRoleService.findCompanyAdminEmails(tender.getCompany().getId());
+            if (adminEmails != null && adminEmails.size()> 0) {
+                Map<String, Object> params = new HashMap<>();
+                params.put(TTConstants.PARAM_TENDER_ID, tender.getTender().getId());
+                params.put(TTConstants.PARAM_TENDER_TITLE, tender.getTender().getTitle());
+                params.put(TTConstants.PARAM_APPEAL_COMPANY, tender.getCompany().getName());
+                params.put(TTConstants.PARAM_APPEAL_ACTION, tender.getStatus());
+                params.put(TTConstants.PARAM_EMAILS, adminEmails.toArray(new User[adminEmails.size()]));
+                notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.appeal_update_noti, params);
+            }
             return true;
         }catch (Exception ex){
             TTLogger.error(className, "error: " , ex);

@@ -13,6 +13,7 @@ public class MailProperties {
     private String subClosedTender;
     private String subCompanyReview;
     private String subCompanyRegistered;
+    private String subTenderAwarded;
 
     private String subCompanyBlacklisted;
 
@@ -31,6 +32,7 @@ public class MailProperties {
     private String templateCompanyApproved;
     private String templateCompanyRejected;
     private String templateCompanyRegistered;
+    private String templateTenderAwarded;
 
     private String templateCompanyBlacklisted;
 
@@ -273,6 +275,22 @@ public class MailProperties {
 
     public void setTemplateAppealRejected(String templateAppealRejected) {
         this.templateAppealRejected = templateAppealRejected;
+    }
+
+    public String getSubTenderAwarded() {
+        return subTenderAwarded;
+    }
+
+    public void setSubTenderAwarded(String subTenderAwarded) {
+        this.subTenderAwarded = subTenderAwarded;
+    }
+
+    public String getTemplateTenderAwarded() {
+        return templateTenderAwarded;
+    }
+
+    public void setTemplateTenderAwarded(String templateTenderAwarded) {
+        this.templateTenderAwarded = templateTenderAwarded;
     }
     //    private String subjectOTP;
 //    public static final String OTP_TEMPLATE = "<html><body>"

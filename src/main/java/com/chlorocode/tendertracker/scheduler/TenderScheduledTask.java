@@ -50,7 +50,7 @@ public class TenderScheduledTask {
         TTLogger.info(className, "Completed tender close and notify.");
     }
 
-    @Scheduled(cron="0 0 * * * *", zone = "Asia/Singapore") // Will work at the start of every hour.
+    @Scheduled(cron="0 * * * * *", zone = "Asia/Singapore") // Will work at the start of every minute.
     @Transactional
     public void autoNotifyApproachMilestone() {
         TTLogger.info(className, "Auto notify approach milestone.");
