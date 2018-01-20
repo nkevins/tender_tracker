@@ -5,9 +5,13 @@ import com.chlorocode.tendertracker.dao.dto.AlertDTO;
 import com.chlorocode.tendertracker.dao.dto.Pager;
 import com.chlorocode.tendertracker.dao.dto.ProductSearchDTO;
 import com.chlorocode.tendertracker.dao.dto.ProductUpdateDTO;
+import com.chlorocode.tendertracker.dao.entity.Company;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
 import com.chlorocode.tendertracker.dao.entity.Product;
+import com.chlorocode.tendertracker.dao.entity.ProductClarification;
+import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.service.CodeValueService;
+import com.chlorocode.tendertracker.service.ProductClarificationService;
 import com.chlorocode.tendertracker.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,22 +21,26 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
 public class MarketplaceController {
 
     private ProductService productService;
+    private ProductClarificationService prdSvc;
     private CodeValueService codeValueService;
 
     @Autowired
-    public MarketplaceController(ProductService productService, CodeValueService codeValueService) {
+    public MarketplaceController(ProductService productService, CodeValueService codeValueService,ProductClarificationService prdSvc) {
         this.productService = productService;
         this.codeValueService = codeValueService;
+        this.prdSvc = prdSvc;
     }
 
     @GetMapping("/marketplace")
@@ -107,12 +115,44 @@ public class MarketplaceController {
     public String showProductDetailsPage(@PathVariable(value = "id") Integer id, ModelMap model){
 
         Product prod = productService.findById(id);
+        List<ProductClarification> prodClar = prdSvc.findClarificationByProdId(id);
         ProductUpdateDTO prodDto = new ProductUpdateDTO();
         model.addAttribute("product", prod);
         model.addAttribute("productclarification", prod.getClarifications());
 
         model.addAttribute("prodDto",prodDto);
-
+        model.addAttribute("clarification",prodClar);
         return "marketplaceClarification";
+    }
+
+    @PostMapping("/product/clarification/save")
+    public String updateTender (@RequestParam("response") String response,  @RequestParam("productId") int productId, RedirectAttributes redirectAttrs) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CurrentUser currentUser = (CurrentUser) authentication.getPrincipal();
+        ProductClarification clar = new ProductClarification();
+        Company comp = new Company();
+        comp.setId(currentUser.getSelectedCompany().getId());
+        Product p = new Product();
+        p.setProductCode(productId);
+        clar.setCompany(comp);
+        clar.setProduct(p);
+        clar.setCreatedBy(currentUser.getId());
+        clar.setCreatedDate(new Date());
+        clar.setLastUpdatedBy(currentUser.getId());
+        clar.setLastUpdatedDate(new Date());
+        clar.setDescription(response);
+
+        try {
+            prdSvc.Create(clar);
+        } catch (ApplicationException ex) {
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
+                    ex.getMessage());
+            redirectAttrs.addFlashAttribute("alert", alert);
+            return "redirect:/product/clarification/" + productId;
+        }
+
+        AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS, "Product Updated");
+        redirectAttrs.addFlashAttribute("alert", alert);
+        return "redirect:/product/clarification/" + productId;
     }
 }

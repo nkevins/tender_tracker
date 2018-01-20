@@ -31,4 +31,14 @@ public class ProductClarificationServiceImpl implements ProductClarificationServ
     public ProductClarification findById(int id) {
         return dao.findOne(id);
     }
+
+    @Override
+    public ProductClarification Create(ProductClarification product) {
+        return dao.save(product);
+    }
+
+    @Override
+    public List<ProductClarification> findClarificationByProdId(int prodId) {
+        return dao.findClarificationByProdId(prodId);
+    }
 }

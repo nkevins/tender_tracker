@@ -51,7 +51,7 @@
                                 <h4 sec:authorize="hasAnyRole('ADMIN,SUBMITTER')">Submit Clarification</h4>
                                 <div class="form-group" sec:authorize="hasAnyRole('ADMIN,SUBMITTER,SYS_ADMIN')">
                                     <label>Clarification</label>
-                                    <textarea class="form-control" rows="4" required="required" th:field="${prodDto.response}"></textarea>
+                                    <textarea class="form-control" rows="4" id="response" required="required" th:field="${prodDto.response}"></textarea>
                                     <input type="hidden" name="productId" th:value="${product.productCode}" />
                                     <input type="hidden" name="companyId" th:value="${prodDto.companyId}" />
                                     <button type="submit" class="btn btn-theme btn-lg btn-t-primary btn-pill">Submit</button>
