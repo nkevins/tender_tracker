@@ -135,14 +135,4 @@ public class ProductController {
         redirectAttrs.addFlashAttribute("alert", alert);
         return "redirect:/admin/product";
     }
-
-
-    @GetMapping("/product/clarification/{id}")
-    public String showProductClarification(@PathVariable(value = "id") Integer id, ModelMap model){
-        Product prod = productService.findById(id);
-        model.addAttribute("product", prod);
-        model.addAttribute("productclarification", prod.getClarifications());
-
-        return "marketplaceClarification";
-    }
 }

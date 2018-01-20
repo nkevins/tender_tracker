@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Optional;
@@ -96,5 +97,14 @@ public class MarketplaceController {
         modelMap.addAttribute("pager", pager);
 
         return "marketplace";
+    }
+
+    @GetMapping("/product/clarification/{id}")
+    public String showProductDetailsPage(@PathVariable(value = "id") Integer id, ModelMap model){
+        Product prod = productService.findById(id);
+        model.addAttribute("product", prod);
+        model.addAttribute("productclarification", prod.getClarifications());
+
+        return "marketplaceClarification";
     }
 }
