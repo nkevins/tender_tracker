@@ -15,10 +15,14 @@ public class TenderSpecs {
 
     public static Specification<Tender> getAllOpenTender(int companyId, List<Integer> tenderIds) {
         if (companyId == 0) {
-            return getDefaultCriteriaQuery();
+            return getDefaultCriteriaSpec();
         } else {
-            return Specifications.where(getLoginUserCriteria(companyId, tenderIds)).or(getDefaultCriteriaQuery());
+            return Specifications.where(getLoginUserCriteria(companyId, tenderIds)).or(getDefaultCriteriaSpec());
         }
+    }
+
+    public static Specification<Tender> getDefaultCriteriaSpec() {
+        return Specifications.where(getOpenDateCriteria()).and(getOpenTenderTypeCriteria());
     }
 
     public static Specification<Tender> byTenderSearchString(String searchString, int companyId, List<Integer> tenderIds) {
@@ -92,15 +96,29 @@ public class TenderSpecs {
         };
     }
 
-    private static Specification<Tender> getDefaultCriteriaQuery() {
+//    private static Specification<Tender> getDefaultCriteriaQuery() {
+//        return (root, query, cb) -> {
+//            List<Predicate> predicates = new ArrayList<>();
+//            // show openDate<current time tenders.
+//            predicates.add(cb.lessThanOrEqualTo(root.get(Tender_.openDate), DateUtility.getCurrentDate()));
+//            // show only open tender type.
+//            predicates.add(cb.equal(root.<Integer>get(Tender_.tenderType), 1));
+//            // or(1,2)
+//            return cb.and(predicates.toArray(new Predicate[predicates.size()]));
+//        };
+//    }
+
+    private static Specification<Tender> getOpenDateCriteria() {
         return (root, query, cb) -> {
-            List<Predicate> predicates = new ArrayList<>();
             // show openDate<current time tenders.
-            predicates.add(cb.lessThanOrEqualTo(root.get(Tender_.openDate), DateUtility.getCurrentDate()));
+            return cb.lessThanOrEqualTo(root.get(Tender_.openDate), DateUtility.getCurrentDate());
+        };
+    }
+
+    private static Specification<Tender> getOpenTenderTypeCriteria() {
+        return (root, query, cb) -> {
             // show only open tender type.
-            predicates.add(cb.equal(root.<Integer>get(Tender_.tenderType), 1));
-            // or(1,2)
-            return cb.and(predicates.toArray(new Predicate[predicates.size()]));
+            return cb.equal(root.<Integer>get(Tender_.tenderType), 1);
         };
     }
 
