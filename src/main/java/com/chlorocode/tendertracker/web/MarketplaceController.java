@@ -4,6 +4,8 @@ import com.chlorocode.tendertracker.constants.TTConstants;
 import com.chlorocode.tendertracker.dao.dto.AlertDTO;
 import com.chlorocode.tendertracker.dao.dto.Pager;
 import com.chlorocode.tendertracker.dao.dto.ProductSearchDTO;
+import com.chlorocode.tendertracker.dao.dto.ProductUpdateDTO;
+import com.chlorocode.tendertracker.dao.entity.CurrentUser;
 import com.chlorocode.tendertracker.dao.entity.Product;
 import com.chlorocode.tendertracker.service.CodeValueService;
 import com.chlorocode.tendertracker.service.ProductService;
@@ -11,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -101,9 +105,13 @@ public class MarketplaceController {
 
     @GetMapping("/product/clarification/{id}")
     public String showProductDetailsPage(@PathVariable(value = "id") Integer id, ModelMap model){
+
         Product prod = productService.findById(id);
+        ProductUpdateDTO prodDto = new ProductUpdateDTO();
         model.addAttribute("product", prod);
         model.addAttribute("productclarification", prod.getClarifications());
+
+        model.addAttribute("prodDto",prodDto);
 
         return "marketplaceClarification";
     }

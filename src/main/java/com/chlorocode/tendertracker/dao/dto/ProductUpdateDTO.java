@@ -19,6 +19,28 @@ public class ProductUpdateDTO {
 
     private int category;
 
+    private String response;
+
+    public String getResponse() {
+        return response;
+    }
+
+    public void setResponse(String response) {
+        this.response = response;
+    }
+
+    private int companyId;
+
+
+    public int getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(int companyId) {
+        this.companyId = companyId;
+    }
+
+
     private boolean published;
 
     public int getProductCode() {
