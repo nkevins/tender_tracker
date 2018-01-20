@@ -16,4 +16,7 @@ public interface BidDAO extends DataTablesRepository<Bid, Integer> {
     @Query("select b from Bid b where b.company.id = ?1")
     List<Bid> findBidByCompany(int companyId);
 
+    @Query("select b from Bid b where b.tender.id = ?1")
+    List<Bid> findBidByTender(int tenderId);
+
 }

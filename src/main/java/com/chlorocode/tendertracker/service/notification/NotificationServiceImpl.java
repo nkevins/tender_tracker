@@ -38,6 +38,8 @@ public class NotificationServiceImpl implements NotificationService {
         appeal_create_noti,
         appeal_update_noti,
 
+        tender_award_noti,
+
         // TODO add other mode such as tender_noti, etc...
         other;
     }
@@ -72,6 +74,8 @@ public class NotificationServiceImpl implements NotificationService {
             sendAppealCreateNotiMsg(params);
         } else if (mode == NOTI_MODE.appeal_update_noti) {
             sendAppealUpdateNotiMsg(params);
+        } else if (mode == NOTI_MODE.tender_award_noti) {
+            sendTenderAwardNotiMsg(params);
         } else {
             //sendEmail("Email Subject","Email body", (String)params.get(TTConstants.PARAM_EMAIL));
         }
@@ -112,9 +116,18 @@ public class NotificationServiceImpl implements NotificationService {
     public boolean  sendTenderClosedNotiMsg(Map<String, Object> params) {
         String id = String.valueOf(params.get(TTConstants.PARAM_TENDER_ID));
         String title = (String) params.get(TTConstants.PARAM_TENDER_TITLE);
-        String email = (String) params.get(TTConstants.PARAM_EMAIL);
+        String[] emails = (String[]) params.get(TTConstants.PARAM_EMAILS);
         return sendEmail(mailProperties.getSubClosedTender(), mailProperties.getTemplateClosedTender()
-                , new String[]{email}, title, id, id);
+                , emails, title, id, id);
+    }
+
+    public boolean  sendTenderAwardNotiMsg(Map<String, Object> params) {
+        String id = String.valueOf(params.get(TTConstants.PARAM_TENDER_ID));
+        String title = (String) params.get(TTConstants.PARAM_TENDER_TITLE);
+        String companyName = (String) params.get(TTConstants.PARAM_COMPANY_NAME);
+        String[] emails = (String[]) params.get(TTConstants.PARAM_EMAILS);
+        return sendEmail(mailProperties.getSubTenderAwarded(), mailProperties.getTemplateTenderAwarded()
+                , emails, companyName, title, id, id);
     }
 
     public boolean  sendCompanyReviewedNotiMsg(Map<String, Object> params) {
@@ -138,9 +151,9 @@ public class NotificationServiceImpl implements NotificationService {
 
     public boolean sendCompanyBlackListedNotiMsg(Map<String, Object> params) {
         Company company = (Company) params.get(TTConstants.PARAM_COMPANY);
-        String email = (String) params.get(TTConstants.PARAM_EMAIL);
+        String[] emails = (String[]) params.get(TTConstants.PARAM_EMAILS);
         return sendEmail(mailProperties.getSubCompanyBlacklisted(), mailProperties.getTemplateCompanyBlacklisted(),
-                new String[]{email}, company.getName());
+                emails, company.getName());
     }
 
     public boolean  sendMilestoneApproachNotiMsg(Map<String, Object> params) {
@@ -149,18 +162,18 @@ public class NotificationServiceImpl implements NotificationService {
         String description = (String) params.get(TTConstants.PARAM_MILESTONE_DESCRIPTION);
         String dueDate = (String) params.get(TTConstants.PARAM_MILESTONE_DUE_DATE);
         String status = (String) params.get(TTConstants.PARAM_MILESTONE_STATUS);
-        String email = (String) params.get(TTConstants.PARAM_EMAIL);
+        String[] emails = (String[]) params.get(TTConstants.PARAM_EMAILS);
         return sendEmail(mailProperties.getSubMilestoneApproach()
                 , mailProperties.getTemplateMilestoneApproach()
-                , new String[]{email}, description, title, dueDate, status, id, id);
+                , emails, description, title, dueDate, status, id, id);
     }
 
     public boolean  sendAppealCreateNotiMsg(Map<String, Object> params) {
         String id = String.valueOf(params.get(TTConstants.PARAM_TENDER_ID));
         String title = (String) params.get(TTConstants.PARAM_TENDER_TITLE);
         String appealCompany = (String) params.get(TTConstants.PARAM_APPEAL_COMPANY);
-        String email = (String) params.get(TTConstants.PARAM_EMAIL);
-        return sendEmail(mailProperties.getSubAppealCreate(), mailProperties.getTemplateAppealCreate(), new String[]{email}, appealCompany, title, id, id);
+        String[] emails = (String[]) params.get(TTConstants.PARAM_EMAILS);
+        return sendEmail(mailProperties.getSubAppealCreate(), mailProperties.getTemplateAppealCreate(), emails, appealCompany, title, id, id);
     }
 
     public boolean  sendAppealUpdateNotiMsg(Map<String, Object> params) {
@@ -168,11 +181,11 @@ public class NotificationServiceImpl implements NotificationService {
         String title = (String) params.get(TTConstants.PARAM_TENDER_TITLE);
         String appealCompany = (String) params.get(TTConstants.PARAM_APPEAL_COMPANY);
         int action = (int) params.get(TTConstants.PARAM_APPEAL_ACTION);
-        String email = (String) params.get(TTConstants.PARAM_EMAIL);
+        String[] emails = (String[]) params.get(TTConstants.PARAM_EMAILS);
         if (action == TTConstants.APPEAL_ACCEPT) {
-            return sendEmail(mailProperties.getSubAppealAccepted(), mailProperties.getTemplateAppealAccepted(), new String[]{email}, appealCompany, title, id, id);
+            return sendEmail(mailProperties.getSubAppealAccepted(), mailProperties.getTemplateAppealAccepted(), emails, appealCompany, title, id, id);
         } else {
-            return sendEmail(mailProperties.getSubAppealRejected(), mailProperties.getTemplateAppealRejected(), new String[]{email}, appealCompany, title, id, id);
+            return sendEmail(mailProperties.getSubAppealRejected(), mailProperties.getTemplateAppealRejected(), emails, appealCompany, title, id, id);
         }
     }
 
