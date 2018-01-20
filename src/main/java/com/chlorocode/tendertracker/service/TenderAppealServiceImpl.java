@@ -46,7 +46,7 @@ public class TenderAppealServiceImpl implements TenderAppealService {
                     params.put(TTConstants.PARAM_TENDER_ID, appeal.getTender().getId());
                     params.put(TTConstants.PARAM_TENDER_TITLE, appeal.getTender().getTitle());
                     params.put(TTConstants.PARAM_APPEAL_COMPANY, appeal.getCompany().getName());
-                    params.put(TTConstants.PARAM_EMAILS, adminEmails.toArray(new User[adminEmails.size()]));
+                    params.put(TTConstants.PARAM_EMAILS, adminEmails.toArray(new String[adminEmails.size()]));
                     notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.appeal_create_noti, params);
                 }
             }
@@ -84,7 +84,7 @@ public class TenderAppealServiceImpl implements TenderAppealService {
                 params.put(TTConstants.PARAM_TENDER_TITLE, tender.getTender().getTitle());
                 params.put(TTConstants.PARAM_APPEAL_COMPANY, tender.getCompany().getName());
                 params.put(TTConstants.PARAM_APPEAL_ACTION, tender.getStatus());
-                params.put(TTConstants.PARAM_EMAILS, adminEmails.toArray(new User[adminEmails.size()]));
+                params.put(TTConstants.PARAM_EMAILS, adminEmails.toArray(new String[adminEmails.size()]));
                 notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.appeal_update_noti, params);
             }
             return true;
