@@ -65,6 +65,8 @@ public class CodeValueServiceImpl implements CodeValueService {
     public Map<String, String> getProductOrderBy() {
         Map<String, String> orderBy = new HashMap<>();
         orderBy.put(TTConstants.TITLE, TTConstants.LBL_TITLE);
+        orderBy.put(TTConstants.CREATE_DATE, TTConstants.LBL_CREATE_DATE);
+        orderBy.put(TTConstants.PRICE, TTConstants.LBL_PRICE);
 
         return orderBy;
     }

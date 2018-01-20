@@ -53,20 +53,21 @@ public class MarketplaceController {
 
         Page<Product> products = productService.listAllByPage(
                 new PageRequest(
-                        evalPage, evalPageSize, new Sort(new Sort.Order(Sort.Direction.DESC, TTConstants.TITLE))
+                        evalPage, evalPageSize, new Sort(new Sort.Order(Sort.Direction.ASC, TTConstants.TITLE))
                 ));
 
         Pager pager = new Pager(products.getTotalPages(), products.getNumber(), TTConstants.BUTTONS_TO_SHOW);
 
         ProductSearchDTO productSearchDTO = new ProductSearchDTO();
         productSearchDTO.setOrderBy(TTConstants.TITLE);
+        productSearchDTO.setOrderMode(TTConstants.ASC);
         modelMap.addAttribute("searchCriteria", productSearchDTO);
         modelMap.addAttribute("products", products);
         modelMap.addAttribute("codeValueSvc", codeValueService);
         modelMap.addAttribute("selectedPageSizse", evalPageSize);
         modelMap.addAttribute("pager", pager);
 
-        if (products == null) {
+        if (products == null || products.getTotalPages() == 0) {
             AlertDTO alertDTO = new AlertDTO(AlertDTO.AlertType.WARNING, "No Products found.");
             modelMap.addAttribute("alert", alertDTO);
         }
@@ -88,7 +89,7 @@ public class MarketplaceController {
         productSearchDTO.setTitle(title.orElse(null));
         productSearchDTO.setCompanyName(companyName.orElse(null));
         productSearchDTO.setOrderBy(orderBy.orElse(null) == null ? TTConstants.TITLE : orderBy.get());
-        productSearchDTO.setOrderMode(orderMode.orElse(null) == null ? TTConstants.DEFAULT_SORT_DIRECTION : orderMode.get());
+        productSearchDTO.setOrderMode(orderMode.orElse(null) == null ? TTConstants.ASC : orderMode.get());
         productSearchDTO.setAdvance(productSearchDTO.getSearchText() != null
                 || productSearchDTO.getTitle() != null
                 || productSearchDTO.getCompanyName() != null);
@@ -97,7 +98,10 @@ public class MarketplaceController {
         int evalPage = (page.orElse(0) < 1) ? TTConstants.INITIAL_PAGE : page.get() - 1;
 
         Page<Product> products = productService.searchProduct(productSearchDTO,
-                new PageRequest(evalPage, evalPageSize)
+//                new PageRequest(evalPage, evalPageSize)
+                new PageRequest(
+                        evalPage, evalPageSize, getSortPattern(productSearchDTO)
+                )
         );
 
         Pager pager = new Pager(products.getTotalPages(), products.getNumber(), TTConstants.BUTTONS_TO_SHOW);
@@ -107,8 +111,24 @@ public class MarketplaceController {
         modelMap.addAttribute("codeValueSvc", codeValueService);
         modelMap.addAttribute("selectedPageSizse", evalPageSize);
         modelMap.addAttribute("pager", pager);
+        if (products == null || products.getTotalPages() == 0) {
+            modelMap.addAttribute("noProductFound", true);
+        } else {
+            modelMap.addAttribute("noProductFound", false);
+        }
 
         return "marketplace";
+    }
+
+    private Sort getSortPattern(ProductSearchDTO searchDTO) {
+        Sort.Direction direction = Sort.Direction.ASC;
+        // Set order direction.
+        if (searchDTO.getOrderMode().equals(TTConstants.DESC)) {
+            direction = Sort.Direction.DESC;
+        }
+
+        // Set order by attribute.
+        return new Sort(new Sort.Order(direction, searchDTO.getOrderBy()));
     }
 
     @GetMapping("/product/clarification/{id}")

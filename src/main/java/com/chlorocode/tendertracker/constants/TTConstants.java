@@ -48,6 +48,8 @@ public class TTConstants {
     public static final String OPEN_DATE = "openDate";
     public static final String CLOSED_DATE = "closedDate";
     public static final String TITLE = "title";
+    public static final String CREATE_DATE = "createdDate";
+    public static final String PRICE = "price";
     public static final String ASC = "asc";
     public static final String DESC = "desc";
 
@@ -60,6 +62,8 @@ public class TTConstants {
     public static final String LBL_OPEN_DATE = "Open Date";
     public static final String LBL_CLOSED_DATE = "Closed Date";
     public static final String LBL_TITLE = "Title";
+    public static final String LBL_CREATE_DATE = "Create Date";
+    public static final String LBL_PRICE = "Price";
 
     public static final String LBL_ASC = "Ascending";
     public static final String LBL_DESC = "Descending";

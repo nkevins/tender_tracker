@@ -191,14 +191,17 @@
                         <div th:if="${tenders.totalPages != 1}" class="form-group col-md-11 pagination-centered">
                             <ul class="pagination">
                                 <li th:class="${tenders.number == 0} ? disabled">
-                                    <a class="pageLink" th:href="@{/tenders/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=1)}">&laquo;&nbsp;Prev</a>
+                                    <a class="pageLink"
+                                       th:href="@{/tenders/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=1)}">&laquo;&nbsp;Prev</a>
                                 </li>
                                 <!--<li th:class="${tenders.number == 0} ? disabled">-->
                                 <!--<a class="pageLink" th:href="@{/(pageSize=${selectedPageSize}, page=${tenders.number})}">&larr;</a>-->
                                 <!--</li>-->
                                 <li th:class="${tenders.number == (page - 1)} ? 'active pointer-disabled'"
                                     th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
-                                    <a class="pageLink" th:href="@{/tenders/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=${page})}" th:text="${page}"></a>
+                                    <a class="pageLink"
+                                       th:href="@{/tenders/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=${page})}"
+                                       th:text="${page}"></a>
                                 </li>
                                 <!--<li th:class="${tenders.number + 1 == tenders.totalPages} ? disabled">-->
                                 <!--<a class="pageLink" th:href="@{/(pageSize=${selectedPageSize}, page=${tenders.number + 2})}">&rarr;</a>-->
