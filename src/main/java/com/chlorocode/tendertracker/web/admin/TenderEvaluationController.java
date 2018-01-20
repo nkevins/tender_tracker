@@ -61,6 +61,9 @@ public class TenderEvaluationController {
         if (totalBidAmount > bid.getTender().getEstimatePurchaseValue()) {
             notifications.add("Exceed EPV");
         }
+        if (!bid.getCompany().isActive()) {
+            notifications.add("Company is Blacklisted");
+        }
 
         model.addAttribute("tender", bid.getTender());
         model.addAttribute("bid", bid);
