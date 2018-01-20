@@ -16,6 +16,7 @@ public class ProductClarification {
     @JsonView(DataTablesOutput.View.class)
     private int id;
 
+    @JsonView(DataTablesOutput.View.class)
     @ManyToOne
     private Company company;
 

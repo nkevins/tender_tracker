@@ -155,4 +155,10 @@ public class MarketplaceController {
         redirectAttrs.addFlashAttribute("alert", alert);
         return "redirect:/product/clarification/" + productId;
     }
+
+    @GetMapping("/admin/product/clarification")
+    public String showProductClarificationPage() {
+        return "admin/product/productClarificationView";
+    }
+
 }
