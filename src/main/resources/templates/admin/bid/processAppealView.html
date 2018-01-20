@@ -38,13 +38,16 @@
                                 <h3>Process Appeal</h3>
 
                                 <div class="col-md-12">
-                                <p><b>Appeal Reason:</b> <span th:text="${bid.reasons}"></span></p>
+                                    <p><b>Appeal Reason:</b> <span th:text="${bid.reasons}"></span></p>
+                                    <p><b>Status:</b> <span th:text="${status}">Pending</span></p>
                                 </div>
                                 <input type="hidden" name="id" th:value="${bid.id}" />
-                                <button type="submit" name="action" value="approve" class="btn btn-success"><i class="fa fa-check"></i> Process</button>
-                                <button type="submit" name="action" value="reject" class="btn btn-danger"><i class="fa fa-times"></i> Reject</button>
+                                <th:block th:if="${status} == 'Pending'">
+                                    <button type="submit" name="action" value="approve" class="btn btn-success"><i class="fa fa-check"></i> Process</button>
+                                    <button type="submit" name="action" value="reject" class="btn btn-danger"><i class="fa fa-times"></i> Reject</button>
+                                </th:block>
 
-                                <a class="btn btn-primary" th:href="@{/admin/bid}">Back</a>
+                                <a class="btn btn-primary" th:href="@{/admin/tender/appeal}">Back</a>
                             </form>
                         </div>
                     </div>

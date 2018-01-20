@@ -45,6 +45,7 @@ public class TenderAppeal {
     @JsonView(DataTablesOutput.View.class)
     private String reasons;
 
+    @JsonView(DataTablesOutput.View.class)
     private int status;
 
     public int getId() {

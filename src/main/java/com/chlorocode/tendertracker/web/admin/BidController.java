@@ -48,7 +48,7 @@ public class BidController {
         if (action.equals("reject")) {
              result = tdSvc.processTender(id,usr.getId(),2);
         }else if(action.equals("approve")){
-             result = tdSvc.processTender(id,usr.getId(),2);
+             result = tdSvc.processTender(id,usr.getId(),1);
         }
 
         if(result){
@@ -67,7 +67,18 @@ public class BidController {
     @GetMapping("/admin/tender/appeal/view/{id}")
     public String showTenderAppealUpdatePage(@PathVariable(value = "id") Integer id,ModelMap model) {
         TenderAppeal tenderAppeal = tdSvc.findById(id);
+
+        String status = "";
+        if (tenderAppeal.getStatus() == 0) {
+            status = "Pending";
+        } else if (tenderAppeal.getStatus() == 1) {
+            status = "Approved";
+        } else if (tenderAppeal.getStatus() == 2) {
+            status = "Rejected";
+        }
+
         model.addAttribute("bid", tenderAppeal);
+        model.addAttribute("status", status);
         return "admin/bid/processAppealView";
     }
 

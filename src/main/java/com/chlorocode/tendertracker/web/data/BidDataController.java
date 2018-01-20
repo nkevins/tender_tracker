@@ -52,8 +52,7 @@ public class BidDataController {
         DataTablesOutput<TenderAppeal> bids = dao.findAll(input, null, (root, criteriaQuery, criteriaBuilder) -> {
             return
             criteriaBuilder.and(
-                    criteriaBuilder.equal(root.join("tender").join("company").get("id"), companyId),
-                    criteriaBuilder.equal(root.get("status"), 0)
+                    criteriaBuilder.equal(root.join("tender").join("company").get("id"), companyId)
             );
         });
 

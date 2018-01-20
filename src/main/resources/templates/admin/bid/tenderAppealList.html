@@ -32,7 +32,7 @@
                         <th>Reason</th>
                         <th>Submitted By</th>
                         <th>Submitted Date</th>
-
+                        <th>Status</th>
                         <th></th>
                     </tr>
                     </thead>
@@ -66,6 +66,8 @@
                     'data' : 'company.name'
                 },{
                     'data' : 'createdDate'
+                },{
+                    'data' : 'status'
                 }
                 ],
                 'columnDefs' : [{
@@ -75,6 +77,20 @@
                     }
                 },{
                     'targets' : 5,
+                    'data' : status,
+                    'render' : function (data, type, full, meta) {
+                        if (data == '0') {
+                            return 'Pending';
+                        } else if (data == '1') {
+                            return 'Accepted';
+                        } else if (data == '2') {
+                            return 'Rejected';
+                        } else {
+                            return '';
+                        }
+                    }
+                },{
+                    'targets' : 6,
                     'data' : 'id',
                     'orderable' : false,
                     'render' : function(data,type,full,meta) {
