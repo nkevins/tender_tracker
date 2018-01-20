@@ -3,10 +3,12 @@ package com.chlorocode.tendertracker.web.admin;
 import com.chlorocode.tendertracker.dao.dto.AlertDTO;
 import com.chlorocode.tendertracker.dao.dto.ProductCreateDTO;
 import com.chlorocode.tendertracker.dao.dto.ProductUpdateDTO;
+import com.chlorocode.tendertracker.dao.entity.Company;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
 import com.chlorocode.tendertracker.dao.entity.Product;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.service.CodeValueService;
+import com.chlorocode.tendertracker.service.CompanyService;
 import com.chlorocode.tendertracker.service.ProductClarificationService;
 import com.chlorocode.tendertracker.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,13 +31,15 @@ public class ProductController {
     private ProductService productService;
     private CodeValueService codeValueService;
     private ProductClarificationService prodClarSvc;
+    private CompanyService companyService;
 
     @Autowired
     public ProductController(ProductService productService, CodeValueService codeValueService,
-                             ProductClarificationService prodClarSvc) {
+                             ProductClarificationService prodClarSvc, CompanyService companyService) {
         this.productService = productService;
         this.codeValueService = codeValueService;
         this.prodClarSvc = prodClarSvc;
+        this.companyService = companyService;
     }
 
     @GetMapping("/admin/product")
@@ -44,7 +48,18 @@ public class ProductController {
     }
 
     @GetMapping("/admin/product/create")
-    public String showCreateProductPage(ModelMap model) {
+    public String showCreateProductPage(ModelMap model, RedirectAttributes redirectAttrs) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CurrentUser currentUser = (CurrentUser) authentication.getPrincipal();
+        Company curentCompany = companyService.findById(currentUser.getSelectedCompany().getId());
+
+        // Check if current company is blacklisted
+        if (!curentCompany.isActive()) {
+            AlertDTO alertDTO = new AlertDTO(AlertDTO.AlertType.DANGER, "Your company is blacklisted. You are not allowed to add new product.");
+            redirectAttrs.addFlashAttribute("alert", alertDTO);
+            return "redirect:/admin/product";
+        }
+
         model.addAttribute("product", new ProductCreateDTO());
         model.addAttribute("productCategory", codeValueService.getByType("product_category"));
         return "admin/product/productCreate";
@@ -78,7 +93,7 @@ public class ProductController {
             AlertDTO alertDTO = new AlertDTO(AlertDTO.AlertType.DANGER, exception.getMessage());
             modelMap.addAttribute("alert", alertDTO);
             modelMap.addAttribute("product", form);
-            return "admin/tender/tenderCreate";
+            return "admin/product/create";
         }
 
         return "redirect:/admin/product";
