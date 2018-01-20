@@ -77,7 +77,7 @@ public class MilestoneServiceImpl implements MilestoneService {
                     params.put(TTConstants.PARAM_MILESTONE_DESCRIPTION, milestone.getDescription());
                     params.put(TTConstants.PARAM_MILESTONE_DUE_DATE, milestone.getDueDate().toString());
                     params.put(TTConstants.PARAM_MILESTONE_STATUS, statusDescription);
-                    params.put(TTConstants.PARAM_EMAILS, adminEmails.toArray());
+                    params.put(TTConstants.PARAM_EMAILS, adminEmails.toArray(new String[adminEmails.size()]));
                     notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.milestone_approach_noti, params);
                 }
                 // Update notifyStatus in milestone.

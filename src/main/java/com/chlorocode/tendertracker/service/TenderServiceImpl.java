@@ -355,7 +355,7 @@ public class TenderServiceImpl implements TenderService {
                 if (emails != null && !emails.isEmpty()) {
                     Map<String, Object> params = new HashMap<>();
                     params.put(TTConstants.PARAM_TENDER, tender);
-                    params.put(TTConstants.PARAM_EMAILS, emails.toArray(new User[emails.size()]));
+                    params.put(TTConstants.PARAM_EMAILS, emails.toArray(new String[emails.size()]));
                     params.put(TTConstants.PARAM_CHANGE_TYPE, changeType);
                     notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.tender_bookmark_noti, params);
                 }
@@ -409,7 +409,7 @@ public class TenderServiceImpl implements TenderService {
             params.put(TTConstants.PARAM_TENDER_ID, tenderAward.getTender().getId());
             params.put(TTConstants.PARAM_TENDER_TITLE, tenderAward.getTender().getTitle());
             params.put(TTConstants.PARAM_COMPANY_NAME, tenderAward.getCompany().getName());
-            params.put(TTConstants.PARAM_EMAILS, emails.toArray(new User[emails.size()]));
+            params.put(TTConstants.PARAM_EMAILS, emails.toArray(new String[emails.size()]));
             notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.tender_award_noti, params);
         }
     }
@@ -426,7 +426,7 @@ public class TenderServiceImpl implements TenderService {
                     Map<String, Object> params = new HashMap<>();
                     params.put(TTConstants.PARAM_TENDER_ID, t.getId());
                     params.put(TTConstants.PARAM_TENDER_TITLE, t.getTitle());
-                    params.put(TTConstants.PARAM_EMAILS, adminEmails.toArray(new User[adminEmails.size()]));
+                    params.put(TTConstants.PARAM_EMAILS, adminEmails.toArray(new String[adminEmails.size()]));
                     notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.tender_closed_noti, params);
                 }
                 // Change the status of tender to close tender.

@@ -173,7 +173,7 @@ public class CompanyServiceImpl implements CompanyService {
             if (adminEmails != null && adminEmails.size()> 0) {
                 Map<String, Object> params = new HashMap<>();
                 params.put(TTConstants.PARAM_COMPANY, company);
-                params.put(TTConstants.PARAM_EMAILS, adminEmails.toArray(new User[adminEmails.size()]));
+                params.put(TTConstants.PARAM_EMAILS, adminEmails.toArray(new String[adminEmails.size()]));
                 notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.company_blacklisted_noti, params);
             }
 
