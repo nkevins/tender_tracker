@@ -2,14 +2,19 @@ package com.chlorocode.tendertracker.service;
 
 import com.chlorocode.tendertracker.dao.ClarificationDAO;
 import com.chlorocode.tendertracker.dao.ProductClarificationDAO;
+import com.chlorocode.tendertracker.dao.entity.Clarification;
+import com.chlorocode.tendertracker.dao.entity.CurrentUser;
 import com.chlorocode.tendertracker.dao.entity.Product;
 import com.chlorocode.tendertracker.dao.entity.ProductClarification;
+import com.chlorocode.tendertracker.logging.TTLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -40,5 +45,27 @@ public class ProductClarificationServiceImpl implements ProductClarificationServ
     @Override
     public List<ProductClarification> findClarificationByProdId(int prodId) {
         return dao.findClarificationByProdId(prodId);
+    }
+
+    @Override
+    public ProductClarification UpdateResponse(int id, String response) {
+        try{
+            ProductClarification dbOjb = dao.findOne(id);
+
+            if(dbOjb == null){
+                TTLogger.error(className, "tender clarification not found.ID " + id);
+                return null;
+            }
+
+            CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            dbOjb.setResponse(response);
+            dbOjb.setLastUpdatedDate(new Date());
+            dbOjb.setLastUpdatedBy(usr.getUser().getId());
+            return dao.save(dbOjb);
+
+        }catch(Exception ex){
+            TTLogger.error(className, "error: " , ex);
+        }
+        return null;
     }
 }

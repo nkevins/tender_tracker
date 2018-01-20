@@ -1,18 +1,14 @@
 package com.chlorocode.tendertracker.web;
 
 import com.chlorocode.tendertracker.constants.TTConstants;
-import com.chlorocode.tendertracker.dao.dto.AlertDTO;
-import com.chlorocode.tendertracker.dao.dto.Pager;
-import com.chlorocode.tendertracker.dao.dto.ProductSearchDTO;
-import com.chlorocode.tendertracker.dao.dto.ProductUpdateDTO;
-import com.chlorocode.tendertracker.dao.entity.Company;
-import com.chlorocode.tendertracker.dao.entity.CurrentUser;
-import com.chlorocode.tendertracker.dao.entity.Product;
-import com.chlorocode.tendertracker.dao.entity.ProductClarification;
+import com.chlorocode.tendertracker.dao.dto.*;
+import com.chlorocode.tendertracker.dao.entity.*;
 import com.chlorocode.tendertracker.exception.ApplicationException;
+import com.chlorocode.tendertracker.logging.TTLogger;
 import com.chlorocode.tendertracker.service.CodeValueService;
 import com.chlorocode.tendertracker.service.ProductClarificationService;
 import com.chlorocode.tendertracker.service.ProductService;
+import com.chlorocode.tendertracker.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,12 +31,16 @@ public class MarketplaceController {
     private ProductService productService;
     private ProductClarificationService prdSvc;
     private CodeValueService codeValueService;
+    private UserService userSvc;
+    private String className;
 
     @Autowired
-    public MarketplaceController(ProductService productService, CodeValueService codeValueService,ProductClarificationService prdSvc) {
+    public MarketplaceController(ProductService productService, CodeValueService codeValueService,ProductClarificationService prdSvc,UserService userSvc) {
         this.productService = productService;
         this.codeValueService = codeValueService;
         this.prdSvc = prdSvc;
+        this.userSvc = userSvc;
+        className = this.getClass().getName();
     }
 
     @GetMapping("/marketplace")
@@ -161,4 +161,76 @@ public class MarketplaceController {
         return "admin/product/productClarificationView";
     }
 
+    @GetMapping("/admin/product/clarification/view/{id}")
+    public String showTenderClarificationUpdatePage(@PathVariable(value = "id") Integer id,ModelMap model) {
+        ProductClarification clarfi = prdSvc.findById(id);
+        if(clarfi == null){
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
+                    "unable to find the clarification based on this id " + id);
+            model.addAttribute("alert", alert);
+            return "admin/clarification/tenderClarificationList";
+        }
+
+        //perform validation check, if the tender is not created by this company, stop to view it
+        CurrentUser usr1 = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(clarfi.getProduct().getCompany().getId() != usr1.getSelectedCompany().getId())
+        {
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
+                    "You are not auhtorized to view the tender clarification details");
+            model.addAttribute("alert", alert);
+            return "admin/clarification/tenderClarificationList";
+        }
+        try{
+            User usr = userSvc.findById(clarfi.getCreatedBy());
+            TenderClarificationDTO dto = new TenderClarificationDTO();
+            dto.setId(clarfi.getId());
+            dto.setClarification(clarfi.getDescription());
+            dto.setTitle(clarfi.getProduct().getTitle());
+            dto.setDescription(clarfi.getProduct().getDescription());
+            dto.setSubmittedByCompany(clarfi.getCompany().getName());
+            dto.setSubmittedByName(usr.getName());
+            dto.setSubmittedByContactNo(usr.getContactNo());
+            dto.setSubmittedByEmail(usr.getEmail());
+            dto.setSubmittedDate(clarfi.getCreatedDate());
+            dto.setResponse(clarfi.getResponse());
+            dto.setPrice(clarfi.getProduct().getPrice());
+            List<CodeValue> lstCode = codeValueService.getByType("product_category");
+            for(int i = 0; i < lstCode.size(); i++){
+                CodeValue code = lstCode.get(i);
+                if(code.getCode() == clarfi.getProduct().getCategory()){
+                    dto.setCategory(code.getDescription());
+                    break;
+                }
+            }
+
+            //dto.setTenderType(clarfi.getTender().getTenderType());
+            model.addAttribute("clarificationDto",dto);
+        }catch(Exception ex){
+            TTLogger.error(className,"error: ", ex );
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
+                    "Failed to retrieve tender clarification.Please contact administrator");
+            model.addAttribute("alert", alert);
+            return "admin/clarification/tenderClarificationList";
+        }
+
+
+        return "admin/product/productClarificationFormView";
+    }
+
+    @PostMapping("/admin/product/clarification/update")
+    public String updateTenderClarificationResponse(@Valid TenderClarificationDTO form, ModelMap model){
+
+        ProductClarification clari = prdSvc.UpdateResponse(form.getId(),form.getResponse());
+        if(clari == null){
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
+                    "Failed to update tender clarification response.Please contact administrator");
+            model.addAttribute("alert", alert);
+        }else{
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
+                    "Update tender clarification response successfully");
+            model.addAttribute("alert", alert);
+        }
+
+        return "admin/product/productClarificationView";
+    }
 }

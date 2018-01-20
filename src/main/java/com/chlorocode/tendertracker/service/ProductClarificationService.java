@@ -12,4 +12,5 @@ public interface ProductClarificationService {
     ProductClarification findById(int id);
     ProductClarification Create(ProductClarification product);
     List<ProductClarification> findClarificationByProdId(int prodId);
+    ProductClarification UpdateResponse(int id, String response);
 }
