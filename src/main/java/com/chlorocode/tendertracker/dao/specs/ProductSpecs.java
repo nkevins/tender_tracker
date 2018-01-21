@@ -17,7 +17,10 @@ public class ProductSpecs {
 
     public static Specification<Product> getAll() {
         return ((Root<Product> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) -> {
-            return criteriaBuilder.equal(root.get(Product_.publish), true);
+            return criteriaBuilder.and(
+                    criteriaBuilder.equal(root.get(Product_.publish), true),
+                    criteriaBuilder.equal(root.get("status"), 0)
+            );
         });
     }
 
