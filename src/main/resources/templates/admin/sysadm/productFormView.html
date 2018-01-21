@@ -1,0 +1,71 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="admin/layout">
+<head>
+    <title>Tender Tracker</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <!-- Content Header (Page header) -->
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+           Product Information
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+        <div class="box">
+            <div class="box-body">
+                <form class="form-horizontal" th:action="@{/sysadmin/product/blacklist}" method="POST">
+                    <h4>Product Information</h4>
+                    <hr />
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Product Title</label>
+                                <div class="col-sm-10">
+                                    <p th:text="${product.title}"></p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Product Price</label>
+                                <div class="col-sm-10">
+                                    <p th:text="${product.price}"></p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Product Description</label>
+                                <div class="col-sm-10">
+                                    <p th:text="${product.description}"></p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Product Category</label>
+                                <div class="col-sm-10">
+                                    <p th:text="${product.categoryDescription}"></p>
+                                </div>
+                            </div>
+
+                            <div class="box-body">
+                                <input type="hidden" name="id" th:value="${product.productCode}" />
+                                <button type="submit" class="btn btn-danger" value="">Blacklist</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- /.content -->
+</div>
+</body>
+</html>

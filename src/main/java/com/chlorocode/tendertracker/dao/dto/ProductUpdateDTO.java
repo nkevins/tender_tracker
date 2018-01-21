@@ -31,6 +31,15 @@ public class ProductUpdateDTO {
 
     private int companyId;
 
+    private String CategoryDescription;
+
+    public String getCategoryDescription() {
+        return CategoryDescription;
+    }
+
+    public void setCategoryDescription(String categoryDescription) {
+        CategoryDescription = categoryDescription;
+    }
 
     public int getCompanyId() {
         return companyId;

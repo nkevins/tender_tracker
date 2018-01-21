@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -72,6 +73,16 @@ public class ProductServiceImpl implements ProductService {
         }
 
         return productPagingDAO.findAll(specification, pageable);
+    }
+
+    @Override
+    public Product blacklistProduct(int productCode) {
+        Product p = productDAO.findOne(productCode);
+        p.setStatus(1);
+        p.setLastUpdatedDate(new Date());
+        CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        p.setLastUpdatedBy(usr.getId());
+        return productDAO.save(p);
     }
 
     @Override

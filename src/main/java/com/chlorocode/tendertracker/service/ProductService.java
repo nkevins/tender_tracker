@@ -11,4 +11,5 @@ public interface ProductService {
     Page<Product> listAllByPage(Pageable pageable);
     Product findById(int id);
     Page<Product> searchProduct(ProductSearchDTO productSearchDTO, Pageable pageable);
+    Product blacklistProduct(int productCode);
 }
