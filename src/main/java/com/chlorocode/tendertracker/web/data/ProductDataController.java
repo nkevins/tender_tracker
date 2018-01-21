@@ -3,6 +3,7 @@ package com.chlorocode.tendertracker.web.data;
 import com.chlorocode.tendertracker.dao.ProductDAO;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
 import com.chlorocode.tendertracker.dao.entity.Product;
+import com.chlorocode.tendertracker.dao.entity.ProductClarification;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -35,5 +36,14 @@ public class ProductDataController {
         });
 
         return products;
+    }
+
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/sysadmin/data/product", method = RequestMethod.GET)
+    public DataTablesOutput<Product> getAllProductClarification(@Valid DataTablesInput input) {
+
+        return productDAO.findAll(input, null, (root, criteriaQuery, criteriaBuilder) -> {
+            return criteriaBuilder.equal(root.get("status"), 0);
+        });
     }
 }

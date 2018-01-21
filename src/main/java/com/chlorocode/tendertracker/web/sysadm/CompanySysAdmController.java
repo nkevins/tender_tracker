@@ -159,4 +159,9 @@ public class CompanySysAdmController {
 
         return "redirect:/sysadm/companyRegistration";
     }
+
+    @GetMapping("/sysadm/product")
+    public String showAllProduct() {
+        return "admin/sysadm/productList";
+    }
 }

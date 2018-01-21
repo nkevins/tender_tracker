@@ -29,7 +29,17 @@ public class Product {
 
     private int type;
     private int category;
+    private int status;
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    @JsonView(DataTablesOutput.View.class)
     @ManyToOne
     private Company company;
 
