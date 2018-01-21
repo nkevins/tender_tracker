@@ -212,11 +212,11 @@ public class CompanySysAdmController {
         Product clari = productService.blacklistProduct(id);
         if(clari == null){
             AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
-                    "Failed to update tender clarification response.Please contact administrator");
+                    "Failed to blacklist product. Please contact administrator");
             model.addAttribute("alert", alert);
         }else{
             AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
-                    "Update tender clarification response successfully");
+                    "The product is successfully blacklisted");
             model.addAttribute("alert", alert);
         }
 
