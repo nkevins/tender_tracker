@@ -92,7 +92,7 @@
                                     <div class="input-group-addon">
                                         <i class="fa fa-dollar"></i>
                                     </div>
-                                    <input type="number" class="form-control" id="epv" th:field="*{estimatePurchaseValue}" required="required" />
+                                    <input type="number" class="form-control" id="epv" name="estimatePurchaseValue" th:value="${#numbers.formatDecimal(tender.estimatePurchaseValue, 0, 2)}" required="required" />
                                 </div>
                             </div>
                         </div>
@@ -214,21 +214,21 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <form th:action="@{/admin/tender/addTenderItem}" method="POST">
+                                    <form th:action="@{/admin/tender/addTenderItem}" method="POST" id="tenderItemAdd">
                                         <td>
-                                            <select required="required" name="uom">
+                                            <select required="required" name="uom" id="uomItemAdd">
                                                 <option th:each="u : ${uom}" th:value="${u.code}" th:text="${u.description}"></option>
                                             </select>
                                         </td>
                                         <td>
-                                            <input type="number" name="quantity" required="required" />
+                                            <input type="number" name="quantity" required="required" id="quantityAdd" />
                                         </td>
                                         <td>
-                                            <input type="text" name="description" required="required" />
+                                            <input type="text" name="description" required="required" id="descriptionAdd" />
                                         </td>
                                         <td>
-                                            <input type="hidden" name="tenderId" th:value="${tender.tenderId}" />
-                                            <button type="submit" class="btn btn-primary"><i class="fa fa-plus"></i></button>
+                                            <input type="hidden" name="tenderId" th:value="${tender.tenderId}" id="itemAddTenderId" />
+                                            <button type="button" class="btn btn-primary" onclick="addTenderItem()"><i class="fa fa-plus"></i></button>
                                         </td>
                                     </form>
                                 </tr>
@@ -352,6 +352,25 @@
             var form = $('<form action="' + url + '" method="post">' +
                 '<input type="text" name="tenderId" value="' + tenderId + '" />' +
                 '<input type="text" name="tenderItemId" value="' + tenderItemId + '" />' +
+                '<input type="text" name="uom" value="' + uom + '" />' +
+                '<input type="text" name="quantity" value="' + quantity + '" />' +
+                '<input type="text" name="description" value="' + description + '" />' +
+                '<input type="text" name="_csrf" value="' + csrf + '" />' +
+                '</form>');
+            $('body').append(form);
+            form.submit();
+        }
+
+        function addTenderItem() {
+            var tenderId = $('#itemAddTenderId').val();
+            var csrf = $("meta[name='_csrf']").attr("content");
+            var uom = $('#uomItemAdd').val();
+            var quantity = $('#quantityAdd').val();
+            var description = $('#descriptionAdd').val();
+
+            var url = '/admin/tender/addTenderItem';
+            var form = $('<form action="' + url + '" method="post">' +
+                '<input type="text" name="tenderId" value="' + tenderId + '" />' +
                 '<input type="text" name="uom" value="' + uom + '" />' +
                 '<input type="text" name="quantity" value="' + quantity + '" />' +
                 '<input type="text" name="description" value="' + description + '" />' +
