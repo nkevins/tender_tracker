@@ -105,6 +105,16 @@
                                 '    <li><a href="/admin/tender/' + data + '/setmilestone">Milestone</a></li>\n' +
                                 '</ul>\n' +
                                 '</div>';
+                        } else if (full.status == 2) {
+                            return '<div class="btn-group">\n' +
+                                '<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">\n' +
+                                'Action <span class="caret"></span>\n' +
+                                '</button>\n' +
+                                '<ul class="dropdown-menu">\n' +
+                                '    <li><a href="/admin/tender/' + data + '/setcriteria">Evaluation Criteria</a></li>\n' +
+                                '    <li><a href="/admin/tender/' + data + '/setmilestone">Milestone</a></li>\n' +
+                                '</ul>\n' +
+                                '</div>';
                         } else {
                             return '<div class="btn-group">\n' +
                                 '<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">\n' +

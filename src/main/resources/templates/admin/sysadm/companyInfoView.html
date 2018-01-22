@@ -13,7 +13,7 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1>
-            Company Registration
+            Approved / Rejected Company
         </h1>
     </section>
 
@@ -29,6 +29,8 @@
                             <th>ID</th>
                             <th>Name</th>
                             <th>Date Applied</th>
+                            <th>Registration Status</th>
+                            <th>Company Status</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -64,6 +66,30 @@
                     }
                 },{
                     'targets' : 3,
+                    'data' : 'status',
+                    'render' : function(data, type, full, meta) {
+                        if (data == 0) {
+                            return 'Pending Approval';
+                        } else if (data == 1) {
+                            return 'Approved';
+                        } else if (data == 2) {
+                            return 'Rejected';
+                        } else {
+                            return '';
+                        }
+                    }
+                },{
+                    'targets' : 4,
+                    'data' : 'isActive',
+                    'render' : function(data, type, full, meta) {
+                        if (data) {
+                            return 'Active';
+                        } else {
+                            return 'Blacklisted';
+                        }
+                    }
+                },{
+                    'targets' : 5,
                     'data' : 'id',
                     'orderable' : false,
                     'render' : function(data,type,full,meta) {

@@ -34,6 +34,7 @@ public class Company {
     private String province;
 
     @Column(name = "is_active")
+    @JsonView(DataTablesOutput.View.class)
     private boolean isActive;
 
     public boolean isActive() {
@@ -49,6 +50,8 @@ public class Company {
     private Country country;
 
     private int areaOfBusiness;
+
+    @JsonView(DataTablesOutput.View.class)
     private int status;
     private int createdBy;
 
