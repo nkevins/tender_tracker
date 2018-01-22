@@ -235,12 +235,14 @@
     <script th:src="@{/assets/admin/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js}"></script>
     <script type="text/javascript">
         $('#openDate').datetimepicker({
+            minDate: moment(),
             format: 'DD/MM/YYYY HH:mm'
         }).on('dp.change', function(e){
             $('#openDate').attr("value", e.date.format('DD/MM/YYYY HH:mm'));
         });
 
         $('#closedDate').datetimepicker({
+            minDate: moment(),
             format: 'DD/MM/YYYY HH:mm'
         }).on('dp.change', function(e){
             $('#closedDate').attr("value", e.date.format('DD/MM/YYYY HH:mm'));
