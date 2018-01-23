@@ -356,7 +356,14 @@ public class TenderController {
         tenderItem.setLastUpdatedDate(new Date());
         tenderItem.setTender(tender);
 
-        tenderService.addTenderItem(tenderItem);
+        try {
+            tenderService.addTenderItem(tenderItem);
+        } catch (ApplicationException ex) {
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
+                    ex.getMessage());
+            redirectAttrs.addFlashAttribute("alert", alert);
+            return "redirect:/admin/tender/" + tender.getId() + "/update";
+        }
 
         AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS, "Tender Item Added");
         redirectAttrs.addFlashAttribute("alert", alert);
@@ -381,7 +388,14 @@ public class TenderController {
         tenderItem.setLastUpdatedBy(usr.getId());
         tenderItem.setLastUpdatedDate(new Date());
 
-        tenderService.updateTenderItem(tenderItem);
+        try {
+            tenderService.updateTenderItem(tenderItem);
+        } catch (ApplicationException ex) {
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
+                    ex.getMessage());
+            redirectAttrs.addFlashAttribute("alert", alert);
+            return "redirect:/admin/tender/" + tenderItem.getTender().getId() + "/update";
+        }
 
         AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS, "Tender Item Updated");
         redirectAttrs.addFlashAttribute("alert", alert);

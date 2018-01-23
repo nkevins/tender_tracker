@@ -8,12 +8,10 @@ import com.chlorocode.tendertracker.dao.specs.TenderSpecs;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.service.notification.NotificationService;
 import com.chlorocode.tendertracker.service.notification.NotificationServiceImpl;
-import com.chlorocode.tendertracker.utils.DateUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -96,6 +94,12 @@ public class TenderServiceImpl implements TenderService {
             throw new ApplicationException("For Closed Tender, please provide at least one company to be invited");
         }
 
+        for (TenderItem ti : t.getItems()) {
+            if (ti.getQuantity() < 0) {
+                throw new ApplicationException("Tender Item Quantity must be greater than 0");
+            }
+        }
+
         // Set tender status to OPEN
         t.setStatus(1);
 
@@ -174,11 +178,19 @@ public class TenderServiceImpl implements TenderService {
 
     @Override
     public TenderItem addTenderItem(TenderItem tenderItem) {
+        if (tenderItem.getQuantity() < 0) {
+            throw new ApplicationException("Tender Item Quantity must be greater than 0");
+        }
+
         return tenderItemDAO.save(tenderItem);
     }
 
     @Override
     public TenderItem updateTenderItem(TenderItem tenderItem) {
+        if (tenderItem.getQuantity() < 0) {
+            throw new ApplicationException("Tender Item Quantity must be greater than 0");
+        }
+
         tenderItem = tenderItemDAO.save(tenderItem);
         sendBookmarkNoti(tenderItem.getTender(), TTConstants.UPDATE_TENDER);
 
