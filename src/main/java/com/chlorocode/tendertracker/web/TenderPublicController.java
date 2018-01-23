@@ -50,6 +50,14 @@ public class TenderPublicController {
         this.corrigendumService = corrigendumService;
     }
 
+    /**
+     * This method use for showing tender details screen.
+     *
+     * @param id unique identifier of the tender
+     * @param model ModelMap
+     * @param request HttpServletRequest
+     * @return String
+     */
     @GetMapping("/tender/{id}")
     public String showTenderDetails(@PathVariable(value="id") Integer id, ModelMap model, HttpServletRequest request) {
         Tender tender = tenderService.findById(id);
@@ -117,6 +125,15 @@ public class TenderPublicController {
         return "tenderDetails";
     }
 
+    /**
+     * This method use for showing tender response screen.
+     *
+     * @param id unique identifier of the tender
+     * @param request HttpServletRequest
+     * @param response HttpServletResponse
+     * @param model ModelMap
+     * @return String
+     */
     @GetMapping("/tender/{id}/respond")
     public String showTenderResponsePage(@PathVariable(value = "id") Integer id, HttpServletRequest request,
                                          HttpServletResponse response, ModelMap model) {
@@ -154,6 +171,18 @@ public class TenderPublicController {
         return "tenderResponse";
     }
 
+    /**
+     * This method use to save the tender response.
+     * This method will return the name of next screen or null.
+     *
+     * @param data input data of tender response
+     * @param request HttpServletRequest
+     * @param resp HttpServletResponse
+     * @param model ModelMap
+     * @return String
+     * @throws IOException
+     * @see TenderResponseSubmitDTO
+     */
     @PostMapping("/tender/respond")
     public String saveTenderResponse(@ModelAttribute("data") TenderResponseSubmitDTO data, HttpServletRequest request,
                                      HttpServletResponse resp, ModelMap model) throws IOException {
@@ -215,6 +244,12 @@ public class TenderPublicController {
         }
     }
 
+    /**
+     * This method is use for bookmark tender.
+     *
+     * @param tenderId unique identifier of tender.
+     * @return String
+     */
     @PostMapping("/tender/bookmark")
     public String bookmarkTender(@RequestParam("tenderId") int tenderId) {
         CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -225,6 +260,12 @@ public class TenderPublicController {
         return "redirect:/tender/" + tenderId;
     }
 
+    /**
+     * This method use for remove bookmark from tender.
+     *
+     * @param tenderId unique identifier of tender
+     * @return String
+     */
     @PostMapping("/tender/removeBookmark")
     public String removeTenderBookmark(@RequestParam("tenderId") int tenderId) {
         CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -234,6 +275,12 @@ public class TenderPublicController {
         return "redirect:/tender/" + tenderId;
     }
 
+    /**
+     * This method use to show subscribe tender category notification screen.
+     *
+     * @param model ModelMap
+     * @return String
+     */
     @GetMapping("/tenderNotification")
     public String showSubscribeTenderCategoryNotification(ModelMap model) {
         CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -249,6 +296,13 @@ public class TenderPublicController {
         return "tenderNotification";
     }
 
+    /**
+     * This method is use to save tender category subscription.
+     *
+     * @param categories list of categories
+     * @param redirectAttrs RedirectAttributes
+     * @return String
+     */
     @PostMapping("/tenderNotification")
     public String saveTenderCategorySubscription(@RequestParam("categories") List<Integer> categories, RedirectAttributes redirectAttrs) {
         CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -266,6 +320,13 @@ public class TenderPublicController {
         return "redirect:/tenderNotification";
     }
 
+    /**
+     * This method use to get TenderSearchDTO.
+     *
+     * @param request HttpServletRequest
+     * @return TenderSearchDTO
+     * @see TenderSearchDTO
+     */
     @ModelAttribute("searchCriteria")
     public TenderSearchDTO getTenderSearchDTO(HttpServletRequest request)
     {
@@ -273,11 +334,11 @@ public class TenderPublicController {
     }
 
     /**
-     * Handles all requests
+     * This method use to show valid tenders according to user permission.
      *
      * @param pageSize
      * @param page
-     * @return model and view
+     * @return String
      */
     @GetMapping("/tenders")
     public String showTenders(@RequestParam("pageSize") Optional<Integer> pageSize
@@ -330,11 +391,11 @@ public class TenderPublicController {
     }
 
     /**
-     * Handles all requests
+     * This method use to show all external tenders.
      *
      * @param pageSize
      * @param page
-     * @return model and view
+     * @return String
      */
     @GetMapping("/external_tenders")
     public String showExternalTenders(@RequestParam("pageSize") Optional<Integer> pageSize
@@ -388,6 +449,12 @@ public class TenderPublicController {
         return "external_tenders";
     }
 
+    /**
+     * This method use to redirect to GeBiz.
+     *
+     * @param id unique identifier of tender
+     * @return String
+     */
     @GetMapping("/external_tenders/GeBiz/{id}")
     public String redirectToGeBiz(@PathVariable(value = "id") Integer id) {
         ExternalTender externalTender = externalTenderService.findByID(id);
@@ -411,6 +478,13 @@ public class TenderPublicController {
         return "redirect:" + externalTender.getTenderURL();
     }
 
+    /**
+     * This method use to get sort pattern of the tenders screen and external tender screen.
+     *
+     * @param searchDTO TenderSearchDTO
+     * @param isExternal to check external tender or not
+     * @return Sort
+     */
     private Sort getSortPattern(TenderSearchDTO searchDTO, boolean isExternal) {
         Sort.Direction direction = Sort.Direction.ASC;
         // Set order direction.
