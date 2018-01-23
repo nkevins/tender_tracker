@@ -26,6 +26,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
 
+/**
+ * Controller for tender page in public portal.
+ */
 @Controller
 public class TenderPublicController {
 
@@ -37,6 +40,17 @@ public class TenderPublicController {
     private ClarificationService clariSvc;
     private CorrigendumService corrigendumService;
 
+    /**
+     * Constructor.
+     *
+     * @param tenderService TenderService
+     * @param externalTenderService ExternalTenderService
+     * @param bidService BidService
+     * @param codeValueService CodeValueService
+     * @param s3Wrapper s3Wrapper
+     * @param clariSvc ClarificationService
+     * @param corrigendumService CorrigendumService
+     */
     @Autowired
     public TenderPublicController(TenderService tenderService, ExternalTenderService externalTenderService
                 , BidService bidService, CodeValueService codeValueService, S3Wrapper s3Wrapper
@@ -51,7 +65,7 @@ public class TenderPublicController {
     }
 
     /**
-     * This method use for showing tender details screen.
+     * This method is used for showing tender details screen.
      *
      * @param id unique identifier of the tender
      * @param model ModelMap
@@ -126,7 +140,7 @@ public class TenderPublicController {
     }
 
     /**
-     * This method use for showing tender response screen.
+     * This method is used for showing tender response screen.
      *
      * @param id unique identifier of the tender
      * @param request HttpServletRequest
@@ -172,15 +186,17 @@ public class TenderPublicController {
     }
 
     /**
-     * This method use to save the tender response.
-     * This method will return the name of next screen or null.
+     * This method is used to save the tender response.
+     * This method can handle request both from normal HTTP and AJAX.
+     * This method will return the name of next screen or null for AJAX response.
+     * For AJAX response, this method will return the HTTP status and any error in the HTTP body.
      *
      * @param data input data of tender response
      * @param request HttpServletRequest
      * @param resp HttpServletResponse
      * @param model ModelMap
      * @return String
-     * @throws IOException
+     * @throws IOException if has exception when putting error message in AJAX response
      * @see TenderResponseSubmitDTO
      */
     @PostMapping("/tender/respond")
@@ -245,7 +261,7 @@ public class TenderPublicController {
     }
 
     /**
-     * This method is use for bookmark tender.
+     * This method is used for bookmark tender.
      *
      * @param tenderId unique identifier of tender.
      * @return String
@@ -261,7 +277,7 @@ public class TenderPublicController {
     }
 
     /**
-     * This method use for remove bookmark from tender.
+     * This method is used for remove bookmark from tender.
      *
      * @param tenderId unique identifier of tender
      * @return String
@@ -276,7 +292,7 @@ public class TenderPublicController {
     }
 
     /**
-     * This method use to show subscribe tender category notification screen.
+     * This method is used to show subscribe tender category notification screen.
      *
      * @param model ModelMap
      * @return String
@@ -297,7 +313,7 @@ public class TenderPublicController {
     }
 
     /**
-     * This method is use to save tender category subscription.
+     * This method is used to save tender category subscription.
      *
      * @param categories list of categories
      * @param redirectAttrs RedirectAttributes
@@ -321,7 +337,7 @@ public class TenderPublicController {
     }
 
     /**
-     * This method use to get TenderSearchDTO.
+     * This method is used to get TenderSearchDTO.
      *
      * @param request HttpServletRequest
      * @return TenderSearchDTO
@@ -334,10 +350,19 @@ public class TenderPublicController {
     }
 
     /**
-     * This method use to show valid tenders according to user permission.
+     * This method is used to show valid tenders according to user permission.
      *
-     * @param pageSize
-     * @param page
+     * @param pageSize size per page
+     * @param page page number
+     * @param searchText search text
+     * @param title search title
+     * @param companyName company name search keywords
+     * @param tenderCategory tender category search input
+     * @param status status search input
+     * @param refNo tender reference no search input
+     * @param orderBy order by sorting input
+     * @param orderMode order mode asc / desc
+     * @param model ModelMap
      * @return String
      */
     @GetMapping("/tenders")
@@ -391,10 +416,19 @@ public class TenderPublicController {
     }
 
     /**
-     * This method use to show all external tenders.
+     * This method is used to show all external tenders.
      *
-     * @param pageSize
-     * @param page
+     * @param pageSize size per page
+     * @param page page number
+     * @param searchText search text
+     * @param title tender title search input
+     * @param companyName company name search input
+     * @param status tender status search input
+     * @param tenderSource tender source search input
+     * @param refNo tender reference no search input
+     * @param orderBy order by sorting input
+     * @param orderMode order mode asc / desc
+     * @param model ModelMap
      * @return String
      */
     @GetMapping("/external_tenders")
@@ -450,7 +484,8 @@ public class TenderPublicController {
     }
 
     /**
-     * This method use to redirect to GeBiz.
+     * This method use for custom redirect to GeBiz.
+     * This method will verify if the crawled URL is valid. If not, it will redirect to the alternate GeBiz URL.
      *
      * @param id unique identifier of tender
      * @return String
@@ -458,8 +493,8 @@ public class TenderPublicController {
     @GetMapping("/external_tenders/GeBiz/{id}")
     public String redirectToGeBiz(@PathVariable(value = "id") Integer id) {
         ExternalTender externalTender = externalTenderService.findByID(id);
-        String content = null;
-        URLConnection connection = null;
+        String content;
+        URLConnection connection;
         try {
             connection =  new URL("https://www.gebiz.gov.sg/ptn/opportunity/opportunityDetails.xhtml?code=" + externalTender.getReferenceNo()).openConnection();
             connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
