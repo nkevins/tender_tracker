@@ -108,4 +108,9 @@ public class ExternalTenderServiceImpl implements ExternalTenderService {
         }
         return externalTenderPagingDAO.findAll(searchSpec, pageable);
     }
+
+    @Override
+    public ExternalTender findByID(int id) {
+        return externalTenderDAO.findOne((long)id);
+    }
 }

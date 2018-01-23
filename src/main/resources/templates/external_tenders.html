@@ -156,7 +156,8 @@
                             <div class="row">
                                 <div class="col-md-11">
                                     <h3 class="no-margin-top">
-                                        <a th:href="${t.tenderURL}" class="" th:text="${t.title}" target="_blank">Lorem ipsum dolor sit amet</a>
+                                        <a th:href="${t.tenderURL}" class="" th:text="${t.title}" target="_blank" th:if="${t.tenderSource != '1'}">Lorem ipsum dolor sit amet</a>
+                                        <a th:href="@{/external_tenders/GeBiz/} + ${t.id}" class="" th:text="${t.title}" target="_blank" th:if="${t.tenderSource == '1'}">Lorem ipsum dolor sit amet</a>
                                     </h3>
                                     <h5>
                                         <span class="color-black" th:text="${t.companyName}">Ngee Ann Polytechnic</span>

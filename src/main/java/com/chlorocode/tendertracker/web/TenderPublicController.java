@@ -22,10 +22,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.*;
 
 @Controller
 public class TenderPublicController {
@@ -387,6 +386,29 @@ public class TenderPublicController {
             model.addAttribute("noTenderFound", false);
         }
         return "external_tenders";
+    }
+
+    @GetMapping("/external_tenders/GeBiz/{id}")
+    public String redirectToGeBiz(@PathVariable(value = "id") Integer id) {
+        ExternalTender externalTender = externalTenderService.findByID(id);
+        String content = null;
+        URLConnection connection = null;
+        try {
+            connection =  new URL("https://www.gebiz.gov.sg/ptn/opportunity/opportunityDetails.xhtml?code=" + externalTender.getReferenceNo()).openConnection();
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+            Scanner scanner = new Scanner(connection.getInputStream());
+            scanner.useDelimiter("\\Z");
+            content = scanner.next();
+            if (content.contains("No opportunity found for your search") || content.contains("302")) {
+                return "redirect:https://www.gebiz.gov.sg/ptn/opportunityportal/opportunityDetails.xhtml?code=" + externalTender.getReferenceNo();
+            } else {
+                return "redirect:https://www.gebiz.gov.sg/ptn/opportunity/opportunityDetails.xhtml?code=" + externalTender.getReferenceNo();
+            }
+        }catch ( Exception ex ) {
+            TTLogger.error(this.getClass().getName(),"Error when redirecting to GeBiz", ex);
+        }
+
+        return "redirect:" + externalTender.getTenderURL();
     }
 
     private Sort getSortPattern(TenderSearchDTO searchDTO, boolean isExternal) {
