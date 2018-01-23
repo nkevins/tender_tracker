@@ -9,7 +9,6 @@ public class CompanyRegistrationDTO {
     @NotBlank(message = "Name is required")
     private String name;
 
-    @NotBlank(message = "GST Registration No is required")
     private String gstRegNo;
 
     @NotBlank(message = "UEN is required")

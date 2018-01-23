@@ -5,9 +5,11 @@ import com.chlorocode.tendertracker.dao.dto.CompanyRegistrationDTO;
 import com.chlorocode.tendertracker.dao.entity.Company;
 import com.chlorocode.tendertracker.dao.entity.Country;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
+import com.chlorocode.tendertracker.dao.entity.UenEntity;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.service.CodeValueService;
 import com.chlorocode.tendertracker.service.CompanyService;
+import com.chlorocode.tendertracker.service.UenEntityService;
 import com.chlorocode.tendertracker.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -30,12 +32,14 @@ public class CompanyController {
     private CodeValueService codeValueService;
     private CompanyService companyService;
     private UserService userService;
+    private UenEntityService uenEntService;
 
     @Autowired
-    public CompanyController(CodeValueService codeValueService, CompanyService companyService, UserService userService) {
+    public CompanyController(CodeValueService codeValueService, CompanyService companyService, UserService userService, UenEntityService uenEntService) {
         this.codeValueService = codeValueService;
         this.companyService = companyService;
         this.userService = userService;
+        this.uenEntService = uenEntService;
     }
 
     @GetMapping("registerCompany")
@@ -100,6 +104,17 @@ public class CompanyController {
         CurrentUser usr = (CurrentUser) auth.getPrincipal();
         reg.setCreatedBy(usr.getUser().getId());
         reg.setLastUpdatedBy(usr.getUser().getId());
+
+        UenEntity uenEnt = uenEntService.findByUen(form.getUen());
+        if (uenEnt == null) {
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER, "Invalid UEN");
+            model.addAttribute("alert", alert);
+            model.addAttribute("registration", form);
+            model.addAttribute("areaOfBusiness", codeValueService.getByType("area_of_business"));
+            model.addAttribute("companyType", codeValueService.getByType("company_type"));
+            model.addAttribute("countries", codeValueService.getAllCountries());
+            return "registerCompany";
+        }
 
         try {
             companyService.registerCompany(reg);

@@ -112,8 +112,12 @@
 <div layout:fragment="content">
     <div class="row">
         <div class="col-md-12">
-
             <br />
+
+            <th:block th:if="${alert != null}">
+                <div th:replace="fragments/alert :: alert (type=${alert.getType()}, messages=${alert.messages})">Alert</div>
+            </th:block>
+
             <div th:if="${noTenderFound}" class="alert alert-info">
                 <strong>No tender found.</strong>
             </div>
