@@ -12,6 +12,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Service implementation of CodeValueService.
+ */
 @Service
 public class CodeValueServiceImpl implements CodeValueService {
 

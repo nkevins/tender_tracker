@@ -1,10 +1,9 @@
 package com.chlorocode.tendertracker.service;
 
 import com.chlorocode.tendertracker.constants.TTConstants;
-import com.chlorocode.tendertracker.dao.ClarificationDAO;
 import com.chlorocode.tendertracker.dao.TenderAppealDAO;
 import com.chlorocode.tendertracker.dao.entity.TenderAppeal;
-import com.chlorocode.tendertracker.dao.entity.User;
+import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.logging.TTLogger;
 import com.chlorocode.tendertracker.service.notification.NotificationService;
 import com.chlorocode.tendertracker.service.notification.NotificationServiceImpl;
@@ -14,29 +13,35 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 /**
- * Created by andy on 14/1/2018.
+ * Service implementation of TenderAppeal service.
  */
 @Service
 public class TenderAppealServiceImpl implements TenderAppealService {
 
     private TenderAppealDAO dao;
     private NotificationService notificationService;
-    private UserService userService;
     private UserRoleService userRoleService;
 
     private String className;
+
     @Autowired
-    public TenderAppealServiceImpl(TenderAppealDAO dao, NotificationService notificationService, UserService userService, UserRoleService userRoleService){
+    public TenderAppealServiceImpl(TenderAppealDAO dao, NotificationService notificationService, UserRoleService userRoleService) {
         this.className = this.getClass().getName();
         this.dao = dao;
         this.notificationService = notificationService;
-        this.userService = userService;
         this.userRoleService = userRoleService;
     }
 
     @Override
-    public TenderAppeal Create(TenderAppeal appeal) {
-        try{
+    public TenderAppeal create(TenderAppeal appeal) {
+        // Validate duplicate submission
+        List<TenderAppeal> existingAppeals = dao.findTenderAppealsBy(appeal.getTender().getId(), appeal.getCompany().getId());
+        if (existingAppeals != null && existingAppeals.size() > 0) {
+            TTLogger.error(className, "Duplicate appeal detected");
+            throw new ApplicationException("Not allowed to submit duplicate appeal.");
+        }
+
+        try {
             appeal = dao.saveAndFlush(appeal);
             // Send the email notification to party who submit the tender appeal
             if (appeal != null) {
@@ -51,7 +56,7 @@ public class TenderAppealServiceImpl implements TenderAppealService {
                 }
             }
             return appeal;
-        }catch (Exception ex){
+        } catch (Exception ex) {
             TTLogger.error(className, "error: " , ex);
         }
 
@@ -69,26 +74,26 @@ public class TenderAppealServiceImpl implements TenderAppealService {
     }
 
     @Override
-    public boolean processTender(int id, int rejectedBy, int status) {
-        TenderAppeal tender = dao.findOne(id);
-        try{
-            tender.setStatus(status);
-            tender.setLastUpdatedBy(rejectedBy);
-            tender.setLastUpdatedDate(new Date());
-            dao.saveAndFlush(tender);
+    public boolean processTenderAppeal(int id, int rejectedBy, int status) {
+        TenderAppeal appeal = dao.findOne(id);
+        try {
+            appeal.setStatus(status);
+            appeal.setLastUpdatedBy(rejectedBy);
+            appeal.setLastUpdatedDate(new Date());
+            dao.saveAndFlush(appeal);
             //Send email notification to appealer. if status is 1, means the tender appeal accepted and process by tenderer preparer, if it is 2, means it is rejected by preparer
-            Set<String> adminEmails = userRoleService.findCompanyAdminEmails(tender.getCompany().getId());
+            Set<String> adminEmails = userRoleService.findCompanyAdminEmails(appeal.getCompany().getId());
             if (adminEmails != null && adminEmails.size()> 0) {
                 Map<String, Object> params = new HashMap<>();
-                params.put(TTConstants.PARAM_TENDER_ID, tender.getTender().getId());
-                params.put(TTConstants.PARAM_TENDER_TITLE, tender.getTender().getTitle());
-                params.put(TTConstants.PARAM_APPEAL_COMPANY, tender.getCompany().getName());
-                params.put(TTConstants.PARAM_APPEAL_ACTION, tender.getStatus());
+                params.put(TTConstants.PARAM_TENDER_ID, appeal.getTender().getId());
+                params.put(TTConstants.PARAM_TENDER_TITLE, appeal.getTender().getTitle());
+                params.put(TTConstants.PARAM_APPEAL_COMPANY, appeal.getCompany().getName());
+                params.put(TTConstants.PARAM_APPEAL_ACTION, appeal.getStatus());
                 params.put(TTConstants.PARAM_EMAILS, adminEmails.toArray(new String[adminEmails.size()]));
                 notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.appeal_update_noti, params);
             }
             return true;
-        }catch (Exception ex){
+        } catch (Exception ex) {
             TTLogger.error(className, "error: " , ex);
         }
 
