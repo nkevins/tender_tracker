@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.*;
 
+/**
+ * Implementation of CompanyService.
+ */
 @Service
 public class CompanyServiceImpl implements CompanyService {
 
@@ -24,6 +27,15 @@ public class CompanyServiceImpl implements CompanyService {
     private UserRoleService userRoleService;
     private NotificationService notificationService;
 
+    /**
+     * Constructor.
+     *
+     * @param companyDAO CompanyDAO
+     * @param codeValueService CodeValueService
+     * @param userService UserService
+     * @param userRoleService UserRoleService
+     * @param notificationService NotificationService
+     */
     public CompanyServiceImpl(CompanyDAO companyDAO,
                               CodeValueService codeValueService, UserService userService
                                 , UserRoleService userRoleService, NotificationService notificationService) {

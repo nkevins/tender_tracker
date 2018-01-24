@@ -20,6 +20,11 @@ public class CodeValueServiceImpl implements CodeValueService {
 
     private CodeValueDAO codeValueDAO;
 
+    /**
+     * Constructor.
+     *
+     * @param codeValueDAO CodeValueDAO
+     */
     @Autowired
     public CodeValueServiceImpl(CodeValueDAO codeValueDAO) {
         this.codeValueDAO = codeValueDAO;

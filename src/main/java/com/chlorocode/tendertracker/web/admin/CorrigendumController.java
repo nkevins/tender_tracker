@@ -25,6 +25,9 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Date;
 
+/**
+ * Controller for tender corrigendum page in admin portal.
+ */
 @Controller
 public class CorrigendumController {
 
@@ -33,6 +36,14 @@ public class CorrigendumController {
     private CodeValueService codeValueService;
     private S3Wrapper s3Service;
 
+    /**
+     * Constructor.
+     *
+     * @param corrigendumService CorrigendumService
+     * @param tenderService TenderService
+     * @param codeValueService CodeValueService
+     * @param s3Service S3Wrapper
+     */
     @Autowired
     public CorrigendumController(CorrigendumService corrigendumService, TenderService tenderService,
                                  CodeValueService codeValueService, S3Wrapper s3Service) {
@@ -42,6 +53,13 @@ public class CorrigendumController {
         this.s3Service = s3Service;
     }
 
+    /**
+     * This method is used to show list of corrigendum for a particular tender.
+     *
+     * @param id unique identifier of the tender
+     * @param model ModelMap
+     * @return String
+     */
     @GetMapping("/admin/tender/{id}/corrigendum")
     public String showTenderCorrigendum(@PathVariable(value = "id") int id, ModelMap model) {
         Tender tender = tenderService.findById(id);
@@ -56,6 +74,13 @@ public class CorrigendumController {
         return "admin/corrigendum/corrigendumList";
     }
 
+    /**
+     * This method is used to display add corrigendum page.
+     *
+     * @param id unique identifier of the tender
+     * @param model ModelMap
+     * @return String
+     */
     @GetMapping("/admin/tender/{id}/addCorrigendum")
     public String showAddCorrigendumPage(@PathVariable(value = "id") int id, ModelMap model) {
         Tender tender = tenderService.findById(id);
@@ -72,9 +97,25 @@ public class CorrigendumController {
         return "admin/corrigendum/corrigendumAdd";
     }
 
+    /**
+     * This method is used to create new corrigendum.
+     * This method can handle request both from normal HTTP and AJAX.
+     * This method will return the name of next screen or null for AJAX response.
+     * For AJAX response, this method will return the HTTP status and any error in the HTTP body.
+     *
+     * @param form corrigendum data inputted by user
+     * @param result this result is used to validate DTO binding validation result
+     * @param model ModelMap
+     * @param request HttpServletRequest
+     * @param resp HttpServletResponse
+     * @return String
+     * @throws IOException if has exception when putting error message in AJAX response
+     * @see CorrigendumCreateDTO
+     *
+     */
     @PostMapping("/admin/tender/addCorrigendum")
-    public String saveCorrigendum(@Valid @ModelAttribute("corrigendum") CorrigendumCreateDTO form, BindingResult result,
-                                  RedirectAttributes redirectAttrs, ModelMap model, HttpServletRequest request,
+    public String saveCorrigendum(@Valid @ModelAttribute("corrigendum") CorrigendumCreateDTO form,
+                                  BindingResult result, ModelMap model, HttpServletRequest request,
                                   HttpServletResponse resp) throws IOException {
         String requestedWith = request.getHeader("X-Requested-With");
         Boolean isAjax = requestedWith != null && "XMLHttpRequest".equals(requestedWith);
@@ -115,6 +156,14 @@ public class CorrigendumController {
         }
     }
 
+    /**
+     * This method is used to remove corrigendum.
+     *
+     * @param corrigendumId unique identifier of the corrigendum
+     * @param tenderId unique identifier of the tender
+     * @param redirectAttrs RedirectAttributes
+     * @return String
+     */
     @PostMapping("/admin/tender/removeCorrigendum")
     public String removeCorrigendum(@RequestParam("corrigendumId") int corrigendumId, @RequestParam("tenderId") int tenderId,
                                     RedirectAttributes redirectAttrs) {
@@ -125,6 +174,13 @@ public class CorrigendumController {
         return "redirect:/admin/tender/" + tenderId + "/corrigendum";
     }
 
+    /**
+     * This method is used to display edit corrigendum page.
+     *
+     * @param id unique identififer of the corrigendum
+     * @param model ModelMap
+     * @return String
+     */
     @GetMapping("/admin/tender/corrigendum/{id}/edit")
     public String showEditCorrigendumPage(@PathVariable(value = "id") int id, ModelMap model) {
         Corrigendum corrigendum = corrigendumService.findCorrigendumById(id);
@@ -144,6 +200,16 @@ public class CorrigendumController {
         return "admin/corrigendum/corrigendumEdit";
     }
 
+    /**
+     * This method is used to edit corrigendum.
+     *
+     * @param form corrigendum data inputted by user
+     * @param result this result is used to validate DTO binding validation result
+     * @param model ModelMap
+     * @param redirectAttrs RedirectAttributes
+     * @return String
+     * @see CorrigendumUpdateDTO
+     */
     @PostMapping("/admin/tender/editCorrigendum")
     public String editCorrigendum(@Valid @ModelAttribute("corrigendum") CorrigendumUpdateDTO form, BindingResult result,
                                   ModelMap model, RedirectAttributes redirectAttrs) {
@@ -172,6 +238,15 @@ public class CorrigendumController {
         return "redirect:/admin/tender/" + corrigendum.getTender().getId() + "/corrigendum";
     }
 
+    /**
+     * This method is used to add new document to a corrigendum via AJAX.
+     *
+     * @param files document to be added
+     * @param corrigendumId unique identifier of the corrigendum
+     * @param resp HttpServletResponse
+     * @return String
+     * @throws IOException if unable to write error message into response body
+     */
     @PostMapping("/admin/tender/addCorrigendumDocument")
     public String addCorrigendumDocument(@RequestParam(name = "file") MultipartFile files,
                                          @RequestParam(name = "id") int corrigendumId,
@@ -194,6 +269,14 @@ public class CorrigendumController {
         }
     }
 
+    /**
+     * This method is used to remove a document from a corrigendum.
+     *
+     * @param documentId unique identifier of the document
+     * @param corrigendumId unique identifier of the corrigendum
+     * @param redirectAttrs RedirectAttributes
+     * @return String
+     */
     @PostMapping("/tender/removeCorrigendumDocument")
     public String removeCorrigendumDocument(@RequestParam(name = "corrigendumDocumentId") int documentId,
                                             @RequestParam(name = "corrigendumId") int corrigendumId,

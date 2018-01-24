@@ -10,12 +10,18 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Date;
 
+/**
+ * Service implementation of IPGeoLocationService using ip-api.com service.
+ */
 @Service
 public class IPGeoLocationServiceImpl implements IPGeoLocationService {
 
     public static final String SERVICE_URL = "http://ip-api.com/json/";
     private String className;
 
+    /**
+     * Constructor.
+     */
     public IPGeoLocationServiceImpl() {
         this.className = this.getClass().getName();
     }

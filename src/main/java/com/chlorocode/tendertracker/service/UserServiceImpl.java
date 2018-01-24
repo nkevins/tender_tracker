@@ -17,6 +17,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+/**
+ * Service implementation of UserService.
+ */
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -27,6 +30,14 @@ public class UserServiceImpl implements UserService {
     private String className;
     private NotificationService notificationService;
 
+    /**
+     * Constructor.
+     *
+     * @param userDAO UserDAO
+     * @param passwordEncoder PasswordEncoder
+     * @param userRoleDAO RoleUserDAO
+     * @param notificationService NotificationService
+     */
     @Autowired
     public UserServiceImpl(UserDAO userDAO, PasswordEncoder passwordEncoder,RoleUserDAO userRoleDAO, NotificationService notificationService) {
         this.userDAO = userDAO;
@@ -132,6 +143,12 @@ public class UserServiceImpl implements UserService {
         return "No account found for that email address.";
     }
 
+    /**
+     * This method is used to generate random PIN number
+     *
+     * @param length length of PIN number expected
+     * @return String
+     */
     private static String generatePIN(int length) {
         // do not use I, O as looks like 1 and 0
         String pin = TTConstants.EMPTY;

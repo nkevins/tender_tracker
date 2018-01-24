@@ -15,6 +15,9 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Service implementation of CorrigendumService
+ */
 @Service
 public class CorrigendumServiceImpl implements CorrigendumService {
 
@@ -23,6 +26,14 @@ public class CorrigendumServiceImpl implements CorrigendumService {
     private S3Wrapper s3Wrapper;
     private TenderService tenderService;
 
+    /**
+     * Constructor
+     *
+     * @param corrigendumDAO CorrigendumDAO
+     * @param corrigendumDocumentDAO CorrigendumDocumentDAO
+     * @param s3Wrapper S3Wrapper
+     * @param tenderService TenderService
+     */
     @Autowired
     public CorrigendumServiceImpl(CorrigendumDAO corrigendumDAO, CorrigendumDocumentDAO corrigendumDocumentDAO,
                                   S3Wrapper s3Wrapper, TenderService tenderService) {

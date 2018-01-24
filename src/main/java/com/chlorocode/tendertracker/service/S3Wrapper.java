@@ -24,6 +24,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Service class to wrap all interaction with AWS S3.
+ */
 @Service
 public class S3Wrapper {
 
@@ -37,6 +40,13 @@ public class S3Wrapper {
         return upload(new FileInputStream(filePath), uploadKey);
     }
 
+    /**
+     * This method is used to put an object into S3.
+     *
+     * @param inputStream input stream
+     * @param uploadKey AWS S3 key
+     * @return PutObjectResult
+     */
     public PutObjectResult upload(InputStream inputStream, String uploadKey) {
         PutObjectRequest putObjectRequest = new PutObjectRequest(bucket, uploadKey, inputStream, new ObjectMetadata());
 
@@ -49,6 +59,12 @@ public class S3Wrapper {
         return putObjectResult;
     }
 
+    /**
+     * This method is used to put multiple objects into S3.
+     *
+     * @param multipartFiles objects to be placed into S3
+     * @return list of objects placed in S3
+     */
     public List<PutObjectResult> upload(MultipartFile[] multipartFiles) {
         List<PutObjectResult> putObjectResults = new ArrayList<>();
 
@@ -65,6 +81,13 @@ public class S3Wrapper {
         return putObjectResults;
     }
 
+    /**
+     * This method is used to download an object based on key.
+     *
+     * @param key object key to be downloaded
+     * @return object in byte array
+     * @throws IOException if IO exception occured
+     */
     public ResponseEntity<byte[]> download(String key) throws IOException {
         GetObjectRequest getObjectRequest = new GetObjectRequest(bucket, key);
 
@@ -84,6 +107,11 @@ public class S3Wrapper {
         return new ResponseEntity<>(bytes, httpHeaders, HttpStatus.OK);
     }
 
+    /**
+     * This method is used to list all objects inside S3 bucket.
+     *
+     * @return list of S3 Object
+     */
     public List<S3ObjectSummary> list() {
         ObjectListing objectListing = amazonS3Client.listObjects(new ListObjectsRequest().withBucketName(bucket));
 
@@ -92,6 +120,12 @@ public class S3Wrapper {
         return s3ObjectSummaries;
     }
 
+    /**
+     * This method is used to get pre signed URL for a particular object in S3 bucket.
+     *
+     * @param key object key
+     * @return URL
+     */
     public URL getPreSignedURL(String key) {
         java.util.Date expiration = new java.util.Date();
         long msec = expiration.getTime();
@@ -106,6 +140,11 @@ public class S3Wrapper {
         return amazonS3Client.generatePresignedUrl(generatePresignedUrlRequest);
     }
 
+    /**
+     * This method is used to delte object from S3 bucket.
+     *
+     * @param key object key
+     */
     public void deleteObject(String key) {
         amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, key));
     }

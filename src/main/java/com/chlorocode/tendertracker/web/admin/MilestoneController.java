@@ -2,7 +2,6 @@ package com.chlorocode.tendertracker.web.admin;
 
 import com.chlorocode.tendertracker.dao.dto.AlertDTO;
 import com.chlorocode.tendertracker.dao.dto.MilestoneDTO;
-import com.chlorocode.tendertracker.dao.entity.CodeValue;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
 import com.chlorocode.tendertracker.dao.entity.Milestone;
 import com.chlorocode.tendertracker.dao.entity.Tender;
@@ -13,18 +12,13 @@ import com.chlorocode.tendertracker.service.TenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.beans.PropertyEditorSupport;
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -32,7 +26,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by Kyaw Min Thu on 6/1/2018.
+ * Controller for tender milestone page.
  */
 @Controller
 public class MilestoneController {
@@ -42,6 +36,13 @@ public class MilestoneController {
     private MilestoneService milestoneService;
     private String className;
 
+    /**
+     * Constructor.
+     *
+     * @param codeValueService CodeValueService
+     * @param milestoneService MilestoneService
+     * @param tenderService TenderService
+     */
     @Autowired
     public MilestoneController(CodeValueService codeValueService, MilestoneService milestoneService, TenderService tenderService)
     {
@@ -51,6 +52,13 @@ public class MilestoneController {
         this.className = this.getClass().getName();
     }
 
+    /**
+     * This method is used to display tender milestone list page.
+     *
+     * @param tenderId unique identifier of the tender
+     * @param model ModelMap
+     * @return String
+     */
     @GetMapping("/admin/tender/{tenderid}/setmilestone")
     public String showTenderMilestonePage(@PathVariable(value="tenderid") int tenderId, ModelMap model)
     {
@@ -83,6 +91,14 @@ public class MilestoneController {
         return "admin/tender/tenderMilestone";
     }
 
+    /**
+     * This method is used to add new tender milestone.
+     *
+     * @param form milestone data inputted by user
+     * @param redirectAttrs RedirectAttributes
+     * @return String
+     * @see MilestoneDTO
+     */
     @PostMapping("/admin/tender/milestone/save")
     public String addMilestone(@Valid @ModelAttribute("newMilestone") MilestoneDTO form, RedirectAttributes redirectAttrs) {
         TTLogger.info(className, "Adding new Tender Milestone tenderId:" + form.getTenderId() + ", status: " + form.getStatus() + ", desc: " + form.getDescription());
@@ -115,6 +131,15 @@ public class MilestoneController {
         return "redirect:/admin/tender/" + form.getTenderId() + "/setmilestone";
     }
 
+    /**
+     * This method is used to update / delete tender milestone.
+     *
+     * @param form milestone data inputted by user
+     * @param redirectAttrs RedirectAttributes
+     * @param action update / delete indicator for the action to be performed
+     * @return String
+     * @see MilestoneDTO
+     */
     @PostMapping("/admin/tender/milestone/update")
     public String updateMilestone(@Valid MilestoneDTO form, RedirectAttributes redirectAttrs,
                                        @RequestParam("action") String action) {

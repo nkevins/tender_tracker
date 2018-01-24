@@ -14,7 +14,7 @@ import javax.transaction.Transactional;
 import java.util.*;
 
 /**
- * Created by andy on 27/7/2017.
+ * Implementation of UserRoleService.
  */
 @Service
 public class UserRoleServiceImpl implements UserRoleService {
@@ -22,6 +22,12 @@ public class UserRoleServiceImpl implements UserRoleService {
     private UserRoleDAO userRoleDao;
     private UserDAO userDAO;
 
+    /**
+     * Constructor.
+     *
+     * @param userRoleDao UserRoleDAO
+     * @param userDAO UserDAO
+     */
     @Autowired
     public UserRoleServiceImpl(UserRoleDAO userRoleDao, UserDAO userDAO){
         this.userRoleDao = userRoleDao;

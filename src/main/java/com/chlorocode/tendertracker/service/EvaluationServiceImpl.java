@@ -5,18 +5,26 @@ import com.chlorocode.tendertracker.dao.EvaluationResultDAO;
 import com.chlorocode.tendertracker.dao.entity.EvaluationCriteria;
 import com.chlorocode.tendertracker.dao.entity.EvaluationResult;
 import com.chlorocode.tendertracker.exception.ApplicationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
- * Created by andy on 3/8/2017.
+ * Service implementation of EvaluationService
  */
 @Service
 public class EvaluationServiceImpl implements EvaluationService {
     private EvaluationCriteriaDAO evaDao;
     private EvaluationResultDAO evaResDao;
 
+    /**
+     * Constructor
+     *
+     * @param evaDao EvaluationCriteriaDAO
+     * @param evaResDao EvaluationResultDAO
+     */
+    @Autowired
     private EvaluationServiceImpl(EvaluationCriteriaDAO evaDao, EvaluationResultDAO evaResDao)
     {
         this.evaDao = evaDao;
@@ -28,14 +36,17 @@ public class EvaluationServiceImpl implements EvaluationService {
         return evaDao.findEvaluationCriteriaByTender(tenderId);
     }
 
+    @Override
     public EvaluationCriteria create(EvaluationCriteria svc){
        return evaDao.saveAndFlush(svc);
     }
 
+    @Override
     public EvaluationCriteria update(EvaluationCriteria svc){
         return evaDao.save(svc);
     }
 
+    @Override
     public EvaluationCriteria findCriteriaById(int id){
         return evaDao.findOne(id);
     }
@@ -49,11 +60,7 @@ public class EvaluationServiceImpl implements EvaluationService {
     @Override
     public boolean isDuplicateEvaluation(int bidId, int userId) {
         List<EvaluationResult> results = evaResDao.findEvaluationResultByBidAndEvaluator(bidId, userId);
-        if (results.size() > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return results.size() > 0;
     }
 
     @Override

@@ -5,7 +5,6 @@ import com.chlorocode.tendertracker.dao.dto.EvaluateCriteriaDTO;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
 import com.chlorocode.tendertracker.dao.entity.EvaluationCriteria;
 import com.chlorocode.tendertracker.dao.entity.Tender;
-import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.logging.TTLogger;
 import com.chlorocode.tendertracker.service.CodeValueService;
 import com.chlorocode.tendertracker.service.EvaluationService;
@@ -26,7 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by andy on 3/8/2017.
+ * Controller for tender evaluation criteria in admin portal.
  */
 @Controller
 public class EvaluationCriteriaController {
@@ -36,6 +35,13 @@ public class EvaluationCriteriaController {
     private EvaluationService evaSvc;
     private String className;
 
+    /**
+     * Constructor.
+     *
+     * @param codeValueService CodeValueService
+     * @param evaSvc EvaluationService
+     * @param tenderService TenderService
+     */
     @Autowired
     public EvaluationCriteriaController(CodeValueService codeValueService, EvaluationService evaSvc, TenderService tenderService)
     {
@@ -45,6 +51,13 @@ public class EvaluationCriteriaController {
         this.className = this.getClass().getName();
     }
 
+    /**
+     * This method is used to display all evaluation criteria for a particular tender.
+     *
+     * @param tenderId unique identifier of the tender
+     * @param model ModelMap
+     * @return String
+     */
     @GetMapping("/admin/tender/{tenderid}/setcriteria")
     public String showTenderEvaluationCriteriaPage(@PathVariable(value="tenderid") int tenderId, ModelMap model)
     {
@@ -76,6 +89,14 @@ public class EvaluationCriteriaController {
         return "admin/tender/tenderEvaluationCriteria";
     }
 
+    /**
+     * This method is used add a new evaluation criteria.
+     *
+     * @param form input data from user
+     * @param redirectAttrs RedirectAttributes
+     * @return String
+     * @see EvaluateCriteriaDTO
+     */
     @PostMapping("/admin/tender/criteria/save")
     public String addTenderCriteria(@Valid EvaluateCriteriaDTO form, RedirectAttributes redirectAttrs) {
         TTLogger.info(className, "Adding new Tender Evaluation Criteria tenderId:" + form.getTenderId() + ", type: " + form.getType() + ", desc: " + form.getDescription());
@@ -106,6 +127,15 @@ public class EvaluationCriteriaController {
         return "redirect:/admin/tender/" + form.getTenderId() + "/setcriteria";
     }
 
+    /**
+     * This method is used to update / delete evaluation criteria.
+     *
+     * @param form input data from user
+     * @param redirectAttrs RedirectAttributes
+     * @param action update / delete indicator for the action to be performed
+     * @return String
+     * @see EvaluateCriteriaDTO
+     */
     @PostMapping("/admin/tender/criteria/update")
     public String updateTenderCriteria(@Valid EvaluateCriteriaDTO form, RedirectAttributes redirectAttrs,
                                        @RequestParam("action") String action) {
