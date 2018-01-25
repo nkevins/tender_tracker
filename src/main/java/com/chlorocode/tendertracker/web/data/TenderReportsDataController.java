@@ -11,20 +11,33 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * Created by andy on 8/8/2017.
+ * REST controller for report.
  */
 @RestController
 public class TenderReportsDataController {
+
     private TenderDAO tenderDAO;
 
+    /**
+     * Constructor.
+     *
+     * @param tenderDAO TenderDAO
+     */
     @Autowired
     public TenderReportsDataController(TenderDAO tenderDAO){
         this.tenderDAO = tenderDAO;
     }
 
+    /**
+     * This method is used to provide tender visitor country data.
+     *
+     * @param id unique identifier of the data
+     * @return String
+     * @throws JSONException if error when forming the JSON response
+     */
     @RequestMapping(value = "/admin/data/report/countryVisitorList/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    String getEvaluationDualCriteriaComparisson(@PathVariable(value="id") Integer id) throws JSONException {
+    String getTenderCountryVisitorData(@PathVariable(value="id") Integer id) throws JSONException {
         JSONArray data = new JSONArray();
 
         Tender tender = tenderDAO.findOne(id);

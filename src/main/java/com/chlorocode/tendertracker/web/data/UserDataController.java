@@ -15,17 +15,29 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 /**
- * Created by andy on 16/7/2017.
+ * REST controller for user.
  */
 @RestController
 public class UserDataController {
+
     private UserDataDAO userDao;
 
+    /**
+     * Constructor.
+     *
+     * @param UserDAO UserDataDAO
+     */
     @Autowired
     public UserDataController(UserDataDAO UserDAO) {
         this.userDao = UserDAO;
     }
 
+    /**
+     * This method is used to search company user.
+     *
+     * @param input data table search input
+     * @return data table output
+     */
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/admin/data/companyUser", method = RequestMethod.GET)
     public DataTablesOutput<User> getUserData(@Valid DataTablesInput input) {
