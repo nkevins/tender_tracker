@@ -7,10 +7,7 @@ import com.chlorocode.tendertracker.dao.dto.TenderClarificationDTO;
 import com.chlorocode.tendertracker.dao.entity.*;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.exception.ResourceNotFoundException;
-import com.chlorocode.tendertracker.service.CodeValueService;
-import com.chlorocode.tendertracker.service.CompanyService;
-import com.chlorocode.tendertracker.service.ProductService;
-import com.chlorocode.tendertracker.service.UenEntityService;
+import com.chlorocode.tendertracker.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -32,13 +29,20 @@ public class CompanySysAdmController {
     private UenEntityService uenEntService;
     private ProductService productService;
     private CodeValueService codeValueService;
+    private TenderService tenderService;
+    private S3Wrapper s3Service;
+    private UserService userService;
 
     @Autowired
-    public CompanySysAdmController(CompanyService companyService, UenEntityService uenEntService,ProductService productService,CodeValueService codeValueService) {
+    public CompanySysAdmController(CompanyService companyService, UenEntityService uenEntService,ProductService productService,CodeValueService codeValueService
+    ,TenderService tenderService,S3Wrapper s3Service,UserService userService) {
         this.companyService = companyService;
         this.uenEntService = uenEntService;
         this.productService = productService;
         this.codeValueService = codeValueService;
+        this.tenderService = tenderService;
+        this.s3Service = s3Service;
+        this.userService = userService;
     }
 
     @GetMapping("/sysadm/companyRegistration")
@@ -226,5 +230,22 @@ public class CompanySysAdmController {
         }
 
         return "admin/sysadm/productList";
+    }
+
+    @GetMapping("/sysadmin/tender/{id}")
+    public String showTenderDetails(@PathVariable(value="id") Integer id, ModelMap model, RedirectAttributes redirectAttrs) {
+        Tender tender = tenderService.findById(id);
+        if (tender == null) {
+            return "redirect:/admin/tender";
+        }
+
+        User user = userService.findById(tender.getCreatedBy());
+
+        model.addAttribute("tender", tender);
+        model.addAttribute("tenderType", codeValueService.getDescription("tender_type", tender.getTenderType()));
+        model.addAttribute("codeValueService", codeValueService);
+        model.addAttribute("s3Service", s3Service);
+        model.addAttribute("createdBy", user.getName());
+        return "admin/sysadm/tenderViewSys";
     }
 }
