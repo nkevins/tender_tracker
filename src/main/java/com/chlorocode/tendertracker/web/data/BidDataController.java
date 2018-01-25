@@ -1,7 +1,6 @@
 package com.chlorocode.tendertracker.web.data;
 
 import com.chlorocode.tendertracker.dao.BidDAO;
-import com.chlorocode.tendertracker.dao.TenderAppealDAO;
 import com.chlorocode.tendertracker.dao.TenderDataAppealDAO;
 import com.chlorocode.tendertracker.dao.entity.Bid;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
@@ -17,18 +16,33 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+/**
+ * REST Controller for bid.
+ */
 @RestController
 public class BidDataController {
 
     private BidDAO bidDAO;
     private TenderDataAppealDAO dao;
 
+    /**
+     * Constructor
+     *
+     * @param bidDAO BidDAO
+     * @param dao TenderDataAppealDAO
+     */
     @Autowired
-    public BidDataController(BidDAO bidDAO,TenderDataAppealDAO dao) {
+    public BidDataController(BidDAO bidDAO, TenderDataAppealDAO dao) {
         this.bidDAO = bidDAO;
         this.dao = dao;
     }
 
+    /**
+     * This method is used to return list of bids for DataTable.
+     *
+     * @param input DataTable search input
+     * @return DataTable output
+     */
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/admin/data/bids", method = RequestMethod.GET)
     public DataTablesOutput<Bid> getTenders(@Valid DataTablesInput input) {
@@ -43,6 +57,12 @@ public class BidDataController {
     }
 
 
+    /**
+     * This method is used to return tender appeal list for DataTable.
+     *
+     * @param input DataTable search input
+     * @return DataTable output
+     */
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/admin/data/tenderappeal", method = RequestMethod.GET)
     public DataTablesOutput<TenderAppeal> getTendersAppeal(@Valid DataTablesInput input) {

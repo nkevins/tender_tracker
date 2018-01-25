@@ -2,10 +2,9 @@ package com.chlorocode.tendertracker.web.admin;
 
 import com.chlorocode.tendertracker.dao.dto.AlertDTO;
 import com.chlorocode.tendertracker.dao.dto.ProcurementReportDTO;
-import com.chlorocode.tendertracker.dao.dto.ReportSummaryDTO;
 import com.chlorocode.tendertracker.service.CodeValueService;
-import com.chlorocode.tendertracker.service.TenderService;
 import com.chlorocode.tendertracker.service.ReportService;
+import com.chlorocode.tendertracker.service.TenderService;
 import com.itextpdf.kernel.color.Color;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
@@ -31,7 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
- * Created by rags on 10-Dec-17.
+ * Controller for report page in admin portal.
  */
 @Controller
 public class TenderReportsController {
@@ -45,6 +44,13 @@ public class TenderReportsController {
     private CodeValueService codeValueService;
     private TenderService tenderService;
 
+    /**
+     * Constructor.
+     *
+     * @param reportService ReportService
+     * @param codeValueService CodeValueService
+     * @param tenderService TenderService
+     */
     @Autowired
     public TenderReportsController(ReportService reportService, CodeValueService codeValueService, TenderService tenderService) {
         this.reportService = reportService;
@@ -52,6 +58,12 @@ public class TenderReportsController {
         this.tenderService = tenderService;
     }
 
+    /**
+     * This method is used to display procurement report page.
+     *
+     * @param model ModelMap
+     * @return String
+     */
     @GetMapping("/admin/report/procurementreport")
     public String viewReportsPage(ModelMap model){
         model.addAttribute("tenderType", codeValueService.getByType("tender_type"));
@@ -59,6 +71,13 @@ public class TenderReportsController {
         return "admin/reports/procurementReport";
     }
 
+    /**
+     * This method is used to download procurement report/
+     *
+     * @param model ModelMap
+     * @param request HttpServletRequest
+     * @param response HttpServletResponse
+     */
     @PostMapping("/admin/report/procurementreport")
     public void downloadProcurementReport(ModelMap model,
                                           HttpServletRequest request, HttpServletResponse response) {
@@ -94,6 +113,13 @@ public class TenderReportsController {
 
     }
 
+    /**
+     * This method is used to generate procurement report in CSV format.
+     *
+     * @param response HttpServletResponse
+     * @param procurementReportList report data
+     * @throws IOException if unable to send out the response
+     */
     private void downloadProcurementReportCSV(HttpServletResponse response, List<ProcurementReportDTO> procurementReportList) throws IOException {
         response.setContentType("application/ms-excel"); // or you can use text/csv
         response.setHeader("Content-Disposition", "attachment; filename=procurementreport.csv");
@@ -119,6 +145,13 @@ public class TenderReportsController {
         out.close();
     }
 
+    /**
+     * This method is used to generate procurement report in PDF format.
+     *
+     * @param response HttpServletResponse
+     * @param procurementReportList report data
+     * @throws IOException if unable to send out the response
+     */
     private void downloadProcurementReportPdf(HttpServletResponse response,
                                               List<ProcurementReportDTO> procurementReportList) throws IOException {
 
@@ -171,7 +204,12 @@ public class TenderReportsController {
         out.close();
     }
 
-
+    /**
+     * This method is used to display statistic report page.
+     *
+     * @param model ModelMap
+     * @return String
+     */
     @GetMapping("/admin/report/statisticsreport")
     public String viewStatisticsReportsPage(ModelMap model){
         model.addAttribute("tenderType", codeValueService.getByType("tender_type"));
@@ -179,9 +217,16 @@ public class TenderReportsController {
         return "admin/reports/statisticsReport";
     }
 
+    /**
+     * This method is used to generate statistic report.
+     *
+     * @param model ModelMap
+     * @param request HttpServletRequest
+     * @return String
+     */
     @PostMapping("/admin/report/statisticsreport")
     public String downloadStatisticsReport(ModelMap model,
-                                          HttpServletRequest request, HttpServletResponse response) {
+                                          HttpServletRequest request) {
 
         String fromDate = request.getParameter("fromDate");
         String toDate = request.getParameter("toDate");
@@ -203,11 +248,23 @@ public class TenderReportsController {
         return "admin/reports/statisticsReport";
     }
 
+    /**
+     * This method is used to display page containing the list of tenders to be selected to view the analytic report.
+     *
+     * @return String
+     */
     @GetMapping("/admin/report/analyticreport")
     public String viewAnalyticReportList() {
         return "admin/reports/analyticReport";
     }
 
+    /**
+     * This method is used to display analytic details page.
+     *
+     * @param id unique identifier of the tender
+     * @param model ModelMap
+     * @return String
+     */
     @GetMapping("/admin/report/analyticreport/{id}")
     public String viewAnalyticReportDetail(@PathVariable(value="id") int id, ModelMap model) {
         model.addAttribute("tender", tenderService.findById(id));

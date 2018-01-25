@@ -18,6 +18,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Controller for tender award page in admin portal.
+ */
 @Controller
 public class TenderAwardController {
 
@@ -25,6 +28,13 @@ public class TenderAwardController {
     private BidService bidService;
     private EvaluationService evaluationService;
 
+    /**
+     * Constructor.
+     *
+     * @param tenderService TenderService
+     * @param bidService BidService
+     * @param evaluationService EvaluationService
+     */
     @Autowired
     public TenderAwardController(TenderService tenderService, BidService bidService, EvaluationService evaluationService) {
         this.tenderService = tenderService;
@@ -32,11 +42,23 @@ public class TenderAwardController {
         this.evaluationService = evaluationService;
     }
 
+    /**
+     * This method is used to display page containing the list of tenders to be awarded.
+     *
+     * @return String
+     */
     @GetMapping("/admin/tender/award")
     public String showTenderAwardListPage() {
         return "admin/tender/tenderAwardList";
     }
 
+    /**
+     * This method is used to display award tender page.
+     *
+     * @param id unique identifier of the tender
+     * @param model ModelMap
+     * @return String
+     */
     @GetMapping("/admin/tender/award/{id}")
     public String showTenderAwardPage(@PathVariable(value="id") Integer id, ModelMap model) {
         Tender tender = tenderService.findById(id);
@@ -57,6 +79,14 @@ public class TenderAwardController {
         return "admin/tender/tenderAward";
     }
 
+    /**
+     * This method is used to save tender award.
+     *
+     * @param id unique identifier of the bid
+     * @param request WebRequest
+     * @param redirectAttrs RedirectAttributes
+     * @return String
+     */
     @PostMapping("/admin/tender/award/{id}")
     public String saveTenderAward(@PathVariable(value="id") Integer id, WebRequest request, RedirectAttributes redirectAttrs) {
         CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

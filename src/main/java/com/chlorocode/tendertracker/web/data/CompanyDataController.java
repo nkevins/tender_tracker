@@ -22,18 +22,33 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * REST controller for company.
+ */
 @RestController
 public class CompanyDataController {
 
     private CompanyDAO companyDAO;
     private TenderDAO tenderDAO;
 
+    /**
+     * Constructor.
+     *
+     * @param companyDAO CompanyDAO
+     * @param tenderDAO TenderDAO
+     */
     @Autowired
     public CompanyDataController(CompanyDAO companyDAO, TenderDAO tenderDAO) {
         this.companyDAO = companyDAO;
         this.tenderDAO = tenderDAO;
     }
 
+    /**
+     * This method is used to list company registrations to be reviewed.
+     *
+     * @param input DataTable search input
+     * @return DataTable output
+     */
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/sysadm/data/companyregistrations", method = RequestMethod.GET)
     public DataTablesOutput<Company> getCompanyRegistrations(@Valid DataTablesInput input) {
@@ -42,6 +57,12 @@ public class CompanyDataController {
         });
     }
 
+    /**
+     * This function is used to list all companies which already approved / rejected.
+     *
+     * @param input DataTable search input
+     * @return DataTable output
+     */
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/sysadm/data/companyinfolist", method = RequestMethod.GET)
     public DataTablesOutput<Company> getCompanyInfoList(@Valid DataTablesInput input) {
@@ -50,6 +71,13 @@ public class CompanyDataController {
         });
     }
 
+    /**
+     * This method is used to search company data by company name.
+     *
+     * @param name company name
+     * @return String
+     * @throws JSONException if error when forming JSON response
+     */
     @RequestMapping(path = "/admin/data/company", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody String getCompanyName(@RequestParam(value="name", defaultValue="") String name)
             throws JSONException {
@@ -66,6 +94,13 @@ public class CompanyDataController {
         return companies.toString();
     }
 
+    /**
+     * This method is used to get the list of invited companies for a closed tender.
+     *
+     * @param id unique identifier of the tender
+     * @return String
+     * @throws JSONException if error when forming JSON response
+     */
     @RequestMapping(path = "/admin/data/invitedCompany/{tenderId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getTenderInvitedCompany(@PathVariable(value="tenderId") int id)
             throws JSONException {
@@ -85,6 +120,15 @@ public class CompanyDataController {
         return new ResponseEntity<>(companies.toString(), HttpStatus.OK);
     }
 
+    /**
+     * This method is used to remove invited company for a closed tender.
+     *
+     * @param id unique identifier of the tender
+     * @param request HttpServletRequest
+     * @return String
+     * @throws JSONException if error when forming JSON response
+     * @throws IOException if error when writing JSON response
+     */
     @RequestMapping(path = "/admin/data/invitedCompany/{tenderId}", method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity removeTenderInvitedCompany(@PathVariable(value="tenderId") int id, HttpServletRequest request)
@@ -114,6 +158,15 @@ public class CompanyDataController {
         return new ResponseEntity(HttpStatus.NOT_FOUND);
     }
 
+    /**
+     * This method is used to add invited company for closed tender.
+     *
+     * @param id unique identifier of the tender
+     * @param request HttpServletRequest
+     * @return String
+     * @throws JSONException if error when forming JSON response
+     * @throws IOException if error when writing JSON response
+     */
     @RequestMapping(path = "/admin/data/invitedCompany/{tenderId}", method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity addTenderInvitedCompany(@PathVariable(value="tenderId") int id, HttpServletRequest request)

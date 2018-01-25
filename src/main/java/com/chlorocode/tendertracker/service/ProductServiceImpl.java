@@ -6,8 +6,6 @@ import com.chlorocode.tendertracker.dao.dto.ProductSearchDTO;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
 import com.chlorocode.tendertracker.dao.entity.Product;
 import com.chlorocode.tendertracker.dao.specs.ProductSpecs;
-import com.chlorocode.tendertracker.exception.ApplicationException;
-import com.chlorocode.tendertracker.service.notification.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,32 +13,34 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
-import java.util.List;
 
+/**
+ * Service implementation of ProductService.
+ */
 @Service
 public class ProductServiceImpl implements ProductService {
 
     private ProductDAO productDAO;
     private ProductPagingDAO productPagingDAO;
-    private S3Wrapper s3Wrapper;
-    private NotificationService notificationService;
 
+    /**
+     * Constructor.
+     *
+     * @param productDAO ProductDAO
+     * @param productPagingDAO ProductPagingDAO
+     */
     @Autowired
-    public ProductServiceImpl(ProductDAO productDAO, ProductPagingDAO productPagingDAO, S3Wrapper s3Wrapper, NotificationService notificationService) {
+    public ProductServiceImpl(ProductDAO productDAO, ProductPagingDAO productPagingDAO) {
         this.productDAO = productDAO;
         this.productPagingDAO = productPagingDAO;
-        this.s3Wrapper = s3Wrapper;
-        this.notificationService = notificationService;
     }
 
     @Override
     @Transactional
     public Product createProduct(Product product) {
-        Product result = productDAO.save(product);
-        return result;
+        return productDAO.save(product);
     }
 
     @Override
@@ -56,9 +56,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Page<Product> searchProduct(ProductSearchDTO productSearchDTO, Pageable pageable) {
-        int companyID = getCompanyID();
-
-        Specification<Product> specification = null;
+        Specification<Product> specification;
 
         if (productSearchDTO.getSearchText() != null
                 && !productSearchDTO.getSearchText().trim().isEmpty()) {
@@ -88,43 +86,5 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product findById(int id) {
         return productDAO.findOne(id);
-    }
-
-    public ProductDAO getProductDAO() {
-        return productDAO;
-    }
-
-    public void setProductDAO(ProductDAO productDAO) {
-        this.productDAO = productDAO;
-    }
-
-    public S3Wrapper getS3Wrapper() {
-        return s3Wrapper;
-    }
-
-    public void setS3Wrapper(S3Wrapper s3Wrapper) {
-        this.s3Wrapper = s3Wrapper;
-    }
-
-    public NotificationService getNotificationService() {
-        return notificationService;
-    }
-
-    public void setNotificationService(NotificationService notificationService) {
-        this.notificationService = notificationService;
-    }
-
-    private int getCompanyID() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (principal != null && principal instanceof CurrentUser) {
-            CurrentUser currentUser = (CurrentUser) principal;
-
-            if (currentUser != null && currentUser.getSelectedCompany() != null) {
-                return currentUser.getSelectedCompany().getId();
-            }
-        }
-
-        return 0;
     }
 }

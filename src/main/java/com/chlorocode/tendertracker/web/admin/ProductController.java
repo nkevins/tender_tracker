@@ -9,7 +9,6 @@ import com.chlorocode.tendertracker.dao.entity.Product;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.service.CodeValueService;
 import com.chlorocode.tendertracker.service.CompanyService;
-import com.chlorocode.tendertracker.service.ProductClarificationService;
 import com.chlorocode.tendertracker.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -25,28 +24,48 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.Valid;
 import java.util.Date;
 
+/**
+ * Controller for marketplace product page in admin portal.
+ */
 @Controller
 public class ProductController {
 
     private ProductService productService;
     private CodeValueService codeValueService;
-    private ProductClarificationService prodClarSvc;
     private CompanyService companyService;
 
+    /**
+     * Constructor.
+     *
+     * @param productService ProductService
+     * @param codeValueService CodeValueService
+     * @param companyService CompanyService
+     */
     @Autowired
     public ProductController(ProductService productService, CodeValueService codeValueService,
-                             ProductClarificationService prodClarSvc, CompanyService companyService) {
+                             CompanyService companyService) {
         this.productService = productService;
         this.codeValueService = codeValueService;
-        this.prodClarSvc = prodClarSvc;
         this.companyService = companyService;
     }
 
+    /**
+     * This method is used to display product list page.
+     *
+     * @return String
+     */
     @GetMapping("/admin/product")
     public String showProductPage() {
         return "admin/product/productView";
     }
 
+    /**
+     * This method is used to display create product page.
+     *
+     * @param model ModelMap
+     * @param redirectAttrs RedirectAttributes
+     * @return String
+     */
     @GetMapping("/admin/product/create")
     public String showCreateProductPage(ModelMap model, RedirectAttributes redirectAttrs) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -65,6 +84,15 @@ public class ProductController {
         return "admin/product/productCreate";
     }
 
+    /**
+     * This method is used to save new marketplace product.
+     *
+     * @param form input data by user
+     * @param redirectAttributes RedirectAttributes
+     * @param modelMap ModelMap
+     * @return String
+     * @see ProductCreateDTO
+     */
     @PostMapping("/admin/product/create")
     public String saveCreatedProduct(@Valid @ModelAttribute("product") ProductCreateDTO form, RedirectAttributes redirectAttributes,
                                      ModelMap modelMap) {
@@ -99,6 +127,13 @@ public class ProductController {
         return "redirect:/admin/product";
     }
 
+    /**
+     * This method is used to display edit product page.
+     *
+     * @param id unique identifier of the product
+     * @param model ModelMap
+     * @return String
+     */
     @GetMapping("/admin/product/{id}")
     public String showProductEditPage(@PathVariable(value = "id") Integer id, ModelMap model) {
         Product product = productService.findById(id);
@@ -121,8 +156,16 @@ public class ProductController {
         return "admin/product/productUpdate";
     }
 
+    /**
+     * This method is used to update product.
+     *
+     * @param form input data from user
+     * @param redirectAttrs RedirectAttributes
+     * @return String
+     * @see ProductUpdateDTO
+     */
     @PostMapping("/admin/product/update")
-    public String updateTender(@Valid @ModelAttribute("product") ProductUpdateDTO form, RedirectAttributes redirectAttrs) {
+    public String updateProduct(@Valid @ModelAttribute("product") ProductUpdateDTO form, RedirectAttributes redirectAttrs) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CurrentUser currentUser = (CurrentUser) authentication.getPrincipal();
 

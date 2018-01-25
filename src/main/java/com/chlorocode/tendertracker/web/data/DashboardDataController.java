@@ -14,16 +14,30 @@ import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * REST Controller for dashboard.
+ */
 @RestController
 public class DashboardDataController {
 
     private TenderDAO tenderDAO;
 
+    /**
+     * Constructor.
+     *
+     * @param tenderDAO TenderDAO
+     */
     @Autowired
     public DashboardDataController(TenderDAO tenderDAO) {
         this.tenderDAO = tenderDAO;
     }
 
+    /**
+     * This method is used to provide data for dashboard statistic.
+     *
+     * @return list of TenderStatusStatisticDTO
+     * @see TenderStatusStatisticDTO
+     */
     @RequestMapping(value = "/admin/data/dashboard/tenderStatusStatistic", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody List<TenderStatusStatisticDTO> getTenders() {
         CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

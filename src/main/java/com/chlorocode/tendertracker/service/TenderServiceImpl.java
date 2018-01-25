@@ -20,6 +20,9 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Service implementation of TenderService.
+ */
 @Service
 public class TenderServiceImpl implements TenderService {
 
@@ -38,6 +41,24 @@ public class TenderServiceImpl implements TenderService {
     private BidService bidService;
     private UserRoleService userRoleService;
 
+    /**
+     * Constructor.
+     *
+     * @param tenderDAO TenderDAO
+     * @param s3Wrapper S3Wrapper
+     * @param tenderBookmarkDAO TenderBookmarkDAO
+     * @param tenderItemDAO TenderItemDAO
+     * @param tenderDocumentDAO TenderDocumentDAO
+     * @param tenderCategorySubscriptionDAO TenderCategorySubscriptionDAO
+     * @param tenderPagingDAO TenderPagingDAO
+     * @param notificationService NotificationService
+     * @param ipGeoLocationService IPGeoLocationService
+     * @param tenderVisitDAO TenderVisitDAO
+     * @param tenderAwardDAO TenderAwardDAO
+     * @param userService UserService
+     * @param bidService BidService
+     * @param userRoleService UserRoleService
+     */
     @Autowired
     public TenderServiceImpl(TenderDAO tenderDAO, S3Wrapper s3Wrapper, TenderBookmarkDAO tenderBookmarkDAO
                             , TenderItemDAO tenderItemDAO, TenderDocumentDAO tenderDocumentDAO
@@ -334,7 +355,7 @@ public class TenderServiceImpl implements TenderService {
     @Override
     public Page<Tender> searchTender(TenderSearchDTO searchDTO, Pageable pageable) {
         int companyId = getCompanyId();
-        Specification<Tender> searchSpec = null;
+        Specification<Tender> searchSpec;
         if (searchDTO.getSearchText() != null && !searchDTO.getSearchText().trim().isEmpty()) {
             searchSpec = TenderSpecs.byTenderSearchString(searchDTO.getSearchText().trim(), companyId, getInviteTenderIds(companyId));
             searchDTO.setCompanyName(null);
@@ -364,7 +385,7 @@ public class TenderServiceImpl implements TenderService {
                 for (TenderBookmark bookmark : tenderBookmarks) {
                     if (bookmark.getUser() != null) emails.add(bookmark.getUser().getEmail());
                 }
-                if (emails != null && !emails.isEmpty()) {
+                if (!emails.isEmpty()) {
                     Map<String, Object> params = new HashMap<>();
                     params.put(TTConstants.PARAM_TENDER, tender);
                     params.put(TTConstants.PARAM_EMAILS, emails.toArray(new String[emails.size()]));
@@ -392,7 +413,6 @@ public class TenderServiceImpl implements TenderService {
         tender.setStatus(3);
         tenderDAO.save(tender);
 
-        // TODO Send email to all bidder and bookmark user.
         // Add awarded company user.
         Set<String> emails = userRoleService.findCompanyUserEmails(tenderAward.getCompany().getId());
         if (emails == null) {
@@ -416,7 +436,7 @@ public class TenderServiceImpl implements TenderService {
             }
         }
 
-        if (emails != null && emails.size()> 0) {
+        if (emails.size() > 0) {
             Map<String, Object> params = new HashMap<>();
             params.put(TTConstants.PARAM_TENDER_ID, tenderAward.getTender().getId());
             params.put(TTConstants.PARAM_TENDER_TITLE, tenderAward.getTender().getTitle());
@@ -467,7 +487,7 @@ public class TenderServiceImpl implements TenderService {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal != null && principal instanceof CurrentUser) {
             CurrentUser usr = (CurrentUser) principal;
-            if (usr != null && usr.getSelectedCompany() != null) {
+            if (usr.getSelectedCompany() != null) {
                 return usr.getSelectedCompany().getId();
             }
         }

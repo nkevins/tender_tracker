@@ -17,6 +17,9 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Controller for tender evaluation page.
+ */
 @Controller
 public class TenderEvaluationController {
 
@@ -26,6 +29,15 @@ public class TenderEvaluationController {
     private CodeValueService codeValueService;
     private S3Wrapper s3Wrapper;
 
+    /**
+     * Constructor.
+     *
+     * @param evaluationService EvaluationService
+     * @param bidService BidService
+     * @param tenderService TenderService
+     * @param codeValueService CodeValueService
+     * @param s3Wrapper S3Wrapper
+     */
     @Autowired
     public TenderEvaluationController(EvaluationService evaluationService, BidService bidService,
                                       TenderService tenderService, CodeValueService codeValueService, S3Wrapper s3Wrapper) {
@@ -36,6 +48,13 @@ public class TenderEvaluationController {
         this.s3Wrapper = s3Wrapper;
     }
 
+    /**
+     * This method is used to display page containing list of bids to be evaluated.
+     *
+     * @param id unique identifier of the tender
+     * @param model ModelMap
+     * @return String
+     */
     @GetMapping("admin/tender/evaluation/{id}/bid")
     public String showTenderEvaluationBidListPage(@PathVariable(value="id") Integer id, ModelMap model) {
         Tender tender = tenderService.findById(id);
@@ -47,6 +66,13 @@ public class TenderEvaluationController {
         return "admin/tender/tenderEvaluationBidList";
     }
 
+    /**
+     * This method is used to display submit evaluation page.
+     *
+     * @param id unique identifier of the bid
+     * @param model ModelMap
+     * @return String
+     */
     @GetMapping("admin/tender/submitEvaluation/{id}")
     public String showSubmitTenderEvaluationPage(@PathVariable(value="id") Integer id, ModelMap model) {
         Bid bid = bidService.findById(id);
@@ -75,6 +101,14 @@ public class TenderEvaluationController {
         return "admin/tender/tenderEvaluationSubmit";
     }
 
+    /**
+     * This method is used to submit tender evaluation.
+     *
+     * @param id unique identifier of the bid
+     * @param request WebRequest
+     * @param redirectAttrs RedirectAttributes
+     * @return String
+     */
     @PostMapping("admin/tender/submitEvaluation/{id}")
     public String submitTenderEvaluation(@PathVariable(value="id") Integer id, WebRequest request, RedirectAttributes redirectAttrs) {
         Bid bid = bidService.findById(id);

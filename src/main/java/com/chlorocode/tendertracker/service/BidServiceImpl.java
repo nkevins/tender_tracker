@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Service implementation of BidService.
+ */
 @Service
 public class BidServiceImpl implements BidService {
 
@@ -21,6 +24,13 @@ public class BidServiceImpl implements BidService {
     private BidDocumentDAO bidDocumentDAO;
     private S3Wrapper s3Wrapper;
 
+    /**
+     * Constructor.
+     *
+     * @param bidDAO BidDAO
+     * @param bidDocumentDAO BidDocumentDAO
+     * @param s3Wrapper S3Wrapper
+     */
     @Autowired
     public BidServiceImpl(BidDAO bidDAO, BidDocumentDAO bidDocumentDAO, S3Wrapper s3Wrapper) {
         this.bidDAO = bidDAO;

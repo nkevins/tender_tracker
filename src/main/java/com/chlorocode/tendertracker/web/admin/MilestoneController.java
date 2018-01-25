@@ -26,7 +26,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Controller for tender milestone page.
+ * Controller for tender milestone page in admin portal.
  */
 @Controller
 public class MilestoneController {

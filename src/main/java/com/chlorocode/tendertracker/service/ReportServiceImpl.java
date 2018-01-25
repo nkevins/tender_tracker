@@ -14,7 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by fistg on 17-Dec-17.
+ * Service implementation of ReportService.
  */
 @Service
 public class ReportServiceImpl implements ReportService {
@@ -22,6 +22,12 @@ public class ReportServiceImpl implements ReportService {
     private TenderDAO tenderDAO;
     private CompanyDAO companyDAO;
 
+    /**
+     * Constructor.
+     *
+     * @param tenderDAO TenderDAO
+     * @param companyDAO CompanyDAO
+     */
     @Autowired
     public ReportServiceImpl(TenderDAO tenderDAO, CompanyDAO companyDAO) {
         this.tenderDAO = tenderDAO;

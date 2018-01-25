@@ -17,18 +17,33 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.HashSet;
 
+/**
+ * REST controller for tender.
+ */
 @RestController
 public class TenderDataController {
 
     private TenderDAO tenderDAO;
     private EvaluationResultDAO evaResDAO;
 
+    /**
+     * Constrtuctor.
+     *
+     * @param tenderDAO TenderDAO
+     * @param evaResDAO EvaluationResultDAO
+     */
     @Autowired
     public TenderDataController(TenderDAO tenderDAO, EvaluationResultDAO evaResDAO) {
         this.tenderDAO = tenderDAO;
         this.evaResDAO = evaResDAO;
     }
 
+    /**
+     * This method is used to search tenders belong to a logged inc ompany.
+     *
+     * @param input data table search criteria input
+     * @return data table output
+     */
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/admin/data/tenders", method = RequestMethod.GET)
     public DataTablesOutput<Tender> getTenders(@Valid DataTablesInput input) {
@@ -42,6 +57,12 @@ public class TenderDataController {
         return tenders;
     }
 
+    /**
+     * This method is used to search tenders ready for evaluation.
+     *
+     * @param input data table search criteria input
+     * @return data table output
+     */
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/admin/data/evaluatetenders", method = RequestMethod.GET)
     public DataTablesOutput<Tender> getEvaluateTenderList(@Valid DataTablesInput input) {
@@ -58,6 +79,12 @@ public class TenderDataController {
         return tenders;
     }
 
+    /**
+     * This method is used to search tenders to be awarded.
+     *
+     * @param input data table search criteria input
+     * @return data table output
+     */
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/admin/data/awardtenders", method = RequestMethod.GET)
     public DataTablesOutput<Tender> getAwardTenderList(@Valid DataTablesInput input) {
@@ -77,6 +104,13 @@ public class TenderDataController {
         return tenders;
     }
 
+    /**
+     * This method is used to give overall bid price comparison across different bids.
+     *
+     * @param id unique identifier of the tender
+     * @return String
+     * @throws JSONException if error when forming the JSON response
+     */
     @RequestMapping(value = "/admin/data/awardtenders/overallprice/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody String getTenderOverallPrice(@PathVariable(value="id") Integer id) throws JSONException {
         JSONArray data = new JSONArray();
@@ -92,6 +126,13 @@ public class TenderDataController {
         return data.toString();
     }
 
+    /**
+     * This method is used to give item price comparison across different bids.
+     *
+     * @param id unique identifier of the tender
+     * @return String
+     * @throws JSONException if error when forming the JSON response
+     */
     @RequestMapping(value = "/admin/data/awardtenders/itemPriceComparison/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody String getTenderItemPriceComparisson(@PathVariable(value="id") Integer id) throws JSONException {
         JSONObject info = new JSONObject();
@@ -135,6 +176,13 @@ public class TenderDataController {
         return info.toString();
     }
 
+    /**
+     * This method is used to give overall evaluation score comparison across different bids.
+     *
+     * @param id unique identifier of the tender
+     * @return String
+     * @throws JSONException if error when forming the JSON response
+     */
     @RequestMapping(value = "/admin/data/awardtenders/overallScore/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody String getOverallScoreComparisson(@PathVariable(value="id") Integer id) throws JSONException {
         JSONArray data = new JSONArray();
@@ -150,6 +198,14 @@ public class TenderDataController {
         return data.toString();
     }
 
+    /**
+     * This method is used to give score comparison across different bids for 5 points evaluation criteria.
+     *
+     * @param id unique identifier of the tender
+     * @param criteriaId unique identifier of the evaluation criteria
+     * @return String
+     * @throws JSONException if error when forming the JSON response
+     */
     @RequestMapping(value = "/admin/data/awardtenders/criteriaScore/{id}/{criteriaId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody String getEvaluationCriteriaComparisson(@PathVariable(value="id") Integer id,
                                                                  @PathVariable(value = "criteriaId") Integer criteriaId) throws JSONException {
@@ -166,6 +222,14 @@ public class TenderDataController {
         return data.toString();
     }
 
+    /**
+     * This method is used to give score comparison across different bids for 2 points evaluation criteria.
+     *
+     * @param id unique identifier of the tender
+     * @param criteriaId unique identifier of the evaluation criteria
+     * @return String
+     * @throws JSONException if error when forming the JSON response
+     */
     @RequestMapping(value = "/admin/data/awardtenders/dualCriteriaScore/{id}/{criteriaId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody String getEvaluationDualCriteriaComparisson(@PathVariable(value="id") Integer id,
                                                                  @PathVariable(value = "criteriaId") Integer criteriaId) throws JSONException {

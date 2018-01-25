@@ -1,8 +1,6 @@
 package com.chlorocode.tendertracker.web.data;
 
 import com.chlorocode.tendertracker.dao.ProductDataClarificationDAO;
-import com.chlorocode.tendertracker.dao.TenderDataClarificationDAO;
-import com.chlorocode.tendertracker.dao.entity.Clarification;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
 import com.chlorocode.tendertracker.dao.entity.ProductClarification;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -17,17 +15,29 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 /**
- * Created by andy on 20/1/2018.
+ * REST controller for product clarification.
  */
 @RestController
 public class ProductDataClarificationController {
+
     private ProductDataClarificationDAO dao;
 
+    /**
+     * Constructor.
+     *
+     * @param dao ProductClarificationDAO
+     */
     @Autowired
     public ProductDataClarificationController(ProductDataClarificationDAO dao){
         this.dao = dao;
     }
 
+    /**
+     * This method is used to list all product clarifications/
+     *
+     * @param input data table search criteria input
+     * @return data table output
+     */
     @JsonView(DataTablesOutput.View.class)
     @RequestMapping(value = "/admin/data/productClarification", method = RequestMethod.GET)
     public DataTablesOutput<ProductClarification> getProductClarification(@Valid DataTablesInput input) {

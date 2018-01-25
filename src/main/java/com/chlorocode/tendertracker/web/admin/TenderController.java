@@ -24,6 +24,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Controller for the tender page in admin portal.
+ */
 @Controller
 public class TenderController {
 
@@ -33,6 +36,15 @@ public class TenderController {
     private UserService userService;
     private CompanyService companyService;
 
+    /**
+     * Constructor.
+     *
+     * @param codeValueService CodeValueService
+     * @param tenderService TenderService
+     * @param s3Service S3Wrapper
+     * @param userService UserService
+     * @param companyService CompanyService
+     */
     @Autowired
     public TenderController(CodeValueService codeValueService, TenderService tenderService, S3Wrapper s3Service,
                             UserService userService, CompanyService companyService) {
@@ -43,16 +55,33 @@ public class TenderController {
         this.companyService = companyService;
     }
 
+    /**
+     * This method is used to display page to list all tenders of the company.
+     *
+     * @return String
+     */
     @GetMapping("/admin/tender")
     public String showTenderPage() {
         return "admin/tender/tenderView";
     }
 
+    /**
+     * This method is used to display page containing list of tenders to be evaluated.
+     *
+     * @return String
+     */
     @GetMapping("/admin/tender/evaluation")
     public String showTenderEvaluationPage() {
         return "admin/tender/tenderEvaluationView";
     }
 
+    /**
+     * This method is used to display create tender page.
+     *
+     * @param model ModelMap
+     * @param redirectAttrs RedirectAttributes
+     * @return String
+     */
     @GetMapping("/admin/tender/create")
     public String showCreateTenderPage(ModelMap model, RedirectAttributes redirectAttrs) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -73,6 +102,22 @@ public class TenderController {
         return "admin/tender/tenderCreate";
     }
 
+    /**
+     * This method is used to create a tender.
+     * This method can handle request both from normal HTTP and AJAX.
+     * This method will return the name of next screen or null for AJAX response.
+     * For AJAX response, this method will return the HTTP status and any error in the HTTP body.
+     *
+     * @param form input data from user
+     * @param result binding result to check DTO validation result
+     * @param redirectAttrs RedirectAttributes
+     * @param model ModelMap
+     * @param request HttpServletRequest
+     * @param resp HttpServletResponse
+     * @return String
+     * @throws IOException if has exception when putting error message in AJAX response
+     * @see TenderCreateDTO
+     */
     @PostMapping("/admin/tender/create")
     public String saveCreateTender(@Valid @ModelAttribute("tender") TenderCreateDTO form, BindingResult result,
                                    RedirectAttributes redirectAttrs, ModelMap model, HttpServletRequest request,
@@ -206,8 +251,16 @@ public class TenderController {
         });
     }
 
+    /**
+     * This method is used to display page containing tender details.
+     *
+     * @param id unique identifier of the tender
+     * @param model ModelMap
+     * @param redirectAttrs RedirectAttributes
+     * @return String
+     */
     @GetMapping("/admin/tender/{id}")
-    public String showTenderDetails(@PathVariable(value="id") Integer id, ModelMap model,RedirectAttributes redirectAttrs) {
+    public String showTenderDetails(@PathVariable(value="id") Integer id, ModelMap model, RedirectAttributes redirectAttrs) {
         Tender tender = tenderService.findById(id);
         if (tender == null) {
             return "redirect:/admin/tender";
@@ -232,6 +285,13 @@ public class TenderController {
         return "admin/tender/tenderDetails";
     }
 
+    /**
+     * This method is used to display update tender page.
+     *
+     * @param id unique identifier of the tender
+     * @param model ModelMap
+     * @return String
+     */
     @GetMapping("/admin/tender/{id}/update")
     public String showTenderUpdatePage(@PathVariable(value="id") Integer id, ModelMap model) {
         Tender tender = tenderService.findById(id);
@@ -276,6 +336,16 @@ public class TenderController {
         return "admin/tender/tenderUpdate";
     }
 
+    /**
+     * This method is used to update tender information.
+     *
+     * @param form input data from user
+     * @param redirectAttrs RedirectAttributes
+     * @param result binding result to check DTO validation
+     * @param model ModelMap
+     * @return String
+     * @see TenderUpdateDTO
+     */
     @PostMapping("/admin/tender/update")
     public String updateTender(@Valid @ModelAttribute("tender") TenderUpdateDTO form, RedirectAttributes redirectAttrs,
                                BindingResult result, ModelMap model) {
@@ -334,9 +404,19 @@ public class TenderController {
         return "redirect:/admin/tender/" + form.getTenderId() + "/update";
     }
 
+    /**
+     * This method is used to add new tender item.
+     *
+     * @param form input data from user
+     * @param tenderId unique identifier of the tender
+     * @param result binding result to check DTO validation
+     * @param redirectAttrs RedirectAttributes
+     * @return String
+     * @see TenderItemUpdateDTO
+     */
     @PostMapping("/admin/tender/addTenderItem")
     public String addTenderItem(@Valid TenderItemUpdateDTO form, @RequestParam(name = "tenderId") int tenderId,
-                                BindingResult result, ModelMap model, RedirectAttributes redirectAttrs) {
+                                BindingResult result, RedirectAttributes redirectAttrs) {
         if (result.hasErrors()) {
             AlertDTO alert = new AlertDTO(result.getAllErrors());
             redirectAttrs.addFlashAttribute("alert", alert);
@@ -370,9 +450,20 @@ public class TenderController {
         return "redirect:/admin/tender/" + tenderId + "/update";
     }
 
+    /**
+     * This method is used to update tender item.
+     *
+     * @param tenderId unique identifier of the tender
+     * @param tenderItemId unique identifier of the tender item
+     * @param form input data from user
+     * @param result binding result to check DTO validation
+     * @param redirectAttrs RedirectAttributes
+     * @return String
+     * @see TenderItemUpdateDTO
+     */
     @PostMapping("/admin/tender/updateTenderItem")
     public String updateTenderItem(@RequestParam(name = "tenderId") int tenderId, @RequestParam("tenderItemId") int tenderItemId,
-                                   @Valid TenderItemUpdateDTO form, BindingResult result, ModelMap model, RedirectAttributes redirectAttrs) {
+                                   @Valid TenderItemUpdateDTO form, BindingResult result, RedirectAttributes redirectAttrs) {
         if (result.hasErrors()) {
             AlertDTO alert = new AlertDTO(result.getAllErrors());
             redirectAttrs.addFlashAttribute("alert", alert);
@@ -402,6 +493,14 @@ public class TenderController {
         return "redirect:/admin/tender/" + tenderId + "/update";
     }
 
+    /**
+     * This method is used to remove tender item.
+     *
+     * @param tenderItemId unique identifier of the tender item
+     * @param tenderId unique identifier of the tender
+     * @param redirectAttrs RedirectAttributes
+     * @return String
+     */
     @PostMapping("/admin/tender/removeTenderItem")
     public String removeTenderItem(@RequestParam(name = "tenderItemId") int tenderItemId, @RequestParam(name = "tenderId") int tenderId,
                                    RedirectAttributes redirectAttrs) {
@@ -412,6 +511,14 @@ public class TenderController {
         return "redirect:/admin/tender/" + tenderId + "/update";
     }
 
+    /**
+     * This method is used to move the tender item sequence up.
+     *
+     * @param tenderItemId unique identifier of the tender item
+     * @param tenderId unique identifier of the tender
+     * @param redirectAttrs RedirectAttributes
+     * @return String
+     */
     @PostMapping("/admin/tender/moveUpTenderItem")
     public String moveUpTenderItem(@RequestParam(name = "tenderItemId") int tenderItemId, @RequestParam(name = "tenderId") int tenderId,
             RedirectAttributes redirectAttrs) {
@@ -422,6 +529,14 @@ public class TenderController {
         return "redirect:/admin/tender/" + tenderId + "/update";
     }
 
+    /**
+     * This method is used to move the tender item sequence down.
+     *
+     * @param tenderItemId unique identifier of the tender item
+     * @param tenderId unique identifier of the tender
+     * @param redirectAttrs RedirectAttributes
+     * @return String
+     */
     @PostMapping("/admin/tender/moveDownTenderItem")
     public String moveDownTenderItem(@RequestParam(name = "tenderItemId") int tenderItemId, @RequestParam(name = "tenderId") int tenderId,
                                    RedirectAttributes redirectAttrs) {
@@ -432,6 +547,18 @@ public class TenderController {
         return "redirect:/admin/tender/" + tenderId + "/update";
     }
 
+    /**
+     * This method is used to add tender document.
+     * This method can handle request both from normal HTTP and AJAX.
+     * This method will return the name of next screen or null for AJAX response.
+     * For AJAX response, this method will return the HTTP status and any error in the HTTP body.
+     *
+     * @param files new tender document to be added
+     * @param tenderId unique identifier of the tender
+     * @param resp HttpServletResponse
+     * @return String
+     * @throws IOException if has exception when putting error message in AJAX response
+     */
     @PostMapping("/admin/tender/addTenderDocument")
     public String addTenderDocument(@RequestParam(name = "file") MultipartFile files, @RequestParam(name = "tenderId") int tenderId,
                                     HttpServletResponse resp) throws IOException {
@@ -453,6 +580,14 @@ public class TenderController {
         }
     }
 
+    /**
+     * This method is used to remove tender document from a tender.
+     *
+     * @param documentId unique identifier of the document
+     * @param tenderId unique identifier of the tender
+     * @param redirectAttrs RedirectAttributes
+     * @return String
+     */
     @PostMapping("/admin/tender/removeTenderDocument")
     public String removeTenderDocument(@RequestParam(name = "id") int documentId, @RequestParam(name = "tenderId") int tenderId,
                                        RedirectAttributes redirectAttrs) {
