@@ -29,40 +29,54 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Controller for authentication and administration.
+ */
 @Controller
 public class AuthController {
 
     private UserService userService;
     private UserRoleService userRoleService;
     private CompanyService companyService;
-    private NotificationService notificationService;
     private CodeValueService codeValueService;
 
+    /**
+     * Constructor
+     *
+     * @param userService UserService
+     * @param companyService CompanyService
+     * @param codeValueService CodeValueService
+     * @param userRoleService UserRoleService
+     */
     @Autowired
-    public AuthController(UserService userService, CompanyService companyService, NotificationService notificationService,
+    public AuthController(UserService userService, CompanyService companyService,
                           CodeValueService codeValueService, UserRoleService userRoleService) {
         this.userService = userService;
         this.companyService = companyService;
-        this.notificationService = notificationService;
         this.codeValueService = codeValueService;
         this.userRoleService = userRoleService;
     }
 
+    /**
+     * This method is used to show login screen.
+     *
+     * @param request ServletRequest
+     * @param model Model
+     * @return String
+     */
     @RequestMapping("/login")
     public String showLogin(ServletRequest request, Model model) {
-        Map<String, String[]> paramMap = request.getParameterMap();
-
-//        if (paramMap.containsKey("error"))
-//        {
-//            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
-//                    "Invalid username or password");
-//            model.addAttribute("alert", alert);
-//        }
         model.addAttribute("login", new LoginDTO());
 
         return "login";
     }
 
+    /**
+     * This method is used to show user registration screen.
+     *
+     * @param model ModelMap
+     * @return ModelAndView
+     */
     @GetMapping("/register")
     public ModelAndView showUserRegistration(ModelMap model) {
         model.addAttribute("IdType",codeValueService.getByType("id_type"));
@@ -70,6 +84,16 @@ public class AuthController {
 
     }
 
+    /**
+     * This method is used to register user.
+     *
+     * @param form UserRegistrationDTO
+     * @param result BindingResult
+     * @param redirectAttrs RedirectAttributes
+     * @param model ModelMap
+     * @return String
+     * @see UserRegistrationDTO
+     */
     @PostMapping("/register")
     public String saveUserRegistration(@Valid @ModelAttribute("registration") UserRegistrationDTO form,
                                        BindingResult result, RedirectAttributes redirectAttrs, ModelMap model) {
@@ -87,6 +111,7 @@ public class AuthController {
             return "registerUser";
         }
 
+        // TODO move validation to Service.
         if(form.getIdType() == 1){
             if(!userService.isNRICValid(form.getIdNo())){
                 AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
@@ -128,6 +153,11 @@ public class AuthController {
         return "redirect:/login";
     }
 
+    /**
+     * This method is used to show select company screen.
+     *
+     * @return ModelAndView
+     */
     @GetMapping("/selectCompany")
     public ModelAndView showSelectCompany() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -137,6 +167,12 @@ public class AuthController {
         return new ModelAndView("selectCompany", "company", administeredCompanies);
     }
 
+    /**
+     * This method is used to select company for managing.
+     *
+     * @param companyId unique identifier of the company
+     * @return String
+     */
     @PostMapping("/selectCompany")
     public String selectCompanyToManage(@RequestParam("companyId") String companyId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -157,6 +193,13 @@ public class AuthController {
         return "redirect:/";
     }
 
+    /**
+     * This method used to show forgot password screen.
+     *
+     * @param request ServletRequest
+     * @param model Model
+     * @return String
+     */
     @RequestMapping("/forgotPassword")
     public String forgotPassword(ServletRequest request, Model model) {
         Map<String, String[]> paramMap = request.getParameterMap();
@@ -165,6 +208,16 @@ public class AuthController {
         return "forgotPassword";
     }
 
+    /**
+     * This method used to send PIN for identifying user email.
+     *
+     * @param form ForgotPasswordDTO
+     * @param result BindingResult
+     * @param redirectAttrs RedirectAttributes
+     * @param model ModelMap
+     * @return String
+     * @see ForgotPasswordDTO
+     */
     @RequestMapping("/sendPIN")
     public String sendPIN(@Valid @ModelAttribute("forgotPassword") ForgotPasswordDTO form,
                           BindingResult result, RedirectAttributes redirectAttrs, ModelMap model) {
@@ -189,6 +242,15 @@ public class AuthController {
         return "forgotPassword";
     }
 
+    /**
+     * This method is used to reset the user password.
+     *
+     * @param email email address of the user
+     * @param pin pin number of the user for identifying user
+     * @param request ServletRequest
+     * @param model Model
+     * @return String
+     */
     @GetMapping("/resetPassword/{email}/{pin}")
     public String resetPassword(@PathVariable(value="email") String email, @PathVariable(value="pin") String pin, ServletRequest request, Model model) {
         ChangePasswordDTO dto = new ChangePasswordDTO();
@@ -206,6 +268,16 @@ public class AuthController {
         return "changePassword";
     }
 
+    /**
+     * This method is used to change the user password.
+     *
+     * @param form ChangePasswordDTO
+     * @param result BindingResult
+     * @param redirectAttrs RedirectAttributes
+     * @param model ModelMap
+     * @return String
+     * @see ChangePasswordDTO
+     */
     @RequestMapping("/changePassword")
     public String changePassword(@Valid @ModelAttribute("changePassword") ChangePasswordDTO form
             , BindingResult result, RedirectAttributes redirectAttrs, ModelMap model) {

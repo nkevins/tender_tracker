@@ -26,6 +26,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.Valid;
 import java.util.List;
 
+/**
+ * Controller for the company management.
+ */
 @Controller
 public class CompanyController {
 
@@ -34,6 +37,14 @@ public class CompanyController {
     private UserService userService;
     private UenEntityService uenEntService;
 
+    /**
+     * Constructor.
+     *
+     * @param codeValueService CodeValueService
+     * @param companyService CompanyService
+     * @param userService UserService
+     * @param uenEntService UenEntityService
+     */
     @Autowired
     public CompanyController(CodeValueService codeValueService, CompanyService companyService, UserService userService, UenEntityService uenEntService) {
         this.codeValueService = codeValueService;
@@ -42,6 +53,12 @@ public class CompanyController {
         this.uenEntService = uenEntService;
     }
 
+    /**
+     * This method is used to show company registration screen.
+     *
+     * @param model ModelMap
+     * @return String
+     */
     @GetMapping("registerCompany")
     public String showRegisterCompany(ModelMap model) {
         CompanyRegistrationDTO dto = new CompanyRegistrationDTO();
@@ -54,6 +71,16 @@ public class CompanyController {
         return "registerCompany";
     }
 
+    /**
+     * This method is used to register the company.
+     *
+     * @param form CompanyRegistrationDTO
+     * @param result BindingResult
+     * @param redirectAttrs RedirectAttributes
+     * @param model ModelMap
+     * @return String
+     * @see CompanyRegistrationDTO
+     */
     @PostMapping("registerCompany")
     public String saveCompanyRegistration(@Valid @ModelAttribute("registration") CompanyRegistrationDTO form,
                                           BindingResult result, RedirectAttributes redirectAttrs, ModelMap model) {
@@ -67,6 +94,7 @@ public class CompanyController {
             return "registerCompany";
         }
 
+        // TODO move business check into CompanyService.
         List<Company> compList = companyService.findCompanyByUen(form.getUen());
 
         if(compList != null && compList.size() > 0){
@@ -134,6 +162,13 @@ public class CompanyController {
         return "redirect:/";
     }
 
+    /**
+     * This method is used to show the company detail screen.
+     *
+     * @param id unique identifier of the company.
+     * @param model ModelMap
+     * @return String
+     */
     @GetMapping("/company/{id}")
     public String showCompanyDetail(@PathVariable(value = "id") Integer id, ModelMap model) {
         Company company = companyService.findById(id);

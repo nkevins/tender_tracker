@@ -38,7 +38,7 @@ public class ProductClarificationServiceImpl implements ProductClarificationServ
     }
 
     @Override
-    public ProductClarification Create(ProductClarification product) {
+    public ProductClarification create(ProductClarification product) {
         return dao.save(product);
     }
 
@@ -48,7 +48,7 @@ public class ProductClarificationServiceImpl implements ProductClarificationServ
     }
 
     @Override
-    public ProductClarification UpdateResponse(int id, String response) {
+    public ProductClarification updateResponse(int id, String response) {
         try{
             ProductClarification dbOjb = dao.findOne(id);
 

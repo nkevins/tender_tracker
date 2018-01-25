@@ -25,6 +25,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Controller for marketplace.
+ */
 @Controller
 public class MarketplaceController {
 
@@ -34,6 +37,14 @@ public class MarketplaceController {
     private UserService userSvc;
     private String className;
 
+    /**
+     * Constructor.
+     *
+     * @param productService ProductService
+     * @param codeValueService CodeValueService
+     * @param prdSvc ProductClarificationService
+     * @param userSvc UserService
+     */
     @Autowired
     public MarketplaceController(ProductService productService, CodeValueService codeValueService,ProductClarificationService prdSvc,UserService userSvc) {
         this.productService = productService;
@@ -43,6 +54,14 @@ public class MarketplaceController {
         className = this.getClass().getName();
     }
 
+    /**
+     * This method is used to show product list screen of marketplace.
+     *
+     * @param pageSize
+     * @param page
+     * @param modelMap
+     * @return String
+     */
     @GetMapping("/marketplace")
     public String marketplace(@RequestParam("pageSize") Optional<Integer> pageSize,
                               @RequestParam("page") Optional<Integer> page,
@@ -75,6 +94,19 @@ public class MarketplaceController {
         return "marketplace";
     }
 
+    /**
+     * This method is used to show products list of marketplace by advanced search or searchText.
+     *
+     * @param pageSize
+     * @param page
+     * @param searchText
+     * @param title
+     * @param companyName
+     * @param orderBy
+     * @param orderMode
+     * @param modelMap ModelMap
+     * @return String
+     */
     @GetMapping("/marketplace/products")
     public String showProducts(@RequestParam("pageSize") Optional<Integer> pageSize,
                                @RequestParam("page") Optional<Integer> page,
@@ -120,6 +152,13 @@ public class MarketplaceController {
         return "marketplace";
     }
 
+    /**
+     * This method is used the get the sort pattern of the product list screen.
+     *
+     * @param searchDTO ProductSearchDTO
+     * @return Sort
+     * @see ProductSearchDTO
+     */
     private Sort getSortPattern(ProductSearchDTO searchDTO) {
         Sort.Direction direction = Sort.Direction.ASC;
         // Set order direction.
@@ -131,6 +170,13 @@ public class MarketplaceController {
         return new Sort(new Sort.Order(direction, searchDTO.getOrderBy()));
     }
 
+    /**
+     * This method is used to show the detail screen of selected product.
+     *
+     * @param id unique idendtifier of the product
+     * @param model ModelMap
+     * @return String
+     */
     @GetMapping("/product/clarification/{id}")
     public String showProductDetailsPage(@PathVariable(value = "id") Integer id, ModelMap model){
 
@@ -145,8 +191,16 @@ public class MarketplaceController {
         return "marketplaceClarification";
     }
 
+    /**
+     * This method is used to update the product clarification.
+     *
+     * @param response description of product clarification
+     * @param productId unique identifier of the product
+     * @param redirectAttrs RedirectAttributes
+     * @return String
+     */
     @PostMapping("/product/clarification/save")
-    public String updateTender (@RequestParam("response") String response,  @RequestParam("productId") int productId, RedirectAttributes redirectAttrs) {
+    public String updateProduct (@RequestParam("response") String response,  @RequestParam("productId") int productId, RedirectAttributes redirectAttrs) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CurrentUser currentUser = (CurrentUser) authentication.getPrincipal();
         ProductClarification clar = new ProductClarification();
@@ -163,7 +217,7 @@ public class MarketplaceController {
         clar.setDescription(response);
 
         try {
-            prdSvc.Create(clar);
+            prdSvc.create(clar);
         } catch (ApplicationException ex) {
             AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
                     ex.getMessage());
@@ -176,11 +230,23 @@ public class MarketplaceController {
         return "redirect:/product/clarification/" + productId;
     }
 
+    /**
+     * This method is used to show the product clarification page.
+     *
+     * @return String
+     */
     @GetMapping("/admin/product/clarification")
     public String showProductClarificationPage() {
         return "admin/product/productClarificationView";
     }
 
+    /**
+     * This method is used to show the tender clarification update page.
+     *
+     * @param id unique identifier of the product clarification.
+     * @param model ModelMap
+     * @return String
+     */
     @GetMapping("/admin/product/clarification/view/{id}")
     public String showTenderClarificationUpdatePage(@PathVariable(value = "id") Integer id,ModelMap model) {
         ProductClarification clarfi = prdSvc.findById(id);
@@ -196,7 +262,7 @@ public class MarketplaceController {
         if(clarfi.getProduct().getCompany().getId() != usr1.getSelectedCompany().getId())
         {
             AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
-                    "You are not auhtorized to view the tender clarification details");
+                    "You are not authorized to view the tender clarification details");
             model.addAttribute("alert", alert);
             return "admin/clarification/tenderClarificationList";
         }
@@ -237,10 +303,17 @@ public class MarketplaceController {
         return "admin/product/productClarificationFormView";
     }
 
+    /**
+     * This method is used to update the tender clarification response.
+     *
+     * @param form TenderClarificationDTO
+     * @param model ModelMap
+     * @return String
+     */
     @PostMapping("/admin/product/clarification/update")
     public String updateTenderClarificationResponse(@Valid TenderClarificationDTO form, ModelMap model){
 
-        ProductClarification clari = prdSvc.UpdateResponse(form.getId(),form.getResponse());
+        ProductClarification clari = prdSvc.updateResponse(form.getId(),form.getResponse());
         if(clari == null){
             AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
                     "Failed to update tender clarification response.Please contact administrator");

@@ -22,6 +22,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Iterator;
 import java.util.Optional;
 
+/**
+ * Controller class for user home screen.
+ */
 @Controller
 public class HomeController {
     private TenderService tenderService;
@@ -40,17 +43,19 @@ public class HomeController {
      *
      * @param pageSize
      * @param page
-     * @return model and view
+     * @param model
+     * @return String
      */
     @GetMapping("/")
     public String showPersonsPage(@RequestParam("pageSize") Optional<Integer> pageSize,
                                         @RequestParam("page") Optional<Integer> page, ModelMap model) {
-        // Evaluate page size. If requested parameter is null, return initial
-        // page size
+        // Evaluate page size. If requested parameter is null, return initial page size
         int evalPageSize = pageSize.orElse(TTConstants.INITIAL_PAGE_SIZE);
-        // Evaluate page. If requested parameter is null or less than 0 (to
-        // prevent exception), return initial size. Otherwise, return value of
-        // param. decreased by 1.
+        /*
+            Evaluate page. If requested parameter is null or less than 0 (to
+         prevent exception), return initial size. Otherwise, return value of
+         param. decreased by 1.
+         */
         int evalPage = (page.orElse(0) < 1) ? TTConstants.INITIAL_PAGE : page.get() - 1;
 
         Page<Tender> tenders = tenderService.listAllByPage(
@@ -76,21 +81,24 @@ public class HomeController {
     }
 
     /**
-     * Handles all requests
+     * This method is used to show eligible external tender.
      *
      * @param pageSize
      * @param page
-     * @return model and view
+     * @param model
+     * @return String
      */
     @GetMapping("/external_tender")
     public String showExternalTender(@RequestParam("pageSize") Optional<Integer> pageSize,
                                   @RequestParam("page") Optional<Integer> page, ModelMap model) {
-        // Evaluate page size. If requested parameter is null, return initial
-        // page size
+        // Evaluate page size. If requested parameter is null, return initial page size
         int evalPageSize = pageSize.orElse(TTConstants.INITIAL_PAGE_SIZE);
-        // Evaluate page. If requested parameter is null or less than 0 (to
-        // prevent exception), return initial size. Otherwise, return value of
-        // param. decreased by 1.
+
+        /*
+            Evaluate page. If requested parameter is null or less than 0 (to
+         prevent exception), return initial size. Otherwise, return value of
+         param. decreased by 1.
+         */
         int evalPage = (page.orElse(0) < 1) ? TTConstants.INITIAL_PAGE : page.get() - 1;
 
         Page<ExternalTender> externalTenders = externalTenderService.listAllByPage(
@@ -100,7 +108,7 @@ public class HomeController {
         Pager pager = new Pager(externalTenders.getTotalPages(), externalTenders.getNumber(), TTConstants.BUTTONS_TO_SHOW);
 
         for (ExternalTender exTender : externalTenders.getContent()) {
-            TTLogger.debug(HomeController.class.getName(), "****ExterTender="+exTender.toString());
+            TTLogger.debug(HomeController.class.getName(), "****ExternalTender="+exTender.toString());
         }
 
         TenderSearchDTO tenderSearchDTO = new TenderSearchDTO();
@@ -119,6 +127,11 @@ public class HomeController {
         return "external_tenders";
     }
 
+    /**
+     * This method is used to show about page of the website.
+     *
+     * @return String
+     */
     @GetMapping("/about")
     public String showAboutPage() {
         return "about";

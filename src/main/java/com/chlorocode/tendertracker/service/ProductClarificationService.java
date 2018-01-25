@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface ProductClarificationService {
     ProductClarification findById(int id);
-    ProductClarification Create(ProductClarification product);
+    ProductClarification create(ProductClarification product);
     List<ProductClarification> findClarificationByProdId(int prodId);
-    ProductClarification UpdateResponse(int id, String response);
+    ProductClarification updateResponse(int id, String response);
 }
