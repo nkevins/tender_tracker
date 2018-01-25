@@ -51,6 +51,11 @@ public class CompanySysAdmController {
         return "admin/sysadm/companyInfoView";
     }
 
+    @GetMapping("/sysadm/tender")
+    public String showTenderList() {
+        return "admin/sysadm/tenderList";
+    }
+
     @GetMapping("/sysadm/companyInfo/{id}")
     public String showcompanyInfo(@PathVariable(value="id") Integer id, Model model) {
         CompanyRegistrationDetailsDTO companyRegistration = companyService.findCompanyRegistrationById(id);

@@ -58,6 +58,25 @@ public class TenderDataController {
     }
 
     /**
+     * This method is used to search tenders created by all company.
+     *
+     * @param input data table search criteria input
+     * @return data table output
+     */
+    @JsonView(DataTablesOutput.View.class)
+    @RequestMapping(value = "/sysadmin/data/tenderlist", method = RequestMethod.GET)
+    public DataTablesOutput<Tender> getTendersList(@Valid DataTablesInput input) {
+        CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        int companyId = usr.getSelectedCompany().getId();
+
+        DataTablesOutput<Tender> tenders = tenderDAO.findAll(input, null, (root, criteriaQuery, criteriaBuilder) -> {
+            return criteriaBuilder.notEqual(root.get("status"), 4);
+        });
+
+        return tenders;
+    }
+
+    /**
      * This method is used to search tenders ready for evaluation.
      *
      * @param input data table search criteria input
