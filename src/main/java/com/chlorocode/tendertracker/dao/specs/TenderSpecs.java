@@ -9,26 +9,60 @@ import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Created by Kyaw Min Thu.
+ * TenderSpecs is used for create condition for tender search screen.
+ */
 public class TenderSpecs {
 
     private TenderSpecs() {}
 
+    /**
+     * This method is used to create the query for home page landing users.
+     * If user is not login user, show opened and open type tenders.
+     * If user is login user. Show opened and his company or invited tender or open type tenders.
+     *
+     * @param companyId unique identifier of the tender of login user
+     * @param tenderIds tender id of all invited tenders of login user
+     * @return Specification
+     */
     public static Specification<Tender> getAllOpenTender(int companyId, List<Integer> tenderIds) {
         if (companyId == 0) {
             return getDefaultCriteriaSpec();
         } else {
-            return Specifications.where(getLoginUserCriteria(companyId, tenderIds)).or(getDefaultCriteriaSpec());
+            return Specifications.where(getOpenDateCriteria()).and(getLoginUserCriteria(companyId, tenderIds));
         }
     }
 
+    /**
+     * This method is used to create the default criteria of not login user.(Show opened and open type tenders.)
+     *
+     * @return Specification
+     */
     public static Specification<Tender> getDefaultCriteriaSpec() {
         return Specifications.where(getOpenDateCriteria()).and(getOpenTenderTypeCriteria());
     }
 
+    /**
+     * This method used to create the query for searching tender by free text.
+     * If user is not login user, companyId will be 0 and tenderIds will be null.
+     *
+     * @param searchString search free text
+     * @param companyId unique identifier of the tender of login user
+     * @param tenderIds tender id of all invited tenders of login user
+     * @return Specification
+     */
     public static Specification<Tender> byTenderSearchString(String searchString, int companyId, List<Integer> tenderIds) {
         return Specifications.where(getAllOpenTender(companyId, tenderIds)).and(byTenderSearchString(searchString));
     }
 
+    /**
+     * This method used to create criteria for finding tender by free text.
+     * User's searchString will be find in tender title, company name and tender description.
+     *
+     * @param searchString search free text
+     * @return Specification
+     */
     public static Specification<Tender> byTenderSearchString(String searchString) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -42,12 +76,36 @@ public class TenderSpecs {
         };
     }
 
+    /**
+     * This method used to create the query for advanced search.
+     * If user is not login user, companyId will be 0 and tenderIds will be null.
+     *
+     * @param title title of tender
+     * @param companyName name of company
+     * @param tcId category of tender
+     * @param status status of tender
+     * @param refNo reference number of tender
+     * @param companyId unique identifier of the tender of login user
+     * @param tenderIds tender id of all invited tenders of login user
+     * @return Specification
+     */
     public static Specification<Tender> byTenderSearchCriteria(String title, String companyName, int tcId, int status
             , String refNo, int companyId, List<Integer> tenderIds) {
         return Specifications.where(getAllOpenTender(companyId, tenderIds))
                 .and(byTenderSearchCriteria(title, companyName, tcId, status, refNo));
     }
 
+    /**
+     * This method used to create criteria for advance search.
+     * User's searchString will be find in tender title, company name and tender description.
+     *
+     * @param title title of tender
+     * @param companyName name of company
+     * @param tcId category of tender
+     * @param status status of tender
+     * @param refNo reference number of tender
+     * @return Specification
+     */
     public static Specification<Tender> byTenderSearchCriteria(String title, String companyName, int tcId, int status, String refNo) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -74,6 +132,14 @@ public class TenderSpecs {
         };
     }
 
+    /**
+     * This method is used to create criteria for login user.
+     * Login user should able to see all of his opened tender and other eligible tender(Opened and open type tenders)
+     *
+     * @param companyId unique identifier of the tender of login user
+     * @param tenderIds tender id of all invited tenders of login user
+     * @return
+     */
     private static Specification<Tender> getLoginUserCriteria(int companyId, List<Integer> tenderIds) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -91,23 +157,19 @@ public class TenderSpecs {
                 }
                 predicates.add(inTenderIds);
             }
-            // or(1,2)
+
+            // 3. Show open tender type.
+            predicates.add(cb.equal(root.<Integer>get(Tender_.tenderType), 1));
+            // or(1,2,3)
             return cb.or(predicates.toArray(new Predicate[predicates.size()]));
         };
     }
 
-//    private static Specification<Tender> getDefaultCriteriaQuery() {
-//        return (root, query, cb) -> {
-//            List<Predicate> predicates = new ArrayList<>();
-//            // show openDate<current time tenders.
-//            predicates.add(cb.lessThanOrEqualTo(root.get(Tender_.openDate), DateUtility.getCurrentDate()));
-//            // show only open tender type.
-//            predicates.add(cb.equal(root.<Integer>get(Tender_.tenderType), 1));
-//            // or(1,2)
-//            return cb.and(predicates.toArray(new Predicate[predicates.size()]));
-//        };
-//    }
-
+    /**
+     * This method is used to create criteria for getting all opened tender.
+     *
+     * @return Specification
+     */
     private static Specification<Tender> getOpenDateCriteria() {
         return (root, query, cb) -> {
             // show openDate<current time tenders.
@@ -115,6 +177,11 @@ public class TenderSpecs {
         };
     }
 
+    /**
+     * This method is used to create for getting all open type tenders.
+     *
+     * @return Specification
+     */
     private static Specification<Tender> getOpenTenderTypeCriteria() {
         return (root, query, cb) -> {
             // show only open tender type.
@@ -122,38 +189,12 @@ public class TenderSpecs {
         };
     }
 
-//    private static List<Predicate> getDefaultCriteriaQuery(Root<Tender> root, CriteriaBuilder cb, int companyId, List<Integer> tenderIds) {
-//        List<Predicate> predicates = new ArrayList<>();
-//        List<Predicate> innerPredicates = new ArrayList<>();
-//
-//        // 1. Add condition to show all of his company tenders.
-//        if (companyId > 0) {
-//            innerPredicates.add(cb.equal(root.get(Tender_.company).<Integer>get(Company_.id), companyId));
-//        }
-//
-//        // 2. Add condition to show all of his bid tenders.
-//        if (tenderIds != null && tenderIds.size() > 0) {
-//            CriteriaBuilder.In<Integer> inTenderIds = cb.in(root.get(Tender_.id));
-//            for (Integer id : tenderIds) {
-//                inTenderIds.value(id);
-//            }
-//            innerPredicates.add(inTenderIds);
-//        }
-//
-//        // 3. Add condition to show all open tenders.
-//        List<Predicate> innerPredicates2 = new ArrayList<>();
-//        innerPredicates2.add(cb.lessThanOrEqualTo(root.get(Tender_.openDate), DateUtility.getCurrentDate()));
-//        innerPredicates2.add(cb.equal(root.<Integer>get(Tender_.tenderType), 1));
-//
-//        innerPredicates.add(cb.and(innerPredicates2.toArray(new Predicate[innerPredicates2.size()])));
-//
-//
-//        // or(1,2,3)
-//        predicates.add(cb.or(innerPredicates.toArray(new Predicate[innerPredicates.size()])));
-//
-//        return predicates;
-//    }
-
+    /**
+     * This method is used to create the like query pattern.(for eg- '%searchTerm%'
+     *
+     * @param searchTerm search free text
+     * @return String
+     */
     private static String getContainsLikePattern(String searchTerm) {
         if (searchTerm == null || searchTerm.isEmpty()) {
             return "%";
