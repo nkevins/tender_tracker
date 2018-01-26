@@ -1,11 +1,10 @@
 package com.chlorocode.tendertracker.constants;
 
-import org.springframework.data.domain.Sort;
-
 /**
- * Created by Kyaw Min Thu on 3/7/2017.
+ * This class is to capture all system constants.
  */
 public class TTConstants {
+
     public static final int OTP_VALID_HOURS = 1;
     public static final int OTP_LENGTH = 6;
     public static String OTP_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ";

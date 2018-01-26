@@ -3,6 +3,9 @@ package com.chlorocode.tendertracker.logging;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class is used to perform logging.
+ */
 public class TTLogger {
 
     private static final Logger logger;

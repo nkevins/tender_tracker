@@ -2,6 +2,9 @@ package com.chlorocode.tendertracker.props;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+/**
+ * This class is used to get mail properties value.
+ */
 @ConfigurationProperties(prefix = "mail")
 public class MailProperties {
 
@@ -292,57 +295,4 @@ public class MailProperties {
     public void setTemplateTenderAwarded(String templateTenderAwarded) {
         this.templateTenderAwarded = templateTenderAwarded;
     }
-    //    private String subjectOTP;
-//    public static final String OTP_TEMPLATE = "<html><body>"
-//            + "<p>Dear %s,</p>"
-//            + "<p>Please click on following link to reset password for your account."
-//            + "<br><a href=\"http://localhost:8080/resetPassword/%s/%s\">\"http://localhost:8080/resetPassword/%s/%s\"</a></p>"
-//            + "<p>Regards,<br>Tender Tracker</p>"
-//            + "</body></html>";
-//
-//    @Value("${subject.welcome_mail}")
-//    private String subjectWelcome;
-//    public static final String WELCOME_TEMPLATE = "<html><body>"
-//            + "<p>Welcome to Tender Tracker.</p>"
-//            + "<p>Hi %s, your account creation is completed.</p>"
-//            + "<p>Regards,<br>Tender Tracker</p>"
-//            + "</body></html>";
-//
-//    @Value("${subject.update_tender_mail}")
-//    private String subjectUpdateTender;
-//    public static final String UPDATE_TENDER_TEMPLATE = "<html><body>"
-//            + "<p>Tender \"%s\" has been updated.</p>"
-//            + "<p>Please see more information on following link."
-//            + "<br><a href=\"http://localhost:8080/tender/%s\">\"http://localhost:8080/tender/%s\"</a></p>"
-//            + "<p>Regards,<br>Tender Tracker</p>"
-//            + "</body></html>";
-//
-//    @Value("${subject.add_corrigendum_mail}")
-//    private String subjectAddCorrigendum;
-//    public static final String ADD_CORRIGENDUM_TEMPLATE = "<html><body>"
-//            + "<p>New corrigendum add into the tender \"%s\".</p>"
-//            + "<p>Please see more information on following link."
-//            + "<br><a href=\"http://localhost:8080/tender/%s\">\"http://localhost:8080/tender/%s\"</a></p>"
-//            + "<p>Regards,<br>Tender Tracker</p>"
-//            + "</body></html>";
-//
-//    @Value("${subject.create_tender_mail}")
-//    private String subjectCreateTender;
-//    public static final String CREATE_TENDER_TEMPLATE = "<html><body>"
-//            + "<p>Tender \"%s\" has been created.</p>"
-//            + "<p>Please see more information on following link."
-//            + "<br><a href=\"http://localhost:8080/tender/%s\">\"http://localhost:8080/tender/%s\"</a></p>"
-//            + "<p>Regards,<br>Tender Tracker</p>"
-//            + "</body></html>";
-//
-//    @Value("${subject.company_review_mail}")
-//    private String subjectCompanyReview;
-//    public static final String COMPANY_APPROVE_TEMPLATE = "<html><body>"
-//            + "<p>Congratulation, your company \"%s\" registration request has been approved.</p>"
-//            + "<p>Regards,<br>Tender Tracker</p>"
-//            + "</body></html>";
-//    public static final String COMPANY_REJECT_TEMPLATE = "<html><body>"
-//            + "<p>Sorry, your company \"%s\" registration request has been rejected.</p>"
-//            + "<p>Regards,<br>Tender Tracker</p>"
-//            + "</body></html>";
 }

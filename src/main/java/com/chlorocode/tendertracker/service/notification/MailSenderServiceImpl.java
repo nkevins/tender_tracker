@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * Kyaw Min Thu
+ * Service implementation of MailSenderService
  */
 @Component
 public class MailSenderServiceImpl implements MailSenderService {

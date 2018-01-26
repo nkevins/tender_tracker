@@ -10,12 +10,19 @@ import java.util.List;
 import java.util.concurrent.Future;
 
 /**
- * Created by Kyaw Min Thu on 5/1/2017.
+ * This class is used to handle long process threading during external tender saving process.
  */
 public class LongProcess {
+
     @Autowired
     private ExternalTenderService tenderWCService;
 
+    /**
+     * This method is used to save external tender asynchronously.
+     *
+     * @param tenders list of external tender to be saved
+     * @return String
+     */
     @Async
     public Future<String> createExternalTenderList(List<ExternalTender> tenders) {
         tenderWCService.createTenderWCList(tenders);

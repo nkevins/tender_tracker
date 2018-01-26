@@ -151,8 +151,8 @@
                         <form th:action="@{/sysadm/blacklistCompany}" method="POST">
                             <input type="hidden" name="id" th:value="${reg.id}" />
 
-                           <button type="submit" name="action" value="reject" class="btn btn-danger" th:if="${reg.isActive()}"><i class="fa fa-times"></i>Blacklist Company</button>
-                            <button type="submit" name="action" value="approve" class="btn btn-success" th:if="${not reg.isActive()}"><i class="fa fa-times"></i>Unblacklist Company</button>
+                            <button type="submit" name="action" value="blacklist" class="btn btn-danger" th:if="${reg.isActive()}"><i class="fa fa-times"></i>Blacklist Company</button>
+                            <button type="submit" name="action" value="unblacklist" class="btn btn-success" th:if="${not reg.isActive()}"><i class="fa fa-times"></i>Unblacklist Company</button>
 
                         </form>
                     </div>

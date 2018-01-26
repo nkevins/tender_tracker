@@ -3,7 +3,6 @@ package com.chlorocode.tendertracker.web.sysadm;
 import com.chlorocode.tendertracker.dao.dto.AlertDTO;
 import com.chlorocode.tendertracker.dao.dto.CompanyRegistrationDetailsDTO;
 import com.chlorocode.tendertracker.dao.dto.ProductUpdateDTO;
-import com.chlorocode.tendertracker.dao.dto.TenderClarificationDTO;
 import com.chlorocode.tendertracker.dao.entity.*;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.exception.ResourceNotFoundException;
@@ -19,9 +18,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.validation.Valid;
 import java.util.List;
 
+/**
+ * Controller for system administrator panel.
+ */
 @Controller
 public class CompanySysAdmController {
 
@@ -33,6 +34,17 @@ public class CompanySysAdmController {
     private S3Wrapper s3Service;
     private UserService userService;
 
+    /**
+     * Constructor.
+     *
+     * @param companyService CompanyService
+     * @param uenEntService UenEntityService
+     * @param productService ProductService
+     * @param codeValueService CodeValueService
+     * @param tenderService TenderService
+     * @param s3Service S3Service
+     * @param userService UserService
+     */
     @Autowired
     public CompanySysAdmController(CompanyService companyService, UenEntityService uenEntService,ProductService productService,CodeValueService codeValueService
     ,TenderService tenderService,S3Wrapper s3Service,UserService userService) {
@@ -45,21 +57,43 @@ public class CompanySysAdmController {
         this.userService = userService;
     }
 
+    /**
+     * This method is used to display company registration list page.
+     *
+     * @return String
+     */
     @GetMapping("/sysadm/companyRegistration")
     public String showCompanyRegistration() {
         return "admin/sysadm/companyRegistrationView";
     }
 
+    /**
+     * This method is used to display page containing all approved / rejected companies.
+     *
+     * @return String
+     */
     @GetMapping("/sysadm/companyRegistrationList")
     public String showCompanyRegistrationList() {
         return "admin/sysadm/companyInfoView";
     }
 
+    /**
+     * This method is used to display page containing all tenders.
+     *
+     * @return String
+     */
     @GetMapping("/sysadm/tender")
     public String showTenderList() {
         return "admin/sysadm/tenderList";
     }
 
+    /**
+     * This method is used to display company details page.
+     *
+     * @param id unique identifier of the company
+     * @param model Model
+     * @return String
+     */
     @GetMapping("/sysadm/companyInfo/{id}")
     public String showcompanyInfo(@PathVariable(value="id") Integer id, Model model) {
         CompanyRegistrationDetailsDTO companyRegistration = companyService.findCompanyRegistrationById(id);
@@ -91,6 +125,13 @@ public class CompanySysAdmController {
         return "admin/sysadm/companyDetail";
     }
 
+    /**
+     * This method is used to show company registration details page.
+     *
+     * @param id unique identifier of the company
+     * @param model Model
+     * @return String
+     */
     @GetMapping("/sysadm/companyRegistration/{id}")
     public String showCompanyRegistrationDetail(@PathVariable(value="id") Integer id, Model model) {
         CompanyRegistrationDetailsDTO companyRegistration = companyService.findCompanyRegistrationById(id);
@@ -111,13 +152,21 @@ public class CompanySysAdmController {
         return "admin/sysadm/companyRegistrationDetail";
     }
 
+    /**
+     * This method is used to blacklist / remove blacklist from a company.
+     *
+     * @param id unique identifier of the company
+     * @param action action to indicate blacklist / unblacklist company
+     * @param redirectAttrs RedirectAttributes
+     * @return String
+     */
     @PostMapping("/sysadm/blacklistCompany")
     public String blacklistCompany(@RequestParam("id") int id, @RequestParam("action") String action,
                                                    RedirectAttributes redirectAttrs) {
         CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         try{
-            if (action.equals("reject")) {
+            if (action.equals("blacklist")) {
                 boolean result = companyService.blacklistCompany(id,  usr.getId());
                 if(result){
                     AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
@@ -128,30 +177,35 @@ public class CompanySysAdmController {
                             "Something went wrong. Cannot blacklisted the company");
                     redirectAttrs.addFlashAttribute("alert", alert);
                 }
-            }else{
+            } else {
                 boolean result = companyService.unblacklistCompany(id,  usr.getId());
-                if(result){
+                if (result) {
                     AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
                             "Company unblacklisted Successful");
                     redirectAttrs.addFlashAttribute("alert", alert);
-                }else{
+                } else {
                     AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
                             "Something went wrong. Cannot blacklisted the company");
                     redirectAttrs.addFlashAttribute("alert", alert);
                 }
             }
-
-
         }catch (ApplicationException ex){
             AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
                     "Error encountered: " + ex.getMessage());
             redirectAttrs.addFlashAttribute("alert", alert);
         }
 
-
         return "redirect:/sysadm/companyRegistrationList";
     }
 
+    /**
+     * This method is used to approve / reject company registration.
+     *
+     * @param id unique identifier of the company
+     * @param action action to indicate approve / reject company
+     * @param redirectAttrs RedirectAttributes
+     * @return String
+     */
     @PostMapping("/sysadm/companyRegistration")
     public String approveRejectCompanyRegistration(@RequestParam("id") int id, @RequestParam("action") String action,
                                                    RedirectAttributes redirectAttrs) {
@@ -180,11 +234,23 @@ public class CompanySysAdmController {
         return "redirect:/sysadm/companyRegistration";
     }
 
+    /**
+     * This method is used to display product listing page.
+     *
+     * @return String
+     */
     @GetMapping("/sysadm/product")
     public String showAllProduct() {
         return "admin/sysadm/productList";
     }
 
+    /**
+     * This method is used to display product details page.
+     *
+     * @param id unique identifier of the product
+     * @param model ModelMap
+     * @return String
+     */
     @GetMapping("/sysadmin/product/view/{id}")
     public String showProductPage(@PathVariable(value = "id") Integer id, ModelMap model) {
         Product product = productService.findById(id);
@@ -215,11 +281,18 @@ public class CompanySysAdmController {
         return "admin/sysadm/productFormView";
     }
 
+    /**
+     * This method is used to blacklist a product.
+     *
+     * @param id
+     * @param model
+     * @return
+     */
     @PostMapping("/sysadmin/product/blacklist")
     public String updateTenderClarificationResponse(@RequestParam("id") int id, ModelMap model){
 
-        Product clari = productService.blacklistProduct(id);
-        if(clari == null){
+        Product product = productService.blacklistProduct(id);
+        if(product == null){
             AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
                     "Failed to blacklist product. Please contact administrator");
             model.addAttribute("alert", alert);
@@ -232,8 +305,15 @@ public class CompanySysAdmController {
         return "admin/sysadm/productList";
     }
 
+    /**
+     * This method is used to view tender details.
+     *
+     * @param id uique identifier of the tender
+     * @param model ModelMap
+     * @return String
+     */
     @GetMapping("/sysadmin/tender/{id}")
-    public String showTenderDetails(@PathVariable(value="id") Integer id, ModelMap model, RedirectAttributes redirectAttrs) {
+    public String showTenderDetails(@PathVariable(value="id") Integer id, ModelMap model) {
         Tender tender = tenderService.findById(id);
         if (tender == null) {
             return "redirect:/admin/tender";

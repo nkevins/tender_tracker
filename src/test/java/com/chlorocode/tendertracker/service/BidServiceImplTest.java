@@ -2,7 +2,10 @@ package com.chlorocode.tendertracker.service;
 
 import com.chlorocode.tendertracker.dao.BidDAO;
 import com.chlorocode.tendertracker.dao.BidDocumentDAO;
-import com.chlorocode.tendertracker.dao.entity.*;
+import com.chlorocode.tendertracker.dao.entity.Bid;
+import com.chlorocode.tendertracker.dao.entity.BidDocument;
+import com.chlorocode.tendertracker.dao.entity.Company;
+import com.chlorocode.tendertracker.dao.entity.Tender;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,7 +15,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -38,7 +40,7 @@ public class BidServiceImplTest {
     private BidServiceImpl bidServiceImpl;
 
     @Test
-    public void testSave() throws IOException {
+    public void testSave() {
         List<MultipartFile> files = new LinkedList<>();
         MockMultipartFile firstFile = new MockMultipartFile("data", "filename.txt", "text/plain", "some content".getBytes());
         files.add(firstFile);
@@ -65,7 +67,7 @@ public class BidServiceImplTest {
     }
 
     @Test
-    public void testDupicateTender() {
+    public void testDuplicateBid() {
         List<MultipartFile> files = new LinkedList<>();
         Company company = new Company();
         company.setId(1);

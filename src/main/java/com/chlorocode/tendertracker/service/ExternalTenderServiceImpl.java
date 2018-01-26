@@ -1,13 +1,11 @@
 package com.chlorocode.tendertracker.service;
 
-import com.chlorocode.tendertracker.dao.*;
+import com.chlorocode.tendertracker.dao.ExternalTenderDAO;
+import com.chlorocode.tendertracker.dao.ExternalTenderPagingDAO;
 import com.chlorocode.tendertracker.dao.dto.TenderSearchDTO;
 import com.chlorocode.tendertracker.dao.entity.ExternalTender;
-import com.chlorocode.tendertracker.dao.entity.Tender;
 import com.chlorocode.tendertracker.dao.specs.ExternalTenderSpecs;
-import com.chlorocode.tendertracker.dao.specs.TenderSpecs;
 import com.chlorocode.tendertracker.logging.TTLogger;
-import com.chlorocode.tendertracker.service.notification.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by Kyaw Min Thu on 5/1/2017.
+ * Service implementation of ExternalTenderService
  */
 @Service
 public class ExternalTenderServiceImpl implements ExternalTenderService {
@@ -30,6 +28,12 @@ public class ExternalTenderServiceImpl implements ExternalTenderService {
 
     private String className;
 
+    /**
+     * Constructor.
+     *
+     * @param externalTenderDAO ExternalTenderDAO
+     * @param externalTenderPagingDAO ExternalTenderPagingDAO
+     */
     @Autowired
     public ExternalTenderServiceImpl(ExternalTenderDAO externalTenderDAO, ExternalTenderPagingDAO externalTenderPagingDAO) {
         this.externalTenderDAO = externalTenderDAO;

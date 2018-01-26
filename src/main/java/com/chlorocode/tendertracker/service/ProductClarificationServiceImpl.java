@@ -1,24 +1,18 @@
 package com.chlorocode.tendertracker.service;
 
-import com.chlorocode.tendertracker.dao.ClarificationDAO;
 import com.chlorocode.tendertracker.dao.ProductClarificationDAO;
-import com.chlorocode.tendertracker.dao.entity.Clarification;
 import com.chlorocode.tendertracker.dao.entity.CurrentUser;
-import com.chlorocode.tendertracker.dao.entity.Product;
 import com.chlorocode.tendertracker.dao.entity.ProductClarification;
 import com.chlorocode.tendertracker.logging.TTLogger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.List;
 
 /**
- * Created by andy on 18/1/2018.
+ * Service implementation of ProductClarificationService
  */
 @Service
 public class ProductClarificationServiceImpl implements ProductClarificationService {
@@ -26,6 +20,11 @@ public class ProductClarificationServiceImpl implements ProductClarificationServ
     ProductClarificationDAO dao;
     private String className;
 
+    /**
+     * Constructor.
+     *
+     * @param dao ProductClarificationDAO
+     */
     @Autowired
     public ProductClarificationServiceImpl(ProductClarificationDAO dao){
         this.className = this.getClass().getName();

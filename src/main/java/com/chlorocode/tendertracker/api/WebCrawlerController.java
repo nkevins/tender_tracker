@@ -16,7 +16,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * Created by Kyaw Min Thu on 4/30/2017.
+ * Public REST API controller to be consumed by tender crawler.
+ * This REST API is secured by basic HTTP authentication
  */
 @RestController
 @RequestMapping("/restapi")
@@ -34,12 +35,25 @@ public class WebCrawlerController {
     private static final String template = "Hello, %s!";
     private final AtomicLong counter = new AtomicLong();
 
+    /**
+     * This method is used to display test message for testing purpose.
+     *
+     * @param name text to  be displayed
+     * @return String
+     */
     @RequestMapping(path = "/greeting", method = RequestMethod.GET)
     public Greeting greeting(@RequestParam(value="name", defaultValue="World") String name) {
         return new Greeting(String.valueOf(counter.incrementAndGet()),
                 String.format(template, name));
     }
 
+    /**
+     * This method is used to save external tender.
+     *
+     * @param tenders list of external tenders to be saved
+     * @param request HttpServletRequest
+     * @return ResponseEntity
+     */
     @RequestMapping(path = "/tenders", method = RequestMethod.POST)
     public ResponseEntity tenders(@RequestBody List<ExternalTender> tenders, HttpServletRequest request) {
         TTLogger.debug(this.getClass().getName(),"*******************WebCrawlerController" + this.toString() + "*********************");

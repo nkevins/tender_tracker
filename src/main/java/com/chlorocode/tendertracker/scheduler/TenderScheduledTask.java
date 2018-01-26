@@ -11,6 +11,9 @@ import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
 
+/**
+ * This class is used to configure all the spring scheduled task.
+ */
 @Component
 public class TenderScheduledTask {
 
@@ -20,6 +23,14 @@ public class TenderScheduledTask {
     private TenderService tenderService;
     private MilestoneService milestoneService;
 
+    /**
+     * Constructor
+     *
+     * @param externalTenderDAO ExternalTenderDAO
+     * @param tenderDAO TenderDAO
+     * @param tenderService TenderService
+     * @param milestoneService MilestoneService
+     */
     @Autowired
     public TenderScheduledTask(ExternalTenderDAO externalTenderDAO, TenderDAO tenderDAO, TenderService tenderService, MilestoneService milestoneService) {
         this.className = this.getClass().getName();
@@ -29,7 +40,10 @@ public class TenderScheduledTask {
         this.milestoneService = milestoneService;
     }
 
-    @Scheduled(cron="0 0 3 * * *", zone = "Asia/Singapore")
+    /**
+     * This is the job to auto closed expired tender.
+     */
+    @Scheduled(cron="0 0 3 * * *", zone = "Asia/Singapore") // Daily every 3 AM Singapore Time
     @Transactional
     public void tenderAutoClose() {
         TTLogger.info(className, "Auto Close status update for External Tender");
@@ -37,10 +51,13 @@ public class TenderScheduledTask {
         TTLogger.info(className, "Completed Auto Close status update for External Tender");
 
         TTLogger.info(className, "Auto Close status update for Tender");
-        tenderDAO.autoCloseTender(); // TODO may need to remove bc autoNotifyTenderClose do the close tender task.
+        tenderDAO.autoCloseTender();
         TTLogger.info(className, "Completed Auto Close status update for Tender");
     }
 
+    /**
+     * This is the job to send email notification to company administrator that tender has been closed and ready for evaluation.
+     */
     @Scheduled(cron="0 * * * * *", zone = "Asia/Singapore") // Will work at the start of every minute.
     @Transactional
     public void autoNotifyTenderClose() {
@@ -50,6 +67,9 @@ public class TenderScheduledTask {
         TTLogger.info(className, "Completed tender close and notify.");
     }
 
+    /**
+     * This is the job to notify company administrator that the tender milestone is approaching.
+     */
     @Scheduled(cron="0 * * * * *", zone = "Asia/Singapore") // Will work at the start of every minute.
     @Transactional
     public void autoNotifyApproachMilestone() {

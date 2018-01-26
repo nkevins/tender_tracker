@@ -17,6 +17,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service implementation of AuthService.
+ */
 @Service
 public class AuthServiceImpl implements AuthService {
 
@@ -24,6 +27,12 @@ public class AuthServiceImpl implements AuthService {
     private UserDAO userDAO;
     private UserRoleDAO userRoleDAO;
 
+    /**
+     * Constructor.
+     *
+     * @param userDAO UserDAO
+     * @param userRoleDAO UserRoleDAO
+     */
     @Autowired
     public AuthServiceImpl(UserDAO userDAO, UserRoleDAO userRoleDAO) {
         this.className = this.getClass().getName();
@@ -31,6 +40,13 @@ public class AuthServiceImpl implements AuthService {
         this.userRoleDAO = userRoleDAO;
     }
 
+    /**
+     * This method is used to override the default authentication method and implement custom authentication and authorization.
+     *
+     * @param email user email
+     * @return UserDetails
+     * @throws UsernameNotFoundException
+     */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         TTLogger.info(className, email + " attempt login");

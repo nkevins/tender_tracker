@@ -18,6 +18,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collection;
 
+/**
+ * This class is used to perform authentication & authorization filter check for all pages in the system.
+ */
 @Component
 public class AuthorizationFilter extends GenericFilterBean {
 
