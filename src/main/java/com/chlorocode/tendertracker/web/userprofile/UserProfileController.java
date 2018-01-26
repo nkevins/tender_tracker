@@ -2,19 +2,14 @@ package com.chlorocode.tendertracker.web.userprofile;
 
 import com.chlorocode.tendertracker.dao.dto.AlertDTO;
 import com.chlorocode.tendertracker.dao.dto.ChangePasswordDTO;
-import com.chlorocode.tendertracker.dao.dto.TenderClarificationDTO;
 import com.chlorocode.tendertracker.dao.dto.UserProfileDTO;
 import com.chlorocode.tendertracker.dao.entity.*;
-import com.chlorocode.tendertracker.service.CodeValueService;
-import com.chlorocode.tendertracker.service.CompanyService;
-import com.chlorocode.tendertracker.service.TenderService;
-import com.chlorocode.tendertracker.service.UserService;
+import com.chlorocode.tendertracker.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -28,17 +23,18 @@ import java.util.List;
 @Controller
 public class UserProfileController {
     private UserService userService;
-    private TenderService tenderService;
     private CodeValueService codeValueService;
     private CompanyService companyService;
+    private TenderSubscriptionService tenderSubscriptionService;
 
     @Autowired
-    public UserProfileController(UserService userService,TenderService tenderService, CodeValueService codeValueService,CompanyService companyService)
+    public UserProfileController(UserService userService, CodeValueService codeValueService
+            , CompanyService companyService, TenderSubscriptionService tenderSubscriptionService)
     {
         this.userService = userService;
-        this.tenderService = tenderService;
         this.codeValueService = codeValueService;
         this.companyService = companyService;
+        this.tenderSubscriptionService = tenderSubscriptionService;
     }
 
     @GetMapping("/user/profile")
@@ -73,7 +69,7 @@ public class UserProfileController {
         }
 
         usrDto.setIdNo(usr.getIdNo());
-        List<TenderBookmark> lstBokkmark = tenderService.findTenderBookmarkByUserId(usr.getId());
+        List<TenderBookmark> lstBokkmark = tenderSubscriptionService.findTenderBookmarkByUserId(usr.getId());
 
         List<Company> lstCompany = companyService.findCompanyByCreatedBy(currentUser.getId());
 
@@ -124,7 +120,7 @@ public class UserProfileController {
 
         List<Company> lstCompany = companyService.findCompanyByCreatedBy(userId);
         model.addAttribute("companyList",lstCompany);
-        List<TenderBookmark> lstBokkmark = tenderService.findTenderBookmarkByUserId(userId);
+        List<TenderBookmark> lstBokkmark = tenderSubscriptionService.findTenderBookmarkByUserId(userId);
         model.addAttribute("bookmarkTenderList",lstBokkmark);
         ChangePasswordDTO pwd = new ChangePasswordDTO();
         model.addAttribute("passwordDto",pwd);
@@ -137,7 +133,7 @@ public class UserProfileController {
 
         CurrentUser currentUser = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        tenderService.removeTenderBookmark(tenderId, currentUser.getUser().getId());
+        tenderSubscriptionService.removeTenderBookmark(tenderId, currentUser.getUser().getId());
 
         User usr = userService.findById(currentUser.getId());
         if(usr == null){
@@ -162,7 +158,7 @@ public class UserProfileController {
             }
         }
 
-        List<TenderBookmark> lstBokkmark = tenderService.findTenderBookmarkByUserId(usr.getId());
+        List<TenderBookmark> lstBokkmark = tenderSubscriptionService.findTenderBookmarkByUserId(usr.getId());
         List<Company> lstCompany = companyService.findCompanyByCreatedBy(currentUser.getId());
         model.addAttribute("companyList",lstCompany);
 
@@ -209,7 +205,7 @@ public class UserProfileController {
         }
 
         ChangePasswordDTO pwd = new ChangePasswordDTO();
-        List<TenderBookmark> lstBokkmark = tenderService.findTenderBookmarkByUserId(userId);
+        List<TenderBookmark> lstBokkmark = tenderSubscriptionService.findTenderBookmarkByUserId(userId);
 
         List<Company> lstCompany = companyService.findCompanyByCreatedBy(userId);
         model.addAttribute("companyList",lstCompany);

@@ -95,19 +95,6 @@ public class CompanyController {
         }
 
         // TODO move business check into CompanyService.
-        List<Company> compList = companyService.findCompanyByUen(form.getUen());
-
-        if(compList != null && compList.size() > 0){
-            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
-                    "This company UEN already exist");
-            model.addAttribute("alert", alert);
-            model.addAttribute("registration", form);
-            model.addAttribute("areaOfBusiness", codeValueService.getByType("area_of_business"));
-            model.addAttribute("companyType", codeValueService.getByType("company_type"));
-            model.addAttribute("countries", codeValueService.getAllCountries());
-            return "registerCompany";
-        }
-
         Company reg = new Company();
         reg.setName(form.getName());
         reg.setUen(form.getUen());
@@ -133,19 +120,18 @@ public class CompanyController {
         reg.setCreatedBy(usr.getUser().getId());
         reg.setLastUpdatedBy(usr.getUser().getId());
 
-        UenEntity uenEnt = uenEntService.findByUen(form.getUen());
-        if (uenEnt == null) {
-            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER, "Invalid UEN");
-            model.addAttribute("alert", alert);
-            model.addAttribute("registration", form);
-            model.addAttribute("areaOfBusiness", codeValueService.getByType("area_of_business"));
-            model.addAttribute("companyType", codeValueService.getByType("company_type"));
-            model.addAttribute("countries", codeValueService.getAllCountries());
-            return "registerCompany";
-        }
-
         try {
-            companyService.registerCompany(reg);
+            String errMsg = companyService.registerCompany(reg);
+            if(errMsg != null){
+                AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
+                        errMsg);
+                model.addAttribute("alert", alert);
+                model.addAttribute("registration", form);
+                model.addAttribute("areaOfBusiness", codeValueService.getByType("area_of_business"));
+                model.addAttribute("companyType", codeValueService.getByType("company_type"));
+                model.addAttribute("countries", codeValueService.getAllCountries());
+                return "registerCompany";
+            }
         } catch (ApplicationException ex) {
             AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER, ex.getMessage());
             model.addAttribute("alert", alert);

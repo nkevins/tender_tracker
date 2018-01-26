@@ -24,7 +24,7 @@ public class CorrigendumServiceImpl implements CorrigendumService {
     private CorrigendumDAO corrigendumDAO;
     private CorrigendumDocumentDAO corrigendumDocumentDAO;
     private S3Wrapper s3Wrapper;
-    private TenderService tenderService;
+    private TenderSubscriptionService tenderSubscriptionService;
 
     /**
      * Constructor
@@ -32,15 +32,15 @@ public class CorrigendumServiceImpl implements CorrigendumService {
      * @param corrigendumDAO CorrigendumDAO
      * @param corrigendumDocumentDAO CorrigendumDocumentDAO
      * @param s3Wrapper S3Wrapper
-     * @param tenderService TenderService
+     * @param tenderSubscriptionService TenderSubscriptionService
      */
     @Autowired
     public CorrigendumServiceImpl(CorrigendumDAO corrigendumDAO, CorrigendumDocumentDAO corrigendumDocumentDAO,
-                                  S3Wrapper s3Wrapper, TenderService tenderService) {
+                                  S3Wrapper s3Wrapper, TenderSubscriptionService tenderSubscriptionService) {
         this.corrigendumDAO = corrigendumDAO;
         this.corrigendumDocumentDAO = corrigendumDocumentDAO;
         this.s3Wrapper = s3Wrapper;
-        this.tenderService = tenderService;
+        this.tenderSubscriptionService = tenderSubscriptionService;
     }
 
     @Override
@@ -84,7 +84,7 @@ public class CorrigendumServiceImpl implements CorrigendumService {
         }
 
         if (result != null) {
-            tenderService.sendBookmarkNoti(result.getTender(), TTConstants.ADD_CORRIGENDUM);
+            tenderSubscriptionService.sendBookmarkNoti(result.getTender(), TTConstants.ADD_CORRIGENDUM);
         }
 
         return result;

@@ -3,6 +3,7 @@ package com.chlorocode.tendertracker.web;
 import com.chlorocode.tendertracker.dao.entity.*;
 import com.chlorocode.tendertracker.service.BidService;
 import com.chlorocode.tendertracker.service.TenderService;
+import com.chlorocode.tendertracker.service.TenderSubscriptionService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,6 +47,9 @@ public class TenderPublicControllerTest {
 
     @MockBean
     TenderService tenderService;
+
+    @MockBean
+    TenderSubscriptionService tenderSubscriptionService;
 
     @MockBean
     BidService bidService;
@@ -164,7 +168,7 @@ public class TenderPublicControllerTest {
                         .with(csrf())
         ).andExpect(view().name("redirect:/tender/15"));
 
-        verify(tenderService, times(1)).bookmarkTender(tender, currentUser.getUser());
+        verify(tenderSubscriptionService, times(1)).bookmarkTender(tender, currentUser.getUser());
     }
 
     @Test
@@ -176,6 +180,6 @@ public class TenderPublicControllerTest {
                         .with(csrf())
         ).andExpect(view().name("redirect:/tender/15"));
 
-        verify(tenderService, times(1)).removeTenderBookmark(15, currentUser.getId());
+        verify(tenderSubscriptionService, times(1)).removeTenderBookmark(15, currentUser.getId());
     }
 }

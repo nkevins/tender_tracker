@@ -8,6 +8,7 @@ import java.util.Date;
 
 /**
  * Created by andy on 14/1/2018.
+ * TenderAppeal entity.
  */
 @Entity
 @Table(name = "tender_appeal")

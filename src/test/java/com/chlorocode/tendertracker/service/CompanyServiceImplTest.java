@@ -39,6 +39,9 @@ public class CompanyServiceImplTest {
     @Mock
     private NotificationServiceImpl notificationService;
 
+    @Mock
+    private UenEntityServiceImpl uenEntityService;
+
     @InjectMocks
     private CompanyServiceImpl companyServiceImpl;
 

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 /**
  * Created by andy on 8/8/2017.
+ * This class extends DataTableRepository so that it can output the entity into DataTables.
  */
 @Repository
 public interface TenderDataClarificationDAO extends DataTablesRepository<Clarification, Integer> {

@@ -2,6 +2,9 @@ package com.chlorocode.tendertracker.dao.entity;
 
 import javax.persistence.*;
 
+/**
+ * CorrigendumDocument entity.
+ */
 @Entity
 @Table(name = "corrigendum_document")
 @PrimaryKeyJoinColumn(name = "document_id")

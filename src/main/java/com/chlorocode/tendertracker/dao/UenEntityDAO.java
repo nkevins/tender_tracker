@@ -6,9 +6,16 @@ import org.springframework.data.jpa.repository.Query;
 
 /**
  * Created by andy on 16/8/2017.
+ * This DAO is used for UenEntity.
  */
 public interface UenEntityDAO  extends JpaRepository<UenEntity, Integer> {
 
+    /**
+     * This method is used to find the UenEntity by uen.
+     *
+     * @param uen
+     * @return
+     */
     @Query("select r from UenEntity r where r.uen = ?1")
     UenEntity findByUen(String uen);
 }

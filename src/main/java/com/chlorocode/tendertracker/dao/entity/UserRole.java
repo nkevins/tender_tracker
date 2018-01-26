@@ -3,6 +3,9 @@ package com.chlorocode.tendertracker.dao.entity;
 import javax.persistence.*;
 import java.util.Date;
 
+/**
+ * UserRole entity.
+ */
 @Entity
 @Table(name = "user_role")
 public class UserRole {

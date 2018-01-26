@@ -47,6 +47,10 @@ public class TenderServiceImplTest {
     @InjectMocks
     private TenderServiceImpl tenderServiceImpl;
 
+
+    @InjectMocks
+    private TenderSubscriptionServiceImpl tenderSubscriptionServiceImpl;
+
     @Test
     public void testCreateTender() {
         List<MultipartFile> files = new LinkedList<>();
@@ -142,7 +146,7 @@ public class TenderServiceImplTest {
         Tender tender = new Tender();
         User user = new User();
 
-        tenderServiceImpl.bookmarkTender(tender, user);
+        tenderSubscriptionServiceImpl.bookmarkTender(tender, user);
 
         ArgumentCaptor<TenderBookmark> argument = ArgumentCaptor.forClass(TenderBookmark.class);
         verify(tenderBookmarkDAO, times(1)).save(any(TenderBookmark.class));
@@ -157,7 +161,7 @@ public class TenderServiceImplTest {
 
         when(tenderBookmarkDAO.findTenderBookmarkByUserAndTender(1, 1)).thenReturn(tenderBookmark);
 
-        tenderServiceImpl.removeTenderBookmark(1, 1);
+        tenderSubscriptionServiceImpl.removeTenderBookmark(1, 1);
 
         verify(tenderBookmarkDAO, times(1)).delete(tenderBookmark);
     }

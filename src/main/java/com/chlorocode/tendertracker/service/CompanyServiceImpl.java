@@ -3,12 +3,11 @@ package com.chlorocode.tendertracker.service;
 import com.chlorocode.tendertracker.constants.TTConstants;
 import com.chlorocode.tendertracker.dao.CompanyDAO;
 import com.chlorocode.tendertracker.dao.dto.CompanyRegistrationDetailsDTO;
-import com.chlorocode.tendertracker.dao.entity.Company;
-import com.chlorocode.tendertracker.dao.entity.Role;
-import com.chlorocode.tendertracker.dao.entity.User;
+import com.chlorocode.tendertracker.dao.entity.*;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.service.notification.NotificationService;
 import com.chlorocode.tendertracker.service.notification.NotificationServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -26,6 +25,7 @@ public class CompanyServiceImpl implements CompanyService {
     private UserService userService;
     private UserRoleService userRoleService;
     private NotificationService notificationService;
+    private UenEntityService uenEntService;
 
     /**
      * Constructor.
@@ -35,19 +35,32 @@ public class CompanyServiceImpl implements CompanyService {
      * @param userService UserService
      * @param userRoleService UserRoleService
      * @param notificationService NotificationService
+     * @param uenEntService UenEntityService
      */
-    public CompanyServiceImpl(CompanyDAO companyDAO,
-                              CodeValueService codeValueService, UserService userService
-                                , UserRoleService userRoleService, NotificationService notificationService) {
+    @Autowired
+    public CompanyServiceImpl(CompanyDAO companyDAO, CodeValueService codeValueService, UserService userService
+                                , UserRoleService userRoleService, NotificationService notificationService
+                                , UenEntityService uenEntService) {
         this.companyDAO = companyDAO;
         this.codeValueService = codeValueService;
         this.userService = userService;
         this.userRoleService = userRoleService;
         this.notificationService = notificationService;
+        this.uenEntService = uenEntService;
     }
 
     @Override
-    public Company registerCompany(Company companyRegistration) throws ApplicationException {
+    public String registerCompany(Company companyRegistration) throws ApplicationException {
+        List<Company> compList = findCompanyByUen(companyRegistration.getUen());
+
+        if(compList != null && compList.size() > 0){
+            return "This company UEN already exist";
+        }
+
+        UenEntity uenEnt = uenEntService.findByUen(companyRegistration.getUen());
+        if (uenEnt == null) {
+            return "Invalid UEN";
+        }
         if (!companyRegistration.isPostalCodeValid()) {
             throw new ApplicationException("Invalid postal code");
         }
@@ -63,7 +76,7 @@ public class CompanyServiceImpl implements CompanyService {
         params.put(TTConstants.PARAM_EMAIL, user.getEmail());
         notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.company_reg_noti, params);
 
-        return company;
+        return null;
     }
 
     @Override

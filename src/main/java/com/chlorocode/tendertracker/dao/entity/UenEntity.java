@@ -5,6 +5,7 @@ import java.util.Date;
 
 /**
  * Created by andy on 16/8/2017.
+ * UenEntity.
  */
 @Entity
 @Table(name = "uen_entity")

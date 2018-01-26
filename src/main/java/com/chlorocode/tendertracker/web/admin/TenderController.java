@@ -35,6 +35,7 @@ public class TenderController {
     private S3Wrapper s3Service;
     private UserService userService;
     private CompanyService companyService;
+    private TenderItemService tenderItemService;
 
     /**
      * Constructor.
@@ -44,15 +45,17 @@ public class TenderController {
      * @param s3Service S3Wrapper
      * @param userService UserService
      * @param companyService CompanyService
+     * @param tenderItemService TenderItemService
      */
     @Autowired
     public TenderController(CodeValueService codeValueService, TenderService tenderService, S3Wrapper s3Service,
-                            UserService userService, CompanyService companyService) {
+                            UserService userService, CompanyService companyService, TenderItemService tenderItemService) {
         this.codeValueService = codeValueService;
         this.tenderService = tenderService;
         this.s3Service = s3Service;
         this.userService = userService;
         this.companyService = companyService;
+        this.tenderItemService = tenderItemService;
     }
 
     /**
@@ -437,7 +440,7 @@ public class TenderController {
         tenderItem.setTender(tender);
 
         try {
-            tenderService.addTenderItem(tenderItem);
+            tenderItemService.addTenderItem(tenderItem);
         } catch (ApplicationException ex) {
             AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
                     ex.getMessage());
@@ -472,7 +475,7 @@ public class TenderController {
 
         CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        TenderItem tenderItem = tenderService.findTenderItemById(tenderItemId);
+        TenderItem tenderItem = tenderItemService.findTenderItemById(tenderItemId);
         tenderItem.setUom(form.getUom());
         tenderItem.setQuantity(form.getQuantity());
         tenderItem.setDescription(form.getDescription());
@@ -480,7 +483,7 @@ public class TenderController {
         tenderItem.setLastUpdatedDate(new Date());
 
         try {
-            tenderService.updateTenderItem(tenderItem);
+            tenderItemService.updateTenderItem(tenderItem);
         } catch (ApplicationException ex) {
             AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
                     ex.getMessage());
@@ -504,7 +507,7 @@ public class TenderController {
     @PostMapping("/admin/tender/removeTenderItem")
     public String removeTenderItem(@RequestParam(name = "tenderItemId") int tenderItemId, @RequestParam(name = "tenderId") int tenderId,
                                    RedirectAttributes redirectAttrs) {
-        tenderService.removeTenderItem(tenderItemId);
+        tenderItemService.removeTenderItem(tenderItemId);
 
         AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS, "Tender Item Removed");
         redirectAttrs.addFlashAttribute("alert", alert);
@@ -522,7 +525,7 @@ public class TenderController {
     @PostMapping("/admin/tender/moveUpTenderItem")
     public String moveUpTenderItem(@RequestParam(name = "tenderItemId") int tenderItemId, @RequestParam(name = "tenderId") int tenderId,
             RedirectAttributes redirectAttrs) {
-        tenderService.moveUpTenderItem(tenderItemId, tenderId);
+        tenderItemService.moveUpTenderItem(tenderItemId, tenderId);
 
         AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS, "Tender Item Order Updated");
         redirectAttrs.addFlashAttribute("alert", alert);
@@ -540,7 +543,7 @@ public class TenderController {
     @PostMapping("/admin/tender/moveDownTenderItem")
     public String moveDownTenderItem(@RequestParam(name = "tenderItemId") int tenderItemId, @RequestParam(name = "tenderId") int tenderId,
                                    RedirectAttributes redirectAttrs) {
-        tenderService.moveDownTenderItem(tenderItemId, tenderId);
+        tenderItemService.moveDownTenderItem(tenderItemId, tenderId);
 
         AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS, "Tender Item Order Updated");
         redirectAttrs.addFlashAttribute("alert", alert);

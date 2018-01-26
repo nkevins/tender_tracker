@@ -2,6 +2,9 @@ package com.chlorocode.tendertracker.service;
 
 import com.chlorocode.tendertracker.constants.TTConstants;
 import com.chlorocode.tendertracker.dao.CodeValueDAO;
+import com.chlorocode.tendertracker.dao.CompanyDAO;
+import com.chlorocode.tendertracker.dao.CountryDAO;
+import com.chlorocode.tendertracker.dao.TenderCategoryDAO;
 import com.chlorocode.tendertracker.dao.entity.CodeValue;
 import com.chlorocode.tendertracker.dao.entity.Country;
 import com.chlorocode.tendertracker.dao.entity.TenderCategory;
@@ -19,6 +22,8 @@ import java.util.Map;
 public class CodeValueServiceImpl implements CodeValueService {
 
     private CodeValueDAO codeValueDAO;
+    private TenderCategoryDAO tenderCategoryDAO;
+    private CountryDAO countryDAO;
 
     /**
      * Constructor.
@@ -26,8 +31,10 @@ public class CodeValueServiceImpl implements CodeValueService {
      * @param codeValueDAO CodeValueDAO
      */
     @Autowired
-    public CodeValueServiceImpl(CodeValueDAO codeValueDAO) {
+    public CodeValueServiceImpl(CodeValueDAO codeValueDAO, TenderCategoryDAO tenderCategoryDAO, CountryDAO countryDAO) {
         this.codeValueDAO = codeValueDAO;
+        this.tenderCategoryDAO = tenderCategoryDAO;
+        this.countryDAO = countryDAO;
     }
 
     @Override
@@ -42,12 +49,12 @@ public class CodeValueServiceImpl implements CodeValueService {
 
     @Override
     public List<TenderCategory> getAllTenderCategories() {
-        return codeValueDAO.getAllTenderCategories();
+        return tenderCategoryDAO.getAllTenderCategories();
     }
 
     @Override
     public TenderCategory getTenderCategoryById(int id) {
-        return codeValueDAO.getTenderCategoryById(id);
+        return tenderCategoryDAO.getTenderCategoryById(id);
     }
 
     @Override
@@ -90,6 +97,6 @@ public class CodeValueServiceImpl implements CodeValueService {
 
     @Override
     public List<Country> getAllCountries() {
-        return codeValueDAO.getAllCountries();
+        return countryDAO.getAllCountries();
     }
 }

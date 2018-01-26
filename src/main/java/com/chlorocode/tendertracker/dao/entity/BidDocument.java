@@ -2,6 +2,9 @@ package com.chlorocode.tendertracker.dao.entity;
 
 import javax.persistence.*;
 
+/**
+ * BidDocument entity.
+ */
 @Entity
 @Table(name = "bid_document")
 @PrimaryKeyJoinColumn(name = "document_id")

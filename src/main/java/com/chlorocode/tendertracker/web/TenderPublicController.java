@@ -39,6 +39,8 @@ public class TenderPublicController {
     private S3Wrapper s3Wrapper;
     private ClarificationService clariSvc;
     private CorrigendumService corrigendumService;
+    private TenderSubscriptionService tenderSubscriptionService;
+    private TenderItemService tenderItemService;
 
     /**
      * Constructor.
@@ -50,11 +52,14 @@ public class TenderPublicController {
      * @param s3Wrapper s3Wrapper
      * @param clariSvc ClarificationService
      * @param corrigendumService CorrigendumService
+     * @param tenderSubscriptionService TenderSubscriptionService
+     * @param tenderItemService TenderItemService
      */
     @Autowired
     public TenderPublicController(TenderService tenderService, ExternalTenderService externalTenderService
                 , BidService bidService, CodeValueService codeValueService, S3Wrapper s3Wrapper
-                , ClarificationService clariSvc, CorrigendumService corrigendumService) {
+                , ClarificationService clariSvc, CorrigendumService corrigendumService
+                , TenderSubscriptionService tenderSubscriptionService, TenderItemService tenderItemService) {
         this.tenderService = tenderService;
         this.externalTenderService = externalTenderService;
         this.bidService = bidService;
@@ -62,6 +67,8 @@ public class TenderPublicController {
         this.s3Wrapper = s3Wrapper;
         this.clariSvc = clariSvc;
         this.corrigendumService = corrigendumService;
+        this.tenderSubscriptionService = tenderSubscriptionService;
+        this.tenderItemService = tenderItemService;
     }
 
     /**
@@ -99,7 +106,7 @@ public class TenderPublicController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && !(auth instanceof AnonymousAuthenticationToken)) {
             CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            TenderBookmark tenderBookmark = tenderService.findTenderBookmark(tender.getId(), usr.getId());
+            TenderBookmark tenderBookmark = tenderSubscriptionService.findTenderBookmark(tender.getId(), usr.getId());
             Bid bid = null;
             boolean isBookmarked;
             boolean isSubmitedTender;
@@ -217,7 +224,7 @@ public class TenderPublicController {
         bid.setLastUpdatedDate(new Date());
 
         for (TenderItemResponseSubmitDTO item : data.getItems()) {
-            TenderItem tenderItem = tenderService.findTenderItemById(item.getItemId());
+            TenderItem tenderItem = tenderItemService.findTenderItemById(item.getItemId());
 
             BidItem bidItem = new BidItem();
             bidItem.setTenderItem(tenderItem);
@@ -271,7 +278,7 @@ public class TenderPublicController {
         CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Tender tender = tenderService.findById(tenderId);
 
-        tenderService.bookmarkTender(tender, usr.getUser());
+        tenderSubscriptionService.bookmarkTender(tender, usr.getUser());
 
         return "redirect:/tender/" + tenderId;
     }
@@ -286,7 +293,7 @@ public class TenderPublicController {
     public String removeTenderBookmark(@RequestParam("tenderId") int tenderId) {
         CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        tenderService.removeTenderBookmark(tenderId, usr.getUser().getId());
+        tenderSubscriptionService.removeTenderBookmark(tenderId, usr.getUser().getId());
 
         return "redirect:/tender/" + tenderId;
     }
@@ -301,7 +308,7 @@ public class TenderPublicController {
     public String showSubscribeTenderCategoryNotification(ModelMap model) {
         CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         List<TenderCategory> tenderCategories = codeValueService.getAllTenderCategories();
-        List<TenderCategorySubscription> currentSubscription = tenderService.findUserSubscription(usr.getId());
+        List<TenderCategorySubscription> currentSubscription = tenderSubscriptionService.findUserSubscription(usr.getId());
         List<Integer> subscriptions = new LinkedList<>();
         for (TenderCategorySubscription s : currentSubscription) {
             subscriptions.add(s.getTenderCategory().getId());
@@ -328,7 +335,7 @@ public class TenderPublicController {
             tenderCategoryList.add(codeValueService.getTenderCategoryById(i));
         }
 
-        tenderService.subscribeToTenderCategory(usr.getUser(), tenderCategoryList);
+        tenderSubscriptionService.subscribeToTenderCategory(usr.getUser(), tenderCategoryList);
 
         AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
                 "Subscription Added");

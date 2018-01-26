@@ -14,9 +14,9 @@ public interface CompanyService {
      * This method is used to save company registration record.
      *
      * @param companyRegistration company object to be saved
-     * @return Company
+     * @return String
      */
-    Company registerCompany(Company companyRegistration);
+    String registerCompany(Company companyRegistration);
 
     /**
      * This method is used to find company with pending approval status.

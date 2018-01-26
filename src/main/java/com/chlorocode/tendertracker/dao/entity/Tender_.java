@@ -10,6 +10,9 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 import java.util.Date;
 
+/**
+ * This class is used to create specification cirteria for query.
+ */
 @Generated(value = "org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor")
 @StaticMetamodel(Tender.class)
 public abstract class Tender_ {

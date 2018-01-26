@@ -9,6 +9,7 @@ import java.util.List;
 
 /**
  * Created by andy on 1/8/2017.
+ * EvaluationCriteria entity.
  */
 @Entity
 @Table(name = "evaluation_criteria")

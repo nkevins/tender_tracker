@@ -4,7 +4,7 @@ import com.chlorocode.tendertracker.dao.ExternalTenderDAO;
 import com.chlorocode.tendertracker.dao.TenderDAO;
 import com.chlorocode.tendertracker.logging.TTLogger;
 import com.chlorocode.tendertracker.service.MilestoneService;
-import com.chlorocode.tendertracker.service.TenderService;
+import com.chlorocode.tendertracker.service.TenderSubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -20,24 +20,25 @@ public class TenderScheduledTask {
     private String className;
     private ExternalTenderDAO externalTenderDAO;
     private TenderDAO tenderDAO;
-    private TenderService tenderService;
     private MilestoneService milestoneService;
+    private TenderSubscriptionService tenderSubscriptionService;
 
     /**
      * Constructor
      *
      * @param externalTenderDAO ExternalTenderDAO
      * @param tenderDAO TenderDAO
-     * @param tenderService TenderService
      * @param milestoneService MilestoneService
+     * @param tenderSubscriptionService TenderSubscriptionService
      */
     @Autowired
-    public TenderScheduledTask(ExternalTenderDAO externalTenderDAO, TenderDAO tenderDAO, TenderService tenderService, MilestoneService milestoneService) {
+    public TenderScheduledTask(ExternalTenderDAO externalTenderDAO, TenderDAO tenderDAO
+            , MilestoneService milestoneService, TenderSubscriptionService tenderSubscriptionService) {
         this.className = this.getClass().getName();
         this.externalTenderDAO = externalTenderDAO;
         this.tenderDAO = tenderDAO;
-        this.tenderService = tenderService;
         this.milestoneService = milestoneService;
+        this.tenderSubscriptionService = tenderSubscriptionService;
     }
 
     /**
@@ -63,7 +64,7 @@ public class TenderScheduledTask {
     public void autoNotifyTenderClose() {
         TTLogger.info(className, "Auto notify tender close.");
         //Notify company administrator that the tender has closed and ready for evaluation.");
-        tenderService.autoCloseTenderAndNotify();
+        tenderSubscriptionService.autoCloseTenderAndNotify();
         TTLogger.info(className, "Completed tender close and notify.");
     }
 

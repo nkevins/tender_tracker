@@ -8,6 +8,7 @@ import java.util.Date;
 
 /**
  * Created by andy on 18/1/2018.
+ * ProductClarification entity.
  */
 @Entity
 public class ProductClarification {

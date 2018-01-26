@@ -8,6 +8,7 @@ import java.util.Date;
 
 /**
  * Created by Kyaw Min Thu on 3/7/2017.
+ * ExternalTender entity.
  */
 @Entity
 @Table(name = "external_tender")

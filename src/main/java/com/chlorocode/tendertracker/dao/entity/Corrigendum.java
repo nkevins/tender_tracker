@@ -5,6 +5,9 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Corrigendum entity.
+ */
 @Entity
 public class Corrigendum {
 

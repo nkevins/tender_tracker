@@ -4,6 +4,9 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * TenderItem entity.
+ */
 @Entity
 @Table(name = "tender_item")
 public class TenderItem {

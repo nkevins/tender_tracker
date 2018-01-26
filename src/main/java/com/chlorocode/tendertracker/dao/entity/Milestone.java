@@ -8,6 +8,7 @@ import java.util.Date;
 
 /**
  * Created by Kyaw Min Thu on 6/1/2018.
+ * Milestone entity.
  */
 @Entity
 @Table(name = "milestone")

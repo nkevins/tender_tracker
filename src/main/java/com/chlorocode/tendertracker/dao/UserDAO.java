@@ -6,9 +6,19 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/**
+ * This DAO is used for User.
+ */
 @Repository
 public interface UserDAO extends JpaRepository<User, Integer> {
 
+    /**
+     * This method is used to find user by email.
+     *
+     * @param email email address of user
+     * @return Optional
+     * @see User
+     */
     Optional<User> findOneByEmail(String email);
 
 }

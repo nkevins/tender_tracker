@@ -5,6 +5,7 @@ import java.util.Date;
 
 /**
  * Created by andy on 19/7/2017.
+ * RoleUser entity.
  */
 @Entity
 @Table(name = "user_role")

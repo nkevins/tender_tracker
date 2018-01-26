@@ -27,7 +27,6 @@ import java.util.*;
 public class TenderServiceImpl implements TenderService {
 
     private TenderDAO tenderDAO;
-    private TenderItemDAO tenderItemDAO;
     private TenderDocumentDAO tenderDocumentDAO;
     private TenderCategorySubscriptionDAO tenderCategorySubscriptionDAO;
     private S3Wrapper s3Wrapper;
@@ -40,6 +39,7 @@ public class TenderServiceImpl implements TenderService {
     private UserService userService;
     private BidService bidService;
     private UserRoleService userRoleService;
+    private TenderSubscriptionService tenderSubscriptionService;
 
     /**
      * Constructor.
@@ -47,7 +47,6 @@ public class TenderServiceImpl implements TenderService {
      * @param tenderDAO TenderDAO
      * @param s3Wrapper S3Wrapper
      * @param tenderBookmarkDAO TenderBookmarkDAO
-     * @param tenderItemDAO TenderItemDAO
      * @param tenderDocumentDAO TenderDocumentDAO
      * @param tenderCategorySubscriptionDAO TenderCategorySubscriptionDAO
      * @param tenderPagingDAO TenderPagingDAO
@@ -61,14 +60,14 @@ public class TenderServiceImpl implements TenderService {
      */
     @Autowired
     public TenderServiceImpl(TenderDAO tenderDAO, S3Wrapper s3Wrapper, TenderBookmarkDAO tenderBookmarkDAO
-                            , TenderItemDAO tenderItemDAO, TenderDocumentDAO tenderDocumentDAO
+                            , TenderDocumentDAO tenderDocumentDAO, TenderSubscriptionService tenderSubscriptionService
                             , TenderCategorySubscriptionDAO tenderCategorySubscriptionDAO, TenderPagingDAO tenderPagingDAO
                             , NotificationService notificationService, IPGeoLocationService ipGeoLocationService
                             , TenderVisitDAO tenderVisitDAO, TenderAwardDAO tenderAwardDAO, UserService userService
                             , BidService bidService, UserRoleService userRoleService) {
         this.tenderDAO = tenderDAO;
-        this.tenderItemDAO = tenderItemDAO;
         this.tenderDocumentDAO = tenderDocumentDAO;
+        this.tenderSubscriptionService=tenderSubscriptionService;
         this.tenderCategorySubscriptionDAO = tenderCategorySubscriptionDAO;
         this.s3Wrapper = s3Wrapper;
         this.tenderBookmarkDAO = tenderBookmarkDAO;
@@ -188,69 +187,8 @@ public class TenderServiceImpl implements TenderService {
         }
 
         tender = tenderDAO.save(tender);
-        sendBookmarkNoti(tender, TTConstants.UPDATE_TENDER);
+        tenderSubscriptionService.sendBookmarkNoti(tender, TTConstants.UPDATE_TENDER);
         return tender;
-    }
-
-    @Override
-    public TenderItem findTenderItemById(int id) {
-        return tenderItemDAO.findOne(id);
-    }
-
-    @Override
-    public TenderItem addTenderItem(TenderItem tenderItem) {
-        if (tenderItem.getQuantity() < 0) {
-            throw new ApplicationException("Tender Item Quantity must be greater than 0");
-        }
-
-        return tenderItemDAO.save(tenderItem);
-    }
-
-    @Override
-    public TenderItem updateTenderItem(TenderItem tenderItem) {
-        if (tenderItem.getQuantity() < 0) {
-            throw new ApplicationException("Tender Item Quantity must be greater than 0");
-        }
-
-        tenderItem = tenderItemDAO.save(tenderItem);
-        sendBookmarkNoti(tenderItem.getTender(), TTConstants.UPDATE_TENDER);
-
-        return tenderItem;
-    }
-
-    @Override
-    public void removeTenderItem(int tenderItemId) {
-        tenderItemDAO.delete(tenderItemId);
-    }
-
-    @Override
-    @Transactional
-    public void moveUpTenderItem(int tenderItemId, int tenderId) {
-        TenderItem tenderItem = tenderItemDAO.findOne(tenderItemId);
-        int currentOrder = tenderItem.getSort();
-
-        TenderItem tenderItemReplaced = tenderItemDAO.getTenderItemBySort(tenderId, currentOrder - 1);
-
-        tenderItem.setSort(currentOrder - 1);
-        tenderItemReplaced.setSort(currentOrder);
-
-        tenderItemDAO.save(tenderItem);
-        tenderItemDAO.save(tenderItemReplaced);
-    }
-
-    @Override
-    @Transactional
-    public void moveDownTenderItem(int tenderItemId, int tenderId) {
-        TenderItem tenderItem = tenderItemDAO.findOne(tenderItemId);
-        int currentOrder = tenderItem.getSort();
-
-        TenderItem tenderItemReplaced = tenderItemDAO.getTenderItemBySort(tenderId, currentOrder + 1);
-
-        tenderItem.setSort(currentOrder + 1);
-        tenderItemReplaced.setSort(currentOrder);
-
-        tenderItemDAO.save(tenderItem);
-        tenderItemDAO.save(tenderItemReplaced);
     }
 
     @Override
@@ -290,62 +228,6 @@ public class TenderServiceImpl implements TenderService {
     }
 
     @Override
-    public TenderBookmark findTenderBookmark(int tenderId, int userId) {
-        return tenderBookmarkDAO.findTenderBookmarkByUserAndTender(tenderId, userId);
-    }
-
-    @Override
-    public TenderBookmark bookmarkTender(Tender tender, User user) {
-        TenderBookmark tenderBookmark = new TenderBookmark();
-        tenderBookmark.setUser(user);
-        tenderBookmark.setTender(tender);
-        tenderBookmark.setCreatedBy(user.getId());
-        tenderBookmark.setCreatedDate(new Date());
-        tenderBookmark.setLastUpdatedBy(user.getId());
-        tenderBookmark.setLastUpdatedDate(new Date());
-
-        return tenderBookmarkDAO.save(tenderBookmark);
-    }
-
-    @Override
-    public void removeTenderBookmark(int tenderId, int userId) {
-        TenderBookmark tenderBookmark = findTenderBookmark(tenderId, userId);
-        tenderBookmarkDAO.delete(tenderBookmark);
-    }
-
-    @Override
-    public List<TenderCategorySubscription> findUserSubscription(int userId) {
-        return tenderCategorySubscriptionDAO.findUserSubscription(userId);
-    }
-
-    @Override
-    @Transactional
-    public void subscribeToTenderCategory(User user, List<TenderCategory> categories) {
-        tenderCategorySubscriptionDAO.removeExistingSubscription(user.getId());
-
-        List<TenderCategorySubscription> subsList = new LinkedList<>();
-
-        for (TenderCategory i : categories) {
-            TenderCategorySubscription subs = new TenderCategorySubscription();
-            subs.setUser(user);
-            subs.setTenderCategory(i);
-            subs.setCreatedBy(user.getId());
-            subs.setCreatedDate(new Date());
-            subs.setLastUpdatedBy(user.getId());
-            subs.setLastUpdatedDate(new Date());
-
-            subsList.add(subs);
-        }
-
-        tenderCategorySubscriptionDAO.save(subsList);
-    }
-
-    @Override
-    public List<TenderBookmark> findTenderBookmarkByUserId(int userId) {
-        return tenderBookmarkDAO.findTenderBookmarkByUserId(userId);
-    }
-
-    @Override
     public Page<Tender> listAllByPage(Pageable pageable) {
         int companyId = getCompanyId();
         Specification<Tender> searchSpec = TenderSpecs.getAllOpenTender(companyId, getInviteTenderIds(companyId));
@@ -373,27 +255,6 @@ public class TenderServiceImpl implements TenderService {
             searchDTO.setSearchText(null);
         }
         return tenderPagingDAO.findAll(searchSpec, pageable);
-    }
-
-    @Override
-    public void sendBookmarkNoti(Tender tender, int changeType) {
-        if (tender != null) {
-            // Send tender information to bookmark users.
-            List<TenderBookmark>  tenderBookmarks = tenderBookmarkDAO.findTenderBookmarkByTender(tender.getId());
-            if (tenderBookmarks != null) {
-                Set<String> emails = new HashSet<>();
-                for (TenderBookmark bookmark : tenderBookmarks) {
-                    if (bookmark.getUser() != null) emails.add(bookmark.getUser().getEmail());
-                }
-                if (!emails.isEmpty()) {
-                    Map<String, Object> params = new HashMap<>();
-                    params.put(TTConstants.PARAM_TENDER, tender);
-                    params.put(TTConstants.PARAM_EMAILS, emails.toArray(new String[emails.size()]));
-                    params.put(TTConstants.PARAM_CHANGE_TYPE, changeType);
-                    notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.tender_bookmark_noti, params);
-                }
-            }
-        }
     }
 
     @Override
@@ -443,27 +304,6 @@ public class TenderServiceImpl implements TenderService {
             params.put(TTConstants.PARAM_COMPANY_NAME, tenderAward.getCompany().getName());
             params.put(TTConstants.PARAM_EMAILS, emails.toArray(new String[emails.size()]));
             notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.tender_award_noti, params);
-        }
-    }
-
-    @Override
-    public void autoCloseTenderAndNotify() {
-        //Date currentDateTime = DateUtility.getCurrentDateTime();
-        List<Tender> closingTenders = tenderDAO.findClosingTender();
-        if (closingTenders != null && !closingTenders.isEmpty()) {
-            for (Tender t : closingTenders) {
-                // Notify to company administrator.
-                Set<String> adminEmails = userRoleService.findCompanyAdminEmails(t.getCompany().getId());
-                if (adminEmails != null && adminEmails.size()> 0) {
-                    Map<String, Object> params = new HashMap<>();
-                    params.put(TTConstants.PARAM_TENDER_ID, t.getId());
-                    params.put(TTConstants.PARAM_TENDER_TITLE, t.getTitle());
-                    params.put(TTConstants.PARAM_EMAILS, adminEmails.toArray(new String[adminEmails.size()]));
-                    notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.tender_closed_noti, params);
-                }
-                // Change the status of tender to close tender.
-                tenderDAO.closeTender(t.getId());
-            }
         }
     }
 
