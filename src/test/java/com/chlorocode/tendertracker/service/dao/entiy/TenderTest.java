@@ -8,6 +8,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.Calendar;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -53,5 +55,27 @@ public class TenderTest {
         assertEquals(tender, doc2.getTender());
         assertTrue(tender.getDocuments().contains(doc2));
         assertEquals(2, tender.getDocuments().size());
+    }
+
+    @Test
+    public void testGetOpenStatus() {
+        Calendar closingDate = Calendar.getInstance();
+        closingDate.add(Calendar.DATE, 3);
+
+        tender.setClosedDate(closingDate.getTime());
+        tender.setStatus(1);
+
+        assertEquals(1, tender.getStatus());
+    }
+
+    @Test
+    public void testOverrideCloseStatus() {
+        Calendar closingDate = Calendar.getInstance();
+        closingDate.add(Calendar.DATE, -1);
+
+        tender.setClosedDate(closingDate.getTime());
+        tender.setStatus(1);
+
+        assertEquals(2, tender.getStatus());
     }
 }

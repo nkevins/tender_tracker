@@ -1,12 +1,6 @@
 package com.chlorocode.tendertracker.service;
 
-import com.chlorocode.tendertracker.dao.dto.TenderSearchDTO;
-import com.chlorocode.tendertracker.dao.entity.*;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
+import com.chlorocode.tendertracker.dao.entity.TenderItem;
 
 /**
  * Service interface for tender item.
