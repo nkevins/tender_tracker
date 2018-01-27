@@ -2,6 +2,9 @@ package com.chlorocode.tendertracker.dao.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
 
+/**
+ * Data transfer object for login.
+ */
 public class LoginDTO {
 
     @NotBlank

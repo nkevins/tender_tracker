@@ -6,10 +6,8 @@ import com.chlorocode.tendertracker.dao.UserDAO;
 import com.chlorocode.tendertracker.dao.UserRoleDAO;
 import com.chlorocode.tendertracker.dao.entity.User;
 import com.chlorocode.tendertracker.exception.ApplicationException;
-
 import com.chlorocode.tendertracker.service.notification.NotificationService;
 import com.chlorocode.tendertracker.service.notification.NotificationServiceImpl;
-
 import com.chlorocode.tendertracker.utils.DateUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;

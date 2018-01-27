@@ -5,6 +5,9 @@ import com.chlorocode.tendertracker.dao.entity.Tender;
 
 import java.util.List;
 
+/**
+ * Data transfer object for corrigendum update.
+ */
 public class CorrigendumUpdateDTO {
 
     private int id;

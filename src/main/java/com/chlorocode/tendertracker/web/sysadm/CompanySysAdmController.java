@@ -284,9 +284,9 @@ public class CompanySysAdmController {
     /**
      * This method is used to blacklist a product.
      *
-     * @param id
-     * @param model
-     * @return
+     * @param id unique identifier of the product
+     * @param model ModelMap
+     * @return String
      */
     @PostMapping("/sysadmin/product/blacklist")
     public String updateTenderClarificationResponse(@RequestParam("id") int id, ModelMap model){

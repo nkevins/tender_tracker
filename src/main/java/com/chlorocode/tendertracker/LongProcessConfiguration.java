@@ -13,16 +13,28 @@ import java.util.concurrent.Executor;
 
 /**
  * Created by Kyaw Min Thu on 5/1/2017.
+ * This class is used to control the long background process of the application.
  */
 @Configuration
 @EnableAsync
 public class LongProcessConfiguration implements AsyncConfigurer {
 
+    /**
+     * This method is used to generate the LongProcess bean.
+     *
+     * @return LongProcess
+     * @see LongProcess
+     */
     @Bean
     public LongProcess longProcessBean() {
         return new LongProcess();
     }
 
+    /**
+     * This method is used to get the executor of async tasks.
+     *
+     * @return Executor
+     */
     @Override
     public Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
@@ -32,6 +44,11 @@ public class LongProcessConfiguration implements AsyncConfigurer {
         return taskExecutor;
     }
 
+    /**
+     * This method is used to create the AsyncUncaughtExceptionHandler.
+     *
+     * @return AsyncUncaughtExceptionHandler
+     */
     @Override
     public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
         return new SimpleAsyncUncaughtExceptionHandler();

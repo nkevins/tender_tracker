@@ -13,8 +13,9 @@ public interface UenEntityDAO  extends JpaRepository<UenEntity, Integer> {
     /**
      * This method is used to find the UenEntity by uen.
      *
-     * @param uen
-     * @return
+     * @param uen uen of the UenEntity
+     * @return UenEntity
+     * @see UenEntity
      */
     @Query("select r from UenEntity r where r.uen = ?1")
     UenEntity findByUen(String uen);

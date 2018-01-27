@@ -2,7 +2,6 @@ package com.chlorocode.tendertracker.service;
 
 import com.chlorocode.tendertracker.constants.TTConstants;
 import com.chlorocode.tendertracker.dao.CodeValueDAO;
-import com.chlorocode.tendertracker.dao.CompanyDAO;
 import com.chlorocode.tendertracker.dao.CountryDAO;
 import com.chlorocode.tendertracker.dao.TenderCategoryDAO;
 import com.chlorocode.tendertracker.dao.entity.CodeValue;
@@ -29,6 +28,8 @@ public class CodeValueServiceImpl implements CodeValueService {
      * Constructor.
      *
      * @param codeValueDAO CodeValueDAO
+     * @param tenderCategoryDAO TenderCategoryDAO
+     * @param countryDAO CountryDAO
      */
     @Autowired
     public CodeValueServiceImpl(CodeValueDAO codeValueDAO, TenderCategoryDAO tenderCategoryDAO, CountryDAO countryDAO) {

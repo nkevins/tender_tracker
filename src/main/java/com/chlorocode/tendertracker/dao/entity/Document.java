@@ -3,6 +3,9 @@ package com.chlorocode.tendertracker.dao.entity;
 import javax.persistence.*;
 import java.util.Date;
 
+/**
+ * Base class for every type of Document.
+ */
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name="type")

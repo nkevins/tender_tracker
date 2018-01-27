@@ -31,10 +31,10 @@ public interface TenderDAO extends DataTablesRepository<Tender, Integer> {
     /**
      * This method is used to find all tenders by date range.
      *
-     * @param openDateFrom
-     * @param openDateTo
-     * @param closeDateFrom
-     * @param closeDateTo
+     * @param openDateFrom start of open date range
+     * @param openDateTo end of open date range
+     * @param closeDateFrom start of close date range
+     * @param closeDateTo end of close date range
      * @param category category of the tender
      * @param status status of the tender
      * @return List
@@ -52,6 +52,8 @@ public interface TenderDAO extends DataTablesRepository<Tender, Integer> {
 
     /**
      * This method is used to close the tender which closed date is less than current timestamp.
+     *
+     * @param currentDate current date of the system
      */
     @Modifying
     @Query("update Tender t set t.status = 2, t.lastUpdatedBy = -1, t.lastUpdatedDate = ?1 where t.closedDate < ?1 and t.status = 1")
@@ -60,6 +62,7 @@ public interface TenderDAO extends DataTablesRepository<Tender, Integer> {
     /**
      * This method is used to find the tenders which should be close.
      *
+     * @param currentDate current date of the system
      * @return List
      * @see Tender
      */
@@ -69,6 +72,7 @@ public interface TenderDAO extends DataTablesRepository<Tender, Integer> {
     /**
      * This method is used to close the tender by tender id.
      * @param id unique identifier of tender
+     * @param currentDate current date of the system
      */
     @Modifying
     @Query("update Tender t set t.status = 2, t.lastUpdatedBy = -1, t.lastUpdatedDate = ?2 where t.id = ?1")
@@ -96,7 +100,7 @@ public interface TenderDAO extends DataTablesRepository<Tender, Integer> {
      * This method is used to find the top country visitor.
      *
      * @param tenderId unique identifier of tender
-     * @param pageable
+     * @param pageable Pageable
      * @return List
      */
     @Query("select v.country, count(v) from Tender t join t.tenderVisits v where t.id = ?1 group by v.country order by count(v) desc")

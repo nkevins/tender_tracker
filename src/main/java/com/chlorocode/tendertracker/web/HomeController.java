@@ -19,7 +19,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Iterator;
 import java.util.Optional;
 
 /**
@@ -31,6 +30,13 @@ public class HomeController {
     private ExternalTenderService externalTenderService;
     private CodeValueService codeValueService;
 
+    /**
+     * Constructor.
+     *
+     * @param tenderService TenderService
+     * @param codeValueService CodeValueService
+     * @param externalTenderService ExternalTenderService
+     */
     @Autowired
     public HomeController(TenderService tenderService, CodeValueService codeValueService, ExternalTenderService externalTenderService) {
         this.tenderService = tenderService;
@@ -41,9 +47,9 @@ public class HomeController {
     /**
      * Handles all requests
      *
-     * @param pageSize
-     * @param page
-     * @param model
+     * @param pageSize size of the page
+     * @param page current page
+     * @param model modelMap
      * @return String
      */
     @GetMapping("/")
@@ -83,9 +89,9 @@ public class HomeController {
     /**
      * This method is used to show eligible external tender.
      *
-     * @param pageSize
-     * @param page
-     * @param model
+     * @param pageSize size of the page
+     * @param page current page
+     * @param model ModelMap
      * @return String
      */
     @GetMapping("/external_tender")

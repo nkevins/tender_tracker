@@ -4,6 +4,9 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.NotNull;
 
+/**
+ * Data transfer object for tender item update.
+ */
 public class TenderItemUpdateDTO {
 
     private int id;

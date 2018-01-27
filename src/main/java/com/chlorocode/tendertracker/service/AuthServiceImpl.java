@@ -45,7 +45,7 @@ public class AuthServiceImpl implements AuthService {
      *
      * @param email user email
      * @return UserDetails
-     * @throws UsernameNotFoundException
+     * @throws UsernameNotFoundException UsernameNotFoundException
      */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

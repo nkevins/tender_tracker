@@ -17,7 +17,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
@@ -57,9 +60,9 @@ public class MarketplaceController {
     /**
      * This method is used to show product list screen of marketplace.
      *
-     * @param pageSize
-     * @param page
-     * @param modelMap
+     * @param pageSize size of the page
+     * @param page current page number
+     * @param modelMap ModelMap
      * @return String
      */
     @GetMapping("/marketplace")
@@ -97,13 +100,13 @@ public class MarketplaceController {
     /**
      * This method is used to show products list of marketplace by advanced search or searchText.
      *
-     * @param pageSize
-     * @param page
-     * @param searchText
-     * @param title
-     * @param companyName
-     * @param orderBy
-     * @param orderMode
+     * @param pageSize size of the page
+     * @param page current page number
+     * @param searchText free search text
+     * @param title title of company
+     * @param companyName company name
+     * @param orderBy order by
+     * @param orderMode order mode
      * @param modelMap ModelMap
      * @return String
      */
@@ -173,7 +176,7 @@ public class MarketplaceController {
     /**
      * This method is used to show the detail screen of selected product.
      *
-     * @param id unique idendtifier of the product
+     * @param id unique identifier of the product
      * @param model ModelMap
      * @return String
      */

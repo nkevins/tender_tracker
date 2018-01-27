@@ -1,13 +1,13 @@
 package com.chlorocode.tendertracker.dao.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
  * Created by Kyaw Min Thu on 6/1/2018.
+ * Data transfer object for Milestone.
  */
 public class MilestoneDTO {
 

@@ -15,7 +15,7 @@ public interface TenderItemDAO extends JpaRepository<TenderItem, Integer> {
      * This method is used to find the TenderItem by tenderId and sort.
      *
      * @param tenderId unique identifier of tender
-     * @param sort
+     * @param sort sort pattern code
      * @return TenderItem
      * @see TenderItem
      */

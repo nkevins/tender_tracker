@@ -1,8 +1,8 @@
 package com.chlorocode.tendertracker.service;
 
 import com.chlorocode.tendertracker.constants.TTConstants;
-import com.chlorocode.tendertracker.dao.*;
-import com.chlorocode.tendertracker.dao.entity.*;
+import com.chlorocode.tendertracker.dao.TenderItemDAO;
+import com.chlorocode.tendertracker.dao.entity.TenderItem;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +22,7 @@ public class TenderItemServiceImpl implements TenderItemService {
      * Constructor.
      *
      * @param tenderItemDAO TenderItemDAO
+     * @param tenderSubscriptionService TenderSubscriptionService
      */
     @Autowired
     public TenderItemServiceImpl(TenderItemDAO tenderItemDAO, TenderSubscriptionService tenderSubscriptionService) {

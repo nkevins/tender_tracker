@@ -3,10 +3,7 @@ package com.chlorocode.tendertracker.dao;
 import com.chlorocode.tendertracker.dao.entity.RoleUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 /**
  * Created by andy on 22/7/2017.

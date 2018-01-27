@@ -1,5 +1,8 @@
 package com.chlorocode.tendertracker.dao.dto;
 
+/**
+ * Data transfer object for tender search.
+ */
 public class TenderSearchDTO {
 
     private String searchText;

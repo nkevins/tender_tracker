@@ -4,6 +4,9 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.Valid;
 
+/**
+ * Data transfer object for product update.
+ */
 public class ProductUpdateDTO {
     private int productCode;
 

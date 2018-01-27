@@ -26,7 +26,7 @@ public interface CompanyDAO extends DataTablesRepository<Company, Integer> {
     /**
      * This method is used to find companies by uen.
      *
-     * @param uen
+     * @param uen uen of the company
      * @return List
      * @see Company
      */
@@ -46,7 +46,7 @@ public interface CompanyDAO extends DataTablesRepository<Company, Integer> {
     /**
      * This method is used to find companies that contain given string.
      *
-     * @param name
+     * @param name name of the company
      * @return List
      * @see Company
      */

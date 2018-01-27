@@ -4,9 +4,6 @@ import com.chlorocode.tendertracker.dao.entity.Tender;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-import java.util.Date;
-import java.util.List;
-
 /**
  * This DAO is used to show the tender in search screen by paging and sorting features.
  */
