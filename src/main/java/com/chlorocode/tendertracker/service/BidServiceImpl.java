@@ -2,8 +2,10 @@ package com.chlorocode.tendertracker.service;
 
 import com.chlorocode.tendertracker.dao.BidDAO;
 import com.chlorocode.tendertracker.dao.BidDocumentDAO;
+import com.chlorocode.tendertracker.dao.BidItemDAO;
 import com.chlorocode.tendertracker.dao.entity.Bid;
 import com.chlorocode.tendertracker.dao.entity.BidDocument;
+import com.chlorocode.tendertracker.dao.entity.BidItem;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,7 @@ public class BidServiceImpl implements BidService {
     private BidDAO bidDAO;
     private BidDocumentDAO bidDocumentDAO;
     private S3Wrapper s3Wrapper;
+    private BidItemDAO bidItemDAO;
 
     /**
      * Constructor.
@@ -32,10 +35,11 @@ public class BidServiceImpl implements BidService {
      * @param s3Wrapper S3Wrapper
      */
     @Autowired
-    public BidServiceImpl(BidDAO bidDAO, BidDocumentDAO bidDocumentDAO, S3Wrapper s3Wrapper) {
+    public BidServiceImpl(BidDAO bidDAO, BidDocumentDAO bidDocumentDAO, S3Wrapper s3Wrapper,BidItemDAO bidItemDAO) {
         this.bidDAO = bidDAO;
         this.bidDocumentDAO = bidDocumentDAO;
         this.s3Wrapper = s3Wrapper;
+        this.bidItemDAO = bidItemDAO;
     }
 
     @Override
@@ -92,5 +96,15 @@ public class BidServiceImpl implements BidService {
     @Override
     public List<Bid> findBidByTender(int tenderId) {
         return bidDAO.findBidByTender(tenderId);
+    }
+
+    @Override
+    public BidItem findBidItemById(int id) {
+        return bidItemDAO.findOne(id);
+    }
+
+    @Override
+    public BidItem updateBid(BidItem bidItem) {
+       return bidItemDAO.saveAndFlush(bidItem);
     }
 }

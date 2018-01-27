@@ -1,20 +1,24 @@
 package com.chlorocode.tendertracker.web.admin;
 
 import com.chlorocode.tendertracker.dao.dto.AlertDTO;
+import com.chlorocode.tendertracker.dao.dto.TenderItemResponseSubmitDTO;
+import com.chlorocode.tendertracker.dao.dto.TenderResponseSubmitDTO;
 import com.chlorocode.tendertracker.dao.entity.*;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.service.BidService;
+import com.chlorocode.tendertracker.service.CodeValueService;
 import com.chlorocode.tendertracker.service.TenderAppealService;
+import com.chlorocode.tendertracker.service.TenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Date;
 
 /**
@@ -25,6 +29,8 @@ public class BidController {
 
     private BidService bidService;
     private TenderAppealService tenderAppealService;
+    private TenderService tenderService;
+    private CodeValueService codeValueService;
 
     /**
      * Constructor.
@@ -33,9 +39,11 @@ public class BidController {
      * @param tenderAppealService TenderAppealService
      */
     @Autowired
-    public BidController(BidService bidService, TenderAppealService tenderAppealService) {
+    public BidController(BidService bidService, TenderAppealService tenderAppealService,TenderService tenderService,CodeValueService codeValueService) {
         this.bidService = bidService;
         this.tenderAppealService = tenderAppealService;
+        this.tenderService = tenderService;
+        this.codeValueService = codeValueService;
     }
 
     /**
@@ -178,5 +186,104 @@ public class BidController {
         }
 
         return "redirect:/admin/tender/appeal";
+    }
+
+
+    /**
+     * This method is used for showing tender response screen.
+     *
+     * @param id unique identifier of the tender
+     * @param request HttpServletRequest
+     * @param response HttpServletResponse
+     * @param model ModelMap
+     * @return String
+     */
+    @GetMapping("/admin/bid/amend/{id}")
+    public String amendBid(@PathVariable(value = "id") Integer id, HttpServletRequest request,
+                           HttpServletResponse response, ModelMap model) {
+        // Check access right
+        if (!request.isUserInRole("ROLE_ADMIN") && !request.isUserInRole("ROLE_SUBMITTER")) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return null;
+        }
+
+        // Check if tender exist
+        Tender tender = tenderService.findById(id);
+        if (tender == null) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
+
+        CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Company company = usr.getSelectedCompany();
+
+        TenderResponseSubmitDTO data = new TenderResponseSubmitDTO();
+        for (TenderItem i : tender.getItems()) {
+            TenderItemResponseSubmitDTO itm = new TenderItemResponseSubmitDTO();
+            itm.setItem(i);
+            itm.setItemId(i.getBidItems().get(0).getId());
+            BidItem bidI = bidService.findBidItemById(i.getBidItems().get(0).getId());
+            itm.setQuotedPrice(bidI.getAmount());
+
+            data.addTenderItem(itm);
+        }
+
+        model.addAttribute("tender", tender);
+        model.addAttribute("company", company);
+        model.addAttribute("data", data);
+        model.addAttribute("codeValueService", codeValueService);
+        model.addAttribute("currency",codeValueService.getByType("currency"));
+
+        return "admin/tender/amendBid";
+    }
+
+    /**
+     * This method is used to save the tender response.
+     * This method can handle request both from normal HTTP and AJAX.
+     * This method will return the name of next screen or null for AJAX response.
+     * For AJAX response, this method will return the HTTP status and any error in the HTTP body.
+     *
+     * @param data input data of tender response
+     * @param request HttpServletRequest
+     * @param resp HttpServletResponse
+     * @param model ModelMap
+     * @return String
+     * @throws IOException if has exception when putting error message in AJAX response
+     * @see TenderResponseSubmitDTO
+     */
+    @PostMapping("/tender/respond/amend")
+    public String AmendTenderResponse(@ModelAttribute("data") TenderResponseSubmitDTO data, HttpServletRequest request,
+                                      HttpServletResponse resp, ModelMap model) throws IOException {
+
+        Tender tender = tenderService.findById(data.getTenderId());
+        CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        try
+        {
+            for (TenderItemResponseSubmitDTO item : data.getItems()) {
+                BidItem bidItem = bidService.findBidItemById(item.getItemId());
+                bidItem.setAmount(item.getQuotedPrice());
+                bidItem.setCreatedBy(usr.getId());
+                bidItem.setCreatedDate(new Date());
+                bidItem.setLastUpdatedBy(usr.getId());
+                bidItem.setLastUpdatedDate(new Date());
+                bidItem.setCurrency(item.getCurrency());
+                bidService.updateBid(bidItem);
+                AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS,
+                        "Tender appeal status updated successfully");
+                model.addAttribute("alert", alert);
+                // bid.addBidItem(bidItem);
+            }
+        } catch(ApplicationException ex) {
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
+                    ex.getMessage());
+            model.addAttribute("alert", alert);
+            model.addAttribute("tender", tender);
+            model.addAttribute("company", usr.getSelectedCompany());
+            model.addAttribute("data", data);
+            model.addAttribute("codeValueService", codeValueService);
+        }
+
+        return "redirect:/admin/bid";
     }
 }

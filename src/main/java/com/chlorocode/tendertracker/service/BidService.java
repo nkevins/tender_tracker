@@ -1,6 +1,7 @@
 package com.chlorocode.tendertracker.service;
 
 import com.chlorocode.tendertracker.dao.entity.Bid;
+import com.chlorocode.tendertracker.dao.entity.BidItem;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -51,5 +52,21 @@ public interface BidService {
      * @return list of bid
      */
     List<Bid> findBidByTender(int tenderId);
+
+    /**
+     * This method is used to find bid item for particular bid.
+     *
+     * @param id unique identifier of the tender
+     * @return bid item
+     */
+    BidItem findBidItemById(int id);
+
+    /**
+     * This method is used to find bid item for particular bid.
+     *
+     * @param bidItem bid item object
+     * @return bid item
+     */
+    BidItem updateBid(BidItem bidItem);
 
 }

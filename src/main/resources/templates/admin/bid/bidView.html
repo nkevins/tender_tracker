@@ -94,7 +94,10 @@
                     'render' : function(data, type, full, meta) {
                         if (full.tender.status == 3) {
                             return '<a href="/admin/bid/appeal/' + full.id + '" class="btn btn-primary">Appeal</a>';
-                        } else {
+                        }else if(full.tender.status == 2){
+                            return '<a href="/admin/bid/amend/' + full.tender.id + '" class="btn btn-primary">Amend Bid</a>';
+                        }
+                        else {
                             return '';
                         }
                     }
