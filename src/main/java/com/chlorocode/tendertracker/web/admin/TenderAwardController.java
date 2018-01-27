@@ -12,6 +12,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -72,6 +73,7 @@ public class TenderAwardController {
             criteriaList = criteriaList.substring(0, criteriaList.length() - 1);
         }
 
+
         model.addAttribute("tender", tender);
         model.addAttribute("evaluationCriteria", criteria);
         model.addAttribute("evaluationCriteraList", criteriaList);
@@ -79,6 +81,35 @@ public class TenderAwardController {
         return "admin/tender/tenderAward";
     }
 
+    /**
+     * This method is used to update the tender as no awarded if no company bid on that.
+     *
+     * @param id unique identifier of the tender
+     * @param model ModelMap
+     * @param redirectAttrs RedirectAttributes
+     * @return String
+     */
+    @GetMapping("/admin/tender/noawarded/{id}")
+    public String setNoAwardTender(@PathVariable(value="id") Integer id, ModelMap model, RedirectAttributes redirectAttrs) {
+        Tender tender = tenderService.findById(id);
+        CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        tender.setStatus(4);
+        tender.setLastUpdatedBy(usr.getId());
+        tender.setLastUpdatedDate(new Date());
+
+        try {
+            tenderService.updateTender(tender);
+        } catch (Exception ex) {
+            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
+                    ex.getMessage());
+            redirectAttrs.addFlashAttribute("alert", alert);
+            return "redirect:/admin/tender/award/" + id;
+        }
+
+        AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS, "Tender updated to no awarded");
+        redirectAttrs.addFlashAttribute("alert", alert);
+        return "redirect:/admin/tender/award";
+    }
     /**
      * This method is used to save tender award.
      *
