@@ -33,6 +33,7 @@ public class BidServiceImpl implements BidService {
      * @param bidDAO BidDAO
      * @param bidDocumentDAO BidDocumentDAO
      * @param s3Wrapper S3Wrapper
+     * @param bidItemDAO BidItemDAO
      */
     @Autowired
     public BidServiceImpl(BidDAO bidDAO, BidDocumentDAO bidDocumentDAO, S3Wrapper s3Wrapper,BidItemDAO bidItemDAO) {

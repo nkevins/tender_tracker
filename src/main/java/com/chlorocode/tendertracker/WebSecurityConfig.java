@@ -33,7 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     /**
      * Constructor.
      *
-     * @param authService
+     * @param authService AuthService
      */
     @Autowired
     public WebSecurityConfig(AuthService authService) {
@@ -44,7 +44,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * This method is used to configure the HttpSecurity control of the application.
      *
      * @param http HttpSecurity
-     * @throws Exception
+     * @throws Exception Exception
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -79,7 +79,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * This method is used to configure the WebSecurity control of the application.
      *
      * @param web WebSecurity
-     * @throws Exception
+     * @throws Exception exception
      */
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -92,7 +92,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * This method is used to configure the AuthenticationManagerBuilder for login of the application.
      *
      * @param auth AuthenticationManagerBuilder
-     * @throws Exception
+     * @throws Exception exception
      */
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {

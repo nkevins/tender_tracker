@@ -28,6 +28,8 @@ public interface ExternalTenderDAO extends CrudRepository<ExternalTender, Long> 
 
     /**
      * This method is used to close the external tender when the closingDate of such tender is less then current timestamp.
+     *
+     * @param currentDate current date of the system
      */
     @Modifying
     @Query("update ExternalTender t set t.status = 'CLOSED', t.lastUpdatedDate = ?1 where t.closingDate < ?1 and t.status = 'OPEN'")

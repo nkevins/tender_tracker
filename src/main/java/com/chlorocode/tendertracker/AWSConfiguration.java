@@ -37,7 +37,7 @@ public class AWSConfiguration {
     /**
      * This method is used for amazon S3 client.
      *
-     * @param awsCredentials
+     * @param awsCredentials AWSCredentials
      * @return AmazonS3Client
      * @see AmazonS3Client
      */

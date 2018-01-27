@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.Collection;
 
 /**
- * This class is used to perform authentication & authorization filter check for all pages in the system.
+ * This class is used to perform authentication and authorization filter check for all pages in the system.
  */
 @Component
 public class AuthorizationFilter extends GenericFilterBean {
@@ -27,11 +27,11 @@ public class AuthorizationFilter extends GenericFilterBean {
     /**
      * This method is used for filter the authorization.
      *
-     * @param servletRequest
-     * @param servletResponse
-     * @param filterChain
-     * @throws IOException
-     * @throws ServletException
+     * @param servletRequest ServletRequest
+     * @param servletResponse ServletResponse
+     * @param filterChain FilterChain
+     * @throws IOException IOException
+     * @throws ServletException ServletException
      */
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {

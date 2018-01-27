@@ -37,9 +37,12 @@ public class BidController {
      *
      * @param bidService BidService
      * @param tenderAppealService TenderAppealService
+     * @param tenderService TenderService
+     * @param codeValueService CodeValueService
      */
     @Autowired
-    public BidController(BidService bidService, TenderAppealService tenderAppealService,TenderService tenderService,CodeValueService codeValueService) {
+    public BidController(BidService bidService, TenderAppealService tenderAppealService
+            ,TenderService tenderService,CodeValueService codeValueService) {
         this.bidService = bidService;
         this.tenderAppealService = tenderAppealService;
         this.tenderService = tenderService;

@@ -57,6 +57,7 @@ public class TenderServiceImpl implements TenderService {
      * @param userService UserService
      * @param bidService BidService
      * @param userRoleService UserRoleService
+     * @param tenderSubscriptionService TenderSubscriptionService
      */
     @Autowired
     public TenderServiceImpl(TenderDAO tenderDAO, S3Wrapper s3Wrapper, TenderBookmarkDAO tenderBookmarkDAO

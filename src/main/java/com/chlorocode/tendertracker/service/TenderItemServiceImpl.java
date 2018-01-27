@@ -22,6 +22,7 @@ public class TenderItemServiceImpl implements TenderItemService {
      * Constructor.
      *
      * @param tenderItemDAO TenderItemDAO
+     * @param tenderSubscriptionService TenderSubscriptionService
      */
     @Autowired
     public TenderItemServiceImpl(TenderItemDAO tenderItemDAO, TenderSubscriptionService tenderSubscriptionService) {

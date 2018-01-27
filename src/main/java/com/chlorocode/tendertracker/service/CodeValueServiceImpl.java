@@ -28,6 +28,8 @@ public class CodeValueServiceImpl implements CodeValueService {
      * Constructor.
      *
      * @param codeValueDAO CodeValueDAO
+     * @param tenderCategoryDAO TenderCategoryDAO
+     * @param countryDAO CountryDAO
      */
     @Autowired
     public CodeValueServiceImpl(CodeValueDAO codeValueDAO, TenderCategoryDAO tenderCategoryDAO, CountryDAO countryDAO) {

@@ -22,8 +22,8 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
      * @param request HttpServletRequest
      * @param response HttpServletResponse
      * @param exception AuthenticationException
-     * @throws IOException
-     * @throws ServletException
+     * @throws IOException IOException
+     * @throws ServletException ServletException
      */
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {

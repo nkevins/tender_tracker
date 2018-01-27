@@ -9,7 +9,7 @@ public class TTCommonUtil {
     /**
      * This method is use to get convert the String of the status from status code.
      *
-     * @param statusCode
+     * @param statusCode status code of external tender
      * @return String
      */
     public static String getExternalTenderStatus(int statusCode) {
