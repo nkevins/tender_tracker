@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
+import java.util.Date;
 
 /**
  * This class is used to configure all the spring scheduled task.
@@ -48,11 +49,12 @@ public class TenderScheduledTask {
     @Transactional
     public void tenderAutoClose() {
         TTLogger.info(className, "Auto Close status update for External Tender");
-        externalTenderDAO.autoCloseExternalTender();
+        Date currentDate = new Date();
+        externalTenderDAO.autoCloseExternalTender(currentDate);
         TTLogger.info(className, "Completed Auto Close status update for External Tender");
 
         TTLogger.info(className, "Auto Close status update for Tender");
-        tenderDAO.autoCloseTender();
+        tenderDAO.autoCloseTender(currentDate);
         TTLogger.info(className, "Completed Auto Close status update for Tender");
     }
 
@@ -64,7 +66,7 @@ public class TenderScheduledTask {
     public void autoNotifyTenderClose() {
         TTLogger.info(className, "Auto notify tender close.");
         //Notify company administrator that the tender has closed and ready for evaluation.");
-        tenderSubscriptionService.autoCloseTenderAndNotify();
+        //tenderSubscriptionService.autoCloseTenderAndNotify();
         TTLogger.info(className, "Completed tender close and notify.");
     }
 

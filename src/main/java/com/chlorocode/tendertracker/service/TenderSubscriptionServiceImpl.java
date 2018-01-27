@@ -123,7 +123,7 @@ public class TenderSubscriptionServiceImpl implements TenderSubscriptionService 
     @Override
     public void autoCloseTenderAndNotify() {
         //Date currentDateTime = DateUtility.getCurrentDateTime();
-        List<Tender> closingTenders = tenderDAO.findClosingTender();
+        List<Tender> closingTenders = tenderDAO.findClosingTender(new Date());
         if (closingTenders != null && !closingTenders.isEmpty()) {
             for (Tender t : closingTenders) {
                 // Notify to company administrator.
@@ -136,7 +136,7 @@ public class TenderSubscriptionServiceImpl implements TenderSubscriptionService 
                     notificationService.sendNotification(NotificationServiceImpl.NOTI_MODE.tender_closed_noti, params);
                 }
                 // Change the status of tender to close tender.
-                tenderDAO.closeTender(t.getId());
+                tenderDAO.closeTender(t.getId(), new Date());
             }
         }
     }

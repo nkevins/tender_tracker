@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.Date;
+
 /**
  * Created by Kyaw Min Thu on 3/7/2017.
  * This DAO is used for ExternalTender.
@@ -28,6 +30,6 @@ public interface ExternalTenderDAO extends CrudRepository<ExternalTender, Long> 
      * This method is used to close the external tender when the closingDate of such tender is less then current timestamp.
      */
     @Modifying
-    @Query("update ExternalTender t set t.status = 'CLOSED', t.lastUpdatedDate = CURRENT_TIMESTAMP where t.closingDate < CURRENT_TIMESTAMP and t.status = 'OPEN'")
-    void autoCloseExternalTender();
+    @Query("update ExternalTender t set t.status = 'CLOSED', t.lastUpdatedDate = ?1 where t.closingDate < ?1 and t.status = 'OPEN'")
+    void autoCloseExternalTender(Date currentDate);
 }

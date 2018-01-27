@@ -4,6 +4,9 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.NotNull;
 
+/**
+ * Data transfer object for company information.
+ */
 public class CompanyInfoDTO {
     private int id;
     private String name;

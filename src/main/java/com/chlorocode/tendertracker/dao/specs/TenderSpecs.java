@@ -173,7 +173,7 @@ public class TenderSpecs {
     private static Specification<Tender> getOpenDateCriteria() {
         return (root, query, cb) -> {
             // show openDate<current time tenders.
-            return cb.lessThanOrEqualTo(root.get(Tender_.openDate), DateUtility.getCurrentDate());
+            return cb.lessThanOrEqualTo(root.get(Tender_.openDate), DateUtility.getCurrentDateTime());
         };
     }
 

@@ -5,6 +5,9 @@ import org.springframework.validation.ObjectError;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Data transfer object for alert message box.
+ */
 public class AlertDTO {
 
     public enum AlertType {

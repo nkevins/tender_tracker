@@ -54,8 +54,8 @@ public interface TenderDAO extends DataTablesRepository<Tender, Integer> {
      * This method is used to close the tender which closed date is less than current timestamp.
      */
     @Modifying
-    @Query("update Tender t set t.status = 2, t.lastUpdatedBy = -1, t.lastUpdatedDate = CURRENT_TIMESTAMP where t.closedDate < CURRENT_TIMESTAMP and t.status = 1")
-    void autoCloseTender();
+    @Query("update Tender t set t.status = 2, t.lastUpdatedBy = -1, t.lastUpdatedDate = ?1 where t.closedDate < ?1 and t.status = 1")
+    void autoCloseTender(Date currentDate);
 
     /**
      * This method is used to find the tenders which should be close.
@@ -63,16 +63,16 @@ public interface TenderDAO extends DataTablesRepository<Tender, Integer> {
      * @return List
      * @see Tender
      */
-    @Query(value = "select t from Tender t where t.closedDate < CURRENT_TIMESTAMP and t.status = 1")
-    List<Tender> findClosingTender();
+    @Query(value = "select t from Tender t where t.closedDate < ?1 and t.status = 1")
+    List<Tender> findClosingTender(Date currentDate);
 
     /**
      * This method is used to close the tender by tender id.
      * @param id unique identifier of tender
      */
     @Modifying
-    @Query("update Tender t set t.status = 2, t.lastUpdatedBy = -1, t.lastUpdatedDate = CURRENT_TIMESTAMP where t.id = ?1")
-    void closeTender(int id);
+    @Query("update Tender t set t.status = 2, t.lastUpdatedBy = -1, t.lastUpdatedDate = ?2 where t.id = ?1")
+    void closeTender(int id, Date currentDate);
 
     /**
      * This method is used to get the number of visit by tenderId.

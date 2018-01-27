@@ -111,7 +111,6 @@ public class AuthController {
             return "registerUser";
         }
 
-        // TODO move validation to Service.
         if(form.getIdType() == 1){
             if(!userService.isNRICValid(form.getIdNo())){
                 AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,

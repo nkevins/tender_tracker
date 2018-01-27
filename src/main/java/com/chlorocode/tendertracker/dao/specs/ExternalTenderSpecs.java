@@ -14,13 +14,13 @@ public class ExternalTenderSpecs {
 
     public static Specification<ExternalTender> getAllOpenTender() {
         return (root, query, cb) -> {
-            return cb.lessThanOrEqualTo(root.get(ExternalTender_.publishedDate), DateUtility.getCurrentDate());
+            return cb.lessThanOrEqualTo(root.get(ExternalTender_.publishedDate), DateUtility.getCurrentDateTime());
         };
     }
 
     public static Specification<ExternalTender> byTenderSearchString(String searchString) {
         return (root, query, cb) -> {
-            Predicate openDateFilter = cb.lessThanOrEqualTo(root.get(ExternalTender_.publishedDate), DateUtility.getCurrentDate());
+            Predicate openDateFilter = cb.lessThanOrEqualTo(root.get(ExternalTender_.publishedDate), DateUtility.getCurrentDateTime());
             List<Predicate> predicates = new ArrayList<>();
             if (searchString != null && !searchString.isEmpty()) {
                 predicates.add(cb.like(cb.lower(root.<String>get(ExternalTender_.title)), getContainsLikePattern(searchString)));
@@ -36,7 +36,7 @@ public class ExternalTenderSpecs {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            predicates.add(cb.lessThanOrEqualTo(root.get(ExternalTender_.publishedDate), DateUtility.getCurrentDate()));
+            predicates.add(cb.lessThanOrEqualTo(root.get(ExternalTender_.publishedDate), DateUtility.getCurrentDateTime()));
             if (title != null && !title.isEmpty()) {
                 predicates.add(cb.like(cb.lower(root.<String>get(ExternalTender_.title)), getContainsLikePattern(title)));
             }

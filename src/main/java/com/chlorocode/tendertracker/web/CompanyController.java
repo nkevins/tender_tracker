@@ -94,7 +94,6 @@ public class CompanyController {
             return "registerCompany";
         }
 
-        // TODO move business check into CompanyService.
         Company reg = new Company();
         reg.setName(form.getName());
         reg.setUen(form.getUen());
