@@ -85,7 +85,8 @@ public class CompanySysAdmControllerTest {
         when(companyService.findCompanyRegistrationById(anyInt())).thenReturn(null);
 
         this.mvc.perform(get("/sysadm/companyRegistration/841").with(user(currentUser)))
-                .andExpect(status().isNotFound());
+                //.andExpect(status().isNotFound());
+                .andExpect(view().name("error/error"));
     }
 
     @Test
