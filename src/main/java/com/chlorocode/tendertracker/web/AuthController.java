@@ -10,7 +10,6 @@ import com.chlorocode.tendertracker.service.CodeValueService;
 import com.chlorocode.tendertracker.service.CompanyService;
 import com.chlorocode.tendertracker.service.UserRoleService;
 import com.chlorocode.tendertracker.service.UserService;
-import com.chlorocode.tendertracker.service.notification.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

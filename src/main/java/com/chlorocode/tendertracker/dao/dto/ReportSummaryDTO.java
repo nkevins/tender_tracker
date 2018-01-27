@@ -1,7 +1,5 @@
 package com.chlorocode.tendertracker.dao.dto;
 
-import java.util.Date;
-
 /**
  * Created by fistg on 17-Dec-17.
  * Data transfer object for report summary.

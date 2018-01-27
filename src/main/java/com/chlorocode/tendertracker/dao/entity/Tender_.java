@@ -1,11 +1,6 @@
 package com.chlorocode.tendertracker.dao.entity;
 
-import com.chlorocode.tendertracker.dao.entity.Company;
-import com.chlorocode.tendertracker.dao.entity.Tender;
-import com.chlorocode.tendertracker.dao.entity.TenderCategory;
-
 import javax.annotation.Generated;
-import javax.management.openmbean.OpenDataException;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 import java.util.Date;

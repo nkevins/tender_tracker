@@ -1,7 +1,6 @@
 package com.chlorocode.tendertracker.dao.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;

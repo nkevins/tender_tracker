@@ -1,6 +1,9 @@
 package com.chlorocode.tendertracker.service;
 
-import com.chlorocode.tendertracker.dao.*;
+import com.chlorocode.tendertracker.dao.TenderBookmarkDAO;
+import com.chlorocode.tendertracker.dao.TenderCategorySubscriptionDAO;
+import com.chlorocode.tendertracker.dao.TenderDAO;
+import com.chlorocode.tendertracker.dao.TenderDocumentDAO;
 import com.chlorocode.tendertracker.dao.entity.*;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.service.notification.NotificationServiceImpl;

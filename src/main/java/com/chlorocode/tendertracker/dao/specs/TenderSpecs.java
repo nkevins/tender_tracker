@@ -1,12 +1,16 @@
 package com.chlorocode.tendertracker.dao.specs;
 
-import com.chlorocode.tendertracker.dao.entity.*;
+import com.chlorocode.tendertracker.dao.entity.Company_;
+import com.chlorocode.tendertracker.dao.entity.Tender;
+import com.chlorocode.tendertracker.dao.entity.TenderCategory_;
+import com.chlorocode.tendertracker.dao.entity.Tender_;
 import com.chlorocode.tendertracker.utils.DateUtility;
 import com.chlorocode.tendertracker.utils.TTCommonUtil;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.domain.Specifications;
 
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
 

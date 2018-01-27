@@ -2,8 +2,6 @@ package com.chlorocode.tendertracker.dao.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
 
-import javax.validation.constraints.NotNull;
-
 /**
  * Data transfer object for company information.
  */

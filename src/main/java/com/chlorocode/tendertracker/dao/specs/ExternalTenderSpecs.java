@@ -1,6 +1,7 @@
 package com.chlorocode.tendertracker.dao.specs;
 
-import com.chlorocode.tendertracker.dao.entity.*;
+import com.chlorocode.tendertracker.dao.entity.ExternalTender;
+import com.chlorocode.tendertracker.dao.entity.ExternalTender_;
 import com.chlorocode.tendertracker.utils.DateUtility;
 import com.chlorocode.tendertracker.utils.TTCommonUtil;
 import org.springframework.data.jpa.domain.Specification;

@@ -1,6 +1,5 @@
 package com.chlorocode.tendertracker.dao;
 
-import com.chlorocode.tendertracker.dao.entity.Tender;
 import com.chlorocode.tendertracker.dao.entity.TenderAppeal;
 import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
 

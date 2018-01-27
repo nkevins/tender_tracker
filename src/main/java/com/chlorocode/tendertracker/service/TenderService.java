@@ -1,7 +1,9 @@
 package com.chlorocode.tendertracker.service;
 
 import com.chlorocode.tendertracker.dao.dto.TenderSearchDTO;
-import com.chlorocode.tendertracker.dao.entity.*;
+import com.chlorocode.tendertracker.dao.entity.Tender;
+import com.chlorocode.tendertracker.dao.entity.TenderAward;
+import com.chlorocode.tendertracker.dao.entity.TenderDocument;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
