@@ -22,4 +22,19 @@ public class TTCommonUtil {
             default: return TTConstants.ET_STATUS_OTHERS;
         }
     }
+
+    /**
+     * This method is used to create the like query pattern.(for eg- '%searchTerm%'
+     *
+     * @param searchTerm search free text
+     * @return String
+     */
+    public static String getContainsLikePattern(String searchTerm) {
+        if (searchTerm == null || searchTerm.isEmpty()) {
+            return "%";
+        }
+        else {
+            return "%" + searchTerm.toLowerCase() + "%";
+        }
+    }
 }

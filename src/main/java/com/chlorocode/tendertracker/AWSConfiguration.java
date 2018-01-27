@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * This class is used for AWS configuration.
+ */
 @Configuration
 public class AWSConfiguration {
     @Value("${cloud.aws.credentials.accessKey}")
@@ -20,11 +23,24 @@ public class AWSConfiguration {
     @Value("${cloud.aws.region}")
     private String region;
 
+    /**
+     * This method is used for basic AWS credentials.
+     *
+     * @return BasicAWSCredentials
+     * @see BasicAWSCredentials
+     */
     @Bean
     public BasicAWSCredentials basicAWSCredentials() {
         return new BasicAWSCredentials(accessKey, secretKey);
     }
 
+    /**
+     * This method is used for amazon S3 client.
+     *
+     * @param awsCredentials
+     * @return AmazonS3Client
+     * @see AmazonS3Client
+     */
     @Bean
     public AmazonS3Client amazonS3Client(AWSCredentials awsCredentials) {
         AmazonS3Client amazonS3Client = new AmazonS3Client(awsCredentials);

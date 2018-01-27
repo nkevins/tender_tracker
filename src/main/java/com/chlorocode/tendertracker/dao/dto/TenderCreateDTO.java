@@ -9,6 +9,9 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Data transfer object for tender create.
+ */
 public class TenderCreateDTO {
 
     private String refNo;

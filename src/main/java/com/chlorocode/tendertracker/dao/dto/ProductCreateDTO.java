@@ -4,6 +4,9 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.Valid;
 
+/**
+ * Data transfer object for product creation.
+ */
 public class ProductCreateDTO {
 
     @NotBlank(message = "Title is required")

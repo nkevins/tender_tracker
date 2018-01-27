@@ -66,7 +66,7 @@ public class TenderScheduledTask {
     public void autoNotifyTenderClose() {
         TTLogger.info(className, "Auto notify tender close.");
         //Notify company administrator that the tender has closed and ready for evaluation.");
-        //tenderSubscriptionService.autoCloseTenderAndNotify();
+        tenderSubscriptionService.autoCloseTenderAndNotify();
         TTLogger.info(className, "Completed tender close and notify.");
     }
 

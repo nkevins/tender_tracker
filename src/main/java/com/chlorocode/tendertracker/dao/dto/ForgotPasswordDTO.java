@@ -5,6 +5,9 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import javax.annotation.MatchesPattern;
 
+/**
+ * Data transfer object for forgot password.
+ */
 public class ForgotPasswordDTO {
 
     @NotBlank(message = "Email address must not be empty.")

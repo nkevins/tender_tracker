@@ -4,6 +4,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 /**
  * Created by andy on 2/8/2017.
+ * Data transfer object for company information.
  */
 public class EvaluateCriteriaDTO {
 

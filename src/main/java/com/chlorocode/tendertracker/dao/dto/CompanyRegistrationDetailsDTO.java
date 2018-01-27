@@ -4,6 +4,9 @@ import com.chlorocode.tendertracker.dao.entity.User;
 
 import java.util.Date;
 
+/**
+ * Data transfer object for company registration detail.
+ */
 public class CompanyRegistrationDetailsDTO {
     private int id;
     private String name;

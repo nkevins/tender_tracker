@@ -10,9 +10,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * This class is used customize the authentication failure.
+ */
 @Component("authenticationFailureHandler")
 public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
+    /**
+     * This method will be fired when the authentication failure.
+     *
+     * @param request HttpServletRequest
+     * @param response HttpServletResponse
+     * @param exception AuthenticationException
+     * @throws IOException
+     * @throws ServletException
+     */
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         setDefaultFailureUrl("/login?error=true");

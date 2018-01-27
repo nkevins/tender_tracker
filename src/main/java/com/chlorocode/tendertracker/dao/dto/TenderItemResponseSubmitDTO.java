@@ -2,6 +2,9 @@ package com.chlorocode.tendertracker.dao.dto;
 
 import com.chlorocode.tendertracker.dao.entity.TenderItem;
 
+/**
+ * Data transfer object for tender item response submit.
+ */
 public class TenderItemResponseSubmitDTO {
 
     private TenderItem item;

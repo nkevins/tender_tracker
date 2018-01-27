@@ -2,6 +2,7 @@ package com.chlorocode.tendertracker.dao.specs;
 
 import com.chlorocode.tendertracker.dao.entity.*;
 import com.chlorocode.tendertracker.utils.DateUtility;
+import com.chlorocode.tendertracker.utils.TTCommonUtil;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.domain.Specifications;
 
@@ -67,9 +68,9 @@ public class TenderSpecs {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             if (searchString != null && !searchString.isEmpty()) {
-                predicates.add(cb.like(cb.lower(root.<String>get(Tender_.title)), getContainsLikePattern(searchString)));
-                predicates.add(cb.like(cb.lower(root.get(Tender_.company).get(Company_.name)), getContainsLikePattern(searchString)));
-                predicates.add(cb.like(cb.lower(root.<String>get(Tender_.description)), getContainsLikePattern(searchString)));
+                predicates.add(cb.like(cb.lower(root.<String>get(Tender_.title)), TTCommonUtil.getContainsLikePattern(searchString)));
+                predicates.add(cb.like(cb.lower(root.get(Tender_.company).get(Company_.name)), TTCommonUtil.getContainsLikePattern(searchString)));
+                predicates.add(cb.like(cb.lower(root.<String>get(Tender_.description)), TTCommonUtil.getContainsLikePattern(searchString)));
             }
 
             return cb.or(predicates.toArray(new Predicate[predicates.size()]));
@@ -111,10 +112,10 @@ public class TenderSpecs {
             List<Predicate> predicates = new ArrayList<>();
 
             if (title != null && !title.isEmpty()) {
-                predicates.add(cb.like(cb.lower(root.<String>get(Tender_.title)), getContainsLikePattern(title)));
+                predicates.add(cb.like(cb.lower(root.<String>get(Tender_.title)), TTCommonUtil.getContainsLikePattern(title)));
             }
             if (companyName != null && !companyName.isEmpty()) {
-                predicates.add(cb.like(cb.lower(root.get(Tender_.company).get(Company_.name)), getContainsLikePattern(companyName)));
+                predicates.add(cb.like(cb.lower(root.get(Tender_.company).get(Company_.name)), TTCommonUtil.getContainsLikePattern(companyName)));
             }
             if (tcId > 0) {
                 predicates.add(cb.equal(root.get(Tender_.tenderCategory).get(TenderCategory_.id), tcId));
@@ -125,7 +126,7 @@ public class TenderSpecs {
 
             // Added by Andy.
             if(refNo != null && !refNo.isEmpty()){
-                predicates.add(cb.like(cb.lower(root.<String>get(Tender_.refNo)), getContainsLikePattern(refNo)));
+                predicates.add(cb.like(cb.lower(root.<String>get(Tender_.refNo)), TTCommonUtil.getContainsLikePattern(refNo)));
             }
 
             return cb.and(predicates.toArray(new Predicate[predicates.size()]));
@@ -189,18 +190,4 @@ public class TenderSpecs {
         };
     }
 
-    /**
-     * This method is used to create the like query pattern.(for eg- '%searchTerm%'
-     *
-     * @param searchTerm search free text
-     * @return String
-     */
-    private static String getContainsLikePattern(String searchTerm) {
-        if (searchTerm == null || searchTerm.isEmpty()) {
-            return "%";
-        }
-        else {
-            return "%" + searchTerm.toLowerCase() + "%";
-        }
-    }
 }

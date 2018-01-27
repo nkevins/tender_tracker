@@ -9,6 +9,9 @@ import org.springframework.security.authentication.event.AuthenticationSuccessEv
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Component;
 
+/**
+ * This class is used to intercept the authentication login success process.
+ */
 @Component
 public class AuthenticationSuccessEventListener
         implements ApplicationListener<AuthenticationSuccessEvent> {
@@ -16,6 +19,12 @@ public class AuthenticationSuccessEventListener
     @Autowired
     private LoginAttemptService loginAttemptService;
 
+    /**
+     * This method will be fired when user's authentication process is success.
+     * When authentication is success, application will reset the attempt count of user account to 0.
+     *
+     * @param e AuthenticationSuccessEvent
+     */
     public void onApplicationEvent(AuthenticationSuccessEvent e) {
         UsernamePasswordAuthenticationToken auth = (UsernamePasswordAuthenticationToken) e.getAuthentication();
         CurrentUser user = (CurrentUser) auth.getPrincipal();

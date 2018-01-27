@@ -6,6 +6,7 @@ import java.util.Date;
 
 /**
  * Created by andy on 8/8/2017.
+ * Data transfer object for tender clarification.
  */
 public class TenderClarificationDTO {
     private int id;

@@ -5,6 +5,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+/**
+ * Data transfer object for corrigendum create.
+ */
 public class CorrigendumCreateDTO {
     private int tenderId;
 

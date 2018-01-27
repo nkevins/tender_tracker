@@ -24,6 +24,15 @@ import java.util.Collection;
 @Component
 public class AuthorizationFilter extends GenericFilterBean {
 
+    /**
+     * This method is used for filter the authorization.
+     *
+     * @param servletRequest
+     * @param servletResponse
+     * @param filterChain
+     * @throws IOException
+     * @throws ServletException
+     */
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
