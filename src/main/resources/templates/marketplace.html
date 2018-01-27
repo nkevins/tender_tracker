@@ -150,7 +150,11 @@
                             <ul class="pagination">
                                 <li th:class="${products.number == 0} ? disabled">
                                     <a class="pageLink"
-                                       th:href="@{/marketplace/products/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=1)}">&laquo;&nbsp;Prev</a>
+                                       th:href="@{/marketplace/products/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=1)}">&laquo;&nbsp;First</a>
+                                </li>
+                                <li th:class="${products.number == 0} ? disabled">
+                                    <a class="pageLink"
+                                       th:href="@{/marketplace/products/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=${products.number})}">&laquo;&nbsp;Prev</a>
                                 </li>
                                 <li th:class="${products.number == (page - 1)} ? 'active pointer-disabled'"
                                     th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
@@ -160,7 +164,11 @@
                                 </li>
                                 <li th:class="${products.number + 1 == products.totalPages} ? disabled">
                                     <a class="pageLink"
-                                       th:href="@{/marketplace/products/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=${products.totalPages})}">Next&nbsp;&raquo;</a>
+                                       th:href="@{/marketplace/products/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=${products.number + 2})}">Next&nbsp;&raquo;</a>
+                                </li>
+                                <li th:class="${products.number + 1 == products.totalPages} ? disabled">
+                                    <a class="pageLink"
+                                       th:href="@{/marketplace/products/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=${products.totalPages})}">Last&nbsp;&raquo;</a>
                                 </li>
                             </ul>
                         </div>
@@ -170,6 +178,10 @@
                             <ul class="pagination">
                                 <li th:class="${products.number == 0} ? disabled">
                                     <a class="pageLink" th:href="@{/marketplace/products/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=1
+                                    , searchText=${searchCriteria.searchText}, title=${searchCriteria.title}, companyName=${searchCriteria.companyName})}">&laquo;&nbsp;First</a>
+                                </li>
+                                <li th:class="${products.number == 0} ? disabled">
+                                    <a class="pageLink" th:href="@{/marketplace/products/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=${products.number}
                                     , searchText=${searchCriteria.searchText}, title=${searchCriteria.title}, companyName=${searchCriteria.companyName})}">&laquo;&nbsp;Prev</a>
                                 </li>
                                 <li th:class="${products.number == (page - 1)} ? 'active pointer-disabled'"
@@ -178,8 +190,12 @@
                                     , searchText=${searchCriteria.searchText}, title=${searchCriteria.title}, companyName=${searchCriteria.companyName})}" th:text="${page}"></a>
                                 </li>
                                 <li th:class="${products.number + 1 == products.totalPages} ? disabled">
-                                    <a class="pageLink" th:href="@{/marketplace/products/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=${products.totalPages}
+                                    <a class="pageLink" th:href="@{/marketplace/products/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=${products.number + 2}
                                     , searchText=${searchCriteria.searchText}, title=${searchCriteria.title}, companyName=${searchCriteria.companyName})}">Next&nbsp;&raquo;</a>
+                                </li>
+                                <li th:class="${products.number + 1 == products.totalPages} ? disabled">
+                                    <a class="pageLink" th:href="@{/marketplace/products/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=${products.totalPages}
+                                    , searchText=${searchCriteria.searchText}, title=${searchCriteria.title}, companyName=${searchCriteria.companyName})}">Last&nbsp;&raquo;</a>
                                 </li>
                             </ul>
                         </div>

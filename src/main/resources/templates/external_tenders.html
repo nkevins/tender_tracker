@@ -201,23 +201,24 @@
                 <!-- end box listing -->
                 <!-- Pagination Bar -->
                 <div class="row">
-                    <!--<div class="form-group col-md-1">-->
-                        <!--<select class="form-control pagination" id="pageSizeSelect">-->
-                            <!--<option th:each="pageSize : ${pageSizes}" th:text="${pageSize}" th:value="${pageSize}" th:selected="${pageSize} == ${selectedPageSize}"></option>-->
-                        <!--</select>-->
-                    <!--</div>-->
                     <div th:if="${!searchCriteria.advance}">
                         <div th:if="${external_tenders.totalPages != 1}" class="form-group col-md-11 pagination-centered">
                             <ul class="pagination">
                                 <li th:class="${external_tenders.number == 0} ? disabled">
-                                    <a class="pageLink" th:href="@{/external_tenders/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=1)}">&laquo;&nbsp;Prev</a>
+                                    <a class="pageLink" th:href="@{/external_tenders/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=1)}">&laquo;&nbsp;First</a>
+                                </li>
+                                <li th:class="${external_tenders.number == 0} ? disabled">
+                                    <a class="pageLink" th:href="@{/external_tenders/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=${external_tenders.number})}">&laquo;&nbsp;Prev</a>
                                 </li>
                                 <li th:class="${external_tenders.number == (page - 1)} ? 'active pointer-disabled'"
                                     th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
                                     <a class="pageLink" th:href="@{/external_tenders/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=${page})}" th:text="${page}"></a>
                                 </li>
                                 <li th:class="${external_tenders.number + 1 == external_tenders.totalPages} ? disabled">
-                                    <a class="pageLink" th:href="@{/external_tenders/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=${external_tenders.totalPages})}">Next&nbsp;&raquo;</a>
+                                    <a class="pageLink" th:href="@{/external_tenders/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=${external_tenders.number + 2})}">Next&nbsp;&raquo;</a>
+                                </li>
+                                <li th:class="${external_tenders.number + 1 == external_tenders.totalPages} ? disabled">
+                                    <a class="pageLink" th:href="@{/external_tenders/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=${external_tenders.totalPages})}">Last&nbsp;&raquo;</a>
                                 </li>
                             </ul>
                         </div>
@@ -230,11 +231,21 @@
                                     , searchText=${searchCriteria.searchText}, title=${searchCriteria.title}, companyName=${searchCriteria.companyName}
                                     , refNo=${searchCriteria.refNo}, status=${searchCriteria.status}, tenderSource=${searchCriteria.tenderSource})}">&laquo;&nbsp;Prev</a>
                                 </li>
+                                <li th:class="${external_tenders.number == 0} ? disabled">
+                                    <a class="pageLink" th:href="@{/external_tenders/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=${external_tenders.number}
+                                    , searchText=${searchCriteria.searchText}, title=${searchCriteria.title}, companyName=${searchCriteria.companyName}
+                                    , refNo=${searchCriteria.refNo}, status=${searchCriteria.status}, tenderSource=${searchCriteria.tenderSource})}">&laquo;&nbsp;Prev</a>
+                                </li>
                                 <li th:class="${external_tenders.number == (page - 1)} ? 'active pointer-disabled'"
                                     th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
                                     <a class="pageLink" th:href="@{/external_tenders/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=${page}
                                     , searchText=${searchCriteria.searchText}, title=${searchCriteria.title}, companyName=${searchCriteria.companyName}
                                     , refNo=${searchCriteria.refNo}, status=${searchCriteria.status}, tenderSource=${searchCriteria.tenderSource})}" th:text="${page}"></a>
+                                </li>
+                                <li th:class="${external_tenders.number + 1 == external_tenders.totalPages} ? disabled">
+                                    <a class="pageLink" th:href="@{/external_tenders/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=${external_tenders.number + 2}
+                                    , searchText=${searchCriteria.searchText}, title=${searchCriteria.title}, companyName=${searchCriteria.companyName}
+                                    , refNo=${searchCriteria.refNo}, status=${searchCriteria.status}, tenderSource=${searchCriteria.tenderSource})}">Next&nbsp;&raquo;</a>
                                 </li>
                                 <li th:class="${external_tenders.number + 1 == external_tenders.totalPages} ? disabled">
                                     <a class="pageLink" th:href="@{/external_tenders/(orderBy=${searchCriteria.orderBy}, orderMode=${searchCriteria.orderMode}, pageSize=${selectedPageSize}, page=${external_tenders.totalPages}
