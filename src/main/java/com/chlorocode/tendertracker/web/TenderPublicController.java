@@ -500,6 +500,11 @@ public class TenderPublicController {
     @GetMapping("/external_tenders/GeBiz/{id}")
     public String redirectToGeBiz(@PathVariable(value = "id") Integer id) {
         ExternalTender externalTender = externalTenderService.findByID(id);
+
+        if (externalTender == null) {
+            return "redirect:/external_tenders";
+        }
+
         String content;
         URLConnection connection;
         try {
