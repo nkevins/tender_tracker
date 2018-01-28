@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.Date;
 
@@ -17,6 +18,7 @@ import java.util.Date;
 public class IPGeoLocationServiceImpl implements IPGeoLocationService {
 
     public static final String SERVICE_URL = "http://ip-api.com/json/";
+    public static final int TIMEOUT = 5000;
     private String className;
 
     /**
@@ -29,7 +31,11 @@ public class IPGeoLocationServiceImpl implements IPGeoLocationService {
     @Override
     public TenderVisit getIPDetails(String ip) {
         try {
-            InputStream is = new URL(SERVICE_URL + ip.trim() + "?fields=126975").openStream();
+            URL url = new URL(SERVICE_URL + ip.trim() + "?fields=126975");
+            URLConnection con = url.openConnection();
+            con.setConnectTimeout(TIMEOUT);
+            con.setReadTimeout(TIMEOUT);
+            InputStream is = con.getInputStream();
             BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
             String jsonText = readAll(rd);
             JSONObject json = new JSONObject(jsonText);
