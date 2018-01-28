@@ -52,7 +52,7 @@
                                     <h4>Details:</h4>
                                     <p>Opening Date: <span th:text="${#dates.format(tender.openDate, 'dd MMM yyyy HH:mm')}"></span></p>
                                     <p>Closing Date: <span th:text="${#dates.format(tender.closedDate, 'dd MMM yyyy HH:mm')}"></span></p>
-                                    <p>Status: <span class="label label-success" th:if="${tender.status == 1}">OPEN</span><span class="label label-danger" th:if="${tender.status == 2}">CLOSED</span><span class="label label-primary" th:if="${tender.status == 3}">AWARDED</span></p>
+                                    <p>Status: <span class="label label-success" th:if="${tender.status == 1}">OPEN</span><span class="label label-danger" th:if="${tender.status == 2}">CLOSED</span><span class="label label-primary" th:if="${tender.status == 3}">AWARDED</span><span class="label label-default" th:if="${tender.status == 4}">NO AWARD</span></p>
                                 </div>
                                 <div class="col-md-6">
                                     <h4>Contact Person:</h4>

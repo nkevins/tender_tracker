@@ -88,7 +88,7 @@
                         }else if(data == 2){
                             return 'Closed';
                         }else if(data ==4){
-                            return 'No Awarded';
+                            return 'No Award';
                         }else{
                             return 'Awarded';
                         };
@@ -116,6 +116,12 @@
                                 '    <li><a href="/admin/tender/' + data + '/setcriteria">Evaluation Criteria</a></li>\n' +
                                 '    <li><a href="/admin/tender/' + data + '/setmilestone">Milestone</a></li>\n' +
                                 '</ul>\n' +
+                                '</div>';
+                        } else if (full.status == 4) {
+                            return '<div class="btn-group">\n' +
+                                '<button type="button" class="btn btn-primary dropdown-toggle disabled" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">\n' +
+                                'Action <span class="caret"></span>\n' +
+                                '</button>\n' +
                                 '</div>';
                         } else {
                             return '<div class="btn-group">\n' +

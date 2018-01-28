@@ -81,7 +81,7 @@ public class TenderAwardController {
     }
 
     /**
-     * This method is used to update the tender as no awarded if no company bid on that.
+     * This method is used to update the tender as no award if no company bid on that.
      *
      * @param id unique identifier of the tender
      * @param model ModelMap
@@ -105,7 +105,7 @@ public class TenderAwardController {
             return "redirect:/admin/tender/award/" + id;
         }
 
-        AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS, "Tender updated to no awarded");
+        AlertDTO alert = new AlertDTO(AlertDTO.AlertType.SUCCESS, "Tender updated to no award");
         redirectAttrs.addFlashAttribute("alert", alert);
         return "redirect:/admin/tender/award";
     }
