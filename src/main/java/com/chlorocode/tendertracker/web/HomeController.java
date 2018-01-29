@@ -45,7 +45,7 @@ public class HomeController {
     }
 
     /**
-     * Handles all requests
+     * This method is used to show home page.
      *
      * @param pageSize size of the page
      * @param page current page
@@ -53,7 +53,7 @@ public class HomeController {
      * @return String
      */
     @GetMapping("/")
-    public String showPersonsPage(@RequestParam("pageSize") Optional<Integer> pageSize,
+    public String showHomePage(@RequestParam("pageSize") Optional<Integer> pageSize,
                                         @RequestParam("page") Optional<Integer> page, ModelMap model) {
         // Evaluate page size. If requested parameter is null, return initial page size
         int evalPageSize = pageSize.orElse(TTConstants.INITIAL_PAGE_SIZE);
