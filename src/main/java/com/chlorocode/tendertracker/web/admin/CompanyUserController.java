@@ -20,23 +20,43 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Controller for company user management page in admin portal.
+ */
 @Controller
 public class CompanyUserController {
 
     private UserRoleService userRoleService;
     private UserService userService;
 
+    /**
+     * Constructor.
+     *
+     * @param userRoleService UserRoleService
+     * @param userService UserService
+     */
     @Autowired
     public CompanyUserController(UserRoleService userRoleService, UserService userService) {
         this.userRoleService = userRoleService;
         this.userService = userService;
     }
 
+    /**
+     * This method is used to display page to list company user.
+     *
+     * @return String
+     */
     @GetMapping("/admin/companyUser")
     public String showCompanyUserList() {
         return "admin/user/userList";
     }
 
+    /**
+     * This method is used to display add company user page.
+     *
+     * @param model ModelMap
+     * @return String
+     */
     @GetMapping("/admin/companyUser/add")
     public String showAddUserPage(ModelMap model) {
         model.addAttribute("form", new CompanyUserAddDTO());
@@ -44,6 +64,15 @@ public class CompanyUserController {
         return "admin/user/userAdd";
     }
 
+    /**
+     * This method is used to save new company user.
+     *
+     * @param form data inputted by user
+     * @param model ModelMap
+     * @param redirectAttrs RedirectAttributes
+     * @return String
+     * @see CompanyUserAddDTO
+     */
     @PostMapping("/admin/companyUser/add")
     public String addCompanyUser(@Valid @ModelAttribute("form") CompanyUserAddDTO form, ModelMap model,
                                  RedirectAttributes redirectAttrs) {
@@ -86,6 +115,13 @@ public class CompanyUserController {
         return "redirect:/admin/companyUser";
     }
 
+    /**
+     * This method is used to display company user details page.
+     *
+     * @param id unique identifier of the user
+     * @param model ModelMap
+     * @return String
+     */
     @GetMapping("/admin/companyUser/{id}")
     public String showCompanyUserDetails(@PathVariable(value="id") int id, ModelMap model) {
         User usr = userService.findById(id);
@@ -109,6 +145,14 @@ public class CompanyUserController {
         return "admin/user/updateUserRole";
     }
 
+    /**
+     * This method is used to update company user details.
+     *
+     * @param roles new list roles to replace existing roles
+     * @param userId unique identifier of the user
+     * @param redirectAttrs RedirectAttributes
+     * @return String
+     */
     @PostMapping("/admin/companyUser/update")
     public String editCompanyUser(@RequestParam("roles") List<Integer> roles, @RequestParam("userId") int userId,
                                   RedirectAttributes redirectAttrs) {
@@ -128,6 +172,13 @@ public class CompanyUserController {
         return "redirect:/admin/companyUser";
     }
 
+    /**
+     * This method is used to remove company user.
+     *
+     * @param userId unique identifier of the user
+     * @param redirectAttrs RedirectAttributes
+     * @return String
+     */
     @PostMapping("/admin/companyUser/remove")
     public String removeCompanyUser(@RequestParam("id") int userId, RedirectAttributes redirectAttrs) {
         User usr = userService.findById(userId);

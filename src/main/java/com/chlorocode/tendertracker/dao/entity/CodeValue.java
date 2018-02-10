@@ -2,6 +2,9 @@ package com.chlorocode.tendertracker.dao.entity;
 
 import javax.persistence.*;
 
+/**
+ * CodeValue entity.
+ */
 @Entity
 @Table(name = "code_value")
 public class CodeValue {

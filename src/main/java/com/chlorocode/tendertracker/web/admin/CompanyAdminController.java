@@ -23,18 +23,33 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.Valid;
 import java.util.Date;
 
+/**
+ * Controller for company profile management page in admin portal.
+ */
 @Controller
 public class CompanyAdminController {
 
     private CompanyService companyService;
     private CodeValueService codeValueService;
 
+    /**
+     * Constructor.
+     *
+     * @param companyService CompanyService
+     * @param codeValueService CodeValueService
+     */
     @Autowired
     public CompanyAdminController(CompanyService companyService, CodeValueService codeValueService) {
         this.companyService = companyService;
         this.codeValueService = codeValueService;
     }
 
+    /**
+     * This method is used to display company profile page for the current company managed by logged in user.
+     *
+     * @param model Model Map
+     * @return String
+     */
     @GetMapping("/admin/company")
     public String showCompanyInfoPage(ModelMap model) {
         CurrentUser usr = (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -55,6 +70,15 @@ public class CompanyAdminController {
         return "admin/company/companyInfo";
     }
 
+    /**
+     * This method is used to update company profile.
+     *
+     * @param form form data wrapped in CompanyInfoDTO
+     * @param model ModelMap
+     * @param result to check form binding error
+     * @param redirectAttrs RedirectAttributes
+     * @return String
+     */
     @PostMapping("/admin/company")
     public String updateCompanyInfo(@Valid @ModelAttribute("company") CompanyInfoDTO form, ModelMap model,
                                     BindingResult result, RedirectAttributes redirectAttrs) {

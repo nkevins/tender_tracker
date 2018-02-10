@@ -5,9 +5,11 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by andy on 1/8/2017.
+ * EvaluationCriteria entity.
  */
 @Entity
 @Table(name = "evaluation_criteria")
@@ -36,6 +38,9 @@ public class EvaluationCriteria {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "last_updated_date")
     private Date lastUpdatedDate;
+
+    @OneToMany(mappedBy = "criteria")
+    private List<EvaluationResult> results;
 
     public int getId() {
         return id;

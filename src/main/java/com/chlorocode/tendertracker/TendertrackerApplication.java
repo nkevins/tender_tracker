@@ -9,15 +9,20 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.datatables.repository.DataTablesRepositoryFactoryBean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import javax.annotation.PostConstruct;
 import java.util.TimeZone;
 import java.util.concurrent.Executor;
 
+/**
+ * The base class of the application. Application will be started from this class.
+ */
 @SpringBootApplication
 @EnableAsync
 @EnableJpaRepositories(repositoryFactoryBeanClass = DataTablesRepositoryFactoryBean.class)
+@EnableScheduling
 public class TendertrackerApplication {
 
 	@Value("${application.timezone}")
@@ -32,6 +37,11 @@ public class TendertrackerApplication {
 		SpringApplication.run(TendertrackerApplication.class, args);
 	}
 
+	/**
+	 * This method used to create the admin filter.
+	 *
+	 * @return FilterRegistrationBean
+	 */
 	@Bean
 	public FilterRegistrationBean adminFilter() {
 		FilterRegistrationBean registration = new FilterRegistrationBean();
@@ -40,6 +50,11 @@ public class TendertrackerApplication {
 		return registration;
 	}
 
+	/**
+	 * This method used to create the executor for async threads.
+	 *
+	 * @return Executor
+	 */
 	@Bean
 	public Executor asyncExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();

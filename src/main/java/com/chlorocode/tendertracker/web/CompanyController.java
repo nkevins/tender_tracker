@@ -8,6 +8,7 @@ import com.chlorocode.tendertracker.dao.entity.CurrentUser;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.service.CodeValueService;
 import com.chlorocode.tendertracker.service.CompanyService;
+import com.chlorocode.tendertracker.service.UenEntityService;
 import com.chlorocode.tendertracker.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -22,22 +23,40 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.util.List;
 
+/**
+ * Controller for the company management.
+ */
 @Controller
 public class CompanyController {
 
     private CodeValueService codeValueService;
     private CompanyService companyService;
     private UserService userService;
+    private UenEntityService uenEntService;
 
+    /**
+     * Constructor.
+     *
+     * @param codeValueService CodeValueService
+     * @param companyService CompanyService
+     * @param userService UserService
+     * @param uenEntService UenEntityService
+     */
     @Autowired
-    public CompanyController(CodeValueService codeValueService, CompanyService companyService, UserService userService) {
+    public CompanyController(CodeValueService codeValueService, CompanyService companyService, UserService userService, UenEntityService uenEntService) {
         this.codeValueService = codeValueService;
         this.companyService = companyService;
         this.userService = userService;
+        this.uenEntService = uenEntService;
     }
 
+    /**
+     * This method is used to show company registration screen.
+     *
+     * @param model ModelMap
+     * @return String
+     */
     @GetMapping("registerCompany")
     public String showRegisterCompany(ModelMap model) {
         CompanyRegistrationDTO dto = new CompanyRegistrationDTO();
@@ -50,24 +69,21 @@ public class CompanyController {
         return "registerCompany";
     }
 
+    /**
+     * This method is used to register the company.
+     *
+     * @param form CompanyRegistrationDTO
+     * @param result BindingResult
+     * @param redirectAttrs RedirectAttributes
+     * @param model ModelMap
+     * @return String
+     * @see CompanyRegistrationDTO
+     */
     @PostMapping("registerCompany")
     public String saveCompanyRegistration(@Valid @ModelAttribute("registration") CompanyRegistrationDTO form,
                                           BindingResult result, RedirectAttributes redirectAttrs, ModelMap model) {
         if (result.hasErrors()) {
             AlertDTO alert = new AlertDTO(result.getAllErrors());
-            model.addAttribute("alert", alert);
-            model.addAttribute("registration", form);
-            model.addAttribute("areaOfBusiness", codeValueService.getByType("area_of_business"));
-            model.addAttribute("companyType", codeValueService.getByType("company_type"));
-            model.addAttribute("countries", codeValueService.getAllCountries());
-            return "registerCompany";
-        }
-
-        List<Company> compList = companyService.findCompanyByUen(form.getUen());
-
-        if(compList != null && compList.size() > 0){
-            AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
-                    "This company UEN already exist");
             model.addAttribute("alert", alert);
             model.addAttribute("registration", form);
             model.addAttribute("areaOfBusiness", codeValueService.getByType("area_of_business"));
@@ -102,7 +118,17 @@ public class CompanyController {
         reg.setLastUpdatedBy(usr.getUser().getId());
 
         try {
-            companyService.registerCompany(reg);
+            String errMsg = companyService.registerCompany(reg);
+            if(errMsg != null){
+                AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER,
+                        errMsg);
+                model.addAttribute("alert", alert);
+                model.addAttribute("registration", form);
+                model.addAttribute("areaOfBusiness", codeValueService.getByType("area_of_business"));
+                model.addAttribute("companyType", codeValueService.getByType("company_type"));
+                model.addAttribute("countries", codeValueService.getAllCountries());
+                return "registerCompany";
+            }
         } catch (ApplicationException ex) {
             AlertDTO alert = new AlertDTO(AlertDTO.AlertType.DANGER, ex.getMessage());
             model.addAttribute("alert", alert);
@@ -119,6 +145,13 @@ public class CompanyController {
         return "redirect:/";
     }
 
+    /**
+     * This method is used to show the company detail screen.
+     *
+     * @param id unique identifier of the company.
+     * @param model ModelMap
+     * @return String
+     */
     @GetMapping("/company/{id}")
     public String showCompanyDetail(@PathVariable(value = "id") Integer id, ModelMap model) {
         Company company = companyService.findById(id);

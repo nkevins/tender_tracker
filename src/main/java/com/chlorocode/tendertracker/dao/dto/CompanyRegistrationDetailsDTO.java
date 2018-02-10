@@ -4,6 +4,9 @@ import com.chlorocode.tendertracker.dao.entity.User;
 
 import java.util.Date;
 
+/**
+ * Data transfer object for company registration detail.
+ */
 public class CompanyRegistrationDetailsDTO {
     private int id;
     private String name;
@@ -22,6 +25,33 @@ public class CompanyRegistrationDetailsDTO {
     private Date applicationDate;
     private String mailingAddress;
     private String principleActivity;
+    private String status;
+    private boolean active;
+    private String companyStatus;
+
+    public String getCompanyStatus() {
+        return companyStatus;
+    }
+
+    public void setCompanyStatus(String companyStatus) {
+        this.companyStatus = companyStatus;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public String getMailingAddress() {
         return mailingAddress;

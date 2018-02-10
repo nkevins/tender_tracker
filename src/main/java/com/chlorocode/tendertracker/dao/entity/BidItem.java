@@ -3,6 +3,9 @@ package com.chlorocode.tendertracker.dao.entity;
 import javax.persistence.*;
 import java.util.Date;
 
+/**
+ * BidItem entity.
+ */
 @Entity
 @Table(name = "bid_item")
 public class BidItem {

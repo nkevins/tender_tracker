@@ -18,9 +18,21 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collection;
 
+/**
+ * This class is used to perform authentication and authorization filter check for all pages in the system.
+ */
 @Component
 public class AuthorizationFilter extends GenericFilterBean {
 
+    /**
+     * This method is used for filter the authorization.
+     *
+     * @param servletRequest ServletRequest
+     * @param servletResponse ServletResponse
+     * @param filterChain FilterChain
+     * @throws IOException IOException
+     * @throws ServletException ServletException
+     */
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
@@ -41,10 +53,11 @@ public class AuthorizationFilter extends GenericFilterBean {
                 Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
                 boolean isCompanyAdmin = authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
                 boolean isPreparer = authorities.contains(new SimpleGrantedAuthority("ROLE_PREPARER"));
+                boolean isSubmitter = authorities.contains(new SimpleGrantedAuthority("ROLE_SUBMITTER"));
                 boolean isSystemAdmin = authorities.contains(new SimpleGrantedAuthority("ROLE_SYS_ADMIN"));
 
-                // Reject access if not Company Admin, System Admin, or Preparer
-                if (!isCompanyAdmin && !isSystemAdmin && !isPreparer) {
+                // Reject access if not Company Admin, System Admin, Submitter, or Preparer
+                if (!isCompanyAdmin && !isSystemAdmin && !isPreparer && !isSubmitter) {
                     ((HttpServletResponse)servletResponse).setStatus(HttpServletResponse.SC_FORBIDDEN);
                     return;
                 }

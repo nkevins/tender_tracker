@@ -1,10 +1,7 @@
 package com.chlorocode.tendertracker.service;
 
 import com.chlorocode.tendertracker.dao.CompanyDAO;
-import com.chlorocode.tendertracker.dao.entity.Company;
-import com.chlorocode.tendertracker.dao.entity.Country;
-import com.chlorocode.tendertracker.dao.entity.Role;
-import com.chlorocode.tendertracker.dao.entity.User;
+import com.chlorocode.tendertracker.dao.entity.*;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import com.chlorocode.tendertracker.service.notification.NotificationServiceImpl;
 import org.junit.Test;
@@ -39,6 +36,9 @@ public class CompanyServiceImplTest {
     @Mock
     private NotificationServiceImpl notificationService;
 
+    @Mock
+    private UenEntityServiceImpl uenEntityService;
+
     @InjectMocks
     private CompanyServiceImpl companyServiceImpl;
 
@@ -51,9 +51,11 @@ public class CompanyServiceImplTest {
                 "123456", "Singapore", "Singapore", "Singapore", country, 1, 1, new Date(), 1, new Date());
         when(companyDAO.save(any(Company.class))).thenReturn(reg);
         when(userService.findById(anyInt())).thenReturn(new User());
+        when(uenEntityService.findByUen("123456K")).thenReturn(new UenEntity());
 
         companyServiceImpl.registerCompany(reg);
         verify(companyDAO, times(1)).save(any(Company.class));
+        verify(notificationService, times(1)).sendNotification(eq(NotificationServiceImpl.NOTI_MODE.company_reg_noti), any());
     }
 
     @Test

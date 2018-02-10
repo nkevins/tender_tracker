@@ -7,6 +7,7 @@ import javax.validation.constraints.Pattern;
 
 /**
  * Kyaw Min Thu
+ * Data transfer object for change password.
  */
 public class ChangePasswordDTO {
 

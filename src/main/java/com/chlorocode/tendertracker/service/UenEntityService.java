@@ -3,8 +3,15 @@ package com.chlorocode.tendertracker.service;
 import com.chlorocode.tendertracker.dao.entity.UenEntity;
 
 /**
- * Created by andy on 16/8/2017.
+ * Service interface for UEN.
  */
 public interface UenEntityService {
+
+    /**
+     * This method is used to find UEN details.
+     *
+     * @param uen uen
+     * @return UenEntity
+     */
     UenEntity findByUen(String uen);
 }

@@ -1,10 +1,8 @@
 package com.chlorocode.tendertracker.web;
 
-import com.chlorocode.tendertracker.dao.entity.Company;
-import com.chlorocode.tendertracker.dao.entity.Country;
-import com.chlorocode.tendertracker.dao.entity.CurrentUser;
-import com.chlorocode.tendertracker.dao.entity.User;
+import com.chlorocode.tendertracker.dao.entity.*;
 import com.chlorocode.tendertracker.service.CompanyService;
+import com.chlorocode.tendertracker.service.UenEntityService;
 import com.chlorocode.tendertracker.service.UserService;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,6 +47,9 @@ public class CompanyControllerTest {
     @MockBean
     private UserService userService;
 
+    @MockBean
+    private UenEntityService uenEntityService;
+
     @Before
     public void setUp(){
         mvc = MockMvcBuilders
@@ -81,6 +82,8 @@ public class CompanyControllerTest {
 
     @Test
     public void testRegisterCompany() throws Exception {
+        when(uenEntityService.findByUen("123456K")).thenReturn(new UenEntity());
+
         this.mvc.perform(
                 post("/registerCompany")
                         .param("name", "Company Pte. Ltd.")

@@ -4,6 +4,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 /**
  * Created by andy on 10/8/2017.
+ * Data transfer object for user profile.
  */
 public class UserProfileDTO {
 

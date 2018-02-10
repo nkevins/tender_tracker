@@ -10,12 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.Null;
 import java.util.Date;
 import java.util.List;
 
 /**
- * Created by andy on 8/8/2017.
+ * Service implementation of ClarificationService.
  */
 @Service
 public class ClarificationServiceImpl implements ClarificationService{
@@ -23,6 +22,11 @@ public class ClarificationServiceImpl implements ClarificationService{
     private ClarificationDAO clariDao;
     private String className;
 
+    /**
+     * Constructor.
+     *
+     * @param clariDao ClarificationDAO
+     */
     @Autowired
     public ClarificationServiceImpl(ClarificationDAO clariDao){
         this.className = this.getClass().getName();

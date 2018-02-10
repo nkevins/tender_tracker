@@ -4,6 +4,9 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * TenderItem entity.
+ */
 @Entity
 @Table(name = "tender_item")
 public class TenderItem {
@@ -15,6 +18,7 @@ public class TenderItem {
     private int uom;
     private float quantity;
     private String description;
+    private int sort;
     private int createdBy;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -61,6 +65,14 @@ public class TenderItem {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getSort() {
+        return sort;
+    }
+
+    public void setSort(int sort) {
+        this.sort = sort;
     }
 
     public int getCreatedBy() {

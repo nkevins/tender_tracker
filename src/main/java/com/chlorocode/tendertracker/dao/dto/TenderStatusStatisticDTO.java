@@ -1,5 +1,8 @@
 package com.chlorocode.tendertracker.dao.dto;
 
+/**
+ * Data transfer object for tender status statistic.
+ */
 public class TenderStatusStatisticDTO {
     private String label;
     private int value;

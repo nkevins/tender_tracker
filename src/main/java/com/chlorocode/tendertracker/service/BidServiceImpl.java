@@ -1,10 +1,11 @@
 package com.chlorocode.tendertracker.service;
 
 import com.chlorocode.tendertracker.dao.BidDAO;
-import com.chlorocode.tendertracker.dao.DocumentDAO;
+import com.chlorocode.tendertracker.dao.BidDocumentDAO;
+import com.chlorocode.tendertracker.dao.BidItemDAO;
 import com.chlorocode.tendertracker.dao.entity.Bid;
 import com.chlorocode.tendertracker.dao.entity.BidDocument;
-import com.chlorocode.tendertracker.dao.entity.Document;
+import com.chlorocode.tendertracker.dao.entity.BidItem;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,18 +16,36 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Service implementation of BidService.
+ */
 @Service
 public class BidServiceImpl implements BidService {
 
     private BidDAO bidDAO;
-    private DocumentDAO documentDAO;
+    private BidDocumentDAO bidDocumentDAO;
     private S3Wrapper s3Wrapper;
+    private BidItemDAO bidItemDAO;
 
+    /**
+     * Constructor.
+     *
+     * @param bidDAO BidDAO
+     * @param bidDocumentDAO BidDocumentDAO
+     * @param s3Wrapper S3Wrapper
+     * @param bidItemDAO BidItemDAO
+     */
     @Autowired
-    public BidServiceImpl(BidDAO bidDAO, DocumentDAO documentDAO, S3Wrapper s3Wrapper) {
+    public BidServiceImpl(BidDAO bidDAO, BidDocumentDAO bidDocumentDAO, S3Wrapper s3Wrapper,BidItemDAO bidItemDAO) {
         this.bidDAO = bidDAO;
-        this.documentDAO = documentDAO;
+        this.bidDocumentDAO = bidDocumentDAO;
         this.s3Wrapper = s3Wrapper;
+        this.bidItemDAO = bidItemDAO;
+    }
+
+    @Override
+    public Bid findById(int id) {
+        return bidDAO.findOne(id);
     }
 
     @Override
@@ -49,19 +68,17 @@ public class BidServiceImpl implements BidService {
             }
 
             // Save to DB
-            Document doc = new Document();
+            BidDocument doc = new BidDocument();
             doc.setName(f.getOriginalFilename());
             doc.setLocation(bucketPath);
-            doc.setType(2);
             doc.setCreatedBy(bid.getCreatedBy());
             doc.setCreatedDate(new Date());
             doc.setLastUpdatedBy(bid.getLastUpdatedBy());
             doc.setLastUpdatedDate(new Date());
-            documentDAO.save(doc);
+            doc.setBid(bid);
+            bidDocumentDAO.save(doc);
 
-            BidDocument bidDocument = new BidDocument();
-            bidDocument.setDocument(doc);
-            bid.addBidDocument(bidDocument);
+            bid.addBidDocument(doc);
         }
 
         return result;
@@ -70,5 +87,25 @@ public class BidServiceImpl implements BidService {
     @Override
     public Bid findBidByCompanyAndTender(int companyId, int tenderId) {
         return bidDAO.findBidByCompanyAndTender(companyId,tenderId);
+    }
+
+    @Override
+    public List<Bid> findBidByCompany(int companyId) {
+        return bidDAO.findBidByCompany(companyId);
+    }
+
+    @Override
+    public List<Bid> findBidByTender(int tenderId) {
+        return bidDAO.findBidByTender(tenderId);
+    }
+
+    @Override
+    public BidItem findBidItemById(int id) {
+        return bidItemDAO.findOne(id);
+    }
+
+    @Override
+    public BidItem updateBid(BidItem bidItem) {
+       return bidItemDAO.saveAndFlush(bidItem);
     }
 }

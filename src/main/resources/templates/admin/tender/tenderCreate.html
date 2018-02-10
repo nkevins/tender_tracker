@@ -39,9 +39,17 @@
                             <div class="form-group">
                                 <label for="tenderType" class="col-sm-2 control-label">Tender Type<span style="color:red">*</span></label>
                                 <div class="col-sm-10">
-                                    <select class="form-control" id="tenderType" th:field="*{tenderType}" required="required">
+                                    <select class="form-control" id="tenderType" th:field="*{tenderType}" required="required" >
                                         <option th:each="t : ${tenderType}" th:text="${t.description}" th:value="${t.code}">Open</option>
                                     </select>
+                                </div>
+                            </div>
+                            <div class="form-group" id="invitedCompanyForm" style="display:none;">
+                                <label for="title" class="col-sm-2 control-label">Invited Company<span style="color:red">*</span></label>
+                                <div class="col-sm-10">
+                                    <div id="remote">
+                                        <input type="text" class="form-control" id="invitedCompany" name="invitedCompany" />
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -223,14 +231,18 @@
 </div>
 </body>
 <th:block layout:fragment="scripts">
+    <script th:src="@{/assets/admin/plugins/typeahead/typeahead.js}"></script>
+    <script th:src="@{/assets/admin/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js}"></script>
     <script type="text/javascript">
         $('#openDate').datetimepicker({
+            minDate: moment(),
             format: 'DD/MM/YYYY HH:mm'
         }).on('dp.change', function(e){
             $('#openDate').attr("value", e.date.format('DD/MM/YYYY HH:mm'));
         });
 
         $('#closedDate').datetimepicker({
+            minDate: moment(),
             format: 'DD/MM/YYYY HH:mm'
         }).on('dp.change', function(e){
             $('#closedDate').attr("value", e.date.format('DD/MM/YYYY HH:mm'));
@@ -239,6 +251,8 @@
         $('#deliveryDate').datepicker({
             autoclose: true,
             format: 'dd/mm/yyyy'
+        }).on('changeDate', function(ev) {
+            $('#deliveryDate').attr("value", ev.target.value);
         });
 
         $(function () {
@@ -319,6 +333,48 @@
                 window.location.replace("/admin/tender");
             }
         }
+
+        $(document).ready(function() {
+            if ($("#tenderType").val() == 2) {
+                $("#invitedCompanyForm").show();
+            } else {
+                $("#invitedCompanyForm").hide();
+            }
+
+            $("#tenderType").change(function() {
+                var selectedValue = $("#tenderType").val();
+                if (selectedValue == 1) {
+                    $("#invitedCompanyForm").hide("fast");
+                } else {
+                    $("#invitedCompanyForm").show("fast");
+                }
+            });
+
+
+            var companies = new Bloodhound({
+                datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                prefetch: '/admin/data/company',
+                remote: {
+                    url: '/admin/data/company?name=%QUERY',
+                    wildcard: '%QUERY'
+                }
+            });
+            companies.initialize();
+
+            $('#invitedCompany').tagsinput({
+                itemValue: 'id',
+                itemText: 'name',
+                typeaheadjs: [{
+                    minLength: 2,
+                    highlight: true
+                }, {
+                    name: 'companies',
+                    displayKey: 'name',
+                    source: companies.ttAdapter()
+                }]
+            });
+        });
     </script>
 </th:block>
 </html>

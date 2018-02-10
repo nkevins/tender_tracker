@@ -25,9 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -87,7 +85,8 @@ public class CompanySysAdmControllerTest {
         when(companyService.findCompanyRegistrationById(anyInt())).thenReturn(null);
 
         this.mvc.perform(get("/sysadm/companyRegistration/841").with(user(currentUser)))
-                .andExpect(status().isNotFound());
+                //.andExpect(status().isNotFound());
+                .andExpect(view().name("error/error"));
     }
 
     @Test

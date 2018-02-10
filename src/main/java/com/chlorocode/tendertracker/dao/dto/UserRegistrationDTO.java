@@ -6,6 +6,9 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.Pattern;
 
+/**
+ * Data transfer object for user registration.
+ */
 public class UserRegistrationDTO {
 
     @NotBlank(message = "Name is required")

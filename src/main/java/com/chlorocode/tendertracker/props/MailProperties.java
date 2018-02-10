@@ -2,6 +2,9 @@ package com.chlorocode.tendertracker.props;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+/**
+ * This class is used to get mail properties value.
+ */
 @ConfigurationProperties(prefix = "mail")
 public class MailProperties {
 
@@ -10,16 +13,38 @@ public class MailProperties {
     private String subUpdateTender;
     private String subAddCorrigendum;
     private String subCreateTender;
+    private String subClosedTender;
     private String subCompanyReview;
     private String subCompanyRegistered;
+    private String subTenderAwarded;
+
+    private String subCompanyBlacklisted;
+
+    private String subMilestoneApproach;
+    private String subAppealCreate;
+    private String subAppealUpdate;
+    private String subAppealAccepted;
+    private String subAppealRejected;
+
     private String templateOTP;
     private String templateWelcome;
     private String templateUpdateTender;
     private String templateAddCorrigendum;
     private String templateCreateTender;
+    private String templateClosedTender;
     private String templateCompanyApproved;
     private String templateCompanyRejected;
     private String templateCompanyRegistered;
+    private String templateTenderAwarded;
+
+    private String templateCompanyBlacklisted;
+
+    private String templateMilestoneApproach;
+    private String templateAppealCreate;
+    private String templateAppealUpdate;
+    private String templateAppealAccepted;
+    private String templateAppealRejected;
+
 
     public String getSubOTP() {
         return subOTP;
@@ -140,57 +165,134 @@ public class MailProperties {
     public void setTemplateCompanyRegistered(String templateCompanyRegistered) {
         this.templateCompanyRegistered = templateCompanyRegistered;
     }
-    //    private String subjectOTP;
-//    public static final String OTP_TEMPLATE = "<html><body>"
-//            + "<p>Dear %s,</p>"
-//            + "<p>Please click on following link to reset password for your account."
-//            + "<br><a href=\"http://localhost:8080/resetPassword/%s/%s\">\"http://localhost:8080/resetPassword/%s/%s\"</a></p>"
-//            + "<p>Regards,<br>Tender Tracker</p>"
-//            + "</body></html>";
-//
-//    @Value("${subject.welcome_mail}")
-//    private String subjectWelcome;
-//    public static final String WELCOME_TEMPLATE = "<html><body>"
-//            + "<p>Welcome to Tender Tracker.</p>"
-//            + "<p>Hi %s, your account creation is completed.</p>"
-//            + "<p>Regards,<br>Tender Tracker</p>"
-//            + "</body></html>";
-//
-//    @Value("${subject.update_tender_mail}")
-//    private String subjectUpdateTender;
-//    public static final String UPDATE_TENDER_TEMPLATE = "<html><body>"
-//            + "<p>Tender \"%s\" has been updated.</p>"
-//            + "<p>Please see more information on following link."
-//            + "<br><a href=\"http://localhost:8080/tender/%s\">\"http://localhost:8080/tender/%s\"</a></p>"
-//            + "<p>Regards,<br>Tender Tracker</p>"
-//            + "</body></html>";
-//
-//    @Value("${subject.add_corrigendum_mail}")
-//    private String subjectAddCorrigendum;
-//    public static final String ADD_CORRIGENDUM_TEMPLATE = "<html><body>"
-//            + "<p>New corrigendum add into the tender \"%s\".</p>"
-//            + "<p>Please see more information on following link."
-//            + "<br><a href=\"http://localhost:8080/tender/%s\">\"http://localhost:8080/tender/%s\"</a></p>"
-//            + "<p>Regards,<br>Tender Tracker</p>"
-//            + "</body></html>";
-//
-//    @Value("${subject.create_tender_mail}")
-//    private String subjectCreateTender;
-//    public static final String CREATE_TENDER_TEMPLATE = "<html><body>"
-//            + "<p>Tender \"%s\" has been created.</p>"
-//            + "<p>Please see more information on following link."
-//            + "<br><a href=\"http://localhost:8080/tender/%s\">\"http://localhost:8080/tender/%s\"</a></p>"
-//            + "<p>Regards,<br>Tender Tracker</p>"
-//            + "</body></html>";
-//
-//    @Value("${subject.company_review_mail}")
-//    private String subjectCompanyReview;
-//    public static final String COMPANY_APPROVE_TEMPLATE = "<html><body>"
-//            + "<p>Congratulation, your company \"%s\" registration request has been approved.</p>"
-//            + "<p>Regards,<br>Tender Tracker</p>"
-//            + "</body></html>";
-//    public static final String COMPANY_REJECT_TEMPLATE = "<html><body>"
-//            + "<p>Sorry, your company \"%s\" registration request has been rejected.</p>"
-//            + "<p>Regards,<br>Tender Tracker</p>"
-//            + "</body></html>";
+
+    public String getSubClosedTender() {
+        return subClosedTender;
+    }
+
+    public void setSubClosedTender(String subClosedTender) {
+        this.subClosedTender = subClosedTender;
+    }
+
+    public String getTemplateClosedTender() {
+        return templateClosedTender;
+    }
+
+    public void setTemplateClosedTender(String templateClosedTender) {
+        this.templateClosedTender = templateClosedTender;
+    }
+
+
+    public String getSubCompanyBlacklisted() {
+        return subCompanyBlacklisted;
+    }
+
+    public void setSubCompanyBlacklisted(String subCompanyBlacklisted) {
+        this.subCompanyBlacklisted = subCompanyBlacklisted;
+    }
+
+    public String getTemplateCompanyBlacklisted() {
+        return templateCompanyBlacklisted;
+    }
+
+    public void setTemplateCompanyBlacklisted(String templateCompanyBlacklisted) {
+        this.templateCompanyBlacklisted = templateCompanyBlacklisted;
+    }
+
+    public String getSubMilestoneApproach() {
+        return subMilestoneApproach;
+    }
+
+    public void setSubMilestoneApproach(String subMilestoneApproach) {
+        this.subMilestoneApproach = subMilestoneApproach;
+    }
+
+    public String getSubAppealCreate() {
+        return subAppealCreate;
+    }
+
+    public void setSubAppealCreate(String subAppealCreate) {
+        this.subAppealCreate = subAppealCreate;
+    }
+
+    public String getSubAppealUpdate() {
+        return subAppealUpdate;
+    }
+
+    public void setSubAppealUpdate(String subAppealUpdate) {
+        this.subAppealUpdate = subAppealUpdate;
+    }
+
+    public String getTemplateMilestoneApproach() {
+        return templateMilestoneApproach;
+    }
+
+    public void setTemplateMilestoneApproach(String templateMilestoneApproach) {
+        this.templateMilestoneApproach = templateMilestoneApproach;
+    }
+
+    public String getTemplateAppealCreate() {
+        return templateAppealCreate;
+    }
+
+    public void setTemplateAppealCreate(String templateAppealCreate) {
+        this.templateAppealCreate = templateAppealCreate;
+    }
+
+    public String getTemplateAppealUpdate() {
+        return templateAppealUpdate;
+    }
+
+    public void setTemplateAppealUpdate(String templateAppealUpdate) {
+        this.templateAppealUpdate = templateAppealUpdate;
+
+    }
+
+    public String getSubAppealAccepted() {
+        return subAppealAccepted;
+    }
+
+    public void setSubAppealAccepted(String subAppealAccepted) {
+        this.subAppealAccepted = subAppealAccepted;
+    }
+
+    public String getSubAppealRejected() {
+        return subAppealRejected;
+    }
+
+    public void setSubAppealRejected(String subAppealRejected) {
+        this.subAppealRejected = subAppealRejected;
+    }
+
+    public String getTemplateAppealAccepted() {
+        return templateAppealAccepted;
+    }
+
+    public void setTemplateAppealAccepted(String templateAppealAccepted) {
+        this.templateAppealAccepted = templateAppealAccepted;
+    }
+
+    public String getTemplateAppealRejected() {
+        return templateAppealRejected;
+    }
+
+    public void setTemplateAppealRejected(String templateAppealRejected) {
+        this.templateAppealRejected = templateAppealRejected;
+    }
+
+    public String getSubTenderAwarded() {
+        return subTenderAwarded;
+    }
+
+    public void setSubTenderAwarded(String subTenderAwarded) {
+        this.subTenderAwarded = subTenderAwarded;
+    }
+
+    public String getTemplateTenderAwarded() {
+        return templateTenderAwarded;
+    }
+
+    public void setTemplateTenderAwarded(String templateTenderAwarded) {
+        this.templateTenderAwarded = templateTenderAwarded;
+    }
 }

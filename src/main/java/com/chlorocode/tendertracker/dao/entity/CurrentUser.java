@@ -4,6 +4,9 @@ import org.springframework.security.core.GrantedAuthority;
 
 import java.util.List;
 
+/**
+ * This class is used for login authentication by spring framework.
+ */
 public class CurrentUser extends org.springframework.security.core.userdetails.User {
 
     private User user;

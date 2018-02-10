@@ -8,6 +8,7 @@ import java.util.Date;
 
 /**
  * Created by andy on 8/8/2017.
+ * Clarification entity.
  */
 @Entity
 @Table(name = "clarification")

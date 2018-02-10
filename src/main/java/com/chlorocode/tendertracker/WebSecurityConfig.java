@@ -12,15 +12,13 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
+/**
+ * This class is used to control the security of the application by using spring security.
+ */
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
-
-//    @Autowired
-//    private AuthenticationSuccessHandler myAuthenticationSuccessHandler;
 
     @Autowired
     private AuthenticationFailureHandler authenticationFailureHandler;
@@ -32,11 +30,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private AuthService authService;
 
+    /**
+     * Constructor.
+     *
+     * @param authService AuthService
+     */
     @Autowired
     public WebSecurityConfig(AuthService authService) {
         this.authService = authService;
     }
 
+    /**
+     * This method is used to configure the HttpSecurity control of the application.
+     *
+     * @param http HttpSecurity
+     * @throws Exception Exception
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -44,8 +53,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/registerCompany").authenticated()
                     .antMatchers("/tenderNotification").authenticated()
                     .antMatchers("/user/profile").authenticated()
-                    .antMatchers("/admin").access("hasAnyRole('ADMIN','SYS_ADMIN','PREPARER')")
-                    .antMatchers("/admin/**").access("hasAnyRole('ADMIN','PREPARER')")
+                    .antMatchers("/admin").access("hasAnyRole('ADMIN','SYS_ADMIN','PREPARER','SUBMITTER')")
+                    .antMatchers("/admin/**").access("hasAnyRole('ADMIN','PREPARER','SUBMITTER')")
                     .antMatchers("/sysadm/**").access("hasRole('SYS_ADMIN')")
                     .antMatchers("/**").permitAll()
                     .and()
@@ -55,7 +64,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .failureUrl("/login?error")
                     .usernameParameter("email")
                     .defaultSuccessUrl("/")
-//                    .successHandler(myAuthenticationSuccessHandler)
                     .failureHandler(authenticationFailureHandler)
                     .permitAll()
                     .and()
@@ -64,9 +72,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .logoutSuccessUrl("/")
                     .permitAll()
                     .and()
-                .csrf();
+                .csrf().ignoringAntMatchers("/restapi/**");
     }
 
+    /**
+     * This method is used to configure the WebSecurity control of the application.
+     *
+     * @param web WebSecurity
+     * @throws Exception exception
+     */
     @Override
     public void configure(WebSecurity web) throws Exception {
         web
@@ -74,6 +88,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**", "/data/**");
     }
 
+    /**
+     * This method is used to configure the AuthenticationManagerBuilder for login of the application.
+     *
+     * @param auth AuthenticationManagerBuilder
+     * @throws Exception exception
+     */
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth

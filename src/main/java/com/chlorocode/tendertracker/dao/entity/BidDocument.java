@@ -2,27 +2,17 @@ package com.chlorocode.tendertracker.dao.entity;
 
 import javax.persistence.*;
 
+/**
+ * BidDocument entity.
+ */
 @Entity
 @Table(name = "bid_document")
-public class BidDocument {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+@PrimaryKeyJoinColumn(name = "document_id")
+@DiscriminatorValue("3")
+public class BidDocument extends Document {
 
     @ManyToOne
     private Bid bid;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="document_id", unique= true, nullable=false)
-    private Document document;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public Bid getBid() {
         return bid;
@@ -32,11 +22,4 @@ public class BidDocument {
         this.bid = bid;
     }
 
-    public Document getDocument() {
-        return document;
-    }
-
-    public void setDocument(Document document) {
-        this.document = document;
-    }
 }

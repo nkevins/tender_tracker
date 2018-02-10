@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * Kyaw Min Thu
+ * Service implementation of MailSenderService
  */
 @Component
 public class MailSenderServiceImpl implements MailSenderService {
@@ -35,7 +35,7 @@ public class MailSenderServiceImpl implements MailSenderService {
 
             // use the true flag to indicate you need a multipart message
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            helper.setTo(emails);
+            helper.setBcc(emails);
             helper.setSubject(subject);
 
             // use the true flag to indicate the text included is HTML
@@ -59,7 +59,7 @@ public class MailSenderServiceImpl implements MailSenderService {
             // use the true flag to indicate you need a multipart message
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setFrom(fromAccount);
-            helper.setTo(emails);
+            helper.setBcc(emails);
             helper.setSubject(subject);
 
             // use the true flag to indicate the text included is HTML

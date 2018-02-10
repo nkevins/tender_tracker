@@ -1,5 +1,8 @@
 package com.chlorocode.tendertracker.dao.dto;
 
+/**
+ * Data transfer object for tender search.
+ */
 public class TenderSearchDTO {
 
     private String searchText;
@@ -11,6 +14,10 @@ public class TenderSearchDTO {
     private int tenderCategory;
 
     private int status;
+
+    private int tenderSource;
+
+    private String etStatus;
 
     private String refNo;
 
@@ -98,5 +105,21 @@ public class TenderSearchDTO {
 
     public void setOrderMode(String orderMode) {
         this.orderMode = orderMode;
+    }
+
+    public String getEtStatus() {
+        return etStatus;
+    }
+
+    public void setEtStatus(String etStatus) {
+        this.etStatus = etStatus;
+    }
+
+    public int getTenderSource() {
+        return tenderSource;
+    }
+
+    public void setTenderSource(int tenderSource) {
+        this.tenderSource = tenderSource;
     }
 }

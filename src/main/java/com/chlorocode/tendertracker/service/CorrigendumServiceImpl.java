@@ -3,10 +3,8 @@ package com.chlorocode.tendertracker.service;
 import com.chlorocode.tendertracker.constants.TTConstants;
 import com.chlorocode.tendertracker.dao.CorrigendumDAO;
 import com.chlorocode.tendertracker.dao.CorrigendumDocumentDAO;
-import com.chlorocode.tendertracker.dao.DocumentDAO;
 import com.chlorocode.tendertracker.dao.entity.Corrigendum;
 import com.chlorocode.tendertracker.dao.entity.CorrigendumDocument;
-import com.chlorocode.tendertracker.dao.entity.Document;
 import com.chlorocode.tendertracker.exception.ApplicationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,23 +15,32 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Service implementation of CorrigendumService
+ */
 @Service
 public class CorrigendumServiceImpl implements CorrigendumService {
 
     private CorrigendumDAO corrigendumDAO;
     private CorrigendumDocumentDAO corrigendumDocumentDAO;
-    private DocumentDAO documentDAO;
     private S3Wrapper s3Wrapper;
-    private TenderService tenderService;
+    private TenderSubscriptionService tenderSubscriptionService;
 
+    /**
+     * Constructor
+     *
+     * @param corrigendumDAO CorrigendumDAO
+     * @param corrigendumDocumentDAO CorrigendumDocumentDAO
+     * @param s3Wrapper S3Wrapper
+     * @param tenderSubscriptionService TenderSubscriptionService
+     */
     @Autowired
     public CorrigendumServiceImpl(CorrigendumDAO corrigendumDAO, CorrigendumDocumentDAO corrigendumDocumentDAO,
-                                  DocumentDAO documentDAO, S3Wrapper s3Wrapper, TenderService tenderService) {
+                                  S3Wrapper s3Wrapper, TenderSubscriptionService tenderSubscriptionService) {
         this.corrigendumDAO = corrigendumDAO;
         this.corrigendumDocumentDAO = corrigendumDocumentDAO;
-        this.documentDAO = documentDAO;
         this.s3Wrapper = s3Wrapper;
-        this.tenderService = tenderService;
+        this.tenderSubscriptionService = tenderSubscriptionService;
     }
 
     @Override
@@ -62,24 +69,22 @@ public class CorrigendumServiceImpl implements CorrigendumService {
                 }
 
                 // Save to DB
-                Document doc = new Document();
+                CorrigendumDocument doc = new CorrigendumDocument();
                 doc.setName(f.getOriginalFilename());
                 doc.setLocation(bucketPath);
-                doc.setType(3);
                 doc.setCreatedBy(corrigendum.getCreatedBy());
                 doc.setCreatedDate(new Date());
                 doc.setLastUpdatedBy(corrigendum.getLastUpdatedBy());
                 doc.setLastUpdatedDate(new Date());
-                documentDAO.save(doc);
+                doc.setCorrigendum(corrigendum);
+                corrigendumDocumentDAO.save(doc);
 
-                CorrigendumDocument corrigendumDocument = new CorrigendumDocument();
-                corrigendumDocument.setDocument(doc);
-                corrigendum.addDocument(corrigendumDocument);
+                corrigendum.addDocument(doc);
             }
         }
 
         if (result != null) {
-            tenderService.sendBookmarkNoti(result.getTender(), TTConstants.ADD_CORRIGENDUM);
+            tenderSubscriptionService.sendBookmarkNoti(result.getTender(), TTConstants.ADD_CORRIGENDUM);
         }
 
         return result;
@@ -96,15 +101,7 @@ public class CorrigendumServiceImpl implements CorrigendumService {
         Corrigendum corrigendum = corrigendumDAO.findOne(corrigendumId);
 
         for (CorrigendumDocument corrigendumDocument : corrigendum.getDocuments()) {
-            Document doc = corrigendumDocument.getDocument();
-            // Remove from S3
-            String bucketPath = "tender_corrigendums/" + corrigendum.getId() + "/" + doc.getName();
-            s3Wrapper.deleteObject(bucketPath);
-
-            corrigendumDocument.setCorrigendum(null);
-            corrigendumDocument.setDocument(null);
-            corrigendumDocumentDAO.delete(corrigendumDocument);
-            documentDAO.delete(doc);
+            removeCorrigendumDocument(corrigendumDocument.getId());
         }
 
         corrigendumDAO.delete(corrigendum);
@@ -122,36 +119,27 @@ public class CorrigendumServiceImpl implements CorrigendumService {
         }
 
         // Save to DB
-        Document doc = new Document();
+        CorrigendumDocument doc = new CorrigendumDocument();
         doc.setName(attachment.getOriginalFilename());
         doc.setLocation(bucketPath);
-        doc.setType(3);
         doc.setCreatedBy(createdBy);
         doc.setCreatedDate(new Date());
         doc.setLastUpdatedBy(createdBy);
         doc.setLastUpdatedDate(new Date());
-        documentDAO.save(doc);
-
-        CorrigendumDocument corrigendumDocument = new CorrigendumDocument();
-        corrigendumDocument.setDocument(doc);
-        corrigendumDocument.setCorrigendum(corrigendum);
-
-        return corrigendumDocumentDAO.save(corrigendumDocument);
+        doc.setCorrigendum(corrigendum);
+        return corrigendumDocumentDAO.save(doc);
     }
 
     @Override
     @Transactional
     public void removeCorrigendumDocument(int id) {
         CorrigendumDocument corrigendumDocument = corrigendumDocumentDAO.findOne(id);
-        Document document = corrigendumDocument.getDocument();
 
         // Remove from S3
-        String bucketPath = "tender_corrigendums/" + corrigendumDocument.getCorrigendum().getId() + "/" + document.getName();
+        String bucketPath = "tender_corrigendums/" + corrigendumDocument.getCorrigendum().getId() + "/" + corrigendumDocument.getName();
         s3Wrapper.deleteObject(bucketPath);
 
         corrigendumDocument.setCorrigendum(null);
-        corrigendumDocument.setDocument(null);
         corrigendumDocumentDAO.delete(corrigendumDocument);
-        documentDAO.delete(document);
     }
 }

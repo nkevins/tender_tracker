@@ -6,13 +6,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * Created by andy on 16/8/2017.
+ * Service implementation of UenEntityService
  */
 @Service
 public class UenEntityServiceImpl implements UenEntityService {
 
     private UenEntityDAO dao;
 
+    /**
+     * Constructor.
+     *
+     * @param dao UenEntityDAO
+     */
     @Autowired
     public UenEntityServiceImpl(UenEntityDAO dao){
         this.dao = dao;

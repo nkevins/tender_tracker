@@ -11,12 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
- * Created by andy on 27/7/2017.
+ * Implementation of UserRoleService.
  */
 @Service
 public class UserRoleServiceImpl implements UserRoleService {
@@ -24,6 +22,12 @@ public class UserRoleServiceImpl implements UserRoleService {
     private UserRoleDAO userRoleDao;
     private UserDAO userDAO;
 
+    /**
+     * Constructor.
+     *
+     * @param userRoleDao UserRoleDAO
+     * @param userDAO UserDAO
+     */
     @Autowired
     public UserRoleServiceImpl(UserRoleDAO userRoleDao, UserDAO userDAO){
         this.userRoleDao = userRoleDao;
@@ -82,5 +86,39 @@ public class UserRoleServiceImpl implements UserRoleService {
     public void removeUserFromCompany(User user, Company company) {
         List<UserRole> userRoles = userRoleDao.findUserRoleByUserAndCompany(user.getId(), company.getId());
         userRoleDao.delete(userRoles);
+    }
+
+    @Override
+    public Set<String> findCompanyAdminEmails(int companyId) {
+        List<UserRole> adminUserRoles = userRoleDao.findCompanyAdminUserRole(companyId);
+        if (adminUserRoles != null) {
+            Set<String> adminEmails = new HashSet<>();
+            for(UserRole admin : adminUserRoles) {
+                if (admin.getUser() != null && admin.getUser().getEmail() != null) {
+                    adminEmails.add(admin.getUser().getEmail());
+                }
+            }
+            if (adminEmails.size() > 0) {
+                return adminEmails;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Set<String> findCompanyUserEmails(int companyId) {
+        List<UserRole> userRoles = userRoleDao.findUserRoleByCompany(companyId);
+        if (userRoles != null) {
+            Set<String> emails = new HashSet<>();
+            for(UserRole admin : userRoles) {
+                if (admin.getUser() != null && admin.getUser().getEmail() != null) {
+                    emails.add(admin.getUser().getEmail());
+                }
+            }
+            if (emails.size() > 0) {
+                return emails;
+            }
+        }
+        return null;
     }
 }

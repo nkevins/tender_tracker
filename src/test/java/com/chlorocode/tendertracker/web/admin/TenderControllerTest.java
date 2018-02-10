@@ -1,6 +1,7 @@
 package com.chlorocode.tendertracker.web.admin;
 
 import com.chlorocode.tendertracker.dao.entity.*;
+import com.chlorocode.tendertracker.service.CompanyService;
 import com.chlorocode.tendertracker.service.TenderService;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,6 +44,9 @@ public class TenderControllerTest {
     @MockBean
     private TenderService tenderService;
 
+    @MockBean
+    private CompanyService companyService;
+
     @Before
     public void setUp() {
         mvc = MockMvcBuilders
@@ -68,6 +72,10 @@ public class TenderControllerTest {
 
     @Test
     public void testViewCreateTenderPage() throws Exception {
+        Company c = new Company();
+        c.setActive(true);
+        when(companyService.findById(1)).thenReturn(c);
+
         this.mvc.perform(get("/admin/tender/create").with(user(currentUser)))
                 .andExpect(status().isOk())
                 .andExpect(view().name("admin/tender/tenderCreate"));

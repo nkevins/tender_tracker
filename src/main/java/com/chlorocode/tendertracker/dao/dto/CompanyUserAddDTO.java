@@ -5,6 +5,9 @@ import org.hibernate.validator.constraints.NotBlank;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Data transfer object for company user add.
+ */
 public class CompanyUserAddDTO {
     @NotBlank(message = "Email is required")
     private String email;

@@ -2,27 +2,17 @@ package com.chlorocode.tendertracker.dao.entity;
 
 import javax.persistence.*;
 
+/**
+ * CorrigendumDocument entity.
+ */
 @Entity
-public class CorrigendumDocument {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+@Table(name = "corrigendum_document")
+@PrimaryKeyJoinColumn(name = "document_id")
+@DiscriminatorValue("2")
+public class CorrigendumDocument extends Document {
 
     @ManyToOne
     private Corrigendum corrigendum;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="document_id", unique= true, nullable=false)
-    private  Document document;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public Corrigendum getCorrigendum() {
         return corrigendum;
@@ -32,11 +22,4 @@ public class CorrigendumDocument {
         this.corrigendum = corrigendum;
     }
 
-    public Document getDocument() {
-        return document;
-    }
-
-    public void setDocument(Document document) {
-        this.document = document;
-    }
 }

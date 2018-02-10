@@ -1,15 +1,22 @@
 package com.chlorocode.tendertracker.dao.entity;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Bid entity.
+ */
 @Entity
 public class Bid {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonView(DataTablesOutput.View.class)
     private int id;
 
     private double totalAmount;
@@ -24,6 +31,7 @@ public class Bid {
     private Date lastUpdatedDate;
 
     @ManyToOne
+    @JsonView(DataTablesOutput.View.class)
     private Tender tender;
 
     @ManyToOne
@@ -34,6 +42,9 @@ public class Bid {
 
     @OneToMany(mappedBy = "bid", cascade = CascadeType.PERSIST)
     private List<BidDocument> documents;
+
+    @OneToMany(mappedBy = "bid", cascade = CascadeType.PERSIST)
+    private List<EvaluationResult> evaluationResults;
 
     public Bid() {
         this.bidItems = new LinkedList<>();

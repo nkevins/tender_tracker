@@ -3,6 +3,7 @@ package com.chlorocode.tendertracker.web;
 import com.chlorocode.tendertracker.dao.entity.*;
 import com.chlorocode.tendertracker.service.BidService;
 import com.chlorocode.tendertracker.service.TenderService;
+import com.chlorocode.tendertracker.service.TenderSubscriptionService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,9 +24,7 @@ import java.util.List;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -46,6 +45,9 @@ public class TenderPublicControllerTest {
 
     @MockBean
     TenderService tenderService;
+
+    @MockBean
+    TenderSubscriptionService tenderSubscriptionService;
 
     @MockBean
     BidService bidService;
@@ -164,7 +166,7 @@ public class TenderPublicControllerTest {
                         .with(csrf())
         ).andExpect(view().name("redirect:/tender/15"));
 
-        verify(tenderService, times(1)).bookmarkTender(tender, currentUser.getUser());
+        verify(tenderSubscriptionService, times(1)).bookmarkTender(tender, currentUser.getUser());
     }
 
     @Test
@@ -176,6 +178,6 @@ public class TenderPublicControllerTest {
                         .with(csrf())
         ).andExpect(view().name("redirect:/tender/15"));
 
-        verify(tenderService, times(1)).removeTenderBookmark(15, currentUser.getId());
+        verify(tenderSubscriptionService, times(1)).removeTenderBookmark(15, currentUser.getId());
     }
 }

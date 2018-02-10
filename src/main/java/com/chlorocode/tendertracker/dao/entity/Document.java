@@ -3,9 +3,13 @@ package com.chlorocode.tendertracker.dao.entity;
 import javax.persistence.*;
 import java.util.Date;
 
+/**
+ * Base class for every type of Document.
+ */
 @Entity
-@Table(name = "document")
-public class Document {
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name="type")
+public abstract class Document {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -13,7 +17,6 @@ public class Document {
 
     private String name;
     private String location;
-    private int type;
     private int createdBy;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -46,14 +49,6 @@ public class Document {
 
     public void setLocation(String location) {
         this.location = location;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
     }
 
     public int getCreatedBy() {

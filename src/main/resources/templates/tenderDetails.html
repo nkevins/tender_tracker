@@ -39,6 +39,7 @@
                         <li role="presentation" class="active"><a href="#tenderDetails" aria-controls="home" role="tab" data-toggle="tab">Tender Details</a></li>
                         <li role="presentation"><a href="#clarification" aria-controls="profile" role="tab" data-toggle="tab">Clarification</a></li>
                         <li role="presentation" th:if="${not #lists.isEmpty(corrigendums)}"><a href="#corrigendum" aria-controls="profile" role="tab" data-toggle="tab">Corrigendum</a></li>
+                        <li role="presentation" th:if="${tender.status != 1}"><a href="#bidder" aria-controls="profile" role="tab" data-toggle="tab">Bidder</a></li>
                     </ul>
 
                     <!-- Tab panes -->
@@ -51,7 +52,7 @@
                                     <h4>Details:</h4>
                                     <p>Opening Date: <span th:text="${#dates.format(tender.openDate, 'dd MMM yyyy HH:mm')}"></span></p>
                                     <p>Closing Date: <span th:text="${#dates.format(tender.closedDate, 'dd MMM yyyy HH:mm')}"></span></p>
-                                    <p>Status: <span class="label label-success" th:if="${tender.status == 1}">OPEN</span><span class="label label-danger" th:if="${tender.status == 2}">CLOSED</span><span class="label label-primary" th:if="${tender.status == 3}">AWARDED</span></p>
+                                    <p>Status: <span class="label label-success" th:if="${tender.status == 1}">OPEN</span><span class="label label-danger" th:if="${tender.status == 2}">CLOSED</span><span class="label label-primary" th:if="${tender.status == 3}">AWARDED</span><span class="label label-default" th:if="${tender.status == 4}">NO AWARD</span></p>
                                 </div>
                                 <div class="col-md-6">
                                     <h4>Contact Person:</h4>
@@ -66,7 +67,7 @@
 
                             <h4>Document:</h4>
                             <ul>
-                                <li th:each="doc : ${tender.documents}"><a th:text="${doc.document.name}" th:href="${s3Service.getPreSignedURL(doc.document.location)}" /></li>
+                                <li th:each="doc : ${tender.documents}"><a th:text="${doc.name}" th:href="${s3Service.getPreSignedURL(doc.location)}" /></li>
                             </ul>
 
                             <div class="row">
@@ -93,6 +94,13 @@
                                     <td th:text="${codeValueService.getDescription('uom', i.uom)}">Pcs</td>
                                 </tr>
                             </table>
+
+                            <div th:if="${tender.status == 3}">
+                                <h4>Award Details:</h4>
+                                <p>Awarded to: <span th:text="${tender.tenderAward.company.name}"></span></p>
+                                <p>Award date: <span th:text="${#dates.format(tender.tenderAward.createdDate, 'dd MMM yyyy HH:mm')}"></span></p>
+                            </div>
+
                             <a th:href="@{/tender/__${tender.id}__/respond}" class="btn btn-block btn-theme btn-success" sec:authorize="hasAnyRole('ADMIN','SUBMITTER')" th:unless="${isSubmitedTender}">Submit Response</a>
 
                             <a th:href="@{/tender/__${tender.id}__/respond}" class="btn btn-block btn-theme btn-success" sec:authorize="hasAnyRole('ADMIN','SUBMITTER')" th:if="${isSubmitedTender}" disabled="true">Submit Response</a>
@@ -145,7 +153,7 @@
                                             <p>Attachments: </p>
                                             <ul>
                                                 <li th:each="d : ${c.documents}">
-                                                    <a th:href="${s3Service.getPreSignedURL(d.document.location)}" th:text="${d.document.name}"></a>
+                                                    <a th:href="${s3Service.getPreSignedURL(d.location)}" th:text="${d.name}"></a>
                                                 </li>
                                             </ul>
                                         </div>
@@ -154,6 +162,23 @@
                             </div>
                         </div>
                         <!-- end Corrigendum pane -->
+
+
+                        <!-- Tender Bidder pane -->
+                        <div role="tabpanel" class="tab-pane" id="bidder" th:if="${tender.status != 1}">
+                            <div class="box-list">
+                                <div class="item" th:each="b : ${tender.bids}">
+                                    <div class="row">
+                                        <h4 th:text="${b.company.name}"></h4>
+                                        <h5>Bid Value: $<span th:text="${#numbers.formatDecimal(b.getTotalAmount(), 0, 'COMMA', 2, 'POINT')}"></span></h5>
+                                    </div>
+                                </div>
+                                <div class="item" th:if="${#lists.isEmpty(tender.bids)}">
+                                    No bidder
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end Bidder pane -->
                     </div>
                     <!-- end Tab panes -->
                 </div>
